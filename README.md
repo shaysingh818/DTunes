@@ -18,6 +18,10 @@ This is a personal audio repository. Can be used as a personal music application
 3. Make functions to update names of songs
 4. Create function that tests every feature
 	* Make output neater
+5. Create scripts that install all required libraries
+	* FFMPEG
+	* Youtube dl
+	* SQLITE3
 
 ## Streaming/Playing Audio
 
