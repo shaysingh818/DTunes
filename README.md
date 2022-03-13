@@ -16,8 +16,8 @@ This is a personal audio repository. Can be used as a personal music application
 2. Run through every feature and make sure it works
 	* Hook youtube dl process to insert-song
 3. Make functions to update names of songs
-4. Make add song function insert youtube url AND SONG information in one call
-
+4. Create function that tests every feature
+	* Make output neater
 
 ## Streaming/Playing Audio
 
@@ -56,7 +56,7 @@ Read files from local directory into sqlite3 database
 	* Need to grab the current path that we can stream/listen to the audio file from
 	* Somehow need to extract subtitles from audio file if possible
 
-2. Integreate youtube dl python script in c code base
+2. Integrate youtube dl python script in c code base
 	* Store youtube urls in db
 	* Don't allow duplicate downloads, skip existing youtube urls
 	* Refactor python script to take youtube url as command line arg
