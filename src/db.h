@@ -28,6 +28,7 @@
 // queries for songs
 #define INSERT_DB_SONGS  "INSERT INTO SONG VALUES(?,?,?,?,?)"
 #define VIEW_DB_SONGS  "SELECT * FROM SONG"
+#define UPDATE_SONG "UPDATE SONG set name=? where name=?"
 #define DELETE_DB_SONG  "DELETE FROM SONG where name=?" 
 #define DELETE_DB_SONGS  "DELETE  FROM SONG"
 #define COUNT_DB_SONGS "SELECT COUNT(*) FROM SONG"

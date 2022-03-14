@@ -46,7 +46,7 @@ int main(int argc, char* argv[]){
 	testCaseHelpMenu(argv[1]); 		
 
 	// test cases for playlists	
-	testInsertPlaylist(argv[1], argv[2]);
+	testInsertPlaylist(argv[1], argv[2]);	
 	testLoadPlaylists(argv[1]); 
 	testViewPlaylists(argv[1]); 		
 	testDeletePlaylist(argv[1], argv[2]);
@@ -54,6 +54,7 @@ int main(int argc, char* argv[]){
 	
 	// test cases for song	
 	testLoadSongs(argv[1]); 
+	testUpdateSong(argv[1], argv[2], argv[3]);
 	testViewSongs(argv[1]); 
 	testInsertSong(argv[1], argv[2]);	
 	testDeleteSong(argv[1], argv[2]); 

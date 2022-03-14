@@ -166,6 +166,33 @@ int viewSongs(){
 }
 
 
+int updateSong(char *prevSongName, char *newSongName){	
+	// open db
+	sqlite3 *db = openDB(DB_PATH);	
+	// prepare statement
+	sqlite3_stmt *sql; 
+	char *query = UPDATE_SONG;
+ 
+	int result = sqlite3_prepare_v2(db, query, -1, &sql, NULL);
+	// bind vars to statement
+	sqlite3_bind_text(sql, 1, prevSongName, -1, NULL);	
+	sqlite3_bind_text(sql, 2, newSongName, -1, NULL);
+	
+	// check for sql cursor errors
+	if(result != SQLITE_OK){
+		fprintf(stderr, "Failed to delete song:  %s\n",sqlite3_errmsg(db));
+		sqlite3_close(db);
+		return FALSE; 
+	}
+	
+	printf("[DB OPERATION] UPDATED SONG\n");
+	sqlite3_step(sql); 
+	sqlite3_close(db); 
+
+	return TRUE; 
+}
+
+
 
 int deleteSong(char *songName){	
 	// open db
