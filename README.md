@@ -12,7 +12,6 @@ This is a personal audio repository. Can be used as a personal music application
 6. Learn about audio signal processing
 
 ## To Do
-1. Make command line args shorter
 2. Run through every feature and make sure it works
 	* Hook youtube dl process to insert-song
 3. Make functions to update names of songs
