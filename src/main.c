@@ -11,8 +11,6 @@
 
 int main(int argc, char* argv[]){
 
-
-
 	// argument debugger
 	if(DEBUG == 1){
 		printf("Arg 0: %s\n", argv[0]); 

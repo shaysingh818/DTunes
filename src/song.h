@@ -21,9 +21,29 @@ struct AudioFile {
 
 typedef struct AudioFile song_t; 
 
-// functions
+
+/**
+	Model for storing youtube url
+*/
+struct YouTubeUrl {
+	char url[100];
+	char dateCreated[30]; 
+};
+
+typedef struct AudioFile url_t; 
+
+// callbacks
+static int callback(void *data, int argc, char **argv, char **azColName); 
+
+// song functions
 song_t **initSongs(int limit);
 int getSongTableSize(); 
+
+
+// url functions
+url_t **initUrls(int limit);
+int getUrlTableSize(); 
+
 
 // db functions
 void insertSong(char *fileName, char *currentTime, char *streamingPath);

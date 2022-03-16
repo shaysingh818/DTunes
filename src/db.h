@@ -28,7 +28,7 @@
 // queries for songs
 #define INSERT_DB_SONGS  "INSERT INTO SONG VALUES(?,?,?,?,?)"
 #define VIEW_DB_SONGS  "SELECT * FROM SONG"
-#define UPDATE_SONG "UPDATE SONG set name=? where name=?"
+#define UPDATE_SONG "UPDATE SONG SET name=? where name=?"
 #define DELETE_DB_SONG  "DELETE FROM SONG where name=?" 
 #define DELETE_DB_SONGS  "DELETE  FROM SONG"
 #define COUNT_DB_SONGS "SELECT COUNT(*) FROM SONG"
@@ -56,7 +56,8 @@ int downloadVideo(char *url);
 
 // file db functions
 char* combineFileStrs(const char *cwd, const char *fileName); 
-void removeSpaces(char *testString); 
+void removeSpaces(char *testString, char test);
+void removeChar(char *testString, char charToRemove); 
 void getCurrentDirectory(char *cwd); 
 void renameFile(char *fileName, char *newFileName); 
 int countFiles(char *directoryPath); 

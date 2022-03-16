@@ -200,7 +200,7 @@ void testUpdateSong(char *myarg, char *myarg2, char *myarg3){
 	if(strcmp(myarg, TEST_UPDATE_SONG) == 0){
 		
 		// insert song model struct into db
-		int dbResult = updateSong(myarg2, myarg3);
+		int dbResult = updateSong(myarg3, myarg2);
 
 		// check if database insert was successful 
 		if(dbResult){

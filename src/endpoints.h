@@ -10,16 +10,16 @@
 #define HELP_MENU  "help"
 
 // playlists
-#define INSERT_PLAYLIST  "create-p"
-#define VIEW_PLAYLIST  "view-p"
-#define DELETE_PLAYLIST  "delete-p" 
-#define DELETE_ALL_PLAYLIST  "delete-ps"
+#define INSERT_PLAYLIST  "cp"
+#define VIEW_PLAYLIST  "vp"
+#define DELETE_PLAYLIST  "dp" 
+#define DELETE_ALL_PLAYLIST  "dps"
 
 //songs
-#define INSERT_SONG  "create-s"
-#define VIEW_SONG  "view-s"
-#define DELETE_SONG  "delete-s" 
-#define DELETE_ALL_SONG  "delete-ss"
+#define INSERT_SONG  "cs"
+#define VIEW_SONG  "vs"
+#define DELETE_SONG  "ds" 
+#define DELETE_ALL_SONG  "dss"
 
 //help menu
 void DTunesHelpMenu(char *myarg);

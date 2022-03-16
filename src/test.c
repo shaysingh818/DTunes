@@ -5,53 +5,87 @@
 #include <string.h> 
 #include <unistd.h>
 #include <sqlite3.h>
+#include "playlist.h"
+#include "db.h"
 
 #define TRUE 1
 #define FALSE 0
 
 #define DEBUG FALSE
 
+struct Endpoint {
+	char name[100];
+	char commandLineArg[100]; 
+	//void (*logic)(int limit, const struct Endpoint* e); 
+};
 
-// logging functions
-void dlog(char *type, char*message){
-    printf("[%s]: %s\n", type, message);
-}
-
-
-void dlog_int(char *type, int message){
-    printf("[%s]: %d\n", type, message);
-}
-
-void dlog_counter(char *type, char *message, int counter){
-	printf("[%d]: %s  %s\n", counter, type, message); 
-}
+typedef struct Endpoint endpoint_t;
 
 
-void d_log_time(char* type, char* message){ 
-	time_t mytime = time(NULL);
-    char *time_str = ctime(&mytime);
-    time_str[strlen(time_str)-1] = '\0';
-    printf("[%s][%s]: %s\n",  time_str, type, message);
-}
+// function create an endpoint
+endpoint_t *createEndpoint(char *name, char *commandLineArg){
+	endpoint_t *e1;
+    e1 = (endpoint_t*)malloc(sizeof(endpoint_t));
+	// bind values
+	strcpy(e1->name, name);
+    strcpy(e1->commandLineArg, commandLineArg);
+	return e1; 	
+} 
 
 
-char* combineFileStrs(const char *cwd, const char *fileName){
-    char *result = malloc(strlen(cwd) + strlen(fileName) + 1);
-    strcpy(result, cwd);
-    strcat(result, fileName);
-    return result;
-}
+void insertPlaylistCmd(const struct Endpoint* e, char *myarg, char *myArg2){
+	// insert playlist to db
+	if(strcmp(myarg, e->name) == 0){
 
+		// bind fields for song model
+		char *playlistName = myArg2; 	
+		char *mytime = getCurrentTime(); 
 
-// utility functions for syncing meta data to db
-char *currentTime(){	
-	time_t mytime = time(NULL);
-    char *time_str = ctime(&mytime);
-    time_str[strlen(time_str)-1] = '\0';
-	return time_str; 
-}
+		/**
+		// create instance of playlist model	
+		playlist_t *newPlaylist;
+		newPlaylist = (playlist_t*)malloc(sizeof(playlist_t));	
+		printf("\033[0;32m");
+		printf("[%s]: CREATED INSTANCE OF PLAYLIST:\n", "STRUCTURE ALLOCATION"); 
 
+		// set values
+		strcpy(newPlaylist->name, playlistName);	
+		strcpy(newPlaylist->dateCreated, mytime);
+ 
+		// insert playlist in database
+		int insertDbResult = createPlaylist(newPlaylist);
 
-int main(){
+		// check result of insert 
+		if(insertDbResult){
+			//printf("\033[0;32m");
+			printf("[DTUNES]: Created Playlist\n"); 
+		}else{	
+			printf("\e[0;31m");
+			printf("Something went wrong, refer to test cases\n"); 
+		}
+		*/
 	
+	}
+}
+
+
+int main(int argc, char* argv[]){
+
+	
+	endpoint_t *e1 = createEndpoint("create-playlist", "cp");
+	insertPlaylistCmd(&e1, argv[1], argv[2]);  
+
+	/**
+	// create instance of endpoint
+	struct Endpoint e1 = {
+		"create-song",
+		"cs",
+		print_endpoint,
+		create_song, 
+	};
+
+	e1.print(&e1); 
+	e1.logic(20, &e1); 
+	*/
+
 }
