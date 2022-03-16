@@ -56,7 +56,6 @@ int downloadVideo(char *url);
 
 // file db functions
 char* combineFileStrs(const char *cwd, const char *fileName); 
-void removeSpaces(char *testString, char test);
 void removeChar(char *testString, char charToRemove); 
 void getCurrentDirectory(char *cwd); 
 void renameFile(char *fileName, char *newFileName); 
