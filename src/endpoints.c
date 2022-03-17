@@ -4,6 +4,23 @@
 #include "db.h"
 
 
+// function create an endpoint
+endpoint_t *createEndpoint(char *name, char *commandLineArg){
+    endpoint_t *e1;
+    e1 = (endpoint_t*)malloc(sizeof(endpoint_t));
+    // bind values
+    strcpy(e1->name, name);
+    strcpy(e1->commandLineArg, commandLineArg);
+    return e1;  
+} 
+
+
+void setDocumentationString(struct Endpoint* e, char *docBuffer){
+    e->documentation = (char*)malloc(strlen(docBuffer) + 1);
+    strcpy(e->documentation, "testing");
+    printf("Doc buffer set\n"); 
+}
+
 
 void printDTunesBanner(FILE *fptr){
     char read_string[128];
@@ -12,15 +29,14 @@ void printDTunesBanner(FILE *fptr){
 	}
 }
 
-void DTunesHelpMenu(char *myarg){
+void DTunesHelpMenu(struct Endpoint* e, char *myarg, char *myarg2){
 	
 	char *column1 = "FLAG-COMMAND"; 
 	char *column2 = "DOCUMENTATION"; 
 
-	if(strcmp(myarg, HELP_MENU) == 0){
+	if(strcmp(myarg, e->commandLineArg) == 0){
 		// help menu for playlists
-	
-			
+
 		// display banner
 		char *filename = "banner.txt";
     	FILE *fptr = NULL;
@@ -54,10 +70,8 @@ void DTunesHelpMenu(char *myarg){
 }
 
  
-void insertPlaylistCmd(char *myarg, char *myarg2){
-	// insert playlist to db
-	if(strcmp(myarg, INSERT_PLAYLIST) == 0){
-
+void insertPlaylistCmd(struct Endpoint *e, char *myarg, char *myarg2){
+	if(strcmp(myarg, e->commandLineArg) == 0){
 		// bind fields for song model
 		char *playlistName = myarg2; 	
 		char *mytime = getCurrentTime(); 
@@ -88,16 +102,17 @@ void insertPlaylistCmd(char *myarg, char *myarg2){
 }
 
 
-void viewPlaylistCmd(char *myarg){	
-	if (strcmp(myarg, VIEW_PLAYLIST) == 0){
+void viewPlaylistCmd(struct Endpoint *e, char *myarg, char *myarg2){	
+	if (strcmp(myarg, e->commandLineArg) == 0){
 		int result = viewPlaylists();  
 		printf("\n"); 	
 	}
 }
 
 
-void deletePlaylistCmd(char *myarg, char *myarg2){
-	if(strcmp(myarg, DELETE_PLAYLIST) == 0){
+void deletePlaylistCmd(struct Endpoint *e, char *myarg, char *myarg2){
+	
+	if (strcmp(myarg, e->commandLineArg) == 0){
 		char *playlistName = myarg2; 
 		int result = deletePlaylist(playlistName); 	
 		if(result){
@@ -109,8 +124,9 @@ void deletePlaylistCmd(char *myarg, char *myarg2){
 }
 
 
-void deleteAllPlaylistsCmd(char *myarg){
-	if(strcmp(myarg, DELETE_ALL_PLAYLIST) == 0){
+void deleteAllPlaylistsCmd(struct Endpoint *e, char *myarg, char *myarg2){
+	
+	if (strcmp(myarg, e->commandLineArg) == 0){
 		int result = deleteAllPlaylists();
 		if(result){
 			printf("[DTUNES]: Deleted Playlists\n");

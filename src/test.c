@@ -16,7 +16,9 @@
 struct Endpoint {
 	char name[100];
 	char commandLineArg[100]; 
-	//void (*logic)(int limit, const struct Endpoint* e); 
+	char *documentation; 
+	void (*endpointLogic)(struct Endpoint* e,char *arg1, char *arg2); 	
+	void (*testEndpointLogic)(const struct Endpoint* e,char *arg1, char *arg2); 
 };
 
 typedef struct Endpoint endpoint_t;
@@ -33,59 +35,47 @@ endpoint_t *createEndpoint(char *name, char *commandLineArg){
 } 
 
 
-void insertPlaylistCmd(const struct Endpoint* e, char *myarg, char *myArg2){
+void setDocumentationString(struct Endpoint* e, char *docBuffer){
+	e->documentation = (char*)malloc(strlen(docBuffer) + 1);
+	strcpy(e->documentation, "testing");
+	printf("Doc buffer set\n"); 
+}
+
+
+// create the function you want to attach for endpoint
+void testFunction(struct Endpoint* e, char *myarg, char *myArg2){
 	// insert playlist to db
-	if(strcmp(myarg, e->name) == 0){
-
-		// bind fields for song model
-		char *playlistName = myArg2; 	
-		char *mytime = getCurrentTime(); 
-
-		/**
-		// create instance of playlist model	
-		playlist_t *newPlaylist;
-		newPlaylist = (playlist_t*)malloc(sizeof(playlist_t));	
-		printf("\033[0;32m");
-		printf("[%s]: CREATED INSTANCE OF PLAYLIST:\n", "STRUCTURE ALLOCATION"); 
-
-		// set values
-		strcpy(newPlaylist->name, playlistName);	
-		strcpy(newPlaylist->dateCreated, mytime);
- 
-		// insert playlist in database
-		int insertDbResult = createPlaylist(newPlaylist);
-
-		// check result of insert 
-		if(insertDbResult){
-			//printf("\033[0;32m");
-			printf("[DTUNES]: Created Playlist\n"); 
-		}else{	
-			printf("\e[0;31m");
-			printf("Something went wrong, refer to test cases\n"); 
-		}
-		*/
-	
+	if(strcmp(myarg, e->commandLineArg) == 0){
+		printf("This is working %s\n", myarg); 
+		printf("This is working %s\n", myarg); 
 	}
 }
 
 
+// create the function you want to attach for endpoint
+void createSong(struct Endpoint* e, char *myarg, char *myArg2){
+	// insert playlist to db
+	if(strcmp(myarg, e->commandLineArg) == 0){
+		printf("Create song %s\n", myArg2); 
+	}
+}
+
+
+// add endpoints to array
+// display help menu for all
+
 int main(int argc, char* argv[]){
 
-	
+	// create an endpoint, attach logic and test function	
 	endpoint_t *e1 = createEndpoint("create-playlist", "cp");
-	insertPlaylistCmd(&e1, argv[1], argv[2]);  
+	e1->endpointLogic = testFunction; // attach here
+	setDocumentationString(e1, "create a playlist on dtunes"); 
+	e1->endpointLogic(e1, argv[1], argv[2]);
 
-	/**
-	// create instance of endpoint
-	struct Endpoint e1 = {
-		"create-song",
-		"cs",
-		print_endpoint,
-		create_song, 
-	};
-
-	e1.print(&e1); 
-	e1.logic(20, &e1); 
-	*/
+	// create second endpoint 
+	endpoint_t *e2 = createEndpoint("create-song", "cs");
+	e2->endpointLogic = createSong; // attach here
+	setDocumentationString(e2, "create a song on dtunes"); 
+	e2->endpointLogic(e2, argv[1], argv[2]); 
 
 }

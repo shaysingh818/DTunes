@@ -7,6 +7,35 @@
 #define DEBUG FALSE
 
 
+void playlistEndpoints(char* argv[]){
+	
+	// Create playlist
+	endpoint_t *e1 = createEndpoint("create-playlist", "cp");
+    e1->endpointLogic = insertPlaylistCmd; // attach here
+    setDocumentationString(e1, "create playlist");
+    e1->endpointLogic(e1, argv[1], argv[2]);
+
+	
+	// View playlist
+	endpoint_t *e2 = createEndpoint("view-playlist", "vp");
+    e2->endpointLogic = viewPlaylistCmd; // attach here
+    setDocumentationString(e2, "viewplaylist");
+    e2->endpointLogic(e2, argv[1], NULL); 
+
+	
+	// Delete playlist
+	endpoint_t *e3 = createEndpoint("delete-playlist", "dp");
+    e3->endpointLogic = deletePlaylistCmd; // attach here
+    setDocumentationString(e3, "delete a playlist");
+    e3->endpointLogic(e3, argv[1], argv[2]);
+
+	
+	// Delete all playlist
+	endpoint_t *e4 = createEndpoint("delete-all-playlist", "dap");
+    e4->endpointLogic = deleteAllPlaylistsCmd; // attach here
+    setDocumentationString(e4, "delete all playlists");
+    e4->endpointLogic(e4, argv[1], NULL);
+}
 
 
 int main(int argc, char* argv[]){
@@ -22,19 +51,30 @@ int main(int argc, char* argv[]){
 		Main DTUNES user menu
 	*/
 
-	DTunesHelpMenu(argv[1]); 
+	//DTunesHelpMenu(argv[1]);
+
+	// DTUNES help endpoint
+	endpoint_t *e1 = createEndpoint("dtunes-help", "help");
+    e1->endpointLogic = DTunesHelpMenu; // attach here
+    setDocumentationString(e1, "help menu for dtunes");
+    e1->endpointLogic(e1, argv[1], NULL);
+
+	playlistEndpoints(argv); 
+
+	
+	 
 	
 	// playlists
-	insertPlaylistCmd(argv[1], argv[2]);
-	viewPlaylistCmd(argv[1]);  
-	deletePlaylistCmd(argv[1], argv[2]); 
-	deleteAllPlaylistsCmd(argv[1]); 
+	//insertPlaylistCmd(argv[1], argv[2]);
+	//viewPlaylistCmd(argv[1]);  
+	//deletePlaylistCmd(argv[1], argv[2]); 
+	//deleteAllPlaylistsCmd(argv[1]); 
 
 	// songs
-	insertSongCmd(argv[1], argv[2]); 
-	viewSongsCmd(argv[1]); 
-	deleteSongCmd(argv[1], argv[2]);	
-	deleteAllSongsCmd(argv[1]);
+	//insertSongCmd(argv[1], argv[2]); 
+	//viewSongsCmd(argv[1]); 
+	//deleteSongCmd(argv[1], argv[2]);	
+	//deleteAllSongsCmd(argv[1]);
 
 	
 	/**

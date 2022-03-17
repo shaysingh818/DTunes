@@ -17,6 +17,7 @@ This is a personal audio repository. Can be used as a personal music application
 8. Create a custom local endpoint library
 	* Make somthing similar to web controllers without http
 	* Make it easy to test the endpoints
+	* Migrate endpoint system to DTunes
 
 1. Create a view for youtube urls
 	* see all the current urls stored in db
