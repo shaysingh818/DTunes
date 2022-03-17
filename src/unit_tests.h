@@ -14,7 +14,8 @@
 #define TEST_DELETE_PLAYLISTS  "t-dap" 
 
 // test cli aliases
-#define TEST_INSERT_SONG  "t-cs" 
+#define TEST_INSERT_SONG  "t-cs"
+#define TEST_UPDATE_SONG "t-us" 
 #define TEST_LOAD_SONGS  "t-ls" 
 #define TEST_VIEW_SONGS  "t-vs" 
 #define TEST_DELETE_SONG  "t-ds" 
@@ -37,6 +38,7 @@ void testDeletePlaylists(char *myarg);
  
 // song tests
 void testInsertSong(char *myarg, char *myarg2); 
+void testUpdateSong(char *myarg, char *myarg2, char *myarg3); 
 void testLoadSongs(char *myarg); 
 void testViewSongs(char *myarg); 
 void testDeleteSong(char *myarg, char *myarg2);
@@ -45,7 +47,6 @@ void testDeleteSongs(char *myarg);
 // test sync songs
 void syncAudioFiles(char *myarg); 
 void testDownloadYTVideo(char *myarg, char *myarg2); 
-
 
 // run all tests
 void runAllTests(char *myarg);

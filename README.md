@@ -12,6 +12,7 @@ This is a personal audio repository. Can be used as a personal music application
 6. Learn about audio signal processing
 
 ## To Do
+<<<<<<< HEAD
 2. Run through every feature and make sure it works
 	* Hook youtube dl process to insert-song
 3. Make functions to update names of songs
@@ -21,31 +22,36 @@ This is a personal audio repository. Can be used as a personal music application
 	* FFMPEG
 	* Youtube dl
 	* SQLITE3
+=======
+>>>>>>> 95babc6c63b69f5cd0f3629542074cd39b6b5407
 
-## Streaming/Playing Audio
 
-1. Figure out how to play/stream audio file in c
-	* Read audio file from local path
-	* Play audio file and view audio signal output
+8. Create a custom local endpoint library
+	* Make somthing similar to web controllers without http
+	* Make it easy to test the endpoints
+	* Migrate endpoint system to DTunes
 
-2. Audio Queueing
-	* Create a custom library for listening to audio files
-	* Be able to play audio files in certain selected order
-	* Use data structures to store temporary queues etc. 
+1. Create a view for youtube urls
+	* see all the current urls stored in db
 
-4. Create one to many entity relationship for Playlist -> Song
+7. Create youtube url download backup process
+	* Go through all stored urls in the database
+	* Download each youtube url
+	* Eliminate duplicates
+	
+9. Create one to many entity relationship for Playlist -> Song
 	* Be able to add song to an existing playlist in the database
 	* Create a table for adding multiple songs to ONE playlist
 	* View songs in playlist
 
-5. Use youtube DL as data source for inital songs/videos to store
+10. Use youtube DL as data source for inital songs/videos to store
 	* Create a python script that downloads youtube videos to a local directory
 	* Store all the videos in a local folder for the src code
 	* Be able to filter file extension, quality, playback speed.
 
-8. Create test cases for everything
-	* Test all functions in playlist library
-	* Test all functions in song library
+11. Create makefiles that can generate different binaries
+	* Create binaries that test individual componenets of the system
+	* Test song, playlist and endpoint library
 
 
 
@@ -72,6 +78,19 @@ Read files from local directory into sqlite3 database
 
 4. Download songs using backup YT urls in database
 	* Be able to download songs using urls in db
+
+
+
+## Streaming/Playing Audio
+
+1. Figure out how to play/stream audio file in c
+	* Read audio file from local path
+	* Play audio file and view audio signal output
+
+2. Audio Queueing
+	* Create a custom library for listening to audio files
+	* Be able to play audio files in certain selected order
+	* Use data structures to store temporary queues etc. 
 
 
 ## Community detection for auto generating playlists

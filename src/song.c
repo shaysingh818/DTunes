@@ -2,6 +2,17 @@
 #include "db.h"
 
 
+static int callback(void *data, int argc, char **argv, char **azColName){
+   int i;
+   fprintf(stderr, "%s: ", (const char*)data);
+   
+   for(i = 0; i<argc; i++) {
+      printf("%s = %s\n", azColName[i], argv[i] ? argv[i] : "NULL");
+   }
+   printf("\n");
+   return 0;
+}
+
 
 song_t **initSongs(int limit){
 /**
@@ -166,6 +177,36 @@ int viewSongs(){
 }
 
 
+int updateSong(char *prevSongName, char *newSongName){	
+	// open db
+	char *sql;
+	sqlite3 *db = openDB(DB_PATH);	
+	char *errMsg = 0;
+	const char* data = "Callback function called";
+	// prepare statement
+	char string[200]; 	
+	sprintf(string, "UPDATE SONG set name ='%s' WHERE name='%s'; ", prevSongName, newSongName);
+	sql = string; \
+			"SELECT * from SONG";   
+
+	dlog("QUERY TEST", sql);  
+	int result = sqlite3_exec(db, sql, callback, (void*)data, &errMsg);
+	
+	// check for sql cursor errors
+	if(result != SQLITE_OK){
+		fprintf(stderr, "Failed to delete song:  %s\n",errMsg);
+		 sqlite3_free(errMsg);
+		return FALSE; 
+	}
+	
+	printf("[DB OPERATION] UPDATED SONG\n");
+	//sqlite3_step(sql); 
+	sqlite3_close(db); 
+
+	return TRUE; 
+}
+
+
 
 int deleteSong(char *songName){	
 	// open db
@@ -276,7 +317,10 @@ int syncDirectoryInformation(char *filePath){
 		char *tempFileName = entry->d_name;
 		char *currTime = getCurrentTime();
 
-		removeSpaces(tempFileName);  
+		// file name processing
+		removeChar(tempFileName, ' ');  	
+		removeChar(tempFileName, ',');  
+		removeChar(tempFileName, '\'');  
 	
 		// get previous file name 
 		char *idk = malloc(strlen(tempFileName) + 1); 

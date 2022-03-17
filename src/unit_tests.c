@@ -53,6 +53,7 @@ void testCaseHelpMenu(char *myarg){
 
 		// help menu for songs
 		printf("--%-25s:  inserting a song\n", TEST_INSERT_SONG); 
+		printf("--%-25s:  updating a song name\n", TEST_UPDATE_SONG); 
 		printf("--%-25s:  loading songs into memory\n", TEST_LOAD_SONGS); 
 		printf("--%-25s:  viewing songs\n", TEST_VIEW_SONGS); 
 		printf("--%-25s:  deleting songs by name\n", TEST_DELETE_SONG); 
@@ -195,11 +196,26 @@ void testInsertSong(char *myarg, char *myarg2){
 }
 
 
+void testUpdateSong(char *myarg, char *myarg2, char *myarg3){	
+	if(strcmp(myarg, TEST_UPDATE_SONG) == 0){
+		
+		// insert song model struct into db
+		int dbResult = updateSong(myarg3, myarg2);
+
+		// check if database insert was successful 
+		if(dbResult){
+			printf("\033[0;32m");
+			printf("[TEST CASE]: UPDATE SONG: passed \n"); 
+		}else{	
+			printf("\e[0;31m");
+			printf("[TEST CASE]: UPDATE SONG: failed\n"); 
+		}
+		
+	}
+}
 
 void testLoadSongs(char *myarg){
-	
 	if(strcmp(myarg, TEST_LOAD_SONGS) == 0){
-
 		// make sure it returns array of song structs
 		int songLimit = getSongTableSize(); 
 		song_t **result = initSongs(songLimit); 
@@ -214,10 +230,7 @@ void testLoadSongs(char *myarg){
 			printf("SUBTITLES:%s\n", (*p)[i]->subtitles); 
 			printf("PLAYS:%d\n", (*p)[i]->plays);
 		}
-
-
 	}
-
 }
 
 void testViewSongs(char *myarg){

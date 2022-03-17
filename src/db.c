@@ -141,15 +141,16 @@ char* combineFileStrs(const char *cwd, const char *fileName){
 }
 
 
-// file stuff
-void removeSpaces(char *testString){
+
+void removeChar(char *testString, char charToRemove){	
     char *d = testString;
     do {
-        while (*d == ' '){
+        while (*d == charToRemove){
             ++d;
         }
     } while(*testString++ = *d++);
 }
+
 
 void getCurrentDirectory(char *cwd){
     if(getcwd(cwd, sizeof(cwd)) == NULL){
@@ -234,7 +235,10 @@ void reformatFileNames(char *desiredPath){
 		strcpy(idk, tempFileName); 
 
 		// remove all spaces in files
-		removeSpaces(tempFileName);	
+		removeChar(tempFileName, ' ');	
+		removeChar(tempFileName, ',');
+		removeChar(tempFileName, '\'');	
+	
 		renameFile(idk, tempFileName); 
 
 		dlog_counter("REFORMAT FILE", idk, files); 
