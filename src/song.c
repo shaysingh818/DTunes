@@ -70,7 +70,6 @@ song_t **initSongs(int limit){
 
 
 int getSongTableSize(){
-	
 	// get amount of songs in db	
 	sqlite3 *db = openDB(DB_PATH);
 	sqlite3_stmt *sql; 

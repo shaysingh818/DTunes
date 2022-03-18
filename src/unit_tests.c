@@ -242,7 +242,6 @@ void testViewSongs(char *myarg){
 }
 
 
-
 void testDeleteSong(char *myarg, char *myarg2){
 	if(strcmp(myarg, TEST_DELETE_SONG) == 0){
 		int result = deleteSong(myarg2); 
@@ -294,9 +293,7 @@ void testDownloadYTVideo(char *myarg, char *myarg2){
 }
 
 
-void runAllTests(char *myarg){
-
-	
+void runAllTests(char *myarg){	
 	if(strcmp(myarg, TEST) == 0){
 		// run playlist tests
 		testInsertPlaylist("t-cp", "testing-playlist"); 

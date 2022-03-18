@@ -22,18 +22,8 @@ void setDocumentationString(struct Endpoint* e, char *docBuffer){
 
 
 void printEndpointHelpMenu(struct Endpoint **e, int size, char *argv[]){	
-	if(strcmp(argv[1], "help") == 0){
-		// columns	
-		char *column1 = "FLAG-COMMAND"; 
-		char *column2 = "DOCUMENTATION";
-		// display 
-		printf("\e[0;31m");	
-		printf("%c[1m",27);
-		printf("%-25s  %-30s\n", column1, column2);
-		printf("==========================================================\n"); 
-		for(int i = 0; i < size; i++){	
-			printf("--%-25s:  %-25s\n", e[i]->commandLineArg, e[i]->documentation); 
-		}
+	for(int i = 0; i < size; i++){	
+		printf("--%-25s:  %-25s\n", e[i]->commandLineArg, e[i]->documentation); 
 	}
 }
 

@@ -12,23 +12,11 @@ This is a personal audio repository. Can be used as a personal music application
 6. Learn about audio signal processing
 
 ## To Do
-<<<<<<< HEAD
-2. Run through every feature and make sure it works
-	* Hook youtube dl process to insert-song
-3. Make functions to update names of songs
-4. Create function that tests every feature
-	* Make output neater
-5. Create scripts that install all required libraries
-	* FFMPEG
-	* Youtube dl
-	* SQLITE3
-=======
->>>>>>> 95babc6c63b69f5cd0f3629542074cd39b6b5407
-
 
 8. Create a custom local endpoint library
 	* Make somthing similar to web controllers without http
 	* Make it easy to test the endpoints
+	* Auto generate cli command for test endpoint functions
 	* Migrate endpoint system to DTunes
 
 1. Create a view for youtube urls
@@ -95,6 +83,7 @@ Read files from local directory into sqlite3 database
 
 ## Community detection for auto generating playlists
 Implement various community detection algorithms for finding similarities in audio files. Results should auto create playlists of "communities" that have been found in the graph. Figure out how to properly label the communities. 
+
 
 ## Centrality algorithms for finding songs that have high influence in the network
 Implmement centrality algorothms that can detect which nodes are important or play a key factor in the audio application. Use centrality as a way to understand the data flowing through the system.

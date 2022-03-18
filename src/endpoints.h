@@ -37,7 +37,8 @@ typedef struct Endpoint endpoint_t;
 // endpoint library functions
 endpoint_t *createEndpoint(char *name, char *commandLineArg);
 void setDocumentationString(struct Endpoint* e, char *docBuffer);
-void printEndpointHelpMenu(struct Endpoint **e, int size, char *argv[]); 
+void printEndpointHelpMenu(struct Endpoint **e, int size, char *argv[]);
+ 
 // playlist functions
 void insertPlaylistCmd(struct Endpoint *e,char *myarg, char *myarg2);
 void testInsertPlaylist(struct Endpoint *e, char *myarg, char *myarg2);
