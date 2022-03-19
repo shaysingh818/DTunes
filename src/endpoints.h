@@ -21,24 +21,27 @@
 #define DELETE_SONG  "ds" 
 #define DELETE_ALL_SONG  "dss"
 
-
 struct Endpoint {
     char name[100];
     char commandLineArg[100];
+    char testCommandLineArg[100];
     char *documentation;
-	// define endpoint patterns here
-    void (*endpointLogic)(struct Endpoint* e,char *arg1, char *arg2);	
-    void (*endpointUpdateLogic)(struct Endpoint* e,char *arg1, char *arg2, char *arg3);		
+    // define endpoint patterns here
+    void (*endpointLogic)(struct Endpoint* e,char *arg1, char *arg2);
+    void (*endpointUpdateLogic)(struct Endpoint* e,char *arg1, char *arg2, char *arg3);     
     void (*testEndpointLogic)(struct Endpoint* e,char *arg1, char *arg2);
+    struct Endpoint* next;
 };
 
 typedef struct Endpoint endpoint_t;
 
+
 // endpoint library functions
-endpoint_t *createEndpoint(char *name, char *commandLineArg);
-void setDocumentationString(struct Endpoint* e, char *docBuffer);
-void printEndpointHelpMenu(struct Endpoint **e, int size, char *argv[]);
- 
+endpoint_t *createEndpoint(char *name, char *commandLineArg, char *testCommand);
+void appendEndpoint(endpoint_t **head_ref, endpoint_t *e1); 
+void execEndpoints(char *argv[], endpoint_t *head_ref); 
+void printEndpoints(endpoint_t *head_ref);
+
 // playlist functions
 void insertPlaylistCmd(struct Endpoint *e,char *myarg, char *myarg2);
 void testInsertPlaylist(struct Endpoint *e, char *myarg, char *myarg2);

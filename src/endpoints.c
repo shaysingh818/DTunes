@@ -4,15 +4,37 @@
 #include "db.h"
 
 
-// function create an endpoint
-endpoint_t *createEndpoint(char *name, char *commandLineArg){
-    endpoint_t *e1;
-    e1 = (endpoint_t*)malloc(sizeof(endpoint_t));
-    // bind values
-    strcpy(e1->name, name);
-    strcpy(e1->commandLineArg, commandLineArg);
-    return e1;  
+endpoint_t *createEndpoint(char *name, char *commandLineArg, char *docString){
+    // create endpoint
+    endpoint_t *newEndpoint = (endpoint_t*)malloc(sizeof(endpoint_t));
+    strcpy(newEndpoint->name, name);
+    strcpy(newEndpoint->commandLineArg, commandLineArg);
+    newEndpoint->documentation = (char*)malloc(strlen(docString) + 1);
+    strcpy(newEndpoint->documentation, docString);
+
+	char testCommand[256];
+    strcpy(testCommand, "t-");
+    strcat(testCommand, newEndpoint->commandLineArg);
+    strcpy(newEndpoint->testCommandLineArg, testCommand);
+    return newEndpoint;
 } 
+
+
+void appendEndpoint(endpoint_t **head_ref, endpoint_t *e1){
+    // add endpoint in linked list
+    e1->next = (*head_ref);
+    (*head_ref) = e1;
+}
+
+
+void execEndpoints(char *argv[], endpoint_t *head_ref){
+    while(head_ref != NULL){
+        // execute endpoint functions       
+        head_ref->endpointLogic(head_ref, argv[1], argv[2]);
+        head_ref->testEndpointLogic(head_ref, argv[1], argv[2]);
+        head_ref = head_ref->next;
+    }
+}
 
 
 void setDocumentationString(struct Endpoint* e, char *docBuffer){
@@ -21,20 +43,27 @@ void setDocumentationString(struct Endpoint* e, char *docBuffer){
 }
 
 
-void printEndpointHelpMenu(struct Endpoint **e, int size, char *argv[]){	
-	for(int i = 0; i < size; i++){	
-		printf("--%-25s:  %-25s\n", e[i]->commandLineArg, e[i]->documentation); 
-	}
+void printEndpoints(endpoint_t *head_ref){
+    // display endpoints
+    char *column1 = "FLAG-COMMAND";
+    char *column2 = "TESTING";
+    char *column3 = "DOCUMENTATION";
+    // display 
+    printf("\e[0;31m");
+    printf("%c[1m",27);
+    printf("%-17s  %-17s  %-30s\n", column1, column2, column3);
+    printf("==========================================================\n");
+    while(head_ref != NULL){
+        printf("--%-15s  %-15s  %-25s\n",
+            head_ref->commandLineArg,
+            head_ref->testCommandLineArg,
+            head_ref->documentation
+        );
+        head_ref = head_ref->next;
+    }
 }
 
 
-
-void printDTunesBanner(FILE *fptr){
-    char read_string[128];
-    while(fgets(read_string,sizeof(read_string),fptr) != NULL){
-        printf("%s",read_string);
-	}
-}
 
 
 // create playlist
@@ -72,7 +101,7 @@ void insertPlaylistCmd(struct Endpoint *e, char *myarg, char *myarg2){
 
 // test create playlist
 void testInsertPlaylist(struct Endpoint *e,char *myarg, char *myarg2){	
-	if(strcmp(myarg, e->commandLineArg) == 0){
+	if(strcmp(myarg, e->testCommandLineArg) == 0){
     
         // bind fields for song model
         char *playlistName = myarg2;    
@@ -119,7 +148,7 @@ void viewPlaylistCmd(struct Endpoint *e, char *myarg, char *myarg2){
 
 // test view playlists
 void testViewPlaylists(struct Endpoint *e, char *myarg, char *myarg2){
-	if (strcmp(myarg, e->commandLineArg) == 0){
+	if (strcmp(myarg, e->testCommandLineArg) == 0){
         printf("View playlists test case: \n");
         int result = viewPlaylists();
     }
@@ -140,7 +169,7 @@ void deletePlaylistCmd(struct Endpoint *e, char *myarg, char *myarg2){
 }
 
 void testDeletePlaylist(struct Endpoint *e, char *myarg, char *myarg2){	
-	if (strcmp(myarg, e->commandLineArg) == 0){
+	if (strcmp(myarg, e->testCommandLineArg) == 0){
         // test function
         int result = deletePlaylist(myarg2);
         if(result){
@@ -167,7 +196,7 @@ void deleteAllPlaylistsCmd(struct Endpoint *e, char *myarg, char *myarg2){
 
 
 void testDeletePlaylists(struct Endpoint *e, char *myarg, char *myarg2){	
-	if (strcmp(myarg, e->commandLineArg) == 0){
+	if (strcmp(myarg, e->testCommandLineArg) == 0){
         int result = deleteAllPlaylists();
         if(result){
             printf("[TEST CASE]: PASS Deleted ALL playlists: %d\n", result);
@@ -179,7 +208,7 @@ void testDeletePlaylists(struct Endpoint *e, char *myarg, char *myarg2){
 
 
 void testLoadPlaylists(struct Endpoint *e, char *myarg, char *myarg2){	
-	if (strcmp(myarg, e->commandLineArg) == 0){
+	if (strcmp(myarg, e->testCommandLineArg) == 0){
         // make sure it returns array of song structs
         int playlistLimit = getPlaylistTableSize();
         playlist_t **result = initPlaylists(playlistLimit);
@@ -213,7 +242,7 @@ void insertSongCmd(struct Endpoint *e, char *myarg, char *myarg2){
 
 void testInsertSong(struct Endpoint *e, char *myarg, char *myarg2){
   
-	if (strcmp(myarg, e->commandLineArg) == 0){
+	if (strcmp(myarg, e->testCommandLineArg) == 0){
         // bind fields for song model
         char *mytime = getCurrentTime(); 
         char *songName = myarg2; 
@@ -273,7 +302,7 @@ void updateSongCmd(struct Endpoint *e, char *myarg, char *myarg2, char *myarg3){
 
 
 void testUpdateSong(struct Endpoint *e, char *myarg, char *myarg2, char *myarg3){
-	if (strcmp(myarg, e->commandLineArg) == 0){
+	if (strcmp(myarg, e->testCommandLineArg) == 0){
         // insert song model struct into db
         int dbResult = updateSong(myarg3, myarg2);
         // check if database insert was successful 
@@ -299,7 +328,7 @@ void viewSongsCmd(struct Endpoint *e, char *myarg, char *myarg2){
 
 void testViewSongs(struct Endpoint *e, char *myarg, char *myarg2){
     // test view songs  
-	if (strcmp(myarg, e->commandLineArg) == 0){	
+	if (strcmp(myarg, e->testCommandLineArg) == 0){	
         int result = viewSongs();
     }
 
@@ -321,7 +350,7 @@ void deleteSongCmd(struct Endpoint *e, char *myarg, char *myarg2){
 
 
 void testDeleteSong(struct Endpoint *e, char *myarg, char *myarg2){	
-	if (strcmp(myarg, e->commandLineArg) == 0){
+	if (strcmp(myarg, e->testCommandLineArg) == 0){
         int result = deleteSong(myarg2);
         if(result){
             printf("[TEST CASE]: PASS Deleted song: %d\n", result); 
@@ -348,7 +377,7 @@ void deleteAllSongsCmd(struct Endpoint *e, char *myarg, char *myarg2){
 
 
 void testDeleteSongs(struct Endpoint *e, char *myarg, char *myarg2){	
-	if (strcmp(myarg, e->commandLineArg) == 0){
+	if (strcmp(myarg, e->testCommandLineArg) == 0){
         int result = deleteAllSongs();
         if(result){
             printf("[TEST CASE]: PASS Deleted ALL songs: %d\n", result);
@@ -360,7 +389,7 @@ void testDeleteSongs(struct Endpoint *e, char *myarg, char *myarg2){
 
 
 void testLoadSongs(struct Endpoint *e, char *myarg, char *myarg2){	
-	if (strcmp(myarg, e->commandLineArg) == 0){
+	if (strcmp(myarg, e->testCommandLineArg) == 0){
         // make sure it returns array of song structs
         int songLimit = getSongTableSize();
         song_t **result = initSongs(songLimit);
