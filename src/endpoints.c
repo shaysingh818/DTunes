@@ -408,3 +408,18 @@ void testLoadSongs(struct Endpoint *e, char *myarg, char *myarg2){
 }
 
 
+
+void syncAudioFilesToDb(struct Endpoint *e, char *myarg, char *myarg2){
+	// delete all playlists
+	if (strcmp(myarg, e->commandLineArg) == 0){
+		int result = loadAudioFilesFromDirectory("../data/audiofiles");
+		if(result){
+			d_log("SYNC SERVICE", "Synced songs"); 	
+		}else{
+			d_log("ERROR", "Failed to sync songs"); 
+		}
+	}
+
+}
+
+

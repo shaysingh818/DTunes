@@ -13,12 +13,15 @@ This is a personal audio repository. Can be used as a personal music application
 
 ## To Do
 
+1. Segmentation fault is happening every time program is executed
+
 8. Create a custom local endpoint library
 	* Make somthing similar to web controllers without http
 	* Make it easy to test the endpoints
 	* Auto generate cli command for test endpoint functions
 	* Use a linked list to append endpoints to the system
 	* Migrate endpoint system to DTunes
+	* Migrate endpoints for syncing audio files
 
 1. Create a view for youtube urls
 	* see all the current urls stored in db
@@ -27,16 +30,13 @@ This is a personal audio repository. Can be used as a personal music application
 	* Go through all stored urls in the database
 	* Download each youtube url
 	* Eliminate duplicates
+	* Create a function to export urls to a csv or json file
 	
 9. Create one to many entity relationship for Playlist -> Song
 	* Be able to add song to an existing playlist in the database
 	* Create a table for adding multiple songs to ONE playlist
 	* View songs in playlist
 
-10. Use youtube DL as data source for inital songs/videos to store
-	* Create a python script that downloads youtube videos to a local directory
-	* Store all the videos in a local folder for the src code
-	* Be able to filter file extension, quality, playback speed.
 
 11. Create makefiles that can generate different binaries
 	* Create binaries that test individual componenets of the system

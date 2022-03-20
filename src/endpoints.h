@@ -70,7 +70,8 @@ void testDeleteSongs(struct Endpoint *e, char *myarg, char *myarg2);
 // in memory song operation
 void testLoadSongs(struct Endpoint *e, char *myarg, char *myarg2);
 
-
+// syncing
+void syncAudioFilesToDb(struct Endpoint *e, char *myarg, char *myarg2); 
 
 
  #endif 

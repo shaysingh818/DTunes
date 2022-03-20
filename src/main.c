@@ -18,7 +18,18 @@ void printDTunesBanner(FILE *fptr){
 
 
 void songEndpoints(){
+		
 	
+	// sync songs in directory
+	endpoint_t *e9 = createEndpoint(
+                        "sync-songs",
+                        "sync",
+                        "sync audio files in directory to database"
+                    );
+    e9->endpointLogic =  syncAudioFilesToDb;
+    //e9->testEndpointLogic = NULL;
+    appendEndpoint(&head, e9);
+
 	// delete songs
 	endpoint_t *e4 = createEndpoint(
                         "delete-songs",
@@ -67,7 +78,9 @@ void songEndpoints(){
 
 
 void playlistEndpoints(){
+
 		
+
 	// delete songs
 	endpoint_t *e8 = createEndpoint(
                         "delete-playlists",
@@ -110,6 +123,8 @@ void playlistEndpoints(){
     e5->endpointLogic = insertPlaylistCmd;
     e5->testEndpointLogic = testInsertPlaylist;
     appendEndpoint(&head, e5);
+
+	
 
 }
 
