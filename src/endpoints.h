@@ -39,7 +39,8 @@ typedef struct Endpoint endpoint_t;
 // endpoint library functions
 endpoint_t *createEndpoint(char *name, char *commandLineArg, char *testCommand);
 void appendEndpoint(endpoint_t **head_ref, endpoint_t *e1); 
-void execEndpoints(char *argv[], endpoint_t *head_ref); 
+void execEndpoints(int argc, char *argv[], endpoint_t *head_ref);
+void defaultEndpoint(struct Endpoint *e, char *myarg, char *myarg2); // default endpoint function 
 void printEndpoints(endpoint_t *head_ref);
 
 // playlist functions
@@ -59,7 +60,7 @@ void testLoadPlaylists(struct Endpoint *e, char *myarg, char *myarg2);
 void insertSongCmd(struct Endpoint *e, char *myarg, char *myarg2); 
 void testInsertSong(struct Endpoint *e, char *myarg, char *myarg2);
 void updateSongCmd(struct Endpoint *e, char *myarg, char *myarg2, char *myarg3); 
-void testUpdateSong(struct Endpoint *e, char *myarg, char *myarg2, char *myarg3);
+void testUpdateSong(struct Endpoint *e, char *myarg, char *myarg2);
 void viewSongsCmd(struct Endpoint *e, char *myarg, char *myarg2);
 void testViewSongs(struct Endpoint *e, char *myarg, char *myarg2);
 void deleteSongCmd(struct Endpoint *e, char *myarg, char *myarg2);
@@ -72,6 +73,6 @@ void testLoadSongs(struct Endpoint *e, char *myarg, char *myarg2);
 
 // syncing
 void syncAudioFilesToDb(struct Endpoint *e, char *myarg, char *myarg2); 
-
+void testSyncAudioFilesToDb(struct Endpoint *e, char *myarg, char *myarg2); 
 
  #endif 

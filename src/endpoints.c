@@ -27,19 +27,45 @@ void appendEndpoint(endpoint_t **head_ref, endpoint_t *e1){
 }
 
 
-void execEndpoints(char *argv[], endpoint_t *head_ref){
+void execEndpoints(int argc, char *argv[], endpoint_t *head_ref){
     while(head_ref != NULL){
-        // execute endpoint functions       
-        head_ref->endpointLogic(head_ref, argv[1], argv[2]);
-        head_ref->testEndpointLogic(head_ref, argv[1], argv[2]);
+		
+		if(argv[2] && argv[3]){
+        	head_ref->endpointUpdateLogic(head_ref, argv[1], argv[2], argv[3]);
+		}else if(argv[2] && argv[1]){	
+        	head_ref->endpointLogic(head_ref, argv[1], argv[2]);
+       		head_ref->testEndpointLogic(head_ref, argv[1], argv[2]);
+		}else{	
+			head_ref->endpointLogic(head_ref, argv[1], NULL);
+        	head_ref->testEndpointLogic(head_ref, argv[1], NULL);
+		}
+
+		
+		/**
+        // execute endpoint functions		
+		if(argv[3] != NULL && argv[2] != NULL){	
+        	//head_ref->endpointUpdateLogic(head_ref, argv[1], argv[2], argv[3]);
+		}else if(argv[2] != NULL){	
+        	//head_ref->endpointLogic(head_ref, argv[1], argv[2]);
+       		//head_ref->testEndpointLogic(head_ref, argv[1], argv[2]);
+		}else if(argv[1] != NULL && argv[2] == NULL){        	
+			head_ref->endpointLogic(head_ref, argv[1], NULL);
+        	head_ref->testEndpointLogic(head_ref, argv[1], NULL);
+		}	
+
+		*/
+
         head_ref = head_ref->next;
     }
 }
 
 
-void setDocumentationString(struct Endpoint* e, char *docBuffer){
-    e->documentation = (char*)malloc(strlen(docBuffer) + 1);
-    strcpy(e->documentation, docBuffer);
+
+void defaultEndpoint(struct Endpoint *e, char *myarg, char *myarg2){
+	if (strcmp(myarg, e->testCommandLineArg) == 0){
+        // insert song model struct into db
+		dlog("DEFAULT ENDPOINT", "Default endpoint supplied\n"); 
+    }
 }
 
 
@@ -301,10 +327,10 @@ void updateSongCmd(struct Endpoint *e, char *myarg, char *myarg2, char *myarg3){
 
 
 
-void testUpdateSong(struct Endpoint *e, char *myarg, char *myarg2, char *myarg3){
+void testUpdateSong(struct Endpoint *e, char *myarg, char *myarg2){
 	if (strcmp(myarg, e->testCommandLineArg) == 0){
         // insert song model struct into db
-        int dbResult = updateSong(myarg3, myarg2);
+        int dbResult = updateSong("test-song", myarg2);
         // check if database insert was successful 
         if(dbResult){
             printf("\033[0;32m");
@@ -420,6 +446,20 @@ void syncAudioFilesToDb(struct Endpoint *e, char *myarg, char *myarg2){
 		}
 	}
 
+}
+
+
+
+void testSyncAudioFilesToDb(struct Endpoint *e, char *myarg, char *myarg2){
+	// delete all playlists
+	if (strcmp(myarg, e->commandLineArg) == 0){
+		int result = loadAudioFilesFromDirectory("../data/audiofiles");
+		if(result){
+			d_log("TEST CASE[SYNC_SONG]", "PASSED"); 	
+		}else{
+			d_log("TEST CASE[SYNC_SONG]", "FAILED"); 
+		}
+	}
 }
 
 

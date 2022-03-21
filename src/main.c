@@ -16,40 +16,52 @@ void printDTunesBanner(FILE *fptr){
 	}
 }
 
-
 void songEndpoints(){
 		
-	
+
 	// sync songs in directory
-	endpoint_t *e9 = createEndpoint(
+	endpoint_t *e6 = createEndpoint(
                         "sync-songs",
                         "sync",
                         "sync audio files in directory to database"
                     );
-    e9->endpointLogic =  syncAudioFilesToDb;
-    //e9->testEndpointLogic = NULL;
-    appendEndpoint(&head, e9);
+    e6->endpointLogic =  syncAudioFilesToDb;
+    e6->testEndpointLogic = testSyncAudioFilesToDb;
+    appendEndpoint(&head, e6);
+
 
 	// delete songs
-	endpoint_t *e4 = createEndpoint(
+	endpoint_t *e5 = createEndpoint(
                         "delete-songs",
-                        "ds",
+                        "das",
                         "delete all songs in database"
                     );
-    e4->endpointLogic = deleteAllSongsCmd;
-    e4->testEndpointLogic = testDeleteSongs;
-    appendEndpoint(&head, e4);
+    e5->endpointLogic = deleteAllSongsCmd;
+    e5->testEndpointLogic = testDeleteSongs;
+    appendEndpoint(&head, e5);
 	
 	// delete song
-	endpoint_t *e3 = createEndpoint(
+	endpoint_t *e4 = createEndpoint(
                         "delete-song",
                         "ds",
                         "delete song by name"
                     );
-    e3->endpointLogic = deleteSongCmd;
-    e3->testEndpointLogic = testDeleteSong;
-    appendEndpoint(&head, e3);
+    e4->endpointLogic = deleteSongCmd;
+    e4->testEndpointLogic = testDeleteSong;
+    appendEndpoint(&head, e4);
 
+
+	// update song
+	endpoint_t *e3 = createEndpoint(
+                        "update-song",
+                        "us",
+                        "update song names on dtunes"
+                    );
+	
+	e3->endpointLogic = defaultEndpoint; 
+	e3->testEndpointLogic = testUpdateSong; 
+    e3->endpointUpdateLogic = updateSongCmd;
+    appendEndpoint(&head, e3);
 	
 	// view songs
 	endpoint_t *e2 = createEndpoint(
@@ -82,47 +94,47 @@ void playlistEndpoints(){
 		
 
 	// delete songs
-	endpoint_t *e8 = createEndpoint(
+	endpoint_t *e7 = createEndpoint(
                         "delete-playlists",
                         "dap",
                         "delete all playlists in database"
                     );
-    e8->endpointLogic = deleteAllPlaylistsCmd;
-    e8->testEndpointLogic = testDeletePlaylists;
-    appendEndpoint(&head, e8);
+    e7->endpointLogic = deleteAllPlaylistsCmd;
+    e7->testEndpointLogic = testDeletePlaylists;
+    appendEndpoint(&head, e7);
 
 	
 	// delete song
-	endpoint_t *e7 = createEndpoint(
+	endpoint_t *e8 = createEndpoint(
                         "delete-playlist",
                         "dp",
                         "delete playlist by name"
                     );
-    e7->endpointLogic = deletePlaylistCmd;
-    e7->testEndpointLogic = testDeletePlaylist;
-    appendEndpoint(&head, e7);
+    e8->endpointLogic = deletePlaylistCmd;
+    e8->testEndpointLogic = testDeletePlaylist;
+    appendEndpoint(&head, e8);
 
 	
 	// view songs
-	endpoint_t *e6 = createEndpoint(
+	endpoint_t *e9 = createEndpoint(
                         "view-playlists",
                         "vp",
                         "view all playlists on dtunes"
                     );
-    e6->endpointLogic = viewPlaylistCmd;
-    e6->testEndpointLogic = testViewPlaylists;
-    appendEndpoint(&head, e6);
+    e9->endpointLogic = viewPlaylistCmd;
+    e9->testEndpointLogic = testViewPlaylists;
+    appendEndpoint(&head, e9);
 
 	
 	// create song
-	endpoint_t *e5 = createEndpoint(
+	endpoint_t *e10 = createEndpoint(
                         "create-playlist",
                         "cp",
                         "create playlist on dtunes"
                     );
-    e5->endpointLogic = insertPlaylistCmd;
-    e5->testEndpointLogic = testInsertPlaylist;
-    appendEndpoint(&head, e5);
+    e10->endpointLogic = insertPlaylistCmd;
+    e10->testEndpointLogic = testInsertPlaylist;
+    appendEndpoint(&head, e10);
 
 	
 
@@ -146,7 +158,7 @@ int main(int argc, char* argv[]){
 		printEndpoints(head); 
 	}
 
-	execEndpoints(argv, head); 
+	execEndpoints(argc, argv, head); 
 
 	
 

@@ -337,7 +337,16 @@ int syncDirectoryInformation(char *filePath){
 			return FALSE; 
 		}
 
-		insertSong(entry->d_name, currTime, streamingPath);
+		int fileCondition1 = strcmp(entry->d_name, "..") == 0; 
+		int fileCondition2 = strcmp(entry->d_name, ".") == 0;
+		dlog("FILENAME", entry->d_name);  
+		dlog_int("FILE CONDITION", fileCondition1); 
+		dlog_int("FILE CONDITION 2 ", fileCondition2); 
+		if(fileCondition1 == 0 & fileCondition2 == 0){
+			insertSong(entry->d_name, currTime, streamingPath);
+		}
+
+
 
 	}
 
