@@ -31,6 +31,7 @@ There are multiple features/aspects to DTunes. One feature that DTunes has, is t
 	* dtunes, existing song name, new song name
 
 2. Create a custom local endpoint library
+	* Properly write out the purpose/functions of the endpoint library
 	* Change all instance of ```struct Endpoint  *e``` to endpoint_t *e
 	* Implement custom argument patterns for endpoints
 	* Create a default endpoint
@@ -40,6 +41,7 @@ There are multiple features/aspects to DTunes. One feature that DTunes has, is t
 	* Migrate endpoint system to DTunes
 	* Migrate endpoints for syncing audio files
 	* Make the exec endpoints functions execute all functions with different numbers of parameters passed
+
 3. Create a view for youtube urls
 	* see all the current urls stored in db
 
