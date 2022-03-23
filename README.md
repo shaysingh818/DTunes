@@ -1,19 +1,34 @@
 # DTunes: 
-This is a personal audio repository. Can be used as a personal music application, similar to spotify, youtube soundcloud etc. (Have to get the songs from youtube tho). The bigger picture is being able to create algorithms that can group/cluster songs in playlists based on certain attributes. The system auto-creates playlists groups based on certain similarties and reccomends them to the user. It could also be used as a search engine for certain audio files. Using the clustering algorithms, the application is able to index/find groups of auio files based on what the user wants. 
+DTunes is a CLI based audio repository. This audio repository will be used to expirment with algorithms related to audio data/processing. 
+
+## The personal music application 
+There are multiple features/aspects to DTunes. One feature that DTunes has, is the ability to act as personal audio player.  
 
 
-
-# Goals
-1. Listen to music with out AD's
+# Main features of DTUNES
+1. Be able to listen to music without interuptions
+	* AD free (no interruptions)
+	* Autoplay, songs play in queue right after eachother
+	* Create an audio library that supports "deep work" mindset
+	* Detect patterns of songs that increase productivity
 2. Modify/Manipulate audio files
+	* Work with audio/digital signal processing concepts
+	* Extract digital signal data from audio files
 3. Create audio visualizers
-4. Create a sick audio library that kicks spotify/youtube's ass. 
-5. Collect a shit ton of audiofiles
-6. Learn about audio signal processing
+	* Create line base visualizer
+5. Create a data collection center for audiofiles
+	* Automatically cluster songs by certain genres
+	* Create an easy to use library for syncing the dataset to other PCs
+6. Apply concepts in graph theory with the audio dataset
+	* Use graphs for clustering/organizing data in certain categories
+	* Use graphs for modeling behavior with audio data
+	* Use graphs to generate playlists
+
 
 ## To Do
-
-1. Create and test update song endpoint
+1. Need to be able to update songs with a new name
+	* Argument pattern takes 3
+	* dtunes, existing song name, new song name
 
 2. Create a custom local endpoint library
 	* Change all instance of ```struct Endpoint  *e``` to endpoint_t *e
@@ -25,7 +40,6 @@ This is a personal audio repository. Can be used as a personal music application
 	* Migrate endpoint system to DTunes
 	* Migrate endpoints for syncing audio files
 	* Make the exec endpoints functions execute all functions with different numbers of parameters passed
-
 3. Create a view for youtube urls
 	* see all the current urls stored in db
 

@@ -29,20 +29,19 @@ typedef struct Endpoint endpoint_t;
 
 
 endpoint_t *createEndpoint(char *name, char *commandLineArg, char *docString){
-	// create endpoint
-	endpoint_t *newEndpoint = (endpoint_t*)malloc(sizeof(endpoint_t));	
-	strcpy(newEndpoint->name, name); 
-	strcpy(newEndpoint->commandLineArg, commandLineArg); 
-	newEndpoint->documentation = (char*)malloc(strlen(docString) + 1); 
-	strcpy(newEndpoint->documentation, docString); 
+    // create endpoint
+    endpoint_t *newEndpoint = (endpoint_t*)malloc(sizeof(endpoint_t));
+    strcpy(newEndpoint->name, name);
+    strcpy(newEndpoint->commandLineArg, commandLineArg);
+    newEndpoint->documentation = (char*)malloc(strlen(docString) + 1);
+    strcpy(newEndpoint->documentation, docString);
 
-	char testCommand[256];
-	strcpy(testCommand, "t-");  
-	strcat(testCommand, newEndpoint->commandLineArg); 
-	strcpy(newEndpoint->testCommandLineArg, testCommand);
-	 
-	return newEndpoint; 
-}
+    char testCommand[256];
+    strcpy(testCommand, "t-");
+    strcat(testCommand, newEndpoint->commandLineArg);
+    strcpy(newEndpoint->testCommandLineArg, testCommand);
+    return newEndpoint;
+} 
 
 
 void appendEndpoint(endpoint_t **head_ref, endpoint_t *e1){
@@ -51,14 +50,24 @@ void appendEndpoint(endpoint_t **head_ref, endpoint_t *e1){
 	(*head_ref) = e1; 	
 }
 
-void execEndpoints(char *argv[], endpoint_t *head_ref){
-	while(head_ref != NULL){
-		// execute endpoint functions		
-		head_ref->endpointLogic(head_ref, argv[1], argv[2]); 
-		head_ref->testEndpointLogic(head_ref, argv[1], argv[2]); 
+
+
+void execEndpoints(int argc, char *argv[], endpoint_t *head_ref){
+    while(head_ref != NULL){
+        
+		// check arg condition
+		if(argc == 1){
+			head_ref
+		}
+		
+
+		// go to next head reference
 		head_ref = head_ref->next; 
+		
+
 	}
-}
+
+
 
 void printEndpoints(endpoint_t *head_ref){
 	// display endpoints
