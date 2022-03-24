@@ -58,9 +58,8 @@ void songEndpoints(){
                         "update song names on dtunes"
                     );
 	
-	e3->endpointLogic = defaultEndpoint; 
+	e3->endpointLogic = updateSongCmd; 
 	e3->testEndpointLogic = testUpdateSong; 
-    e3->endpointUpdateLogic = updateSongCmd;
     appendEndpoint(&head, e3);
 	
 	// view songs

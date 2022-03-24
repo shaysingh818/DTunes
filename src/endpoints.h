@@ -7,29 +7,14 @@
 #include <string.h>
 #include <time.h>
 
-#define HELP_MENU  "help"
-
-// playlists
-#define INSERT_PLAYLIST  "cp"
-#define VIEW_PLAYLIST  "vp"
-#define DELETE_PLAYLIST  "dp" 
-#define DELETE_ALL_PLAYLIST  "dps"
-
-//songs
-#define INSERT_SONG  "cs"
-#define VIEW_SONG  "vs"
-#define DELETE_SONG  "ds" 
-#define DELETE_ALL_SONG  "dss"
 
 struct Endpoint {
     char name[100];
     char commandLineArg[100];
     char testCommandLineArg[100];
     char *documentation;
-    // define endpoint patterns here
-    void (*endpointLogic)(struct Endpoint* e,char *arg1, char *arg2);
-    void (*endpointUpdateLogic)(struct Endpoint* e,char *arg1, char *arg2, char *arg3);     
-    void (*testEndpointLogic)(struct Endpoint* e,char *arg1, char *arg2);
+    void (*endpointLogic)(struct Endpoint* e, char* argv[]);
+    void (*testEndpointLogic)(struct Endpoint* e,char* argv[]);
     struct Endpoint* next;
 };
 
@@ -40,39 +25,38 @@ typedef struct Endpoint endpoint_t;
 endpoint_t *createEndpoint(char *name, char *commandLineArg, char *testCommand);
 void appendEndpoint(endpoint_t **head_ref, endpoint_t *e1); 
 void execEndpoints(int argc, char *argv[], endpoint_t *head_ref);
-void defaultEndpoint(struct Endpoint *e, char *myarg, char *myarg2); // default endpoint function 
 void printEndpoints(endpoint_t *head_ref);
 
 // playlist functions
-void insertPlaylistCmd(struct Endpoint *e,char *myarg, char *myarg2);
-void testInsertPlaylist(struct Endpoint *e, char *myarg, char *myarg2);
-void viewPlaylistCmd(struct Endpoint *e, char *myarg, char *myarg2); 
-void testViewPlaylists(struct Endpoint *e, char *myarg, char *myarg2); 
-void deletePlaylistCmd(struct Endpoint *e, char *myarg, char *myarg2); 
-void testDeletePlaylist(struct Endpoint *e, char *myarg, char *myarg2);
-void deleteAllPlaylistsCmd(struct Endpoint *e, char *myarg, char *myarg2); 
-void testDeletePlaylists(struct Endpoint *e, char *myarg, char *myarg2);
+void insertPlaylistCmd(endpoint_t *e, char* argv[]);
+void testInsertPlaylist(endpoint_t *e, char* argv[]);
+void viewPlaylistCmd(endpoint_t *e, char* argv[]); 
+void testViewPlaylists(endpoint_t *e, char* argv[]); 
+void deletePlaylistCmd(endpoint_t *e, char* argv[]); 
+void testDeletePlaylist(endpoint_t *e, char* argv[]);
+void deleteAllPlaylistsCmd(endpoint_t *e, char* argv[]); 
+void testDeletePlaylists(endpoint_t *e, char* argv[]);
 
 // in memory playlist operation
-void testLoadPlaylists(struct Endpoint *e, char *myarg, char *myarg2);
+void testLoadPlaylists(struct Endpoint *e, char* argv[]);
 
 // song functions
-void insertSongCmd(struct Endpoint *e, char *myarg, char *myarg2); 
-void testInsertSong(struct Endpoint *e, char *myarg, char *myarg2);
-void updateSongCmd(struct Endpoint *e, char *myarg, char *myarg2, char *myarg3); 
-void testUpdateSong(struct Endpoint *e, char *myarg, char *myarg2);
-void viewSongsCmd(struct Endpoint *e, char *myarg, char *myarg2);
-void testViewSongs(struct Endpoint *e, char *myarg, char *myarg2);
-void deleteSongCmd(struct Endpoint *e, char *myarg, char *myarg2);
-void testDeleteSong(struct Endpoint *e, char *myarg, char *myarg2);
-void deleteAllSongsCmd(struct Endpoint *e, char *myarg, char *myarg2); 
-void testDeleteSongs(struct Endpoint *e, char *myarg, char *myarg2);
+void insertSongCmd(endpoint_t *e, char* argv[]); 
+void testInsertSong(endpoint_t *e, char* argv[]);
+void updateSongCmd(endpoint_t *e, char* argv[]); 
+void testUpdateSong(endpoint_t *e, char* argv[]);
+void viewSongsCmd(endpoint_t *e, char* argv[]);
+void testViewSongs(endpoint_t *e, char* argv[]);
+void deleteSongCmd(endpoint_t *e, char* argv[]);
+void testDeleteSong(endpoint_t *e, char* argv[]);
+void deleteAllSongsCmd(endpoint_t *e, char* argv[]); 
+void testDeleteSongs(endpoint_t *e, char* argv[]);
  
 // in memory song operation
-void testLoadSongs(struct Endpoint *e, char *myarg, char *myarg2);
+void testLoadSongs(endpoint_t *e, char* argv[]);
 
 // syncing
-void syncAudioFilesToDb(struct Endpoint *e, char *myarg, char *myarg2); 
-void testSyncAudioFilesToDb(struct Endpoint *e, char *myarg, char *myarg2); 
+void syncAudioFilesToDb(endpoint_t *e, char* argv[]); 
+void testSyncAudioFilesToDb(endpoint_t *e, char* argv[]); 
 
  #endif 

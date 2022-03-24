@@ -18,14 +18,12 @@ struct Endpoint {
     char testCommandLineArg[100];
     char *documentation;
 	// define endpoint patterns here
-    void (*endpointLogic)(struct Endpoint* e,char *arg1, char *arg2);	
-    void (*endpointUpdateLogic)(struct Endpoint* e,char *arg1, char *arg2, char *arg3);		
-    void (*testEndpointLogic)(struct Endpoint* e,char *arg1, char *arg2);
+    void (*endpointLogic)(struct Endpoint* e, char* argv[]);	
+    void (*testEndpointLogic)(struct Endpoint* e, char*argv[]);
 	struct Endpoint* next; 
 };
 
 typedef struct Endpoint endpoint_t;
-
 
 
 endpoint_t *createEndpoint(char *name, char *commandLineArg, char *docString){
@@ -51,24 +49,6 @@ void appendEndpoint(endpoint_t **head_ref, endpoint_t *e1){
 }
 
 
-
-void execEndpoints(int argc, char *argv[], endpoint_t *head_ref){
-    while(head_ref != NULL){
-        
-		// check arg condition
-		if(argc == 1){
-			head_ref
-		}
-		
-
-		// go to next head reference
-		head_ref = head_ref->next; 
-		
-
-	}
-
-
-
 void printEndpoints(endpoint_t *head_ref){
 	// display endpoints
 	char *column1 = "FLAG-COMMAND";     
@@ -90,16 +70,27 @@ void printEndpoints(endpoint_t *head_ref){
 }
 
 
-void endpointFunction(struct Endpoint *e, char *myarg, char *myArg2){
-	if(strcmp(myarg, e->commandLineArg) == 0){
+void execEndpoints(char *argv[], endpoint_t *head_ref){
+    while(head_ref != NULL){
+		// check arg condition
+		head_ref->endpointLogic(head_ref, argv); 	
+		head_ref->testEndpointLogic(head_ref, argv); 	
+		// go to next head reference
+		head_ref = head_ref->next; 
+	}
+}
+
+
+void endpointFunction(struct Endpoint *e, char* argv[]){
+	if(strcmp(argv[1], e->commandLineArg) == 0){
 		printf("Endpoint function \n"); 
 	}	
 }
 
 // create the function you want to attach for endpoint
-void testFunction(struct Endpoint* e, char *myarg, char *myArg2){
+void testFunction(struct Endpoint* e, char *argv[]){
 	// insert playlist to db
-	if(strcmp(myarg, e->testCommandLineArg) == 0){
+	if(strcmp(argv[1], e->testCommandLineArg) == 0){
 		printf("test endpoint \n"); 
 	}
 }
