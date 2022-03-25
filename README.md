@@ -26,21 +26,13 @@ There are multiple features/aspects to DTunes. One feature that DTunes has, is t
 
 
 ## To Do
-1. Need to be able to update songs with a new name
-	* Argument pattern takes 3
-	* dtunes, existing song name, new song name
 
-2. Create a custom local endpoint library
-	* Properly write out the purpose/functions of the endpoint library
-	* Change all instance of ```struct Endpoint  *e``` to endpoint_t *e
-	* Implement custom argument patterns for endpoints
-	* Create a default endpoint
-	* Make it easy to test the endpoints
-	* Auto generate cli command for test endpoint functions
-	* Use a linked list to append endpoints to the system
-	* Migrate endpoint system to DTunes
-	* Migrate endpoints for syncing audio files
-	* Make the exec endpoints functions execute all functions with different numbers of parameters passed
+2. Install port sf and the compiler
+	* Be able to compile with header file and c file
+	* Be able to player an audio buffer
+	* Play an mp3 file
+	* Extract sound values
+	* Read the audio programming book and learn about portsf
 
 3. Create a view for youtube urls
 	* see all the current urls stored in db
@@ -59,32 +51,7 @@ There are multiple features/aspects to DTunes. One feature that DTunes has, is t
 6. Create makefiles that can generate different binaries
 	* Create binaries that test individual componenets of the system
 	* Test song, playlist and endpoint library
-
-
-
-## Audio File Syncing
-Read files from local directory into sqlite3 database
-
-1. Read file information in directory and rename files with desired format
-	* File names need to parse out anything larger than 15 characters
-	* Assign each audio file with current time for song insert
-	* Parse file extension
-	* Need to grab the current path that we can stream/listen to the audio file from
-	* Somehow need to extract subtitles from audio file if possible
-
-2. Integrate youtube dl python script in c code base
-	* Store youtube urls in db
-	* Don't allow duplicate downloads, skip existing youtube urls
-	* Refactor python script to take youtube url as command line arg
-	* Create function or process to monitor youtube downloads
-
-3. Need to be able to update names
-	* Specify the song id and update name
-	* File names are too long 
-	* Figure out way to automatically rename them shorter
-
-4. Download songs using backup YT urls in database
-	* Be able to download songs using urls in db
+	* Create test binaries for portsf
 
 
 
