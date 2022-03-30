@@ -345,9 +345,6 @@ int syncDirectoryInformation(char *filePath){
 		if(fileCondition1 == 0 & fileCondition2 == 0){
 			insertSong(entry->d_name, currTime, streamingPath);
 		}
-
-
-
 	}
 
 	closedir(folder);
@@ -368,4 +365,146 @@ int loadAudioFilesFromDirectory(char *filePath){
 		return TRUE; 
 	}
 	return FALSE; 
+}
+
+
+
+url_t **initUrls(int limit){
+/**
+	Function for returning structure instance of a song
+*/
+	url_t **urls = malloc(limit * sizeof(url_t*)); 			
+	// allocate space
+	for(int i = 0; i < limit; i++){
+		urls[i] = malloc(sizeof(url_t)); 
+	}
+
+	// open db
+	sqlite3 *db = openDB(DB_PATH);
+	// prepare statement	
+	sqlite3_stmt *sql; 
+	char *query = VIEW_DB_URLS; 
+	// prepare statement
+	int result = sqlite3_prepare_v2(db, query, -1, &sql, NULL);
+	// check for errors
+  	if(result != SQLITE_OK){
+        fprintf(stderr, "Failed to view youtube urls:  %s\n",sqlite3_errmsg(db));
+        sqlite3_close(db);
+    }
+
+
+	int indexCount = 0; 
+	// allocate results into struct array
+	while ((result = sqlite3_step(sql)) == SQLITE_ROW) {
+		// extract column values
+		const char *column1 = sqlite3_column_text(sql, 0); 	
+		const char *column2 = sqlite3_column_text(sql, 1); 	
+		// store values
+		strcpy(songs[indexCount]->url, column1); 
+		strcpy(songs[indexCount]->dateCreated, column3); 
+		indexCount += 1;
+	}
+	
+
+	sqlite3_close(db);
+	return urls;  
+	
+}
+
+
+
+int getUrlTableSize(){
+	// get amount of songs in db	
+	sqlite3 *db = openDB(DB_PATH);
+	sqlite3_stmt *sql; 
+	char *query = COUNT_DB_URLS; 	
+	int result = sqlite3_prepare_v2(db, query, -1, &sql, NULL);	
+	if(result != SQLITE_OK){
+		fprintf(stderr, "Failed to delete song:  %s\n",sqlite3_errmsg(db));
+		sqlite3_close(db);
+		return FALSE; 
+	}
+
+	// load song limit
+	int urlLimit;
+	result = sqlite3_step(sql);
+	if(result == SQLITE_ROW){
+		const char *columnValue = sqlite3_column_text(sql, 0); 
+		sscanf(columnValue, "%d", &songLimit); // Using sscanf
+	}
+
+	sqlite3_finalize(sql); 
+	sqlite3_close(db); 
+	
+	return urlLimit; 
+}
+
+
+void insertUrl(char *url, char *currentTime){
+    url_t *newUrl;
+    newUrl = (url_t*)malloc(sizeof(url_t));
+    printf("\033[0;32m");
+    d_log_time("STRUCTURE ALLOCATION", "CREATED YOUTUBE URL");
+
+    // set values
+    strcpy(newSong->url, url);
+    strcpy(newSong->dateCreated, currentTime);
+
+    int dbResult = createYoutubeUrl(newSong);
+    if(dbResult){
+		if(DEBUG == TRUE){
+        	d_log_time("DB INSERT", "INSERT YOUTUBE URL");
+		}
+    }else{
+        d_log_time("FAILED", "INSERT YOUTUBE URL FAILED");
+    }
+}
+
+
+int createYoutubeUrl(url_t* newUrl){	
+	// open db
+	sqlite3 *db = openDB(DB_PATH);
+	// prepare statement	
+	char *errMsg = 0; 
+	sqlite3_stmt *sql;	 
+	char *query = INSERT_DB_URL;
+	int result = sqlite3_prepare_v2(db, query, -1, &sql, NULL);
+			 
+	// check for sql cursor errors
+	if(result != SQLITE_OK){
+		fprintf(stderr, "Failed to insert:  %s\n",sqlite3_errmsg(db));
+		sqlite3_close(db);
+		return 0; 
+	}
+	// bind song variables to sqlite3 statment
+	sqlite3_bind_text(sql, 1, newUrl->url, -1, NULL);	
+	sqlite3_bind_text(sql, 2, newUrl->dateCreated, -1, NULL);	
+
+	// do first insert
+	sqlite3_step(sql);
+	sqlite3_close(db);
+	
+	return 1;  
+}
+
+
+int viewUrls(){
+
+	// Call the load songs with limit	
+	int urlLimit = getUrlTableSize(); 
+	url_t **urls = initUrls(urlLimit); 
+	url_t ***p = &urls;  
+
+	// print header	
+	printf("\n"); 
+	printf("Url             						Date\n");
+	printf("================================================================================\n");
+	// View song in format for terminal
+	for(int i = 0; i < urlLimit; i++){
+		printf("%-55s %s\n", (*p)[i]->url, (*p)[i]->dateCreated); 
+	}
+	printf("\n"); 
+
+	// return true or false if view was successful
+	return TRUE; 
 }

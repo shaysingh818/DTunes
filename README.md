@@ -36,6 +36,7 @@ There are multiple features/aspects to DTunes. One feature that DTunes has, is t
 
 3. Create a view for youtube urls
 	* see all the current urls stored in db
+	* Be able to add youtube url through the command line
 
 4. Create youtube url download backup process
 	* Go through all stored urls in the database

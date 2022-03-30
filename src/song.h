@@ -30,7 +30,7 @@ struct YouTubeUrl {
 	char dateCreated[30]; 
 };
 
-typedef struct AudioFile url_t; 
+typedef struct YouTubeUrl url_t; 
 
 // callbacks
 static int callback(void *data, int argc, char **argv, char **azColName); 
@@ -59,6 +59,15 @@ int checkSongExist(char *songName);
  * Also functions that extract data from file directories
  * */
 int syncDirectoryInformation(char *filePath); 
-int loadAudioFilesFromDirectory(char *filePath); 
+int loadAudioFilesFromDirectory(char *filePath);
+
+/* youtube url processing */
+url_t **initUrls(int limit); 
+int getUrlTableSize(); 
+void insertUrl(char *urlString, char *currentTime); 
+int createYoutubeUrl(url_t* newUrl); 
+int viewUrls(); 
+
+ 
 
 #endif 

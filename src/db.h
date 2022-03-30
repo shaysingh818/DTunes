@@ -35,7 +35,8 @@
 
 // youtube url
 #define INSERT_DB_URL "INSERT INTO YOUTUBE_URL VALUES(?, ?, ?)"
-
+#define VIEW_DB_URLS "SELECT * FROM YOUTUBE_URL"
+#define COUNT_DB_URLS "SELECT COUNT(*) FROM YOUTUBE_URL"
 
 sqlite3* openDB(char *filename);
 char* getCurrentTime();
