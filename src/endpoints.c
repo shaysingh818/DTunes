@@ -394,6 +394,60 @@ void testLoadSongs(endpoint_t *e, char* argv[]){
 }
 
 
+void insertYoutubeUrlCmd(endpoint_t *e, char* argv[]){
+	// insert song into db	
+	if (strcmp(argv[1], e->commandLineArg) == 0){
+		char *currTime = getCurrentTime();
+		// bind fields for song model
+		int result = insertUrl(argv[2], currTime);
+        if(result){
+            printf("INSERTED YOUTUBE URL: %d\n", result);
+        }else{
+            printf("FAIL: COULD NOT YOUTUBE URL: %d\n", result);
+        }
+	}
+
+}
+
+
+
+void testInsertYoutubeUrlCmd(endpoint_t *e, char* argv[]){
+	// insert song into db	
+	if (strcmp(argv[1], e->commandLineArg) == 0){
+		char *currTime = getCurrentTime();
+		// bind fields for song model
+		int result = insertUrl(argv[2], currTime);
+        if(result){
+            printf("[PASS]: INSERTED YOUTUBE URL: %d\n", result);
+        }else{
+            printf("[FAIL TEST CASE]: COULD NOT YOUTUBE URL: %d\n", result);
+        }
+	}
+
+}
+
+
+void viewYoutubeUrlsCmd(endpoint_t *e, char* argv[]){	
+	if (strcmp(argv[1], e->commandLineArg) == 0){	
+		int result = viewUrls(); 
+		printf("\n"); 	
+	}
+}
+
+
+
+void testViewYoutubeUrlsCmd(endpoint_t *e, char* argv[]){	
+	if (strcmp(argv[1], e->commandLineArg) == 0){	
+		int result = viewUrls(); 
+		printf("\n"); 	
+		if(result){
+			d_log("SYNC SERVICE", "Synced songs"); 	
+		}else{
+			d_log("ERROR", "Failed to sync songs"); 
+		}
+	}
+}
+
 
 void syncAudioFilesToDb(endpoint_t *e, char* argv[]){
 	// delete all playlists

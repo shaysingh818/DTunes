@@ -400,8 +400,8 @@ url_t **initUrls(int limit){
 		const char *column1 = sqlite3_column_text(sql, 0); 	
 		const char *column2 = sqlite3_column_text(sql, 1); 	
 		// store values
-		strcpy(songs[indexCount]->url, column1); 
-		strcpy(songs[indexCount]->dateCreated, column3); 
+		strcpy(urls[indexCount]->url, column1); 
+		strcpy(urls[indexCount]->dateCreated, column2); 
 		indexCount += 1;
 	}
 	
@@ -430,7 +430,7 @@ int getUrlTableSize(){
 	result = sqlite3_step(sql);
 	if(result == SQLITE_ROW){
 		const char *columnValue = sqlite3_column_text(sql, 0); 
-		sscanf(columnValue, "%d", &songLimit); // Using sscanf
+		sscanf(columnValue, "%d", &urlLimit); // Using sscanf
 	}
 
 	sqlite3_finalize(sql); 
@@ -440,23 +440,25 @@ int getUrlTableSize(){
 }
 
 
-void insertUrl(char *url, char *currentTime){
+int insertUrl(char *url, char *currentTime){
     url_t *newUrl;
     newUrl = (url_t*)malloc(sizeof(url_t));
     printf("\033[0;32m");
     d_log_time("STRUCTURE ALLOCATION", "CREATED YOUTUBE URL");
 
     // set values
-    strcpy(newSong->url, url);
-    strcpy(newSong->dateCreated, currentTime);
+    strcpy(newUrl->url, url);
+    strcpy(newUrl->dateCreated, currentTime);
 
-    int dbResult = createYoutubeUrl(newSong);
+    int dbResult = createYoutubeUrl(newUrl);
     if(dbResult){
 		if(DEBUG == TRUE){
         	d_log_time("DB INSERT", "INSERT YOUTUBE URL");
+			return TRUE; 
 		}
     }else{
         d_log_time("FAILED", "INSERT YOUTUBE URL FAILED");
+		return FALSE; 
     }
 }
 

@@ -55,6 +55,12 @@ void testDeleteSongs(endpoint_t *e, char* argv[]);
 // in memory song operation
 void testLoadSongs(endpoint_t *e, char* argv[]);
 
+// youtube urls storage
+void insertYoutubeUrlCmd(endpoint_t *e, char* argv[]); 
+void testInsertYoutubeUrlCmd(endpoint_t *e, char* argv[]); 
+void viewYoutubeUrlsCmd(endpoint_t *e, char* argv[]);
+void testViewYoutubeUrlsCmd(endpoint_t *e, char* argv[]);
+
 // syncing
 void syncAudioFilesToDb(endpoint_t *e, char* argv[]); 
 void testSyncAudioFilesToDb(endpoint_t *e, char* argv[]); 

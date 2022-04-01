@@ -64,7 +64,7 @@ int loadAudioFilesFromDirectory(char *filePath);
 /* youtube url processing */
 url_t **initUrls(int limit); 
 int getUrlTableSize(); 
-void insertUrl(char *urlString, char *currentTime); 
+int insertUrl(char *urlString, char *currentTime); 
 int createYoutubeUrl(url_t* newUrl); 
 int viewUrls(); 
 

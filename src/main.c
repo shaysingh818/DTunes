@@ -140,6 +140,33 @@ void playlistEndpoints(){
 }
 
 
+void urlEndpoints(){
+
+	
+	// view youtube urls
+	endpoint_t *e11 = createEndpoint(
+                        "view-urls",
+                        "vu",
+                        "view all youtube urls on dtunes"
+                    );
+    e11->endpointLogic = viewYoutubeUrlsCmd;
+    e11->testEndpointLogic = testViewYoutubeUrlsCmd;
+    appendEndpoint(&head, e11);
+
+	
+	// create youtube url
+	endpoint_t *e12 = createEndpoint(
+                        "create-url",
+                        "cu",
+                        "insert youtube url"
+                    );
+    e12->endpointLogic = insertYoutubeUrlCmd;
+    e12->testEndpointLogic = testInsertYoutubeUrlCmd;
+    appendEndpoint(&head, e12);
+
+
+}
+
 int main(int argc, char* argv[]){
 	
 	// argument debugger
@@ -151,7 +178,8 @@ int main(int argc, char* argv[]){
 
 	// configure endpoints
 	playlistEndpoints(); 
-	songEndpoints(); 
+	songEndpoints();
+	urlEndpoints();  
 
 	if(strcmp(argv[1], "help") == 0){
 		printEndpoints(head); 

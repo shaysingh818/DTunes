@@ -50,7 +50,6 @@ void d_log_time(char* type, char* message);
 
 
 // youtube dl functions
-int insertUrl(char *url, char *desiredPath); 
 int callPyScript(char *url);
 int downloadVideo(char *url);
 
