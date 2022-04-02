@@ -3,11 +3,11 @@ DTunes is a CLI based audio repository. The idea and purpose of this project is 
 
 
 ## Advertisement Free Personal Music Player
-1. DTunes creates a AD-free personal music experience. The downfalls of free persoanl audio players like YouTube and Spotify, is constant interruptions with advertisements.
+1. DTunes creates a AD-free personal music experience. The downfalls of free personal audio players like YouTube and Spotify, is constant interruptions with advertisements.
 2. Autoplay: Background music cycles in the background. After a song is done playing, it randomly selects the next song in the cycle or, cycles to the next in the current playlist being listened to. 
 
 ## Deep Work Audio Framework
-1. The vision of DTunes is to create a system/algorithm that monitors the users productivity. The system should reccomend playlists/groups of songs that increases the user's productivity. Down below is an example use case of how this would work. 
+1. The vision of DTunes is to create a system/algorithm that monitors the users productivity. The system should reccommend playlists/groups of songs that increases the user's productivity. Down below is an example use case of how this would work. 
 	* System reccommends groups of certain classical songs based on personal interest.  
 	* Metric of productivity is based on the user changing the tracks less often and focusing on tasks instead. 
 	* Goal is to allow songs to play without the user having to focus on the music app in the background. 
