@@ -55,11 +55,13 @@ void d_log_time(char* type, char* message){
 
 int callPyScript(char *url){
     char buffer[500];
-    if(chdir(YOUTUBE_FILE_PATH)){
-        dlog("ERROR", "CHANGE DIR");
+	/**
+    if(chdir(YOUTUBE_FILE_PATH) == 0){
+        dlog("ERROR", "CHANGE DIR YOUTUBE");
+		perror("chdir() to /error failed");  
         return FALSE;
-    }
-    sprintf(buffer, "python3 yt.py %s", url);
+    }*/ 
+    sprintf(buffer, "python3 %s/yt.py %s", YOUTUBE_FILE_PATH, url);
     dlog("COMMAND", buffer);
     system(buffer);
     return TRUE;

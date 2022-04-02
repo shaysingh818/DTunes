@@ -165,6 +165,40 @@ void urlEndpoints(){
     appendEndpoint(&head, e12);
 
 
+	// delete urls
+	endpoint_t *e13 = createEndpoint(
+                        "delete-urls",
+                        "dus",
+                        "delete all urls in database"
+                    );
+    e13->endpointLogic = deleteAllYoutubeUrlsCmd;
+    e13->testEndpointLogic = testDeleteYoutubeUrls; 
+    appendEndpoint(&head, e13);
+	
+	// delete url
+	endpoint_t *e14 = createEndpoint(
+                        "delete-url",
+                        "du",
+                        "delete youtube url by url link"
+                    );
+    e14->endpointLogic = deleteYoutubeUrlCmd;
+    e14->testEndpointLogic = testDeleteYoutubeUrl;
+    appendEndpoint(&head, e14);
+
+
+
+	// create youtube url download backup process
+	endpoint_t *e15 = createEndpoint(
+                        "yt-backup",
+                        "yb",
+                        "download youtube urls"
+                    );
+    e15->endpointLogic = YTBackup;
+    e15->testEndpointLogic = testYTBackup;
+    appendEndpoint(&head, e15);
+
+	
+
 }
 
 int main(int argc, char* argv[]){

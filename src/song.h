@@ -60,6 +60,7 @@ int checkSongExist(char *songName);
  * */
 int syncDirectoryInformation(char *filePath); 
 int loadAudioFilesFromDirectory(char *filePath);
+int youtubeDownloadBackup(); 
 
 /* youtube url processing */
 url_t **initUrls(int limit); 
@@ -67,6 +68,8 @@ int getUrlTableSize();
 int insertUrl(char *urlString, char *currentTime); 
 int createYoutubeUrl(url_t* newUrl); 
 int viewUrls(); 
+int deleteYoutubeUrl(char *url); 
+int deleteAllYoutubeUrls(); 
 
  
 

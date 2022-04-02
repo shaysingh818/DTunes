@@ -368,6 +368,21 @@ int loadAudioFilesFromDirectory(char *filePath){
 }
 
 
+int youtubeDownloadBackup(){
+	
+	// Call the load songs with limit	
+	int urlLimit = getUrlTableSize(); 
+	url_t **urls = initUrls(urlLimit); 
+	url_t ***p = &urls;  
+
+	// View song in format for terminal
+	for(int i = 0; i < urlLimit; i++){
+		downloadVideo((*p)[i]->url);  
+	}
+
+	return TRUE; 
+
+}
 
 url_t **initUrls(int limit){
 /**
@@ -508,5 +523,58 @@ int viewUrls(){
 	printf("\n"); 
 
 	// return true or false if view was successful
+	return TRUE; 
+}
+
+
+
+int deleteYoutubeUrl(char *url){	
+	// open db
+	sqlite3 *db = openDB(DB_PATH);
+	// prepare statement
+	sqlite3_stmt *sql; 
+	char *query = DELETE_DB_URL; 
+	// prepare statement
+	int result = sqlite3_prepare_v2(db, query, -1, &sql, NULL);
+	// bind vars to statement
+	sqlite3_bind_text(sql, 1, url, -1, NULL);
+	 
+	// check for sql cursor errors
+	if(result != SQLITE_OK){
+		fprintf(stderr, "Failed to delete youtube url:  %s\n",sqlite3_errmsg(db));
+		sqlite3_close(db);
+		return FALSE; 
+	}
+
+
+	printf("[DB OPERATION] Deleted youtube url\n");
+	sqlite3_step(sql); 
+	sqlite3_close(db); 
+
+	return TRUE; 
+}
+
+
+
+int deleteAllYoutubeUrls(){	
+	// open db
+	sqlite3 *db = openDB(DB_PATH);
+	sqlite3_stmt *sql; 
+
+	char *query = DELETE_DB_URLS;
+	char *errMsg = 0; 
+	
+	int result = sqlite3_prepare_v2(db, query, -1, &sql, NULL);	
+	// check for sql cursor errors
+	if(result != SQLITE_OK){
+		fprintf(stderr, "Failed to delete urls:  %s\n",sqlite3_errmsg(db));
+		sqlite3_close(db);
+		return FALSE; 
+	}
+
+	printf("[DB OPERATION]: DELETE ALL YOUTUBE URLS\n"); 
+	sqlite3_step(sql); 
+	sqlite3_close(db); 
+
 	return TRUE; 
 }

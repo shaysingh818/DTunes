@@ -413,7 +413,7 @@ void insertYoutubeUrlCmd(endpoint_t *e, char* argv[]){
 
 void testInsertYoutubeUrlCmd(endpoint_t *e, char* argv[]){
 	// insert song into db	
-	if (strcmp(argv[1], e->commandLineArg) == 0){
+	if (strcmp(argv[1], e->testCommandLineArg) == 0){
 		char *currTime = getCurrentTime();
 		// bind fields for song model
 		int result = insertUrl(argv[2], currTime);
@@ -437,7 +437,7 @@ void viewYoutubeUrlsCmd(endpoint_t *e, char* argv[]){
 
 
 void testViewYoutubeUrlsCmd(endpoint_t *e, char* argv[]){	
-	if (strcmp(argv[1], e->commandLineArg) == 0){	
+	if (strcmp(argv[1], e->testCommandLineArg) == 0){	
 		int result = viewUrls(); 
 		printf("\n"); 	
 		if(result){
@@ -448,6 +448,57 @@ void testViewYoutubeUrlsCmd(endpoint_t *e, char* argv[]){
 	}
 }
 
+
+
+void deleteYoutubeUrlCmd(endpoint_t *e, char* argv[]){	
+	if (strcmp(argv[1], e->commandLineArg) == 0){
+		int result = deleteYoutubeUrl(argv[2]); 	
+		if(result){
+			d_log("DTUNES", "Deleted youtube url"); 
+		}else{
+			printf("Something went wrong: refer to unit tests\n"); 
+		}
+	}
+}
+
+
+void testDeleteYoutubeUrl(endpoint_t *e, char* argv[]){	
+	if (strcmp(argv[1], e->testCommandLineArg) == 0){
+        int result = deleteYoutubeUrl(argv[2]);
+        if(result){
+            printf("[TEST CASE]: PASS Deleted youtube url: %d\n", result); 
+        }else{  
+            printf("[TEST CASE]: FAIL: Deleted urls : %d\n", result); 
+        }
+    }
+}
+
+
+
+void deleteAllYoutubeUrlsCmd(endpoint_t *e, char* argv[]){
+	// delete all playlists
+	if (strcmp(argv[1], e->commandLineArg) == 0){
+		int result = deleteAllYoutubeUrls();
+		if(result){	
+			d_log("DTUNES", "Deleted all urls"); 
+		}else{
+			printf("Something went wrong: refer to unit tests\n"); 
+		}
+	}
+
+}
+
+
+void testDeleteYoutubeUrls(endpoint_t *e, char* argv[]){	
+	if (strcmp(argv[1], e->testCommandLineArg) == 0){	
+		int result = deleteAllYoutubeUrls();
+        if(result){
+            printf("[TEST CASE]: PASS Deleted ALL urls: %d\n", result);
+        }else{
+            printf("[TEST CASE]: FAIL: Deleted ALL urls: %d\n", result);
+        }
+    }
+}
 
 void syncAudioFilesToDb(endpoint_t *e, char* argv[]){
 	// delete all playlists
@@ -466,7 +517,7 @@ void syncAudioFilesToDb(endpoint_t *e, char* argv[]){
 
 void testSyncAudioFilesToDb(endpoint_t *e, char* argv[]){
 	// delete all playlists
-	if (strcmp(argv[1], e->commandLineArg) == 0){
+	if (strcmp(argv[1], e->testCommandLineArg) == 0){
 		int result = loadAudioFilesFromDirectory("../data/audiofiles");
 		if(result){
 			d_log("TEST CASE[SYNC_SONG]", "PASSED"); 	
@@ -474,6 +525,34 @@ void testSyncAudioFilesToDb(endpoint_t *e, char* argv[]){
 			d_log("TEST CASE[SYNC_SONG]", "FAILED"); 
 		}
 	}
+}
+
+
+void YTBackup(endpoint_t *e, char* argv[]){
+    // test view songs  
+	if (strcmp(argv[1], e->commandLineArg) == 0){	
+        printf("This fucking works \n "); 
+		int result = youtubeDownloadBackup();
+		if(result){
+			d_log("[YOUTUBE_BACKUP]", "COMPLETE"); 	
+		}else{
+			d_log("[YOUTUBE_BACKUP]", "FAILED"); 
+		}
+    }
+}
+
+
+
+void testYTBackup(endpoint_t *e, char* argv[]){
+    // test view songs  
+	if (strcmp(argv[1], e->testCommandLineArg) == 0){	 
+		int result = youtubeDownloadBackup();
+		if(result){
+			d_log("[YOUTUBE_BACKUP]", "PASSED"); 	
+		}else{
+			d_log("[YOUTUBE_BACKUP]", "FAILED"); 
+		}
+    }
 }
 
 

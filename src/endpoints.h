@@ -60,9 +60,17 @@ void insertYoutubeUrlCmd(endpoint_t *e, char* argv[]);
 void testInsertYoutubeUrlCmd(endpoint_t *e, char* argv[]); 
 void viewYoutubeUrlsCmd(endpoint_t *e, char* argv[]);
 void testViewYoutubeUrlsCmd(endpoint_t *e, char* argv[]);
+void deleteYoutubeUrlCmd(endpoint_t *e, char* argv[]); 
+void testDeleteYoutubeUrl(endpoint_t *e, char* argv[]); 
+void deleteAllYoutubeUrlsCmd(endpoint_t *e, char* argv[]); 
+void testDeleteYoutubeUrls(endpoint_t *e, char* argv[]); 
 
 // syncing
 void syncAudioFilesToDb(endpoint_t *e, char* argv[]); 
 void testSyncAudioFilesToDb(endpoint_t *e, char* argv[]); 
+
+// youtube url backup
+void YTBackup(endpoint_t *e, char* argv[]); 
+void testYTBackup(endpoint_t *e, char* argv[]); 
 
  #endif 
