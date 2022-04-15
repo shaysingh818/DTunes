@@ -50,11 +50,8 @@ void dlog_int(char *type, int message);
 void dlog_counter(char *type, char *message, int counter); 
 void d_log_time(char* type, char* message); 
 
-
 // youtube dl functions
-int callPyScript(char *url);
 int downloadVideo(char *url);
-
 
 // file db functions
 char* combineFileStrs(const char *cwd, const char *fileName); 

@@ -53,42 +53,16 @@ void d_log_time(char* type, char* message){
 }
 
 
-int callPyScript(char *url){
+int downloadVideo(char *url){
     char buffer[500];
-	/**
-    if(chdir(YOUTUBE_FILE_PATH) == 0){
+    if(chdir(YOUTUBE_FILE_PATH) != 0){
         dlog("ERROR", "CHANGE DIR YOUTUBE");
 		perror("chdir() to /error failed");  
         return FALSE;
-    }*/ 
-    sprintf(buffer, "python3 %s/yt.py %s", YOUTUBE_FILE_PATH, url);
+    } 
+    sprintf(buffer, "python3 yt.py %s", url);
     dlog("COMMAND", buffer);
     system(buffer);
-    return TRUE;
-}
-
-
-
-int downloadVideo(char *url){
-
-    // change dir for streaming path
-    if(chdir(AUDIO_FILE_PATH) != 0){
-        dlog("ERROR", "CHANGE DIR");
-    }
-
-    char cwd[256];
-    if(getcwd(cwd, sizeof(cwd)) == NULL){
-        dlog("ERROR", "CURRENT WORKING DIRECTORY");
-    }
-    strcat(cwd, "/");
-    dlog("STREAMING DIR", cwd);
-
-    // call youtube script
-    int result = callPyScript(url);
-    if(!result){
-        return FALSE;
-    }
-
     return TRUE;
 }
 

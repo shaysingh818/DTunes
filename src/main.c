@@ -202,7 +202,17 @@ void urlEndpoints(){
 }
 
 int main(int argc, char* argv[]){
-	
+
+	char *filename = "banner.txt"; 
+	FILE *fptr = NULL; 
+
+	if((fptr = fopen(filename, "r")) == NULL){
+		printf("Banner file doesn't exist\n"); 
+		return 1; 
+	}
+		
+	printDTunesBanner(fptr); 
+
 	// argument debugger
 	if(DEBUG == 1){
 		printf("Arg 0: %s\n", argv[0]); 
@@ -219,7 +229,8 @@ int main(int argc, char* argv[]){
 		printEndpoints(head); 
 	}
 
-	execEndpoints(argc, argv, head); 
+	execEndpoints(argc, argv, head);
+	printf("\n");  
 
 	
 
