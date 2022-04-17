@@ -11,12 +11,15 @@
 
 
 int main(int argc, char* argv[]){
-	
-	const char *cmd = "gnome-terminal command=\" ./dtunes help\" ";
-	system(cmd); 
 
-	
-	const char *cmd2 = "gnome-terminal command=\" ./dtunes help\" ";
-	system(cmd2); 
-	
+	DIR *audioFolder = opendir("data/audiofiles");
+	struct dirent *next_file; 
+	char filepath[300];
+
+	while((next_file=readdir(audioFolder)) != NULL){
+		sprintf(filepath, "%s/%s", "data/audiofiles", next_file->d_name); 
+		remove(filepath); 
+	}
+	closedir(audioFolder); 
+	return 0; 
 }

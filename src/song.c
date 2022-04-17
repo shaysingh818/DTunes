@@ -253,7 +253,9 @@ int deleteAllSongs(){
 
 	printf("[DB OPERATION]: DELETE ALL SONGS\n"); 
 	sqlite3_step(sql); 
-	sqlite3_close(db); 
+	sqlite3_close(db);
+
+	clearAudioFileDirectory("data/audiofiles");  
 
 	return TRUE; 
 }
@@ -299,9 +301,9 @@ int syncDirectoryInformation(char *filePath){
     } 
 	
 	// change to desired directory
-	if(chdir(filePath) != 0){	
-		dlog("ERROR", "CHANGE DIR"); 
-	}
+	//if(chdir(filePath) != 0){	
+	//	dlog("ERROR", "CHANGE DIR I THINK part 2"); 
+	//}
 
 	// get current working directory	
 	char cwd[256]; 
@@ -333,7 +335,7 @@ int syncDirectoryInformation(char *filePath){
 
 		// change dir for db insert	
 		if(chdir("/home/dread/Desktop/DTunes/src") != 0){	
-			dlog("ERROR", "CHANGE DIR"); 
+			dlog("ERROR", "CHANGE DIR DATABASE I THINK"); 
 			return FALSE; 
 		}
 
@@ -369,7 +371,7 @@ int loadAudioFilesFromDirectory(char *filePath){
 
 
 int youtubeDownloadBackup(){
-	
+
 	// Call the load songs with limit	
 	int urlLimit = getUrlTableSize(); 
 	url_t **urls = initUrls(urlLimit); 
@@ -377,7 +379,8 @@ int youtubeDownloadBackup(){
 
 	// View song in format for terminal
 	for(int i = 0; i < urlLimit; i++){
-		downloadVideo((*p)[i]->url);  
+		//downloadVideo((*p)[i]->url);
+		backupVideo((*p)[i]->url, "../data/youtubedl");   
 	}
 
 	return TRUE; 

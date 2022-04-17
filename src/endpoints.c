@@ -224,6 +224,20 @@ void insertSongCmd(endpoint_t *e, char* argv[]){
         }else{
             printf("[TEST CASE]: FAIL: DOWNLOAD YOUTUBE VIDEO: %d\n", result);
         }
+
+		// change to desired directory
+    	if(chdir("../../src") != 0){ 
+    	  dlog("ERROR", "CHANGE DIR FOR DB SYNC"); 
+    	}
+
+
+		// sync songs after download	
+		result = loadAudioFilesFromDirectory("../data/audiofiles");
+		if(result){
+			d_log("SYNC SERVICE", "Synced songs"); 	
+		}else{
+			d_log("ERROR", "Failed to sync songs"); 
+		}
 	}
 
 }

@@ -52,6 +52,7 @@ void d_log_time(char* type, char* message);
 
 // youtube dl functions
 int downloadVideo(char *url);
+void backupVideo(char *dbUrl, char *filePath); 
 
 // file db functions
 char* combineFileStrs(const char *cwd, const char *fileName); 
@@ -60,6 +61,6 @@ void getCurrentDirectory(char *cwd);
 void renameFile(char *fileName, char *newFileName); 
 int countFiles(char *directoryPath); 
 void reformatFileNames(char *desiredPath);
-
+void clearAudioFileDirectory(char *desiredPath); 
 
 #endif 

@@ -67,6 +67,14 @@ int downloadVideo(char *url){
 }
 
 
+void backupVideo(char *dbUrl, char *filePath){
+    char buffer[500];
+    sprintf(buffer, "python3 %s/yt.py %s", filePath, dbUrl);
+    dlog("COMMAND", buffer);
+    system(buffer);
+}
+
+
 
 char* combineFileStrs(const char *cwd, const char *fileName){
 	char *result = malloc(strlen(cwd) + strlen(fileName) + 1); 
@@ -183,3 +191,14 @@ void reformatFileNames(char *desiredPath){
 }
 
 
+void clearAudioFileDirectory(char *desiredPath){	
+	DIR *audioFolder = opendir(desiredPath);
+	struct dirent *next_file; 
+	char filepath[300];
+
+	while((next_file=readdir(audioFolder)) != NULL){
+		sprintf(filepath, "%s/%s", desiredPath, next_file->d_name); 
+		remove(filepath); 
+	}
+	closedir(audioFolder); 
+}

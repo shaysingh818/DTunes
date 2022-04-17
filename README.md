@@ -66,8 +66,9 @@ Implmement centrality algorothms that can detect which nodes are important or pl
 
 
 
+# Syncing Urls to DTUNES
 
-
+1. Go through all the songs in the database. Iterate through all the youtube urls in the database. For each database url, it should download the mp3 file to the desired audiofile path. Once all the songs have been iterated, it should run the loadAudioFiles function and sync it all to the database. 
 
 
 
