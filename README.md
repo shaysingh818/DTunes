@@ -66,14 +66,11 @@ Implmement centrality algorothms that can detect which nodes are important or pl
 
 
 
-# Syncing Urls to DTUNES
+# Threaded URL Downloads
 
-1. Go through all the songs in the database. Iterate through all the youtube urls in the database. For each database url, it should download the mp3 file to the desired audiofile path. Once all the songs have been iterated, it should run the loadAudioFiles function and sync it all to the database. 
+1. When the youtube backup is started, depending on the amount of urls, it should allocate a certain amount of threads to split the task up. For example, if there are 16 urls to download, it should divide the urls into 4 and run the tasks parallel. 
 
-
-
-
-
+2. Create a function called ```threadedDownload```. This function should go through the urls in the database and divide the download into a certain amount. Test this code in a seperate test case and make sure it works before implementing it into the main codebase. 
 
 
 
