@@ -155,25 +155,83 @@ void *downloadThread(void *vargp){
 }
 
 
+void downloadUrls(url_t** ytUrls, int urlSize, int threadCount){
+
+	pthread_t urlThreads[threadCount];
+	url_t ***p = &ytUrls; 
+
+	int start, split, end; 
+	for(int i = 0; i < urlSize; i+=threadCount){
+		start = i; 
+		split = i + threadCount; 
+		end = urlSize - 1; 
+		printf("["); 	
+		url_t **urlSubArr = malloc(threadCount * sizeof(url_t*)); 
+		for(int j = start; j < split; j++){
+			urlSubArr[i] = malloc(sizeof(url_t)); 
+			urlSubArr[i] = (*p)[j]; 	
+		}
+		printf("]\n"); 
+		
+		if(end-split < threadCount){
+			printf("["); 
+			for(int j = split; j <= end; j++){
+				printf("%s ", (*p)[j]->url); 
+			}
+			printf("]\n"); 
+			break; 
+		}
+	
+		if(split == end){
+			break; 
+		}
+		
+	}
+}
+
 /**
 	This is the function that divides the input urls into parallel tasks
 	If numThreads=4, then it will divide the url array into 4 sections
 */
-void startDownloadBackUp(url_t** ytUrls, int numThreads){
+void startDownloadBackUp(url_t** ytUrls, int urlSize,  int numThreads){
 	pthread_t urlThreads[numThreads];
 
+	// [0,1,2,3,4,5,6,7,8,9,10] -> [0,1,2,3] [4,5,6,7] [8,9,10]
 	// divide the ytUrls into sections, sections are made depending on what the numThreads var is. 
 	// pass each section into individual thread when going through numThreads
-	int urlsSize = sizeof(ytUrls)/sizeof(ytUrls[0]);
-	int chunkSize = urlsSize / numThreads;
-
-	int start, end; 
-	for(int i = 0; i < numThreads-1; i++){
-		start = i * chunkSize; 
-		end = start + chunkSize - 1; 
-		// work with subarray
-		printf("%d | %d ", start, end); 
+	url_t ***p = &ytUrls; 
+	int test[22] = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17, 18, 19, 20, 21}; 
+	// subarray algorithm
+	int start, end, split;
+	for(int i = 0; i < sizeof(test)/sizeof(test[0]); i+=numThreads){
+		start = i;
+		split = i + numThreads; 
+		end = sizeof(test)/sizeof(test[0]) - 1;
+		//printf("%d : %d \n", start, split);
+		// get remainder
+		printf("["); 
+		for(int j = start; j < split; j++){
+			printf("%d ", test[j]); 
+		}
+		printf("]\n"); 
+ 
+		if(end-split < numThreads){
+			int first = split; 
+			int second = end; 
+			//printf("Difference: %d : %d\n", first, second);
+			printf("["); 
+			for(int j = split; j <= end; j++){
+				printf("%d ", test[j]); 
+			}
+			printf("]\n"); 
+			break;  
+		}
+		// if perfect split
+		if(split == end){
+			break; 
+		}
 	} 
+		
 
 	
 	/**
@@ -198,9 +256,9 @@ int main(int argc, char* argv[]){
 	pthread_join(thread_id, NULL); 
 	pthread_join(thread_id2, NULL); 
 	*/
-	int urlLimit = getUrlTableSize(); 
-	url_t **urls = initUrls(urlLimit); 
-	startDownloadBackUp(urls, 4); 
+	int urlLimit = getUrlTableSize();
+	url_t **urls = initUrls(urlLimit);
+	downloadUrls(urls, urlLimit, 4); 
 
 	exit(0);
 	
