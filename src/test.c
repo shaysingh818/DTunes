@@ -148,10 +148,30 @@ void backupVideo(char *dbUrl, char *filePath){
 
 void *downloadThread(void *vargp){
 	// taking in num as param
-	int *count = (int*)vargp; 
+	//int *count = (int*)vargp;
+	url_t **urls = vargp;  
 	sleep(1); 
-	printf("Threaded function %d\n", *count); 
+	printf("Threaded function "); 
 	return NULL; 
+}
+
+
+url_t **allocateSubArray(int threadCount){
+	url_t **urlSubArr = malloc(threadCount * sizeof(url_t*)); 
+	for(int j = 0; j < threadCount; j++){
+		urlSubArr[j] = malloc(sizeof(url_t)); 
+	}
+	return urlSubArr; 
+}
+
+
+void printSubArray(url_t **subArr, int arrSize){
+	url_t ***p = &subArr; 
+	printf("[["); 
+	for(int i = 0; i < arrSize; i++){
+		printf("%s ",(*p)[i]->url); 
+	} 
+	printf("]]\n"); 
 }
 
 
@@ -160,25 +180,30 @@ void downloadUrls(url_t** ytUrls, int urlSize, int threadCount){
 	pthread_t urlThreads[threadCount];
 	url_t ***p = &ytUrls; 
 
-	int start, split, end; 
+	int start, split, end, indexCount; 
 	for(int i = 0; i < urlSize; i+=threadCount){
 		start = i; 
 		split = i + threadCount; 
-		end = urlSize - 1; 
-		printf("["); 	
-		url_t **urlSubArr = malloc(threadCount * sizeof(url_t*)); 
+		end = urlSize - 1;
+		// create sub array
+		url_t **urlSubArr = allocateSubArray(threadCount); 	
+		// populate the sub array with start, split indexes
+		indexCount = 0; 
 		for(int j = start; j < split; j++){
-			urlSubArr[i] = malloc(sizeof(url_t)); 
-			urlSubArr[i] = (*p)[j]; 	
+			urlSubArr[indexCount] = (*p)[j];
+			indexCount += 1;  
 		}
-		printf("]\n"); 
 		
+		printSubArray(urlSubArr, threadCount); 
+
 		if(end-split < threadCount){
-			printf("["); 
+			indexCount = 0; 
+			url_t **urlSubArr = allocateSubArray(threadCount); 
 			for(int j = split; j <= end; j++){
-				printf("%s ", (*p)[j]->url); 
+				urlSubArr[indexCount] = (*p)[j]; 
+				indexCount += 1; 
 			}
-			printf("]\n"); 
+			printSubArray(urlSubArr, (end-split)+1); 
 			break; 
 		}
 	

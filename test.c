@@ -10,6 +10,17 @@
 #define DEBUG FALSE
 
 
+// test model for the orm
+struct Song {
+	char name[30];	
+	char artist[30]; 
+	char dateCreated[30]; 
+}; 
+
+typedef struct Song song_t; 
+
+
+
 int main(int argc, char* argv[]){
 
 	DIR *audioFolder = opendir("data/audiofiles");
