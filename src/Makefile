@@ -2,8 +2,8 @@ CC=gcc
 TARGET=dtunes
 
 
-all: main.o db.o playlist.o song.o endpoints.o 
-	gcc -o $(TARGET) main.o db.o playlist.o song.o endpoints.o  -lsqlite3
+all: main.o db.o playlist.o song.o urls.o  endpoints.o 
+	gcc -o $(TARGET) main.o db.o playlist.o song.o urls.o endpoints.o  -lsqlite3
 
 playlist.o: playlist.c playlist.h
 	gcc -c playlist.c
@@ -11,16 +11,16 @@ playlist.o: playlist.c playlist.h
 song.o: song.c song.h
 	gcc -c song.c
 
+urls.o: urls.c urls.h
+	gcc -c urls.c
+
 db.o: db.c db.h
 	gcc -c db.c
 
 endpoints.o: endpoints.c endpoints.h
 	gcc -c endpoints.c 
 
-test.o: test.c 
-	gcc -c test.c
-
-main.o: main.c db.h playlist.h song.h endpoints.h
+main.o: main.c db.h playlist.h song.h urls.h endpoints.h
 	gcc -c main.c -lsqlite3
 
 clean:

@@ -52,7 +52,7 @@ void d_log_time(char* type, char* message);
 
 // youtube dl functions
 int downloadVideo(char *url);
-void backupVideo(char *dbUrl, char *filePath); 
+void backupVideo(char *dbUrl); 
 
 // file db functions
 char* combineFileStrs(const char *cwd, const char *fileName); 

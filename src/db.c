@@ -67,9 +67,9 @@ int downloadVideo(char *url){
 }
 
 
-void backupVideo(char *dbUrl, char *filePath){
+void backupVideo(char *dbUrl){
     char buffer[500];
-    sprintf(buffer, "python3 %s/yt.py %s", filePath, dbUrl);
+    sprintf(buffer, "python3 yt.py %s", dbUrl);
     dlog("COMMAND", buffer);
     system(buffer);
 }
