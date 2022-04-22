@@ -3,7 +3,7 @@ TARGET=dtunes
 
 
 all: main.o db.o playlist.o song.o urls.o  endpoints.o 
-	gcc -o $(TARGET) main.o db.o playlist.o song.o urls.o endpoints.o  -lsqlite3
+	gcc -o $(TARGET) main.o db.o playlist.o song.o urls.o endpoints.o  -lsqlite3 -lpthread
 
 playlist.o: playlist.c playlist.h
 	gcc -c playlist.c

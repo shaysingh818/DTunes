@@ -200,26 +200,25 @@ int deleteAllYoutubeUrls(){
 
 
 
-int youtubeDownloadBackup(){
-    // Call the load songs with limit   
-    int urlLimit = getUrlTableSize();
-    url_t **urls = initUrls(urlLimit);
-    url_t ***p = &urls;
+void youtubeDownloadBackup(void *vargp){
+    // Call the load songs with limit 
+	url_t **urls = (url_t**)vargp; 
 
+	
+
+	/**
 	// change to desired path
 	if(chdir(YOUTUBE_FILE_PATH) != 0){
         dlog("ERROR", "CHANGE DIR YOUTUBE");
         perror("chdir() to /error failed");
-        return FALSE;
     }
 	
     // View song in format for terminal
-    for(int i = 0; i < urlLimit; i++){
-        //downloadVideo((*p)[i]->url);
-        backupVideo((*p)[i]->url);
+    for(int i = 0; i < 4; i++){
+		printf("%s\n", (*p)[i]->url); 
     }
+	*/
 
-    return TRUE;
 }
 
 
@@ -251,19 +250,20 @@ void downloadUrls(url_t** ytUrls, int urlSize, int threadCount){
 
     int start, split, end, indexCount;
     for(int i = 0; i < urlSize; i+=threadCount){
+
         start = i;
         split = i + threadCount;
         end = urlSize - 1;
-        // create sub array
         url_t **urlSubArr = allocateSubArray(threadCount);
-        // populate the sub array with start, split indexes
         indexCount = 0;
+
         for(int j = start; j < split; j++){
             urlSubArr[indexCount] = (*p)[j];
             indexCount += 1;
         }
 
         printSubArray(urlSubArr, threadCount);
+		pthread_create(&urlThreads[i], NULL, youtubeDownloadBackup, (void*)urlSubArr); 
 
         if(end-split < threadCount){
             indexCount = 0;

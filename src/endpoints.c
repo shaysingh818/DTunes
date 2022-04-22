@@ -545,14 +545,11 @@ void testSyncAudioFilesToDb(endpoint_t *e, char* argv[]){
 
 void YTBackup(endpoint_t *e, char* argv[]){
     // test view songs  
-	if (strcmp(argv[1], e->commandLineArg) == 0){	
-        printf("This fucking works \n "); 
-		int result = youtubeDownloadBackup();
-		if(result){
-			d_log("[YOUTUBE_BACKUP]", "COMPLETE"); 	
-		}else{
-			d_log("[YOUTUBE_BACKUP]", "FAILED"); 
-		}
+	if (strcmp(argv[1], e->commandLineArg) == 0){
+	
+		int urlLimit = getUrlTableSize(); 
+		url_t **urls = initUrls(urlLimit); 
+		downloadUrls(urls, urlLimit, 4); // use thread count of 4 by default
     }
 }
 

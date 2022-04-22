@@ -7,7 +7,7 @@
 #include <string.h>
 #include <time.h>
 #include <dirent.h>
-
+#include <pthread.h> 
 
 // db model
 struct YouTubeUrl {
@@ -16,6 +16,15 @@ struct YouTubeUrl {
 };
 
 typedef struct YouTubeUrl url_t;
+
+
+// throwing arguments in a struct
+struct UrlThread {
+	url_t** urlSubArr; 
+	char testing[100]; 
+}; 
+
+typedef struct UrlThread url_thread_t; 
 
 
 // db functions
@@ -31,7 +40,7 @@ int checkUrlExist(char *url);
 
 
 // functions involving youtube url scraping
-int youtubeDownloadBackup();
+void youtubeDownloadBackup(void *vargp);
 url_t **allocateSubArray(int threadCount); 
 void printSubArray(url_t **subArr, int arrSize); 
 void downloadUrls(url_t** ytUrls, int urlSize, int threadCount); 
