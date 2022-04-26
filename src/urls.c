@@ -201,8 +201,8 @@ int deleteAllYoutubeUrls(){
 
 
 void youtubeDownloadBackup(void *vargp){
-    // Call the load songs with limit 
-	url_t **urls = (url_t**)vargp; 
+    // Call the load songs with limit
+	url_thread_t *args = (url_thread_t*)vargp;  
 
 	
 
@@ -262,8 +262,12 @@ void downloadUrls(url_t** ytUrls, int urlSize, int threadCount){
             indexCount += 1;
         }
 
+		url_thread_t *urlThread;
+		urlThread->urlSubArr = urlSubArr; 
+		urlThread->urlLimit = threadCount;  
+
         printSubArray(urlSubArr, threadCount);
-		pthread_create(&urlThreads[i], NULL, youtubeDownloadBackup, (void*)urlSubArr); 
+		pthread_create(&urlThreads[i], NULL, youtubeDownloadBackup, urlThread); 
 
         if(end-split < threadCount){
             indexCount = 0;

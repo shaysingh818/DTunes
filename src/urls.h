@@ -20,8 +20,8 @@ typedef struct YouTubeUrl url_t;
 
 // throwing arguments in a struct
 struct UrlThread {
-	url_t** urlSubArr; 
-	char testing[100]; 
+	url_t** urlSubArr;
+	int urlLimit;  
 }; 
 
 typedef struct UrlThread url_thread_t; 
