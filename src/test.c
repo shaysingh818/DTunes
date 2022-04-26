@@ -27,8 +27,8 @@
 
 
 struct YouTubeUrl {
-    int url[100]; 
-    int dateCreated[30]; 
+    char url[100]; 
+    char dateCreated[30]; 
 };
 
 typedef struct YouTubeUrl url_t;
@@ -41,6 +41,18 @@ struct UrlThread {
 }; 
 
 typedef struct UrlThread url_thread_t; 
+
+
+sqlite3* openDB(char *filename){
+    sqlite3 *db;
+    if(sqlite3_open(filename, &db)){
+        printf("Could not open the db : \n ");
+
+        printf("Could not open the db:  %s\n",sqlite3_errmsg(db));
+        exit(-1);
+    }
+    return db;
+}
 
 
 url_t **initUrls(int limit){
@@ -113,16 +125,57 @@ int getUrlTableSize(){
 
 
 
+url_t **allocateSubArray(int threadCount){
+    url_t **urlSubArr = malloc(threadCount * sizeof(url_t*));
+    for(int j = 0; j < threadCount; j++){
+        urlSubArr[j] = malloc(sizeof(url_t));
+    }
+    return urlSubArr;
+}
+
+
+
+void printSubArray(url_t **subArr, int arrSize){
+    url_t ***p = &subArr;
+    printf("[[");
+    for(int i = 0; i < arrSize; i++){
+        printf("%s ",(*p)[i]->url);
+    }
+    printf("]]\n");
+}
+
+
+void* youtubeDownloadBackup(void *vargp){
+	url_thread_t *args = (url_thread_t*)vargp;
+	printf("Url limit: %d\n", args->urlLimit);
+
+	if(chdir(YOUTUBE_FILE_PATH) != 0){
+        printf("ERROR CHANGE DIR YOUTUBE \n");
+        perror("chdir() to /error failed");
+    }
+	
+	for(int i = 0; i < args->urlLimit; i++){
+		url_t ***p = &args->urlSubArr;
+		printf("%s\n", (*p)[i]->url); 
+		char buffer[500];
+    	sprintf(buffer, "python3 yt.py %s", (*p)[i]->url);
+    	//dlog("COMMAND", buffer);
+    	system(buffer);
+	}
+ 
+}
+
 
 void* downloadThread(void *my_struct){
 	url_thread_t *args = (url_thread_t*)my_struct;
 	for(int i = 0; i < args->urlLimit; i++){
 		url_t ***p = &args->urlSubArr;
-		printf("%d\n", (*p)[i]->limit);  
+		printf("%s\n", (*p)[i]->url);  
 	}
 }
 
 
+/**
 void downloadUrls(int threadCount){
 
 	pthread_t myThread[2]; 
@@ -154,7 +207,7 @@ void downloadUrls(int threadCount){
 	}
 
 
-}
+} */
 
 
 
@@ -173,31 +226,51 @@ void downloadUrls(url_t** ytUrls, int urlSize, int threadCount){
         indexCount = 0;
 
         for(int j = start; j < split; j++){
+			printf("%d \n", j); 
             urlSubArr[indexCount] = (*p)[j];
             indexCount += 1;
         }
+		printf("====================\n"); 
 
-        /*url_thread_t threadArg;
-        threadArg->urlSubArr = urlSubArr;
-        threadArg->urlLimit = threadCount;
-
-        printSubArray(urlSubArr, threadCount);
-        pthread_create(&urlThreads[i], NULL, youtubeDownloadBackup, urlThread);
 
         if(end-split < threadCount){
             indexCount = 0;
-            url_t **urlSubArr = allocateSubArray(threadCount);
+            url_t **remainderSubArr = allocateSubArray(end-split);
             for(int j = split; j <= end; j++){
-                urlSubArr[indexCount] = (*p)[j];
+                remainderSubArr[indexCount] = (*p)[j];
                 indexCount += 1;
             }
-            printSubArray(urlSubArr, (end-split)+1);
+		
+			// create thread for first sub array
+			url_thread_t remainderThreadArg; 
+			remainderThreadArg.urlSubArr = remainderSubArr; 
+			remainderThreadArg.urlLimit = (end-split); 	
+				
+			int tempLimit = (end-split)+1;
+            printSubArray(remainderSubArr, tempLimit);
+        	pthread_create(&urlThreads[i], NULL, youtubeDownloadBackup, &remainderThreadArg); 
             break;
-        }
+
+        }else{
+			
+			// create thread for remaining sub array
+			url_thread_t threadArg; 
+			threadArg.urlSubArr = urlSubArr; 
+			threadArg.urlLimit = threadCount; 	
+        	pthread_create(&urlThreads[i], NULL, youtubeDownloadBackup, &threadArg); 
+            //printSubArray(urlSubArr, threadCount);
+		}
 
         if(split == end){
             break;
-        }*/ 
+        }
+
+		// join all threads
+		for(int i = 0; i < threadCount; i++){
+        	pthread_join(urlThreads[i], NULL); 
+		}
+		
+
 
     }
 }
@@ -209,5 +282,10 @@ int main(int argc, char* argv[]){
 
 
 	// load urls
+	int limit = getUrlTableSize(); 
+	url_t ** urls = initUrls(limit); 
+	downloadUrls(urls, limit, 4); // thread count of 4
+	
+
 
 }
