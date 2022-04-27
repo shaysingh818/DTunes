@@ -39,6 +39,4 @@ int deleteAllYoutubeUrls();
 int checkUrlExist(char *url);
 
 
-
-
 #endif

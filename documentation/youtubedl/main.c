@@ -1,67 +1,92 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <dirent.h>
-#include <time.h>
-#include <string.h>
-#include <unistd.h>
-#include <sqlite3.h>
-#include <time.h>
-#include <pthread.h>
+#include "libs/db.h"
+#include "libs/urls.h"
 
-
-#define DB_PATH "../data/db/dtunes.db"
-#define AUDIO_FILE_PATH  "../data/audiofiles"
-#define YOUTUBE_FILE_PATH  "../data/youtubedl"
-
-#define TRUE 1
-#define FALSE 0
-#define DEBUG FALSE
-
-struct Url {
-	char url[100]; 
-}; 
-
-typedef struct Url url_t;
 
 
 struct ThreadArg {
-    url_t* urlSubArr;
+    url_t** urlSubArr;
+	int urlLimit; 
 };
 
-typedef struct ThreadArg url_thread_t;
+typedef struct ThreadArg thread_arg;
 
 
 
 void *downloadUrlThread(void *url_struct){
-	url_thread_t *args = (url_thread_t*)url_struct;
+	thread_arg *args = (thread_arg*)url_struct;
+	/**
+	url_t *p = args->urlSubArr;
+
+	if(chdir(YOUTUBE_FILE_PATH) != 0){
+        printf("ERROR CHANGE DIR YOUTUBE \n");
+        perror("chdir() to /error failed");
+    }
+ 
 	char buffer[500]; 
-	sprintf(buffer, "python3 yt.py %s", url_struct->url); 
-	system(buffer); 
+	sprintf(buffer, "python3 yt.py %s", p->url); 
+	system(buffer); */
+}
+
+
+url_t **allocateSubArray(int threadCount){
+    url_t **urlSubArr = malloc(threadCount * sizeof(url_t*));
+    for(int j = 0; j < threadCount; j++){
+        urlSubArr[j] = malloc(sizeof(url_t));
+    }
+    return urlSubArr;
+}
+
+
+void printSubArray(url_t **subArr, int arrSize){
+    url_t ***p = &subArr;
+    printf("[ ");
+    for(int i = 0; i < arrSize; i++){
+        printf("%s ",(*p)[i]->url);
+    }
+    printf("]\n");
 }
 
 
 int main(int argc, int **argv){
 
-	url_t *myUrl = malloc(sizeof(url_t)); 
-	strcpy(myUrl->url, "https://www.youtube.com/watch?v=Jo2QHf4Itoo"); 
+
+	// get urls from lib
+	int urlLimit = getUrlTableSize(); 
+	url_t **urls = initUrls(urlLimit);
+	url_t ***p = &urls;
+
+	printf("%d \n", urlLimit);
+
+	int threadCount = 2; 
+	pthread_t urlThreads[threadCount];
+
+	int start, split, end, indexCount; 
+	for(int i = 0; i < urlLimit; i+= threadCount){
+		start = i; 
+		split = i + threadCount; 
+		end = urlLimit - 1; 
+
+		url_t **urlSubArr = allocateSubArray(threadCount); 
+		indexCount = 0; 
+		
+		for(int j = start; j < split; j++){
+			urlSubArr[indexCount] = (*p)[j]; 
+			indexCount += 1; 
+		}
+		
+		// throw subarray to thread
+		thread_arg urlThread;
+		urlThread.urlSubArr = urlSubArr; 
+		urlThread.urlLimit = threadCount;  
+
+		printSubArray(urlSubArr, threadCount);
+		pthread_create(&urlThreads[i], NULL, downloadUrlThread, &urlThread);  
+
+	}
+
+	// split into 2  chunks (to confirm that it happening at the same time)
+	// join all the threads (Finish tomorrow)
 
 	
-	url_t *myUrl2 = malloc(sizeof(url_t)); 
-	strcpy(myUrl2->url, "https://www.youtube.com/watch?v=Jo2QHf4Itoo"); 
-	
-	pthread_t urlThread; 
-	thread_arg threadArg;
-    threadArg.urlSubArr = myUrl;
-
-	
-	pthread_t urlThread2; 
-	thread_arg threadArg2;
-    threadArg2.urlSubArr = myUrl2;
-
-	pthread_create(&urlThread, NULL, downloadUrlThread, &threadArg); 
-	pthread_create(&urlThread2, NULL, downloadUrlThread, &threadArg2);
-
-	pthread_join(&urlThread, NULL); 
-	pthread_join(&urlThread2, NULL); 
 	
 }
