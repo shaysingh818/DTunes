@@ -6,26 +6,58 @@
 struct ThreadArg {
     url_t** urlSubArr;
 	int urlLimit; 
+	int threadId; 
 };
 
 typedef struct ThreadArg thread_arg;
 
 
+thread_arg *buildThreadArgument(url_t **subArr, int size, int tid){
+	thread_arg *newThreadArg = (thread_arg*)malloc(sizeof(thread_arg));
+	newThreadArg->urlSubArr = subArr; 
+	newThreadArg->urlLimit = size; 
+	newThreadArg->threadId = tid; 
+	return newThreadArg; 
+}
 
-void *downloadUrlThread(void *url_struct){
-	thread_arg *args = (thread_arg*)url_struct;
-	/**
-	url_t *p = args->urlSubArr;
+
+void printThreadArg(thread_arg *threadArg){	
+	printf("====================\n"); 
+	url_t ***p = &threadArg->urlSubArr; 
+	for(int i = 0; i < threadArg->urlLimit; i++){
+		printf("Url thread arg: %s\n", (*p)[i]->url); 
+	}
+	printf("====================\n"); 
+	printf("Url Size: %d\n", threadArg->urlLimit);  
+	printf("Thread Id: %d\n", threadArg->threadId);  
+}
+
+
+void downloadBackup(url_t **urls, int size){
 
 	if(chdir(YOUTUBE_FILE_PATH) != 0){
         printf("ERROR CHANGE DIR YOUTUBE \n");
         perror("chdir() to /error failed");
     }
- 
-	char buffer[500]; 
-	sprintf(buffer, "python3 yt.py %s", p->url); 
-	system(buffer); */
+	
+	url_t ***p = &urls;
+	printf("=================\n"); 
+	for(int i = 0; i < size; i++){
+		printf("Url: %s\n", (*p)[i]->url);
+		//char buffer[500]; 
+		//sprintf(buffer, "python3 yt.py %s", (*p)[i]->url); 
+		//system(buffer);  
+	}
+
 }
+
+
+void *downloadUrlThread(void *url_struct){
+	thread_arg *args = (thread_arg*)url_struct;
+	printf("THREAD ID: %d\n", args->threadId);
+	downloadBackup(args->urlSubArr, args->urlLimit);  
+}
+
 
 
 url_t **allocateSubArray(int threadCount){
@@ -47,6 +79,8 @@ void printSubArray(url_t **subArr, int arrSize){
 }
 
 
+
+
 int main(int argc, int **argv){
 
 
@@ -59,8 +93,9 @@ int main(int argc, int **argv){
 
 	int threadCount = 2; 
 	pthread_t urlThreads[threadCount];
+	thread_arg threadArgArray[threadCount]; 
 
-	int start, split, end, indexCount; 
+	int start, split, end, indexCount, threadCounter = 0; 
 	for(int i = 0; i < urlLimit; i+= threadCount){
 		start = i; 
 		split = i + threadCount; 
@@ -73,20 +108,22 @@ int main(int argc, int **argv){
 			urlSubArr[indexCount] = (*p)[j]; 
 			indexCount += 1; 
 		}
-		
-		// throw subarray to thread
-		thread_arg urlThread;
-		urlThread.urlSubArr = urlSubArr; 
-		urlThread.urlLimit = threadCount;  
-
+			
 		printSubArray(urlSubArr, threadCount);
-		pthread_create(&urlThreads[i], NULL, downloadUrlThread, &urlThread);  
+		thread_arg *newThread = buildThreadArgument(urlSubArr, threadCount, i); 
 
 	}
 
-	// split into 2  chunks (to confirm that it happening at the same time)
-	// join all the threads (Finish tomorrow)
+
 
 	
-	
+
+
+	/* split into 2  chunks (to confirm that it happening at the same time)
+	// join all the threads (Finish tomorrow)
+	for(int j = 0; j < threadCount; j++){
+		pthread_join(urlThreads[j], NULL); 
+	}*/
+
+
 }
