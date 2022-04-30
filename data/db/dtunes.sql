@@ -4,7 +4,7 @@ Don't know how to generate unique id from database
 */
 
 CREATE TABLE YOUTUBE_URL (
-	yt_url VARCHAR(255),	
+	yt_url VARCHAR(255) UNIQUE,	
 	date_created VARCHAR(255),
 	desired_path VARCHAR(255)
 );

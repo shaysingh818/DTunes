@@ -10,8 +10,12 @@ DTunes requires a large dataset of mp3 files for testing the portsf sound proces
 	* ``` ./dtunes cu <url> ``` to insert url into the database
 
 
-# Exporting dataset files
+# Exporting/Importing dataset files
 3. For generating large datasets, we'll need a function that can export the urls saved in the database to a csv or json file. We'll need a function that can export the data with a data format as a parameter. The json/csv file doesn't contain the raw video data, only the urls themselves. This is so that other machines can backup/redownload videos from previous versions. 
+
+4. We need to be able to take all the urls from the database and write them to a cvs file wwith specific name format. The name format should be written like this, <date of export><urlcount>.csv. The csv file should contain the youtube url, and date it was inserted into the database. 
+
+5. For importing csv files, we'll need to read the url from each column in the csv file and throw it into a massive array pool. The array pool will then be thrown to to the "thread argument builder" and start the multithreaded download process. This should do the same thing as downloading a bunch of urls from the database, except with a csv file. The csv file should also be thrown in as a command line argument. We also might want to add some sort of validation to make the csv file is correctly read. 
 
 
 # Youtube URL Validation

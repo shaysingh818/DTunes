@@ -160,48 +160,17 @@ int main(int argc, int **argv){
 	// small todos
 	// 1. use logging library functions 
 	// 2. make delete youtube url work (DTunes db method)
-	// 3. 
 
-	grabDatabaseUrls(2); 
-	/**
-	thread_arg *head = NULL; 
-	// get urls from lib
-	int urlLimit = getUrlTableSize(); 
-	url_t **urls = initUrls(urlLimit);
-	url_t ***p = &urls;
+	double timeSpent = 0.0; 
+	clock_t begin = clock(); 
 
-	printf("%d \n", urlLimit);
+	// time function
+	grabDatabaseUrls(3); 
 
-	int threadCount = 2; 
-	pthread_t urlThreads[threadCount];
-	thread_arg threadArgArray[threadCount]; 
+	clock_t end = clock(); 
 
-	int start, split, end, indexCount, threadCounter = 0; 
-	for(int i = 0; i < urlLimit; i+= threadCount){
-		start = i; 
-		split = i + threadCount; 
-		end = urlLimit - 1; 
-
-		url_t **urlSubArr = allocateSubArray(threadCount); 
-		indexCount = 0; 
-		
-		for(int j = start; j < split; j++){
-			urlSubArr[indexCount] = (*p)[j]; 
-			indexCount += 1; 
-		}
-			
-		printSubArray(urlSubArr, threadCount);
-		thread_arg *newThread = buildThreadArgument(urlSubArr, threadCount, i); 
-		appendThreadArg(&head, newThread); 
-	}
-
-
-	// traverse thread list and spawn
-	spawnThreadArguments(head); 	
-	joinThreadArguments(head); 
-	*/
-
-
+	timeSpent += (double)(end - begin) / CLOCKS_PER_SEC; 
+	printf("The elapsed time is %f seconds", timeSpent); 
 
 
 }
