@@ -546,10 +546,13 @@ void testSyncAudioFilesToDb(endpoint_t *e, char* argv[]){
 void YTBackup(endpoint_t *e, char* argv[]){
     // test view songs  
 	if (strcmp(argv[1], e->commandLineArg) == 0){
-	
-		int urlLimit = getUrlTableSize(); 
-		url_t **urls = initUrls(urlLimit); 
-		downloadUrls(urls, urlLimit, 4); // use thread count of 4 by default
+		if(argv[2]){
+			int threadCount; 
+			sscanf(argv[2], "%d", &threadCount);   
+			grabDatabaseUrls(threadCount);  
+		}else{
+			grabDatabaseUrls(2); // default 2 threads
+		}
     }
 }
 
@@ -557,12 +560,12 @@ void YTBackup(endpoint_t *e, char* argv[]){
 
 void testYTBackup(endpoint_t *e, char* argv[]){
     // test view songs  
-	if (strcmp(argv[1], e->testCommandLineArg) == 0){	 
-		int result = youtubeDownloadBackup();
-		if(result){
-			d_log("[YOUTUBE_BACKUP]", "PASSED"); 	
+	if (strcmp(argv[1], e->testCommandLineArg) == 0){ 
+		if(argv[2]){
+			// download with thread count
+			dlog("THREAD ARG", argv[2]); 
 		}else{
-			d_log("[YOUTUBE_BACKUP]", "FAILED"); 
+			grabDatabaseUrls(2); // default 2 threads
 		}
     }
 }

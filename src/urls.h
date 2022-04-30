@@ -18,13 +18,15 @@ struct YouTubeUrl {
 typedef struct YouTubeUrl url_t;
 
 
-// throwing arguments in a struct
-struct UrlThread {
-	url_t** urlSubArr;
-	int urlLimit;  
-}; 
+struct ThreadArg {
+    url_t** urlSubArr;
+    int urlLimit;
+    int threadId;
+    pthread_t urlThread;
+    struct ThreadArg* nextThread;
+};
 
-typedef struct UrlThread url_thread_t; 
+typedef struct ThreadArg thread_arg;
 
 
 // db functions
@@ -37,6 +39,19 @@ int updateUrl(char *prevUrl, char *newUrl);
 int deleteYoutubeUrl(char *url);
 int deleteAllYoutubeUrls();
 int checkUrlExist(char *url);
+
+// multi threaded download library
+thread_arg *buildThreadArgument(url_t **subArr, int size, int tid); 
+void appendThreadArg(thread_arg **headRef, thread_arg *newThread); 
+void printThreadUrls(thread_arg *threadArg); 
+void downloadBackup(url_t **urls, int size); 
+void *downloadUrlThread(void *url_struct); 
+void spawnThreadArguments(thread_arg *headThreadArg); 
+void joinThreadArguments(thread_arg *headThreadArg); 
+url_t **allocateSubArray(int threadCount); 
+void printSubArray(url_t **subArr, int arrSize); 
+void grabDatabaseUrls(int threadCount);
+
 
 
 

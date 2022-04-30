@@ -33,11 +33,11 @@ void printThreadUrls(thread_arg *threadArg){
 	printf("====================\n"); 
 	url_t ***p = &threadArg->urlSubArr; 
 	for(int i = 0; i < threadArg->urlLimit; i++){
-		printf("Url thread arg: %s\n", (*p)[i]->url); 
+		dlog("URL THREAD", (*p)[i]->url);  
 	}
-	printf("====================\n"); 
-	printf("Url Size: %d\n", threadArg->urlLimit);  
-	printf("Thread Id: %d\n", threadArg->threadId);  
+	printf("====================\n");
+	dlog_int("URL SIZE", threadArg->urlLimit); 
+	dlog_int("THREAD ID", threadArg->threadId);  
 }
 
 
@@ -51,7 +51,7 @@ void downloadBackup(url_t **urls, int size){
 	url_t ***p = &urls;
 	printf("=================\n"); 
 	for(int i = 0; i < size; i++){
-		printf("Url: %s\n", (*p)[i]->url);
+		dlog("URL DOWNLOAD", (*p)[i]->url); 
 		char buffer[500]; 
 		sprintf(buffer, "python3 yt.py %s", (*p)[i]->url); 
 		system(buffer);  
@@ -62,14 +62,14 @@ void downloadBackup(url_t **urls, int size){
 
 void *downloadUrlThread(void *url_struct){
 	thread_arg *args = (thread_arg*)url_struct;
-	printf("THREAD ID: %d\n", args->threadId);
+	dlog_int("THREAD ID", args->threadId); 
 	downloadBackup(args->urlSubArr, args->urlLimit);  
 }
 
 
 void spawnThreadArguments(thread_arg *headThreadArg){
 	while(headThreadArg != NULL){	
-		printf("Created thread argument\n"); 
+		dlog("THREAD SPAWN", "SPAWNED URL THREAD");  
 		pthread_create(&headThreadArg->urlThread, NULL, downloadUrlThread, headThreadArg); 
 		headThreadArg = headThreadArg->nextThread; 
 	}
@@ -78,7 +78,7 @@ void spawnThreadArguments(thread_arg *headThreadArg){
 
 void joinThreadArguments(thread_arg *headThreadArg){
 	while(headThreadArg != NULL){	
-		printf("Created thread argument\n"); 
+		dlog("THREAD JOIN", "JOINING URL THREADS");  
 		pthread_join(headThreadArg->urlThread, NULL); 
 		headThreadArg = headThreadArg->nextThread; 
 	}
@@ -95,12 +95,10 @@ url_t **allocateSubArray(int threadCount){
 
 void printSubArray(url_t **subArr, int arrSize){
     url_t ***p = &subArr;
-	printf("Sub array urls passed to thread: \n");
-    printf("[ ");
+	dlog("LOGGING", "SUB ARRAY PASSED TO THREAD"); 
     for(int i = 0; i < arrSize; i++){
-        printf("%s ",(*p)[i]->url);
+		dlog("SUB ARRAY", (*p)[i]->url); 
     }
-    printf("]\n");
 }
 
 
@@ -130,14 +128,14 @@ void grabDatabaseUrls(int threadCount){
 		// account for remainder
 		if((end-start)+1 < threadCount){
 			int remainder = (end-start)+1; 
-			printf("remainder: %d\n", remainder); 
+			dlog_int("REMAINDER COUNT", remainder);  
 			indexCount = 0;
             url_t **remainderSubArr = allocateSubArray(remainder);
             for(int j = split; j <= end; j++){
                 remainderSubArr[indexCount] = (*p)[j];
                 indexCount += 1;
             }	
-			printf("remainder thread count:\n"); 
+			dlog("YOUTUBE SUBROUTINE", "REMAINDER THREAD COUNT");  
 			printSubArray(urlSubArr, remainder);
 			thread_arg *remainderThread = buildThreadArgument(remainderSubArr, remainder, 0); 
 			appendThreadArg(&head, remainderThread);
