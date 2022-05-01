@@ -8,4 +8,8 @@ This is the feature document for the personal audio player aspect of DTunes. Thi
 
 2. We'll need functionality to add a song to a playlist. The playlist has a ONE to MANY relationship for songs. One playlist can have many songs, but songs cannot have many playlists. When creating the insert method, we'll need a table that associates a song id with a playlist. All the playlist and song data should have unique identifiers with it. It would be catastrophic to have a song with the same name added to a playlist. 
 
-3. There will need to be a method for viewing all the songs associated with a playlist. This should execute a query that gets all the songs associated with a playlist id of some sort. Again, we'll need some type of unique ID generation in order for this to work. 
+3. There will need to be a method for viewing all the songs associated with a playlist. This should execute a query that gets all the songs associated with a playlist id of some sort. Again, we'll need some type of unique ID generation in order for this to work.
+
+4. We'll need functionality for creating a (ONE TO MANY) relationship for songs and playlists. A playlist can have many songs and vice versa. We'll need to associate each of the songs and playlists using unique uuid's. When looking for songs in a certain collection, we'll search the (ONE TO MANY) relationship table and isolate the results using the uuid.  
+
+5. For deleting playlists, we'll need to build a cascading effect, similar to web frameworks like Django and Flask. When we delete a playlist, we'll need to delete all the (ONE TO MANY) relationships associated with it. There will be table that holds the relationship (mentioned above). Before the playlist instance is deleted, it will search all the occurences of the playlist collection to avoid extra (ONE TO MANY) relationships being left in the database.
