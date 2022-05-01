@@ -40,17 +40,19 @@ song_t **initSongs(int limit){
 	int indexCount = 0; 
 	// allocate results into struct array
 	while ((result = sqlite3_step(sql)) == SQLITE_ROW) {
-		// extract column values
-		const char *column1 = sqlite3_column_text(sql, 0); 	
-		const char *column3 = sqlite3_column_text(sql, 1); 
-		const char *column4 = sqlite3_column_text(sql, 2); 
-		const char *column6 = sqlite3_column_text(sql, 3); 
-		const char *column7 = sqlite3_column_text(sql, 4);
+		// extract column values	
+		const char *column0 = sqlite3_column_text(sql, 0); 	
+		const char *column1 = sqlite3_column_text(sql, 1); 	
+		const char *column3 = sqlite3_column_text(sql, 2); 
+		const char *column4 = sqlite3_column_text(sql, 3); 
+		const char *column6 = sqlite3_column_text(sql, 4); 
+		const char *column7 = sqlite3_column_text(sql, 5);
 		
 		int songPlays; 
 		// convert column 7 to int
 		sscanf(column7, "%d", &songPlays); // Using sscanf
-		// store values
+		uuid_parse(column0, songs[indexCount]->songId); 
+		// store values	
 		strcpy(songs[indexCount]->name, column1); 
 		strcpy(songs[indexCount]->dateCreated, column3); 
 		strcpy(songs[indexCount]->filePath, column4); 
@@ -167,11 +169,14 @@ int viewSongs(){
 
 	// print header	
 	printf("\n"); 
-	printf("Name             						Date\n");
-	printf("================================================================================\n");
+	printf("\e[0;31m");
+	printf("%-45s %-25s\n", "UUID", "Name");
+	generateBanner(80); 
 	// View song in format for terminal
 	for(int i = 0; i < songLimit; i++){
-		printf("%-55s %s\n", (*p)[i]->name, (*p)[i]->dateCreated); 
+		char song_uuid[37]; 
+		uuid_unparse_lower((*p)[i]->songId, song_uuid); 
+		printf("%-45s %-24s\n", song_uuid ,(*p)[i]->name); 
 	}
 	printf("\n"); 
 

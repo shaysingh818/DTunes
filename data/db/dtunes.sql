@@ -1,27 +1,35 @@
-/**
-Currently not using unique ID
-Don't know how to generate unique id from database
-*/
+/** Current DB schema for DTUNES */
 
 CREATE TABLE YOUTUBE_URL (
-	yt_url VARCHAR(255) UNIQUE,	
-	date_created VARCHAR(255),
-	desired_path VARCHAR(255)
+    url_uuid VARCHAR(37) PRIMARY KEY,
+    yt_url VARCHAR(255) UNIQUE,
+    date_created VARCHAR(255),
+    desired_path VARCHAR(255)
 );
 
 CREATE TABLE PLAYLIST (
-	name VARCHAR(255) PRIMARY KEY,
-	date_created VARCHAR(255)
-); 
+    playlist_uuid VARCHAR(37) PRIMARY KEY,
+    name VARCHAR(255),
+    date_created VARCHAR(255)
+);
 
 
 CREATE TABLE SONG (
-	name VARCHAR(255) PRIMARY KEY,
-	date_created VARCHAR(255),
-	file_path VARCHAR(255),
-	subtitles VARCHAR(1000),
-	plays INT
-); 
+    song_uuid VARCHAR(37) PRIMARY KEY,
+    name VARCHAR(255),
+    date_created VARCHAR(255),
+    file_path VARCHAR(255),
+    subtitles VARCHAR(1000),
+    plays INT
+);
 
+
+CREATE TABLE PLAYLIST_SONG (
+    relation_id INTEGER PRIMARY KEY,
+    playlist VARCHAR(37),
+    song VARCHAR(37),
+    FOREIGN KEY(playlist) REFERENCES PLAYLIST(playlist_uuid),
+    FOREIGN KEY(song) REFERENCES SONG(song_uuid)
+);
 
 

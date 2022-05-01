@@ -50,6 +50,7 @@ void dlog(char *type, char*message);
 void dlog_int(char *type, int message); 
 void dlog_counter(char *type, char *message, int counter); 
 void d_log_time(char* type, char* message); 
+void generateBanner(int amount); 
 
 // youtube dl functions
 int downloadVideo(char *url);

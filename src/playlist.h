@@ -2,12 +2,13 @@
 #define PLAYLIST_H
 
 #include <string.h>
-
+#include <uuid/uuid.h> 
 
 /**
 	Model for storing songs/audio files in container
 */
 struct AudioPlaylist {
+	uuid_t playlistId; 
 	char name[100]; 
 	char dateCreated[30]; 
 };

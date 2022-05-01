@@ -7,11 +7,13 @@
 #include <string.h>
 #include <time.h>
 #include <dirent.h>
+#include <uuid/uuid.h> 
 
 /**
 	Model for storing audio files
 */
 struct AudioFile {
+	uuid_t songId; 
 	char name[100];
 	char dateCreated[30]; 
 	char filePath[100];
@@ -20,7 +22,6 @@ struct AudioFile {
 };
 
 typedef struct AudioFile song_t; 
-
 
 
 // callbacks

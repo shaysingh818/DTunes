@@ -53,6 +53,15 @@ void d_log_time(char* type, char* message){
 }
 
 
+void generateBanner(int amount){
+	char str[amount]; 
+	for(int i = 0; i < amount; i++){
+		str[i] =  '='; 
+	}
+	printf("%s\n", str); 
+}
+
+
 int downloadVideo(char *url){
     char buffer[500];
     if(chdir(YOUTUBE_FILE_PATH) != 0){
@@ -82,7 +91,6 @@ char* combineFileStrs(const char *cwd, const char *fileName){
 	strcat(result, fileName); 
 	return result;  
 }
-
 
 
 void removeChar(char *testString, char charToRemove){	

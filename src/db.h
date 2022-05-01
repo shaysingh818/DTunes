@@ -20,13 +20,13 @@
 
 // queries for playlist
 #define VIEW_DB_PLAYLISTS  "SELECT * FROM PLAYLIST" 
-#define INSERT_DB_PLAYLISTS  "INSERT INTO PLAYLIST VALUES(?,?)"
+#define INSERT_DB_PLAYLISTS  "INSERT INTO PLAYLIST VALUES(?,?,?)"
 #define DELETE_DB_PLAYLIST  "DELETE FROM PLAYLIST where name=?" 
 #define DELETE_DB_PLAYLISTS  "DELETE  FROM PLAYLIST"
 #define COUNT_DB_PLAYLISTS "SELECT COUNT(*) FROM PLAYLIST"
 
 // queries for songs
-#define INSERT_DB_SONGS  "INSERT INTO SONG VALUES(?,?,?,?,?)"
+#define INSERT_DB_SONGS  "INSERT INTO SONG VALUES(?,?,?,?,?,?)"
 #define VIEW_DB_SONGS  "SELECT * FROM SONG"
 #define UPDATE_SONG "UPDATE SONG SET name=? where name=?"
 #define DELETE_DB_SONG  "DELETE FROM SONG where name=?" 
@@ -49,6 +49,7 @@ void dlog(char *type, char*message);
 void dlog_int(char *type, int message); 
 void dlog_counter(char *type, char *message, int counter); 
 void d_log_time(char* type, char* message); 
+void generateBanner(int amount);
 
 // youtube dl functions
 int downloadVideo(char *url);

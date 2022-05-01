@@ -41,16 +41,18 @@ song_t **initSongs(int limit){
 	int indexCount = 0; 
 	// allocate results into struct array
 	while ((result = sqlite3_step(sql)) == SQLITE_ROW) {
-		// extract column values
-		const char *column1 = sqlite3_column_text(sql, 0); 	
-		const char *column3 = sqlite3_column_text(sql, 1); 
-		const char *column4 = sqlite3_column_text(sql, 2); 
-		const char *column6 = sqlite3_column_text(sql, 3); 
-		const char *column7 = sqlite3_column_text(sql, 4);
+		// extract column values	
+		const char *column0 = sqlite3_column_text(sql, 0); 	
+		const char *column1 = sqlite3_column_text(sql, 1); 	
+		const char *column3 = sqlite3_column_text(sql, 2); 
+		const char *column4 = sqlite3_column_text(sql, 3); 
+		const char *column6 = sqlite3_column_text(sql, 4); 
+		const char *column7 = sqlite3_column_text(sql, 5);
 		
 		int songPlays; 
 		// convert column 7 to int
 		sscanf(column7, "%d", &songPlays); // Using sscanf
+		uuid_parse(column0, songs[indexCount]->songId);
 		// store values
 		strcpy(songs[indexCount]->name, column1); 
 		strcpy(songs[indexCount]->dateCreated, column3); 
@@ -140,12 +142,19 @@ int createSong(song_t* newSong){
 		sqlite3_close(db);
 		return 0; 
 	}
-	// bind song variables to sqlite3 statment
-	sqlite3_bind_text(sql, 1, newSong->name, -1, NULL);	
-	sqlite3_bind_text(sql, 2, newSong->dateCreated, -1, NULL);	
-	sqlite3_bind_text(sql, 3, newSong->filePath, -1, NULL);
-	sqlite3_bind_text(sql, 4, newSong->subtitles, -1, NULL);	
-	sqlite3_bind_int(sql, 5, newSong->plays);	
+	
+	// generate uuid
+	char song_uuid[37];
+    uuid_generate_time_safe(newSong->songId);
+    uuid_unparse_lower(newSong->songId, song_uuid);
+
+	// bind song variables to sqlite3 statment	
+	sqlite3_bind_text(sql, 1, song_uuid, -1, NULL);	
+	sqlite3_bind_text(sql, 2, newSong->name, -1, NULL);	
+	sqlite3_bind_text(sql, 3, newSong->dateCreated, -1, NULL);	
+	sqlite3_bind_text(sql, 4, newSong->filePath, -1, NULL);
+	sqlite3_bind_text(sql, 5, newSong->subtitles, -1, NULL);	
+	sqlite3_bind_int(sql, 6, newSong->plays);	
 
 	// do first insert
 	sqlite3_step(sql);
@@ -156,23 +165,26 @@ int createSong(song_t* newSong){
 
 int viewSongs(){
 
-	// Call the load songs with limit	
-	int songLimit = getSongTableSize(); 
-	song_t **songs = initSongs(songLimit); 
-	song_t ***p = &songs;  
+    // Call the load songs with limit   
+    int songLimit = getSongTableSize();
+    song_t **songs = initSongs(songLimit);
+    song_t ***p = &songs;
 
-	// print header	
-	printf("\n"); 
-	printf("Name             						Date\n");
-	printf("================================================================================\n");
-	// View song in format for terminal
-	for(int i = 0; i < songLimit; i++){
-		printf("%-55s %s\n", (*p)[i]->name, (*p)[i]->dateCreated); 
-	}
-	printf("\n"); 
+    // print header 
+    printf("\n");
+    printf("\e[0;31m");
+    printf("%-45s %-25s\n", "UUID", "Name");
+    generateBanner(80);
+    // View song in format for terminal
+    for(int i = 0; i < songLimit; i++){
+        char song_uuid[37];
+        uuid_unparse_lower((*p)[i]->songId, song_uuid);
+        printf("%-45s %-24s\n", song_uuid ,(*p)[i]->name);
+    }
+    printf("\n");
 
-	// return true or false if view was successful
-	return TRUE; 
+    // return true or false if view was successful
+    return TRUE;
 }
 
 

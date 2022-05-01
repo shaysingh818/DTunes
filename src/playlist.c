@@ -31,10 +31,12 @@ playlist_t **initPlaylists(int limit){
 	int indexCount = 0; 
 	// allocate results into struct array
 	while ((result = sqlite3_step(sql)) == SQLITE_ROW) {
-		// extract column values
-		const char *column1 = sqlite3_column_text(sql, 0); 	
-		const char *column2 = sqlite3_column_text(sql, 1); 
+		// extract column values	
+		const char *column0 = sqlite3_column_text(sql, 0); 	
+		const char *column1 = sqlite3_column_text(sql, 1); 	
+		const char *column2 = sqlite3_column_text(sql, 2); 
 		
+		uuid_parse(column0, playlists[indexCount]->playlistId); 
 		// store values:
 		strcpy(playlists[indexCount]->name, column1); 	
 		strcpy(playlists[indexCount]->dateCreated, column2); 
@@ -88,55 +90,64 @@ int getPlaylistTableSize(){
 	return playlistLimit; 
 }
 
+
 int createPlaylist(playlist_t* playlist){
-	// open db	
-	sqlite3 *db = openDB(DB_PATH);
-	// prepare statement	
-	char *errMsg = 0; 
-	sqlite3_stmt *sql;	 
-	int result = sqlite3_prepare_v2(db, "INSERT INTO PLAYLIST VALUES(?, ?)", -1, &sql, NULL);		 
+    // open db  
+    sqlite3 *db = openDB(DB_PATH);
+    // prepare statement    
+    char *errMsg = 0;
+    sqlite3_stmt *sql;
+    int result = sqlite3_prepare_v2(db, "INSERT INTO PLAYLIST VALUES(?, ?, ?)", -1, &sql, NULL);
 
-	// check for sql cursor errors
-	if(result != SQLITE_OK){
-		fprintf(stderr, "Failed to insert:  %s\n",sqlite3_errmsg(db));
-		sqlite3_close(db);
-		return 0; 
-	}
-	
-	sqlite3_bind_text(sql, 1, playlist->name, -1, NULL);	
-	sqlite3_bind_text(sql, 2, playlist->dateCreated, -1, NULL);
+    // check for sql cursor errors
+    if(result != SQLITE_OK){
+        fprintf(stderr, "Failed to insert:  %s\n",sqlite3_errmsg(db));
+        sqlite3_close(db);
+        return 0;
+    }
 
-	// do first insert
-	sqlite3_step(sql);
-	sqlite3_close(db);
+    char playlist_uuid[37];
+    uuid_generate_time_safe(playlist->playlistId);
+    uuid_unparse_lower(playlist->playlistId, playlist_uuid);
+    sqlite3_bind_text(sql, 1, playlist_uuid, -1, NULL);
+    sqlite3_bind_text(sql, 2, playlist->name, -1, NULL);
+    sqlite3_bind_text(sql, 3, playlist->dateCreated, -1, NULL);
 
-	return 1;  
+    // do first insert
+    sqlite3_step(sql);
+    sqlite3_close(db);
+
+    return 1;
 }
 
+
+
 int viewPlaylists(){
-	// get amount of playlists in db    
-	// Call the load songs with limit
-	int playlistLimit = getPlaylistTableSize(); 
+    // get amount of playlists in db    
+    // Call the load songs with limit
+    int playlistLimit = getPlaylistTableSize();
     playlist_t **playlists = initPlaylists(playlistLimit);
     playlist_t ***p = &playlists;
 
     // print header 
     printf("\n");
-	printf("\e[0;31m");
-    printf("Name                    	Date\n");
-    printf("=========================================================\n");
+    printf("\e[0;31m");
+    printf("%-45s %-25s %-15s\n", "UUID", "Name", "Date");
+    generateBanner(100);
     // View song in format for terminal
     for(int i = 0; i < playlistLimit; i++){
-        printf("%-25s %-25s", (*p)[i]->name, (*p)[i]->dateCreated);
+        char playlist_uuid[37];
+        uuid_unparse_lower((*p)[i]->playlistId, playlist_uuid);
+        printf("%-45s %-25s %-15s", playlist_uuid, (*p)[i]->name, (*p)[i]->dateCreated);
     }
     printf("\n");
 
     // return true or false if view was successful
     return TRUE;
-
-
-
 }
+
+
+
 
 int deletePlaylist(char *playlistName){	
 	// open db
