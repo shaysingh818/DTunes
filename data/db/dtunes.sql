@@ -3,8 +3,7 @@
 CREATE TABLE YOUTUBE_URL (
     url_uuid VARCHAR(37) PRIMARY KEY,
     yt_url VARCHAR(255) UNIQUE,
-    date_created VARCHAR(255),
-    desired_path VARCHAR(255)
+    date_created VARCHAR(255)
 );
 
 CREATE TABLE PLAYLIST (

@@ -8,9 +8,12 @@
 #include <time.h>
 #include <dirent.h>
 #include <pthread.h> 
+#include <uuid/uuid.h>
+
 
 // db model
 struct YouTubeUrl {
+	uuid_t urlId; 
     char url[100];
     char dateCreated[30];
 };

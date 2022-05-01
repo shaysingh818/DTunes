@@ -27,10 +27,12 @@ url_t **initUrls(int limit){
     int indexCount = 0;
     // allocate results into struct array
     while ((result = sqlite3_step(sql)) == SQLITE_ROW) {
-        // extract column values
-        const char *column1 = sqlite3_column_text(sql, 0);
-        const char *column2 = sqlite3_column_text(sql, 1);
+        // extract column values	
+        const char *column0 = sqlite3_column_text(sql, 0);
+        const char *column1 = sqlite3_column_text(sql, 1);
+        const char *column2 = sqlite3_column_text(sql, 2);
         // store values
+		uuid_parse(column0, urls[indexCount]->urlId);
         strcpy(urls[indexCount]->url, column1);
         strcpy(urls[indexCount]->dateCreated, column2);
         indexCount += 1;
@@ -109,9 +111,16 @@ int createYoutubeUrl(url_t* newUrl){
         sqlite3_close(db);
         return 0;
     }
-    // bind song variables to sqlite3 statment
-    sqlite3_bind_text(sql, 1, newUrl->url, -1, NULL);
-    sqlite3_bind_text(sql, 2, newUrl->dateCreated, -1, NULL);
+
+	// generate uuid
+	char url_uuid[37];
+    uuid_generate_time_safe(newUrl->urlId);
+    uuid_unparse_lower(newUrl->urlId, url_uuid);
+
+    // bind song variables to sqlite3 statment	
+    sqlite3_bind_text(sql, 1, url_uuid, -1, NULL);
+    sqlite3_bind_text(sql, 2, newUrl->url, -1, NULL);
+    sqlite3_bind_text(sql, 3, newUrl->dateCreated, -1, NULL);
 
     // do first insert
     sqlite3_step(sql);
@@ -132,11 +141,14 @@ int viewUrls(){
 
     // print header 
     printf("\n");
-    printf("Url                                     Date\n");
-    printf("================================================================================\n");
+ 	printf("\e[0;31m");
+    printf("%-45s %-25s\n", "UUID", "URL");
+	generateBanner(80);
     // View song in format for terminal
     for(int i = 0; i < urlLimit; i++){
-        printf("%-55s %s\n", (*p)[i]->url, (*p)[i]->dateCreated);
+		char url_uuid[37]; 
+		uuid_unparse_lower((*p)[i]->urlId, url_uuid); 
+        printf("%-45s %-24s\n", url_uuid, (*p)[i]->url);
     }
     printf("\n");
 
