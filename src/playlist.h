@@ -3,6 +3,7 @@
 
 #include <string.h>
 #include <uuid/uuid.h> 
+#include "song.h"
 
 /**
 	Model for storing songs/audio files in container
@@ -24,8 +25,14 @@ int getPlaylistTableSize();
 // crud operations
 int createPlaylist(playlist_t* playlist);
 int viewPlaylists(); 
+int viewPlaylistById(char uuid);  
 int deletePlaylist(char *playlistName); 
 int deleteAllPlaylists();  
 int checkPlaylistExist(char *playlistName);
+int addSongToPlaylist(char *songUuid, char *playlistUuid); 
+int viewSongsPlaylist(char *playlistUuid); 
+int getRelationTableSize(); 
+song_t **viewPlaylistSongs(char *playlistUuid); 
+
 
 #endif 

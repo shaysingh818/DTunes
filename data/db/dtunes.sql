@@ -24,7 +24,7 @@ CREATE TABLE SONG (
 
 
 CREATE TABLE PLAYLIST_SONG (
-    relation_id INTEGER PRIMARY KEY,
+    relation_id VARCHAR(37) PRIMARY KEY,
     playlist VARCHAR(37),
     song VARCHAR(37),
     FOREIGN KEY(playlist) REFERENCES PLAYLIST(playlist_uuid),

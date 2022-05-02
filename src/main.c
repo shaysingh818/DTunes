@@ -26,7 +26,6 @@ void songEndpoints(){
                         "sync audio files in directory to database"
                     );
     e6->endpointLogic =  syncAudioFilesToDb;
-    e6->testEndpointLogic = testSyncAudioFilesToDb;
     appendEndpoint(&head, e6);
 
 
@@ -37,7 +36,6 @@ void songEndpoints(){
                         "delete all songs in database"
                     );
     e5->endpointLogic = deleteAllSongsCmd;
-    e5->testEndpointLogic = testDeleteSongs;
     appendEndpoint(&head, e5);
 	
 	// delete song
@@ -47,7 +45,6 @@ void songEndpoints(){
                         "delete song by name"
                     );
     e4->endpointLogic = deleteSongCmd;
-    e4->testEndpointLogic = testDeleteSong;
     appendEndpoint(&head, e4);
 
 
@@ -59,7 +56,6 @@ void songEndpoints(){
                     );
 	
 	e3->endpointLogic = updateSongCmd; 
-	e3->testEndpointLogic = testUpdateSong; 
     appendEndpoint(&head, e3);
 	
 	// view songs
@@ -69,7 +65,6 @@ void songEndpoints(){
                         "view all songs on dtunes"
                     );
     e2->endpointLogic = viewSongsCmd;
-    e2->testEndpointLogic = testViewSongs;
     appendEndpoint(&head, e2);
 
 	
@@ -80,7 +75,6 @@ void songEndpoints(){
                         "create song on dtunes using youtube url"
                     );
     e1->endpointLogic = insertSongCmd;
-    e1->testEndpointLogic = testInsertSong;
     appendEndpoint(&head, e1);
 
 	
@@ -94,48 +88,63 @@ void playlistEndpoints(){
 
 	// delete songs
 	endpoint_t *e7 = createEndpoint(
-                        "delete-playlists",
-                        "dap",
-                        "delete all playlists in database"
-                    );
+    	"delete-playlists",
+        "dap",
+        "delete all playlists in database"
+    );
     e7->endpointLogic = deleteAllPlaylistsCmd;
-    e7->testEndpointLogic = testDeletePlaylists;
     appendEndpoint(&head, e7);
 
 	
 	// delete song
 	endpoint_t *e8 = createEndpoint(
-                        "delete-playlist",
-                        "dp",
-                        "delete playlist by name"
-                    );
+    	"delete-playlist",
+        "dp",
+        "delete playlist by name"
+    );
     e8->endpointLogic = deletePlaylistCmd;
-    e8->testEndpointLogic = testDeletePlaylist;
     appendEndpoint(&head, e8);
 
 	
 	// view songs
 	endpoint_t *e9 = createEndpoint(
-                        "view-playlists",
-                        "vp",
-                        "view all playlists on dtunes"
-                    );
+    	"view-playlists",
+    	"vp",
+    	"view all playlists on dtunes"
+    );
     e9->endpointLogic = viewPlaylistCmd;
-    e9->testEndpointLogic = testViewPlaylists;
     appendEndpoint(&head, e9);
 
 	
 	// create song
 	endpoint_t *e10 = createEndpoint(
-                        "create-playlist",
-                        "cp",
-                        "create playlist on dtunes"
-                    );
+    	"create-playlist",
+    	"cp",
+    	"create playlist on dtunes"
+    );
     e10->endpointLogic = insertPlaylistCmd;
-    e10->testEndpointLogic = testInsertPlaylist;
     appendEndpoint(&head, e10);
 
 	
+	// create song
+	endpoint_t *e11 = createEndpoint(
+    	"add-song-playlist",
+        "asp",
+        "add song to playlist"
+    );
+    e11->endpointLogic = addSongPlaylistCmd;
+    appendEndpoint(&head, e11);
+
+	
+	// create song
+	endpoint_t *e12 = createEndpoint(
+		"view-songs-playlist",
+        "vsp",
+        "view songs in a playlist"
+    );
+    e12->endpointLogic = viewPlaylistSongsCmd;
+    appendEndpoint(&head, e12);
+
 
 }
 
@@ -150,7 +159,6 @@ void urlEndpoints(){
                         "view all youtube urls on dtunes"
                     );
     e11->endpointLogic = viewYoutubeUrlsCmd;
-    e11->testEndpointLogic = testViewYoutubeUrlsCmd;
     appendEndpoint(&head, e11);
 
 	
@@ -161,7 +169,6 @@ void urlEndpoints(){
                         "insert youtube url"
                     );
     e12->endpointLogic = insertYoutubeUrlCmd;
-    e12->testEndpointLogic = testInsertYoutubeUrlCmd;
     appendEndpoint(&head, e12);
 
 
@@ -172,7 +179,6 @@ void urlEndpoints(){
                         "delete all urls in database"
                     );
     e13->endpointLogic = deleteAllYoutubeUrlsCmd;
-    e13->testEndpointLogic = testDeleteYoutubeUrls; 
     appendEndpoint(&head, e13);
 	
 	// delete url
@@ -182,7 +188,6 @@ void urlEndpoints(){
                         "delete youtube url by url link"
                     );
     e14->endpointLogic = deleteYoutubeUrlCmd;
-    e14->testEndpointLogic = testDeleteYoutubeUrl;
     appendEndpoint(&head, e14);
 
 
@@ -194,7 +199,6 @@ void urlEndpoints(){
                         "download youtube urls"
                     );
     e15->endpointLogic = YTBackup;
-    e15->testEndpointLogic = testYTBackup;
     appendEndpoint(&head, e15);
 
 	

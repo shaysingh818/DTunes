@@ -62,12 +62,49 @@ song_t **initSongs(int limit){
 		indexCount += 1;
 	}
 	
-
 	sqlite3_close(db);
 	return songs;  
 	
+}
 
 
+
+song_t *viewSongById(char uuid){
+	sqlite3 *db = openDB(DB_PATH);
+    sqlite3_stmt *sql;
+    char *query = VIEW_SONG_UUID;
+	int result = sqlite3_prepare_v2(db, query, -1, &sql, NULL);
+    if(result != SQLITE_OK){
+        fprintf(stderr, "Failed to query song by uuid:  %s\n",sqlite3_errmsg(db));
+        sqlite3_close(db);
+        return FALSE;
+    }
+	song_t *song;	
+    song = (song_t*)malloc(sizeof(song_t));
+	result = sqlite3_step(sql); 
+	if(result == SQLITE_ROW){
+
+		const char *songUuid = sqlite3_column_text(sql, 0);
+		const char *songName = sqlite3_column_text(sql, 1);
+		const char *songDate = sqlite3_column_text(sql, 2);	
+		const char *songFilePath = sqlite3_column_text(sql, 3);	
+		const char *songSubtitles = sqlite3_column_text(sql, 4);	
+		const char *songPlays = sqlite3_column_text(sql, 5);
+		int songP; 
+
+		sscanf(songPlays, "%d", &song->plays); // Using sscanf
+        uuid_parse(songUuid, song->songId);
+        // store values
+        strcpy(song->name, songName);
+        strcpy(song->dateCreated, songDate);
+        strcpy(song->filePath, songFilePath);
+        strcpy(song->subtitles, songSubtitles);
+		//song->plays = songP; 
+	}
+
+	sqlite3_finalize(sql); 
+	sqlite3_close(db); 
+	return song; 
 }
 
 
@@ -186,6 +223,7 @@ int viewSongs(){
     // return true or false if view was successful
     return TRUE;
 }
+
 
 
 int updateSong(char *prevSongName, char *newSongName){	

@@ -1,5 +1,4 @@
 #include "playlist.h"
-//#include "song.h"
 #include "db.h"
 
 
@@ -232,4 +231,95 @@ int checkPlaylistExist(char *playlistName){
 }
 
 
+int getRelationTableSize(){
+    // get amount of songs in db    
+    sqlite3 *db = openDB(DB_PATH);
+    sqlite3_stmt *sql;
+    char *query = COUNT_PLAYLIST_RELATIONS;
+    int result = sqlite3_prepare_v2(db, query, -1, &sql, NULL);
+    if(result != SQLITE_OK){
+        fprintf(stderr, "Failed to query playlist realation size:  %s\n",sqlite3_errmsg(db));
+        sqlite3_close(db);
+        return FALSE;
+    }
+
+    // load song limit
+    int relationLimit;
+    result = sqlite3_step(sql);
+    if(result == SQLITE_ROW){
+        const char *columnValue = sqlite3_column_text(sql, 0);
+        sscanf(columnValue, "%d", &relationLimit); // Using sscanf
+    }
+
+    sqlite3_finalize(sql);
+    sqlite3_close(db);
+
+    return relationLimit;
+}
+
+
+int addSongToPlaylist(char *playlistUuid, char *songUuid){
+
+    // open db  
+    sqlite3 *db = openDB(DB_PATH);
+    // prepare statement    
+    char *errMsg = 0;
+    sqlite3_stmt *sql;
+    int result = sqlite3_prepare_v2(db, ADD_SONG_PLAYLIST, -1, &sql, NULL);
+
+    // check for sql cursor errors
+    if(result != SQLITE_OK){
+        fprintf(stderr, "Failed to insert:  %s\n",sqlite3_errmsg(db));
+        sqlite3_close(db);
+        return FALSE;
+    }
+	// generate uuid
+	uuid_t relation_uuid_str; 
+    char relation_uuid[37];
+    uuid_generate_time_safe(relation_uuid_str);
+    uuid_unparse_lower(relation_uuid_str, relation_uuid);
+	// bind values
+    sqlite3_bind_text(sql, 1, relation_uuid, -1, NULL);	
+    sqlite3_bind_text(sql, 2, playlistUuid, -1, NULL);
+    sqlite3_bind_text(sql, 3, songUuid, -1, NULL);
+
+    // do first insert
+    sqlite3_step(sql);
+    sqlite3_close(db);
+
+    return TRUE;
+}
+
+
+song_t **viewPlaylistSongs(char *playlistUuid){
+
+	int limit = getRelationTableSize(); 
+	song_t **songs = malloc(limit * sizeof(song_t*));
+    // allocate space
+    for(int i = 0; i < limit; i++){
+        songs[i] = malloc(sizeof(song_t));
+    }
+
+	// open db
+    sqlite3 *db = openDB(DB_PATH);
+    // prepare statement    
+    sqlite3_stmt *sql; 
+    char *query = VIEW_DB_SONGS; 
+    // prepare statement
+    int result = sqlite3_prepare_v2(db, query, -1, &sql, NULL);
+
+	if(result != SQLITE_OK){
+        fprintf(stderr, "Failed to view songs:  %s\n",sqlite3_errmsg(db));
+        sqlite3_close(db);
+    }
+
+	while((result = sqlite3_step(sql)) == SQLITE_ROW){
+		const char *song_uuid = sqlite3_column_text(sql, 1);
+		dlog("SONG UUID", song_uuid); 
+	}
+
+	sqlite3_close(db); 
+	return songs; 
+
+}
 
