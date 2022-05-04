@@ -32,7 +32,7 @@ int checkPlaylistExist(char *playlistName);
 int addSongToPlaylist(char *songUuid, char *playlistUuid); 
 int viewSongsPlaylist(char *playlistUuid); 
 int getRelationTableSize(); 
-song_t **viewPlaylistSongs(char *playlistUuid); 
-
+song_t **loadPlaylistSongs(char *playlistUuid); 
+void viewPlaylistSongs(char *playlistUuid); 
 
 #endif 

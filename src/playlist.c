@@ -291,7 +291,7 @@ int addSongToPlaylist(char *playlistUuid, char *songUuid){
 }
 
 
-song_t **viewPlaylistSongs(char *playlistUuid){
+song_t **loadPlaylistSongs(char *playlistUuid){
 
 	int limit = getRelationTableSize(); 
 	song_t **songs = malloc(limit * sizeof(song_t*));
@@ -304,7 +304,7 @@ song_t **viewPlaylistSongs(char *playlistUuid){
     sqlite3 *db = openDB(DB_PATH);
     // prepare statement    
     sqlite3_stmt *sql; 
-    char *query = VIEW_DB_SONGS; 
+    char *query = VIEW_PLAYLIST_SONGS; 
     // prepare statement
     int result = sqlite3_prepare_v2(db, query, -1, &sql, NULL);
 
@@ -312,14 +312,41 @@ song_t **viewPlaylistSongs(char *playlistUuid){
         fprintf(stderr, "Failed to view songs:  %s\n",sqlite3_errmsg(db));
         sqlite3_close(db);
     }
+	// bind playlist uuid to query	
+    sqlite3_bind_text(sql, 1, playlistUuid, -1, NULL);
 
 	while((result = sqlite3_step(sql)) == SQLITE_ROW){
 		const char *song_uuid = sqlite3_column_text(sql, 1);
-		dlog("SONG UUID", song_uuid); 
+		printf("SONG UUID: %s\n", song_uuid);  
 	}
 
 	sqlite3_close(db); 
 	return songs; 
+}
+
+
+void viewPlaylistSongs(char *playlistUuid){
+	
+	int relationLimit = getRelationTableSize(); 
+	song_t **songs = loadPlaylistSongs(playlistUuid); 
+	song_t ***p = &songs; 
+
+	// print header
+	printf("\n");
+    printf("\e[0;31m");
+    printf("%-45s %-25s\n", "UUID", "Name");
+	generateBanner(80); 
+	// view playlist songs
+	for(int i = 0; i < relationLimit; i++){
+		char song_uuid[37];
+        uuid_unparse_lower((*p)[i]->songId, song_uuid);
+        printf("%-45s %-24s\n", song_uuid ,(*p)[i]->name);
+	}
+	printf("\n"); 
+	
 
 }
+
+
+
 

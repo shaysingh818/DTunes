@@ -136,7 +136,7 @@ void addSongPlaylistCmd(endpoint_t *e, char* argv[]){
 
 void viewPlaylistSongsCmd(endpoint_t *e, char* argv[]){
 	if (strcmp(argv[1], e->commandLineArg) == 0){
-		song_t **songs = viewPlaylistSongs(argv[2]); 
+		song_t **songs = loadPlaylistSongs(argv[2]); 
 	}
 }
 
