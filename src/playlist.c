@@ -214,7 +214,7 @@ int deleteCascadingPlaylists(char *playlistUuid){
 }
 
 
-int deletePlaylist(char *playlistName){	
+int deletePlaylist(char *playlistUuid){	
 	// open db
 	sqlite3 *db = openDB(DB_PATH);
 
@@ -222,9 +222,9 @@ int deletePlaylist(char *playlistName){
 	sqlite3_stmt *sql; 
 	
 	// prepare statement
-	int result = sqlite3_prepare_v2(db, DELETE_DB_PLAYLIST, -1, &sql, NULL);
+	int result = sqlite3_prepare_v2(db, DELETE_DB_PLAYLIST_UUID, -1, &sql, NULL);
 	// bind vars to statement
-	sqlite3_bind_text(sql, 1, playlistName, -1, NULL);
+	sqlite3_bind_text(sql, 1, playlistUuid, -1, NULL);
 	 
 	// check for sql cursor errors
 	if(result != SQLITE_OK){
@@ -237,7 +237,7 @@ int deletePlaylist(char *playlistName){
 	sqlite3_step(sql); 
 	sqlite3_close(db);
 
-	int dbresult = deleteCascadingPlaylists(playlistName); 
+	int dbresult = deleteCascadingPlaylists(playlistUuid); 
 	if(dbresult){
 		dlog("DB ACTION", "CASCADING DB DELETE"); 
 	}
@@ -333,7 +333,7 @@ int checkPlaylistExist(char *playlistName){
 }
 
 
-int getRelationTableSize(){
+int getRelationTableSize(char *playlistUuid){
     // get amount of songs in db    
     sqlite3 *db = openDB(DB_PATH);
     sqlite3_stmt *sql;
@@ -344,6 +344,8 @@ int getRelationTableSize(){
         sqlite3_close(db);
         return FALSE;
     }
+
+	sqlite3_bind_text(sql, 1, playlistUuid, -1, NULL);
 
     // load song limit
     int relationLimit;
@@ -395,7 +397,7 @@ int addSongToPlaylist(char *playlistUuid, char *songUuid){
 
 song_t **loadPlaylistSongs(char *playlistUuid){
 
-	int limit = getRelationTableSize(); 
+	int limit = getRelationTableSize(playlistUuid); 
 	song_t **songs = malloc(limit * sizeof(song_t*));
     // allocate space
     for(int i = 0; i < limit; i++){
@@ -434,7 +436,7 @@ song_t **loadPlaylistSongs(char *playlistUuid){
 
 void viewPlaylistSongs(char *playlistUuid){
 	
-	int relationLimit = getRelationTableSize(); 
+	int relationLimit = getRelationTableSize(playlistUuid); 
 	song_t **songs = loadPlaylistSongs(playlistUuid); 
 	song_t ***p = &songs; 
 

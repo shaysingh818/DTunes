@@ -54,11 +54,12 @@ void d_log_time(char* type, char* message){
 
 
 void generateBanner(int amount){
-    char str[amount];
+	char *str = malloc(amount * sizeof(char *));  
     for(int i = 0; i < amount; i++){
-        str[i] =  '=';
+		strcat(str, "=");  
     }
     printf("%s\n", str);
+	free(str); 
 }
 
 

@@ -26,14 +26,14 @@ int getPlaylistTableSize();
 // crud operations
 int createPlaylist(playlist_t* playlist);
 int viewPlaylists(); 
-int deletePlaylist(char *playlistName); 
-int deleteCascadingPlaylists(char *playlistName); 
+int deletePlaylist(char *playlistUuid); 
+int deleteCascadingPlaylists(char *playlistUuid); 
 int deleteAllPlaylists(); 
 int deleteAllPlaylistRelations();  
 int checkPlaylistExist(char *playlistName);
 int addSongToPlaylist(char *songUuid, char *playlistUuid); 
 int viewSongsPlaylist(char *playlistUuid); 
-int getRelationTableSize(); 
+int getRelationTableSize(char *playlistUuid); 
 song_t **loadPlaylistSongs(char *playlistUuid); 
 void viewPlaylistSongs(char *playlistUuid); 
 

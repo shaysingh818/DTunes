@@ -323,7 +323,7 @@ int deleteAllSongs(){
 	sqlite3_step(sql); 
 	sqlite3_close(db);
 
-	clearAudioFileDirectory("data/audiofiles");  
+	clearAudioFileDirectory("../data/audiofiles");  
 
 	return TRUE; 
 }

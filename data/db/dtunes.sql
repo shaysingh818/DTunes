@@ -8,14 +8,14 @@ CREATE TABLE YOUTUBE_URL (
 
 CREATE TABLE PLAYLIST (
     playlist_uuid VARCHAR(37) PRIMARY KEY,
-    name VARCHAR(255),
+    name VARCHAR(255) UNIQUE,
     date_created VARCHAR(255)
 );
 
 
 CREATE TABLE SONG (
     song_uuid VARCHAR(37) PRIMARY KEY,
-    name VARCHAR(255),
+    name VARCHAR(255) UNIQUE,
     date_created VARCHAR(255),
     file_path VARCHAR(255),
     subtitles VARCHAR(1000),
