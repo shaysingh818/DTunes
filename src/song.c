@@ -14,6 +14,15 @@ static int callback(void *data, int argc, char **argv, char **azColName){
 }
 
 
+void printSong(song_t *mySong){
+	dlog("SONG NAME", mySong->name); 
+	dlog("DATE CREATED", mySong->dateCreated); 
+	dlog("FILE PATH", mySong->filePath); 
+	dlog("SUBTITLES", mySong->subtitles);
+	dlog_int("SONG PLAYS", mySong->plays);  
+}
+
+
 song_t **initSongs(int limit){
 /**
 	Function for returning structure instance of a song
@@ -69,18 +78,25 @@ song_t **initSongs(int limit){
 
 
 
-song_t *viewSongById(char uuid){
+song_t *viewSongById(char *uuid){
+	// view song by id
+	song_t *song;	
+    song = (song_t*)malloc(sizeof(song_t));
+
 	sqlite3 *db = openDB(DB_PATH);
     sqlite3_stmt *sql;
     char *query = VIEW_SONG_UUID;
+	
 	int result = sqlite3_prepare_v2(db, query, -1, &sql, NULL);
     if(result != SQLITE_OK){
         fprintf(stderr, "Failed to query song by uuid:  %s\n",sqlite3_errmsg(db));
         sqlite3_close(db);
         return FALSE;
     }
-	song_t *song;	
-    song = (song_t*)malloc(sizeof(song_t));
+	
+	// bind uuid to query
+	sqlite3_bind_text(sql, 1, uuid, -1, NULL); 
+
 	result = sqlite3_step(sql); 
 	if(result == SQLITE_ROW){
 
@@ -92,14 +108,16 @@ song_t *viewSongById(char uuid){
 		const char *songPlays = sqlite3_column_text(sql, 5);
 		int songP; 
 
-		sscanf(songPlays, "%d", &song->plays); // Using sscanf
+		// debug fields
+		sscanf(songPlays, "%d", &songP); // Using sscanf
         uuid_parse(songUuid, song->songId);
+
         // store values
         strcpy(song->name, songName);
         strcpy(song->dateCreated, songDate);
         strcpy(song->filePath, songFilePath);
         strcpy(song->subtitles, songSubtitles);
-		//song->plays = songP; 
+		song->plays = songP; 
 	}
 
 	sqlite3_finalize(sql); 

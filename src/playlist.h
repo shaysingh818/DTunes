@@ -19,15 +19,17 @@ typedef struct AudioPlaylist playlist_t;
 
 // functions
 playlist_t **initPlaylists(int limit);
+playlist_t *viewPlaylistById(char *uuid);  
 int retrieveLastPlaylistId();
 int getPlaylistTableSize(); 
 
 // crud operations
 int createPlaylist(playlist_t* playlist);
 int viewPlaylists(); 
-int viewPlaylistById(char uuid);  
 int deletePlaylist(char *playlistName); 
-int deleteAllPlaylists();  
+int deleteCascadingPlaylists(char *playlistName); 
+int deleteAllPlaylists(); 
+int deleteAllPlaylistRelations();  
 int checkPlaylistExist(char *playlistName);
 int addSongToPlaylist(char *songUuid, char *playlistUuid); 
 int viewSongsPlaylist(char *playlistUuid); 

@@ -49,6 +49,47 @@ playlist_t **initPlaylists(int limit){
 }
 
 
+playlist_t *viewPlaylistById(char *uuid){
+    // view song by id
+    playlist_t *playlist;
+    playlist = (playlist_t*)malloc(sizeof(playlist_t));
+
+    sqlite3 *db = openDB(DB_PATH);
+    sqlite3_stmt *sql;
+    char *query = VIEW_PLAYLIST_UUID; 
+
+    int result = sqlite3_prepare_v2(db, query, -1, &sql, NULL);
+    if(result != SQLITE_OK){
+        fprintf(stderr, "Failed to query song by uuid:  %s\n",sqlite3_errmsg(db));
+        sqlite3_close(db);
+        return FALSE;
+    }
+    
+    // bind uuid to query
+    sqlite3_bind_text(sql, 1, uuid, -1, NULL);
+
+    result = sqlite3_step(sql);
+    if(result == SQLITE_ROW){
+
+        const char *playlistUuid = sqlite3_column_text(sql, 0);
+        const char *playlistName = sqlite3_column_text(sql, 1);
+        const char *playlistDate = sqlite3_column_text(sql, 2);
+
+        // debug fields
+        uuid_parse(playlistUuid, playlist->playlistId);
+        // store values
+        strcpy(playlist->name, playlistName);
+        strcpy(playlist->dateCreated, playlistDate);
+
+    }
+
+    sqlite3_finalize(sql);
+    sqlite3_close(db);
+    return playlist;
+}
+
+
+
 
 int retrieveLastPlaylistId(){	
 	// open db
@@ -146,6 +187,31 @@ int viewPlaylists(){
 }
 
 
+int deleteCascadingPlaylists(char *playlistUuid){
+	
+	 // open db
+    sqlite3 *db = openDB(DB_PATH);
+    sqlite3_stmt *sql; 
+
+    char *query = DELETE_PLAYLIST_RELATION_UUID; 
+    char *errMsg = 0; 
+    
+    int result = sqlite3_prepare_v2(db, query, -1, &sql, NULL); 
+    // check for sql cursor errors
+    if(result != SQLITE_OK){
+        fprintf(stderr, "Failed to delete all playlist relations:  %s\n",sqlite3_errmsg(db));
+        sqlite3_close(db);
+        return FALSE; 
+    }
+	
+    sqlite3_bind_text(sql, 1, playlistUuid, -1, NULL);	
+
+	printf("[DB OPERATION] ]DELETE ALL PLAYLISTS RELATIONS\n");
+    sqlite3_step(sql); 
+    sqlite3_close(db); 
+
+    return TRUE; 
+}
 
 
 int deletePlaylist(char *playlistName){	
@@ -169,9 +235,40 @@ int deletePlaylist(char *playlistName){
 
 	printf("[DB OPERATION] Deleted all playlists\n"); 
 	sqlite3_step(sql); 
-	sqlite3_close(db); 
+	sqlite3_close(db);
+
+	int dbresult = deleteCascadingPlaylists(playlistName); 
+	if(dbresult){
+		dlog("DB ACTION", "CASCADING DB DELETE"); 
+	}
 
 	return TRUE; 
+}
+
+
+
+int deleteAllPlaylistRelations(){	
+	 // open db
+    sqlite3 *db = openDB(DB_PATH);
+    sqlite3_stmt *sql; 
+
+    char *query = DELETE_PLAYLIST_RELATIONS; 
+    char *errMsg = 0; 
+    
+    int result = sqlite3_prepare_v2(db, query, -1, &sql, NULL); 
+    // check for sql cursor errors
+    if(result != SQLITE_OK){
+        fprintf(stderr, "Failed to delete all playlist relations:  %s\n",sqlite3_errmsg(db));
+        sqlite3_close(db);
+        return FALSE; 
+    }
+
+	printf("[DB OPERATION] ]DELETE ALL PLAYLISTS RELATIONS\n");
+    sqlite3_step(sql); 
+    sqlite3_close(db); 
+
+    return TRUE; 
+
 }
 
 
@@ -194,10 +291,15 @@ int deleteAllPlaylists(){
 	printf("[DB OPERATION] ]DELETE ALL PLAYLISTS\n");
     sqlite3_step(sql); 
     sqlite3_close(db); 
+	
+	int dbresult = deleteAllPlaylistRelations(); 
+	if(dbresult){
+		dlog("DB ACTION", "CASCADING DB DELETE"); 
+	}
 
     return TRUE; 
-
 }
+
 
 
 int checkPlaylistExist(char *playlistName){	
@@ -315,9 +417,14 @@ song_t **loadPlaylistSongs(char *playlistUuid){
 	// bind playlist uuid to query	
     sqlite3_bind_text(sql, 1, playlistUuid, -1, NULL);
 
+	int indexCount = 0;
 	while((result = sqlite3_step(sql)) == SQLITE_ROW){
-		const char *song_uuid = sqlite3_column_text(sql, 1);
-		printf("SONG UUID: %s\n", song_uuid);  
+		const char *song_uuid = sqlite3_column_text(sql, 2);
+		char test[37];  
+		strcpy(test, song_uuid);
+		song_t *mySong = viewSongById(test); 
+		songs[indexCount] = mySong;  
+		indexCount += 1;
 	}
 
 	sqlite3_close(db); 
@@ -330,6 +437,9 @@ void viewPlaylistSongs(char *playlistUuid){
 	int relationLimit = getRelationTableSize(); 
 	song_t **songs = loadPlaylistSongs(playlistUuid); 
 	song_t ***p = &songs; 
+
+	playlist_t *playlist = viewPlaylistById(playlistUuid); 
+	printf("Viewing songs from playlist: %s\n", playlist->name); 
 
 	// print header
 	printf("\n");
@@ -344,7 +454,6 @@ void viewPlaylistSongs(char *playlistUuid){
 	}
 	printf("\n"); 
 	
-
 }
 
 
