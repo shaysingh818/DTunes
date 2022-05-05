@@ -3,6 +3,7 @@
 #include "song.h"
 #include "urls.h"
 #include "db.h"
+#include "test.h"
 
 
 endpoint_t *createEndpoint(char *name, char *commandLineArg, char *docString){
@@ -345,6 +346,12 @@ void YTBackup(endpoint_t *e, char* argv[]){
 }
 
 
+void runUnitTests(endpoint_t *e, char* argv[]){
+    // test view songs  
+	if (strcmp(argv[1], e->commandLineArg) == 0){
+		runAllTests(); // run all the tests in the unit library
+    }
+}
 
 
 

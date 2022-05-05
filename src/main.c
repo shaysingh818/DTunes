@@ -202,6 +202,16 @@ void urlEndpoints(){
     appendEndpoint(&head, e15);
 
 	
+	// add unit tests down here
+	endpoint_t *e16 = createEndpoint(
+                        "unit-test",
+                        "tests",
+                        "run all unit tests for dtunes"
+                    );
+    e16->endpointLogic = runUnitTests;
+    appendEndpoint(&head, e16);
+
+	
 
 }
 

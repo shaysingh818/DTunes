@@ -15,3 +15,20 @@ This is the feature document for the personal audio player aspect of DTunes. Thi
 5. For deleting playlists, we'll need to build a cascading effect, similar to web frameworks like Django and Flask. When we delete a playlist, we'll need to delete all the (ONE TO MANY) relationships associated with it. There will be table that holds the relationship (mentioned above). Before the playlist instance is deleted, it will search all the occurences of the playlist collection to avoid extra (ONE TO MANY) relationships being left in the database. We'll also need a method to remove a song from a playlist (in general). 
 
 6. Since the (ONE TO MANY) relationship is simply the realtion of ids, we need methods to view each entity by UUID. This is similar to a detail view. For both the song and playlist, we need a method that allows us to pass in the given UUID from the database and return the entity in the structure. 
+
+
+# Testing Library
+
+1. Once all the main database features the music player have been implemented, we can start working on the signal processing using portsf. There are a couple modules that need to work before we can start working with portsf
+	* CRUD operations for playlist, song and url entities
+	* Audio collection(playlist) logic for the system
+	* Multi-threaded URL downloading library
+	* Endpoint creation library
+
+2. As we continue to build the system, we'll need an internal testing library that can test each feature so we don't have to manually do it each time. There should be a header file that tests every cli command in the system. The file should have one main routine that executes every test in a specific order. There should be functions that tests all the features mentioned above. 
+
+
+
+
+
+

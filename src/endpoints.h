@@ -56,6 +56,11 @@ void deleteAllYoutubeUrlsCmd(endpoint_t *e, char* argv[]);
 void syncAudioFilesToDb(endpoint_t *e, char* argv[]); 
 
 // youtube url backup
-void YTBackup(endpoint_t *e, char* argv[]); 
+void YTBackup(endpoint_t *e, char* argv[]);
+
+// run unit tests
+void runUnitTests(endpoint_t *e, char* argv[]); 
+
+ 
 
  #endif 
