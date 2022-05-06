@@ -70,7 +70,7 @@ void removeChar(char *testString, char charToRemove);
 void getCurrentDirectory(char *cwd); 
 void renameFile(char *fileName, char *newFileName); 
 int countFiles(char *directoryPath); 
-void reformatFileNames(char *desiredPath);
+//void reformatFileNames(char *desiredPath);
 void clearAudioFileDirectory(char *desiredPath); 
 
 #endif 

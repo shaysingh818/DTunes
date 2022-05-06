@@ -102,13 +102,21 @@ void testRenameFile(){
 	while((entry=readdir(folder))){
         files++;
         char *tempFile = entry->d_name;
-		int result = strcmp(tempFile, "newfile.txt"); 
-		if(result == 0){
-			printf("\033[0;32m"); // green for pass
-			dlog("PASSED", "RENAME FILE"); 
-		}else{	
-			printf("\e[0;31m"); // red for fail
-			dlog("FAILED", "RENAME FILE"); 
+
+		
+		if(strcmp(tempFile, "..") == 0 || strcmp(tempFile, ".") == 0){
+			continue; 
+		}else{
+
+			int result = strcmp(tempFile, "newfile.txt");
+
+			if(result == 0){
+				printf("\033[0;32m"); // green for pass
+				dlog("PASSED", "RENAME FILE"); 
+			}else{	
+				printf("\e[0;31m"); // red for fail
+				dlog("FAILED", "RENAME FILE"); 
+			}
 		}
 			
     }
@@ -118,16 +126,73 @@ void testRenameFile(){
 }
 
 
+
+void testCountFilesDirectory(){
+	
+	DIR *folder;
+    struct dirent *entry;
+    int files = 0;
+
+
+	system("mkdir test_folder"); 
+	
+	// check if we can view the test folder	
+    folder = opendir("test_folder/");
+	 if(folder == NULL){
+        perror("Unable to read directory\n");
+    }
+
+	
+	// change to desired directory
+    if(chdir("test_folder/") != 0){
+        dlog("FAILED", "CHANGE TO TESTING DIRECTORY");
+    }
+
+	
+	system("touch test1.txt"); 
+	system("touch tes21.txt"); 
+	system("touch test2.txt");
+
+	
+	// change to desired directory
+    if(chdir("../") != 0){
+        dlog("FAILED", "CHANGE TO TESTING DIRECTORY");
+    }
+
+	
+	int fileCount = countFiles("test_folder/");
+	if(fileCount == 3){
+		printf("\033[0;32m"); // green for pass
+		dlog("PASSED", "DIRECTORY FILE COUNTER"); 
+	}else{
+		printf("\e[0;31m"); // red for fail
+		dlog("FAILED", "DIRECTORY FILE COUNTER"); 
+	}
+
+
+	system("rm -r test_folder"); 
+}
+
+
+void testCreatePlaylistCollection(){
+
+}
+
+
 void runAllTests(){
 
 	// test database library
+	dlog("DATABASE LIBRARY", "Running tests for database library"); 
 	testOpenDb(); 
 	testCurrentTime(); 
 	testCombineFileStrs(); 
 	testRemoveChar(); 
 	testRenameFile(); 
+	testCountFilesDirectory(); 
 
 	// testing playlists
+	printf("\033[0;37m"); 	
+	dlog("PLAYLIST LIBRARY", "Running tests for playlist library"); 
 
 
 	// testing songs

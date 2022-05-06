@@ -146,15 +146,8 @@ int countFiles(char *directoryPath){
 }
 
 
-
+/**
 void reformatFileNames(char *desiredPath){
-	/**		
-		desiredPath: Desired file directory that you want to preprocess
-
-		Purpose: Goes into a file directory and reformats all the file names with 
-		NO Spaces. removing spaces is needed to create a single character pointer for 
-		the streaming path. 
-	*/
 	
  	DIR *folder;
     struct dirent *entry;
@@ -198,7 +191,7 @@ void reformatFileNames(char *desiredPath){
 	}
 
 	closedir(folder);
-}
+}*/
 
 
 void clearAudioFileDirectory(char *desiredPath){	
