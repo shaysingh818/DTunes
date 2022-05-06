@@ -206,7 +206,6 @@ int deleteCascadingPlaylists(char *playlistUuid){
 	
     sqlite3_bind_text(sql, 1, playlistUuid, -1, NULL);	
 
-	printf("[DB OPERATION] ]DELETE ALL PLAYLISTS RELATIONS\n");
     sqlite3_step(sql); 
     sqlite3_close(db); 
 
@@ -233,18 +232,42 @@ int deletePlaylist(char *playlistUuid){
 		return FALSE; 
 	}
 
-	printf("[DB OPERATION] Deleted all playlists\n"); 
 	sqlite3_step(sql); 
 	sqlite3_close(db);
 
 	int dbresult = deleteCascadingPlaylists(playlistUuid); 
-	if(dbresult){
-		dlog("DB ACTION", "CASCADING DB DELETE"); 
+	if(!dbresult){
+		dlog("FAILED", "CASCADING DB DELETE"); 
 	}
 
 	return TRUE; 
 }
 
+
+int deletePlaylistByName(char *playlistName){
+    // open db
+    sqlite3 *db = openDB(DB_PATH);
+
+    // prepare statement
+    sqlite3_stmt *sql;
+
+    // prepare statement
+    int result = sqlite3_prepare_v2(db, DELETE_DB_PLAYLIST, -1, &sql, NULL);
+    // bind vars to statement
+    sqlite3_bind_text(sql, 1, playlistName, -1, NULL);
+
+    // check for sql cursor errors
+    if(result != SQLITE_OK){
+        fprintf(stderr, "Failed to delete:  %s\n",sqlite3_errmsg(db));
+        sqlite3_close(db);
+        return FALSE;
+    }
+
+    sqlite3_step(sql);
+    sqlite3_close(db);
+
+    return TRUE;
+}
 
 
 int deleteAllPlaylistRelations(){	
@@ -263,7 +286,6 @@ int deleteAllPlaylistRelations(){
         return FALSE; 
     }
 
-	printf("[DB OPERATION] ]DELETE ALL PLAYLISTS RELATIONS\n");
     sqlite3_step(sql); 
     sqlite3_close(db); 
 
@@ -288,13 +310,12 @@ int deleteAllPlaylists(){
         return FALSE; 
     }
 
-	printf("[DB OPERATION] ]DELETE ALL PLAYLISTS\n");
     sqlite3_step(sql); 
     sqlite3_close(db); 
 	
 	int dbresult = deleteAllPlaylistRelations(); 
-	if(dbresult){
-		dlog("DB ACTION", "CASCADING DB DELETE"); 
+	if(!dbresult){
+		return FALSE; 
 	}
 
     return TRUE; 

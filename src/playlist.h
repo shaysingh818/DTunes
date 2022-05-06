@@ -26,7 +26,8 @@ int getPlaylistTableSize();
 // crud operations
 int createPlaylist(playlist_t* playlist);
 int viewPlaylists(); 
-int deletePlaylist(char *playlistUuid); 
+int deletePlaylist(char *playlistUuid);
+int deletePlaylistByName(char *playlistName);  
 int deleteCascadingPlaylists(char *playlistUuid); 
 int deleteAllPlaylists(); 
 int deleteAllPlaylistRelations();  

@@ -84,8 +84,6 @@ void songEndpoints(){
 
 void playlistEndpoints(){
 
-		
-
 	// delete songs
 	endpoint_t *e7 = createEndpoint(
     	"delete-playlists",
@@ -100,10 +98,20 @@ void playlistEndpoints(){
 	endpoint_t *e8 = createEndpoint(
     	"delete-playlist",
         "dp",
-        "delete playlist by name"
+        "delete playlist by uuid"
     );
     e8->endpointLogic = deletePlaylistCmd;
     appendEndpoint(&head, e8);
+
+	
+	// delete song
+	endpoint_t *e85 = createEndpoint(
+    	"delete-playlist-by-name",
+        "dpn",
+        "delete playlist by name"
+    );
+    e85->endpointLogic = deletePlaylistByNameCmd;
+    appendEndpoint(&head, e85);
 
 	
 	// view songs

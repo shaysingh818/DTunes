@@ -293,8 +293,6 @@ int deleteSong(char *songName){
 		return FALSE; 
 	}
 
-
-	printf("[DB OPERATION] Deleted song\n");
 	sqlite3_step(sql); 
 	sqlite3_close(db); 
 
@@ -319,7 +317,6 @@ int deleteAllSongs(){
 		return FALSE; 
 	}
 
-	printf("[DB OPERATION]: DELETE ALL SONGS\n"); 
 	sqlite3_step(sql); 
 	sqlite3_close(db);
 
@@ -368,12 +365,6 @@ int syncDirectoryInformation(char *filePath){
     	perror("Unable to read directory\n");
     } 
 	
-	// change to desired directory
-	//if(chdir(filePath) != 0){	
-	//	dlog("ERROR", "CHANGE DIR I THINK part 2"); 
-	//}
-
-	// get current working directory	
 	char cwd[256]; 
 	if(getcwd(cwd, sizeof(cwd)) == NULL){
 		dlog("ERROR", "CURRENT WORKING DIRECTORY"); 

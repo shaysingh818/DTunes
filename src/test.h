@@ -11,11 +11,18 @@ void testRenameFile();
 void testCountFilesDirectory(); 
 void testClearDirectory(); 
 
+// audio file library tests
+void testCreateAudioFile(); 
+void testDeleteAudioFile();
+void testDeleteAllAudioFiles();  
+void testLoadAudioFiles(); 
 
 // playlist library tests
+void testCreatePlaylistCollection(); 
+void testDeletePlaylistCollection();
+void testDeleteAllPlaylistCollections();  
+void testLoadPlaylistsArray(); 
 
-
-// audio file library tests
 
 
 // url library tests

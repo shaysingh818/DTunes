@@ -28,7 +28,8 @@ void printEndpoints(endpoint_t *head_ref);
 // playlist functions
 void insertPlaylistCmd(endpoint_t *e, char* argv[]);
 void viewPlaylistCmd(endpoint_t *e, char* argv[]); 
-void deletePlaylistCmd(endpoint_t *e, char* argv[]); 
+void deletePlaylistCmd(endpoint_t *e, char* argv[]);
+void deletePlaylistByNameCmd(endpoint_t *e, char* argv[]);  
 void deleteAllPlaylistsCmd(endpoint_t *e, char* argv[]); 
 void addSongPlaylistCmd(endpoint_t *e, char* argv[]); 
 void viewPlaylistSongsCmd(endpoint_t *e, char* argv[]); 

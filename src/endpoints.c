@@ -105,7 +105,16 @@ void deletePlaylistCmd(endpoint_t *e, char* argv[]){
 }
 
 
-
+void deletePlaylistByNameCmd(endpoint_t *e, char* argv[]){	
+	if (strcmp(argv[1], e->commandLineArg) == 0){
+		int result = deletePlaylistByName(argv[2]); 	
+		if(result){
+			printf("[DTUNES]: Deleted Playlist: %s\n", argv[2]); 
+		}else{
+			printf("Something went wrong: refer to unit tests\n"); 
+		}
+	}
+}
 
 void deleteAllPlaylistsCmd(endpoint_t *e, char* argv[]){
 	if (strcmp(argv[1], e->commandLineArg) == 0){
