@@ -90,6 +90,45 @@ playlist_t *viewPlaylistById(char *uuid){
 
 
 
+playlist_t *viewPlaylistByName(char *playlistName){
+    // view song by id
+    playlist_t *playlist;
+    playlist = (playlist_t*)malloc(sizeof(playlist_t));
+
+    sqlite3 *db = openDB(DB_PATH);
+    sqlite3_stmt *sql;
+    char *query = VIEW_PLAYLIST_BY_NAME; 
+
+    int result = sqlite3_prepare_v2(db, query, -1, &sql, NULL);
+    if(result != SQLITE_OK){
+        fprintf(stderr, "Failed to query song by uuid:  %s\n",sqlite3_errmsg(db));
+        sqlite3_close(db);
+        return FALSE;
+    }
+    
+    // bind uuid to query
+    sqlite3_bind_text(sql, 1, playlistName, -1, NULL);
+
+    result = sqlite3_step(sql);
+    if(result == SQLITE_ROW){
+
+        const char *playlistUuid = sqlite3_column_text(sql, 0);
+        const char *playlistName = sqlite3_column_text(sql, 1);
+        const char *playlistDate = sqlite3_column_text(sql, 2);
+
+        // debug fields
+        uuid_parse(playlistUuid, playlist->playlistId);
+        // store values
+        strcpy(playlist->name, playlistName);
+        strcpy(playlist->dateCreated, playlistDate);
+
+    }
+
+    sqlite3_finalize(sql);
+    sqlite3_close(db);
+    return playlist;
+}
+
 
 int retrieveLastPlaylistId(){	
 	// open db

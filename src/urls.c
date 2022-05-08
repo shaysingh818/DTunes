@@ -76,7 +76,6 @@ int insertUrl(char *url, char *currentTime){
     url_t *newUrl;
     newUrl = (url_t*)malloc(sizeof(url_t));
     printf("\033[0;32m");
-    d_log_time("STRUCTURE ALLOCATION", "CREATED YOUTUBE URL");
 
     // set values
     strcpy(newUrl->url, url);
@@ -176,8 +175,6 @@ int deleteYoutubeUrl(char *url){
         return FALSE;
     }
 
-
-    printf("[DB OPERATION] Deleted youtube url\n");
     sqlite3_step(sql);
     sqlite3_close(db);
 
@@ -203,7 +200,6 @@ int deleteAllYoutubeUrls(){
         return FALSE;
     }
 
-    printf("[DB OPERATION]: DELETE ALL YOUTUBE URLS\n");
     sqlite3_step(sql);
     sqlite3_close(db);
 

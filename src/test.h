@@ -1,7 +1,6 @@
 #ifndef TEST_H
 #define TEST_H
 
-
 // database library tests
 void testOpenDb();
 void testCurrentTime(); 
@@ -21,13 +20,20 @@ void testLoadAudioFiles();
 void testCreatePlaylistCollection(); 
 void testDeletePlaylistCollection();
 void testDeleteAllPlaylistCollections();  
+void testDeleteCascadingPlaylists(); 
 void testLoadPlaylistsArray(); 
-
-
+void testAddSongToPlaylist(); 
 
 // url library tests
+void testCreateUrl(); 
+void testDeleteUrl();
+void testDeleteAllUrls();  
+void testLoadUrls();
+void testBuildArgumentThreads(); 
+void testAllocateSubArray(); 
+void testGrabDatabaseUrls();  
 
-
+// run all test functions above
 void runAllTests(); 
 
 #endif

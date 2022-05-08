@@ -20,6 +20,7 @@ typedef struct AudioPlaylist playlist_t;
 // functions
 playlist_t **initPlaylists(int limit);
 playlist_t *viewPlaylistById(char *uuid);  
+playlist_t *viewPlaylistByName(char *playlistName);  
 int retrieveLastPlaylistId();
 int getPlaylistTableSize(); 
 
