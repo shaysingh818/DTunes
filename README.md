@@ -4,7 +4,10 @@ DTunes is a CLI based audio repository. The idea and purpose of this project is 
 extensive experience with C/Audio Programming. 
 
 
-<img src="https://github.com/shaysingh818/DTunes/blob/master/screenshots/menu.png" width=85% height=17%/>
+
+<p float="center">
+  <img src="https://github.com/shaysingh818/DTunes/blob/master/screenshots/menu.png" width=85% height=17%/>
+</p>
 
 # Features
 Current features for DTunes include, Audio File Storage, MP3 dataset generation and Playlist Creation. 
