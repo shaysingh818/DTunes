@@ -35,8 +35,19 @@ cd into the ```/DTunes``` directory where the Makefile is located
 cd DTunes/
 ```
 
-Before compiling the source code, make sure you have the sqlite3 database library installed on your system. To install sqlite3 for UNIX, use the following commands. 
+Before compiling the source code, there are some required libraries needed to run the initial build. Run the ```install.sh``` with the following command. 
 
+``` bash
+./install.sh
+```
+ After all the libraries are installed, you can compile the source with these commands. 
+ ```bash
+ make clean
+ make clean_binary 
+ make
+ ```
+ 
+The use of ```make clean``` and ```make clean_binary``` is in case this is your second time compiling the source. The two different commands clean the object files and the binary. 
 
 
 
