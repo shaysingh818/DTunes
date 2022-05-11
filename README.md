@@ -26,9 +26,16 @@ DTunes is currently working only on UNIX based systems. For windows users, you c
 
 ## Installing
 Clone the github repository and save the folder to a desired location. 
-```
+```bash
 git clone https://github.com/shaysingh818/DTunes
 ```
+
+cd into the ```/DTunes``` directory where the Makefile is located
+```bash
+cd DTunes/
+```
+
+Before compiling the source code, make sure you have the sqlite3 database library installed on your system. To install sqlite3 for UNIX, use the following commands. 
 
 
 
