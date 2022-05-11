@@ -51,7 +51,21 @@ The use of ```make clean``` and ```make clean_binary``` is in case this is your 
 
 ## Command Line Reference
 
-```./dtunes help``` : view help menu for all command line interface options. 
+| Command Line Argument           | Purpose                                                               |
+|---------------------------------|-----------------------------------------------------------------------|
+| ```./dtunes help```             | view help menu for all command line interface options.                |
+| ```./dtunes tu```               | Run unit tests for mp3 dataset generation library                     |
+| ```./dtunes tp```               | Run unit tests for playlist creation library                          |
+| ```./dtunes ts```               | Run unit tests for audio file storage                                 |
+| ```./dtunes tdb```              | Run unit tests for functions interacting with the database repository |
+| ```./dtunes cu <youtube url>``` | Insert youtube url to the database. This is for the backup process    |
+| ```./dtunes vu```               | View all youtube urls in the database                                 |
+| ```./dtunes du <youtube url>``` | Delete specific youtube url in the database                           |
+| ```./dtunes dus ```             | Delete all youtube urls in the database                               |
+| ```./dtunes yb ```              | Download all youtube urls saved in the database                       |
+|                                 |                                                                       |
+|                                 |                                                                       |
+|                                 |                                                                       |
 
 
 
