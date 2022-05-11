@@ -47,6 +47,6 @@ int insertDbResult = createPlaylist(newPlaylist);
 
 3. For now, the view playlist method is very simple, later down the road, functionality will be implemented to filter playlists by certain attributes and perform more complex queries. 
 
+## Deleting a playlist
 
-
-
+1. For deleting a playlist, there's functionality to delete a playlist by name or, delete all of the playlists in the system. These methods are primarily for handeling data migrations as the project continues to grow. The method annotations are defined above. 
