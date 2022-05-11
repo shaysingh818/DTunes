@@ -6,7 +6,7 @@ extensive experience with C/Audio Programming.
 
 
 <p float="center">
-  <img src="https://github.com/shaysingh818/DTunes/blob/master/screenshots/menu.png" width=85% height=17%/>
+  <img src="https://github.com/shaysingh818/DTunes/blob/master/screenshots/menu.png" width=100% height=15%/>
 </p>
 
 # Features
