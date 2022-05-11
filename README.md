@@ -3,12 +3,12 @@ DTunes is a CLI based audio repository. The idea and purpose of this project is 
 
 ## Current Features
 
-**Audio File Storage**:
+1. **Audio File Storage**:
 	* Audio files can be stored in sqlite3 database
 	* Database model contains, file path, name, date created etc. 
 	* Files can be downloaded from youtube and stored using database model
 
-**MP3 Dataset Generation:**
+2. **MP3 Dataset Generation:**
 	* Dataset library built on top of ```youtubedl```
 	* Files are extracted using youtubedl script
 	* Library includes multithreading to speed up download speeds
