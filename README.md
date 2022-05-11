@@ -22,9 +22,7 @@ DTunes requires audio files of all types, MP3, wav, AIFF. I wanted to create som
 For audio players, playlists are usually implemented to save a batch of songs to listen to or process. The playlist collection library allows you to add a subset of songs from the repository using a ONE TO MANY relationship. A playlist can store many songs and the user can view all the songs in the playist using the name or the UUID. 
 
 # Getting Started
-## Usage
-### Installing
-To install DTunes, the following libraries are requires
-	* sqlite3
-	* portsf
+DTunes is currently working only on UNIX based systems. For windows users, you can use something like WSL, or a ubuntu virtual machine. 
+
+
 
