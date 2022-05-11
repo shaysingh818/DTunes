@@ -23,13 +23,13 @@ The create playlist function takes in an instance of a playlist structure. The p
 
 ```c
 
-	char *mytime = getCurrentTime(); // function from the db repo
-    // create playlist instance
-    playlist_t *newPlaylist;
-    newPlaylist = (playlist_t*)malloc(sizeof(playlist_t));
-    strcpy(newPlaylist->name, "test-playlist"); // copy string value
-    strcpy(newPlaylist->dateCreated, mytime); // copy date value
-    int insertDbResult = createPlaylist(newPlaylist);
+char *mytime = getCurrentTime(); // function from the db repo
+// create playlist instance
+playlist_t *newPlaylist;
+newPlaylist = (playlist_t*)malloc(sizeof(playlist_t));
+strcpy(newPlaylist->name, "test-playlist"); // copy string value
+strcpy(newPlaylist->dateCreated, mytime); // copy date value
+int insertDbResult = createPlaylist(newPlaylist);
 ```
 
 
