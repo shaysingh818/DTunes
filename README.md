@@ -47,7 +47,7 @@ Before compiling the source code, there are some required libraries needed to ru
  make
  ```
  
-The use of ```make clean``` and ```make clean_binary``` is in case this is your second time compiling the source. The two different commands clean the object files and the binary. 
+The use of ```make clean``` and ```make clean_binary``` is in case this is your second time compiling the source. The two different commands clean the object files and the binary. If anything goes wrong during the compilation process, feel free to E-mail issues to shalinsingh818@gmail.com. 
 
 
 
