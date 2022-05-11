@@ -45,6 +45,8 @@ int insertDbResult = createPlaylist(newPlaylist);
 
 2. The view playlists method uses the ```initPlaylists(int limit)``` method to retrieve a list of playlists from the database. Using the returned array, the user can dereference the structure fields and view it on the terminal. 
 
+3. For now, the view playlist method is very simple, later down the road, functionality will be implemented to filter playlists by certain attributes and perform more complex queries. 
+
 
 
 
