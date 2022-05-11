@@ -50,29 +50,28 @@ Before compiling the source code, there are some required libraries needed to ru
 The use of ```make clean``` and ```make clean_binary``` is in case this is your second time compiling the source. The two different commands clean the object files and the binary. If anything goes wrong during the compilation process, feel free to E-mail issues to shalinsingh818@gmail.com.
 
 ## Command Line Reference
-
-| Command Line Argument           | Purpose                                                                          |
-|---------------------------------|----------------------------------------------------------------------------------|
-| ```./dtunes help```             | View help menu for all command line interface options.                           |
-| ```./dtunes tu```               | Run unit tests for mp3 dataset generation library                                |
-| ```./dtunes tp```               | Run unit tests for playlist creation library                                     |
-| ```./dtunes ts```               | Run unit tests for audio file storage                                            |
-| ```./dtunes tdb```              | Run unit tests for functions interacting with the database repository            |
-| ```./dtunes cu <youtube url>``` | Insert youtube url to the database. This is for the backup process               |
-| ```./dtunes vu```               | View all youtube urls in the database                                            |
-| ```./dtunes du <youtube url>``` | Delete specific youtube url in the database                                      |
-| ```./dtunes dus ```             | Delete all youtube urls in the database                                          |
-| ```./dtunes yb ```              | Download all youtube urls saved in the database                                  |
-| ```./dtunes cs <youtube url>``` | Add a song to the database directly, using a youtube url.                        |
-| ```./dtunes vs ```              | View current audio files stored in the database                                  |
-| ```./dtunes ds <SONG UUID> ```  | Delete song using UUID, you can view uuids by using the vs command.              |
-| ```./dtunes dsn <SONG NAME> ``` | Delete song by name, this is not advised since some songs can have the same name |
-| ```./dtunes das ```             | Delete all songs in the database                                                 |
-|                                 |                                                                                  |
-|                                 |                                                                                  |
-|                                 |                                                                                  |
-|                                 |                                                                                  |
-|                                 |                                                                                  |
+| Command Line Argument                          | Purpose                                                                          |
+|------------------------------------------------|----------------------------------------------------------------------------------|
+| ```./dtunes help```                            | View help menu for all command line interface options.                           |
+| ```./dtunes tu```                              | Run unit tests for mp3 dataset generation library                                |
+| ```./dtunes tp```                              | Run unit tests for playlist creation library                                     |
+| ```./dtunes ts```                              | Run unit tests for audio file storage                                            |
+| ```./dtunes tdb```                             | Run unit tests for functions interacting with the database repository            |
+| ```./dtunes cu <youtube url>```                | Insert youtube url to the database. This is for the backup process               |
+| ```./dtunes vu```                              | View all youtube urls in the database                                            |
+| ```./dtunes du <youtube url>```                | Delete specific youtube url in the database                                      |
+| ```./dtunes dus ```                            | Delete all youtube urls in the database                                          |
+| ```./dtunes yb ```                             | Download all youtube urls saved in the database                                  |
+| ```./dtunes cs <youtube url>```                | Add a song to the database directly, using a youtube url.                        |
+| ```./dtunes vs ```                             | View current audio files stored in the database                                  |
+| ```./dtunes ds <SONG UUID> ```                 | Delete song using UUID, you can view uuids by using the vs command.              |
+| ```./dtunes dsn <SONG NAME> ```                | Delete song by name, this is not advised since some songs can have the same name |
+| ```./dtunes das ```                            | Delete all songs in the database                                                 |
+| ```./dtunes cp <PLAYLIST NAME> ```             | Create a playlist collection                                                     |
+| ```./dtunes vp```                              | View all playlist collections on dtunes                                          |
+| ```./dtunes asp <PLAYLIST UUID> <SONG UUID>``` | Add song to playlist with playlist UUID and SONG uuid.                           |
+| ```./dtunes vsp <PLAYLIST UUID>```             | View songs in playlist using the playlist UUID                                   |
+| ```./dtunes dp <PLAYLIST UUID>```              | Delete playlist by UUID.                                                         |
 
 
 
