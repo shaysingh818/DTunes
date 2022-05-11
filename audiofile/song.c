@@ -389,14 +389,15 @@ int syncDirectoryInformation(char *filePath){
 		// extract desired audiofile streaming location
 		char *streamingPath = combineFileStrs(cwd, tempFileName);
 
-		// get second current working directory
-		dlog("CURRENT DIR", cwd);
 
-		// change dir for db insert	
-		if(chdir("/home/dread/Desktop/DTunes/src") != 0){	
+		// change dir for db insert
+		if(chdir("../../") != 0){	
 			dlog("ERROR", "CHANGE DIR DATABASE I THINK"); 
 			return FALSE; 
 		}
+	
+		// get second current working directory
+		dlog("CURRENT DIR", cwd);
 
 		int fileCondition1 = strcmp(entry->d_name, "..") == 0; 
 		int fileCondition2 = strcmp(entry->d_name, ".") == 0;

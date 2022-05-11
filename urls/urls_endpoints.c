@@ -1,6 +1,7 @@
 #include "urls_endpoints.h"
 #include "urls_test.h" 
 #include "urls.h"
+#include "../audiofile/song.h"
 #include "../db/db.h"
 
 
@@ -64,10 +65,18 @@ void YTBackup(endpoint_t *e, char* argv[]){
         if(argv[2]){
             int threadCount;
             sscanf(argv[2], "%d", &threadCount);
-            grabDatabaseUrls(threadCount);
+            grabDatabaseUrls(threadCount);			
         }else{
             grabDatabaseUrls(2); // default 2 threads
         }
+
+		int result = loadAudioFilesFromDirectory("../audiofiles");
+        if(result){
+            d_log("SYNC SERVICE", "Synced songs");
+        }else{
+            d_log("ERROR", "Failed to sync songs");
+        }
+
     }
 }
 
