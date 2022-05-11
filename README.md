@@ -24,5 +24,12 @@ For audio players, playlists are usually implemented to save a batch of songs to
 # Getting Started
 DTunes is currently working only on UNIX based systems. For windows users, you can use something like WSL, or a ubuntu virtual machine. 
 
+## Installing
+Clone the github repository and save the folder to a desired location. 
+```
+git clone https://github.com/shaysingh818/DTunes
+```
+
+
 
 
