@@ -13,10 +13,10 @@
 #define FALSE 0
 #define DEBUG FALSE
 
-#define DB_PATH "../data/db/dtunes.db"
-#define BACKUP_DB_PATH  "../data/db/dtunes_backup.db"
-#define AUDIO_FILE_PATH  "../data/audiofiles"
-#define YOUTUBE_FILE_PATH  "../data/youtubedl"
+#define DB_PATH "data/db/dtunes.db"
+#define BACKUP_DB_PATH  "data/db/dtunes_backup.db"
+#define AUDIO_FILE_PATH  "data/audiofiles"
+#define YOUTUBE_FILE_PATH  "data/youtubedl"
 
 // queries for playlist
 #define INSERT_DB_PLAYLISTS  "INSERT INTO PLAYLIST VALUES(?,?,?)"

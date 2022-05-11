@@ -3,7 +3,7 @@
 
 #include <string.h>
 #include <uuid/uuid.h> 
-#include "song.h"
+#include "../audiofile/song.h"
 
 /**
 	Model for storing songs/audio files in container

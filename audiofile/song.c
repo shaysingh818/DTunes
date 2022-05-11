@@ -1,5 +1,5 @@
 #include "song.h"
-#include "db.h"
+#include "../db/db.h"
 
 
 static int callback(void *data, int argc, char **argv, char **azColName){
@@ -320,7 +320,7 @@ int deleteAllSongs(){
 	sqlite3_step(sql); 
 	sqlite3_close(db);
 
-	clearAudioFileDirectory("../data/audiofiles");  
+	clearAudioFileDirectory(AUDIO_FILE_PATH);  
 
 	return TRUE; 
 }

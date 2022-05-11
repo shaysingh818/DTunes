@@ -1,5 +1,5 @@
 #include "urls.h"
-#include "db.h"
+#include "../db/db.h"
 
 url_t **initUrls(int limit){
 /**

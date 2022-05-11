@@ -146,53 +146,6 @@ int countFiles(char *directoryPath){
 }
 
 
-/**
-void reformatFileNames(char *desiredPath){
-	
- 	DIR *folder;
-    struct dirent *entry;
-    int files = 0; 
-    folder = opendir(desiredPath);
-    if(folder == NULL){
-    	perror("Unable to read directory\n");
-    } 
-	
-	// change to desired directory
-	if(chdir(AUDIO_FILE_PATH) != 0){	
-		dlog("ERROR", "CHANGE DIR"); 
-	}
-
-    while((entry=readdir(folder))){	
-		files++;
-		// file information
-		char *tempFile = entry->d_name; 
-		char *tempFileName = entry->d_name;
-		char *currTime = getCurrentTime(); 
-	
-		// get current working directory
-		char cwd[256]; 
-		if(getcwd(cwd, sizeof(cwd)) == NULL){
-			dlog("ERROR", "CURRENT WORKING DIRECTORY"); 
-		}
-
-		// get previous file name 
-		strcat(cwd, "/"); 
-		char *idk = malloc(strlen(tempFileName) + 1); 
-		strcpy(idk, tempFileName); 
-
-		// remove all spaces in files
-		removeChar(tempFileName, ' ');	
-		removeChar(tempFileName, ',');
-		removeChar(tempFileName, '\'');	
-	
-		renameFile(idk, tempFileName); 
-
-		dlog_counter("REFORMAT FILE", idk, files); 
-	}
-
-	closedir(folder);
-}*/
-
 
 void clearAudioFileDirectory(char *desiredPath){	
 	DIR *audioFolder = opendir(desiredPath);
