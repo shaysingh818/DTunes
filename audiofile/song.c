@@ -126,6 +126,56 @@ song_t *viewSongById(char *uuid){
 }
 
 
+
+
+song_t *viewSongByName(char *songName){
+	// view song by id
+	song_t *song;	
+    song = (song_t*)malloc(sizeof(song_t));
+
+	sqlite3 *db = openDB(DB_PATH);
+    sqlite3_stmt *sql;
+    char *query = VIEW_SONG_NAME;
+	
+	int result = sqlite3_prepare_v2(db, query, -1, &sql, NULL);
+    if(result != SQLITE_OK){
+        fprintf(stderr, "Failed to query song by name:  %s\n",sqlite3_errmsg(db));
+        sqlite3_close(db);
+        return FALSE;
+    }
+	
+	// bind uuid to query
+	sqlite3_bind_text(sql, 1, songName, -1, NULL); 
+
+	result = sqlite3_step(sql); 
+	if(result == SQLITE_ROW){
+
+		const char *songUuid = sqlite3_column_text(sql, 0);
+		const char *songName = sqlite3_column_text(sql, 1);
+		const char *songDate = sqlite3_column_text(sql, 2);	
+		const char *songFilePath = sqlite3_column_text(sql, 3);	
+		const char *songSubtitles = sqlite3_column_text(sql, 4);	
+		const char *songPlays = sqlite3_column_text(sql, 5);
+		int songP; 
+
+		// debug fields
+		sscanf(songPlays, "%d", &songP); // Using sscanf
+        uuid_parse(songUuid, song->songId);
+
+        // store values
+        strcpy(song->name, songName);
+        strcpy(song->dateCreated, songDate);
+        strcpy(song->filePath, songFilePath);
+        strcpy(song->subtitles, songSubtitles);
+		song->plays = songP; 
+	}
+
+	sqlite3_finalize(sql); 
+	sqlite3_close(db); 
+	return song; 
+}
+
+
 int getSongTableSize(){
 	// get amount of songs in db	
 	sqlite3 *db = openDB(DB_PATH);
@@ -165,6 +215,11 @@ void insertSong(char *fileName, char *currentTime, char *streamingPath){
     strcpy(newSong->filePath, streamingPath);
     strcpy(newSong->subtitles, "");
     newSong->plays = 0;
+	
+	// generate uuid
+	char song_uuid[37];
+    uuid_generate_time_safe(newSong->songId);
+    uuid_unparse_lower(newSong->songId, song_uuid);
 
     int dbResult = createSong(newSong);
     if(dbResult){
@@ -204,12 +259,10 @@ int createSong(song_t* newSong){
 		sqlite3_close(db);
 		return 0; 
 	}
-	
-	// generate uuid
-	char song_uuid[37];
-    uuid_generate_time_safe(newSong->songId);
-    uuid_unparse_lower(newSong->songId, song_uuid);
 
+	char song_uuid[37];
+    uuid_unparse_lower(newSong->songId, song_uuid);
+	
 	// bind song variables to sqlite3 statment	
 	sqlite3_bind_text(sql, 1, song_uuid, -1, NULL);	
 	sqlite3_bind_text(sql, 2, newSong->name, -1, NULL);	
@@ -251,7 +304,7 @@ int viewSongs(){
 
 
 
-int updateSong(char *prevSongName, char *newSongName){	
+int updateSongByName(char *prevSongName, char *newSongName){	
 	// open db
 	char *sql;
 	sqlite3 *db = openDB(DB_PATH);	
@@ -259,11 +312,10 @@ int updateSong(char *prevSongName, char *newSongName){
 	const char* data = "Callback function called";
 	// prepare statement
 	char string[200]; 	
-	sprintf(string, "UPDATE SONG set name ='%s' WHERE name='%s'; ", prevSongName, newSongName);
+	sprintf(string, "UPDATE SONG set name ='%s' WHERE name='%s'; ", newSongName, prevSongName);
 	sql = string; \
 			"SELECT * from SONG";   
 
-	dlog("QUERY TEST", sql);  
 	int result = sqlite3_exec(db, sql, callback, (void*)data, &errMsg);
 	
 	// check for sql cursor errors
@@ -273,7 +325,6 @@ int updateSong(char *prevSongName, char *newSongName){
 		return FALSE; 
 	}
 	
-	printf("[DB OPERATION] UPDATED SONG\n");
 	//sqlite3_step(sql); 
 	sqlite3_close(db); 
 
@@ -282,12 +333,41 @@ int updateSong(char *prevSongName, char *newSongName){
 
 
 
-int deleteSong(char *songName){	
+int updateSongById(char *uuid, char *newSongName){	
+	// open db
+	char *sql;
+	sqlite3 *db = openDB(DB_PATH);	
+	char *errMsg = 0;
+	const char* data = "Callback function called";
+	// prepare statement
+	char string[200]; 	
+	sprintf(string, "UPDATE SONG set name ='%s' WHERE song_uuid='%s'; ", newSongName, uuid);
+	sql = string; \
+			"SELECT * from SONG";   
+
+	int result = sqlite3_exec(db, sql, callback, (void*)data, &errMsg);
+	
+	// check for sql cursor errors
+	if(result != SQLITE_OK){
+		fprintf(stderr, "Failed to delete song:  %s\n",errMsg);
+		 sqlite3_free(errMsg);
+		return FALSE; 
+	}
+	
+	//sqlite3_step(sql); 
+	sqlite3_close(db); 
+
+	return TRUE; 
+}
+
+
+
+int deleteSongByName(char *songName){	
 	// open db
 	sqlite3 *db = openDB(DB_PATH);
 	// prepare statement
 	sqlite3_stmt *sql; 
-	char *query = DELETE_DB_SONG; 
+	char *query = DELETE_DB_SONG_NAME; 
 	// prepare statement
 	int result = sqlite3_prepare_v2(db, query, -1, &sql, NULL);
 	// bind vars to statement
@@ -306,6 +386,31 @@ int deleteSong(char *songName){
 	return TRUE; 
 }
 
+
+
+int deleteSongById(char *songUuid){	
+	// open db
+	sqlite3 *db = openDB(DB_PATH);
+	// prepare statement
+	sqlite3_stmt *sql; 
+	char *query = DELETE_DB_SONG_UUID; 
+	// prepare statement
+	int result = sqlite3_prepare_v2(db, query, -1, &sql, NULL);
+	// bind vars to statement
+	sqlite3_bind_text(sql, 1, songUuid, -1, NULL);
+	 
+	// check for sql cursor errors
+	if(result != SQLITE_OK){
+		fprintf(stderr, "Failed to delete song:  %s\n",sqlite3_errmsg(db));
+		sqlite3_close(db);
+		return FALSE; 
+	}
+
+	sqlite3_step(sql); 
+	sqlite3_close(db); 
+
+	return TRUE; 
+}
 
 
 int deleteAllSongs(){	
@@ -340,7 +445,7 @@ int checkSongExist(char *songName){
 	// check if playlist exists
 
 	sqlite3_stmt *res;	
-	char *sql = DELETE_DB_SONG; 
+	char *sql = DELETE_DB_SONG_NAME; 
 	char *err_msg = 0;
  
 	// print headers

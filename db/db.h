@@ -37,8 +37,11 @@
 #define INSERT_DB_SONGS  "INSERT INTO SONG VALUES(?,?,?,?,?,?)"
 #define VIEW_DB_SONGS  "SELECT * FROM SONG"
 #define VIEW_SONG_UUID "SELECT * FROM SONG WHERE song_uuid=?"
-#define UPDATE_SONG "UPDATE SONG SET name=? where name=?"
-#define DELETE_DB_SONG  "DELETE FROM SONG where name=?" 
+#define VIEW_SONG_NAME "SELECT * FROM SONG WHERE name=?"
+#define UPDATE_SONG_BY_NAME "UPDATE SONG SET name=? where name=?" // not using yet
+#define UPDATE_SONG_BY_UUID "UPDATE SONG SET name=? where song_uuid=?" // not using yet
+#define DELETE_DB_SONG_UUID  "DELETE FROM SONG where song_uuid=?" 
+#define DELETE_DB_SONG_NAME  "DELETE FROM SONG where name=?" 
 #define DELETE_DB_SONGS  "DELETE  FROM SONG"
 #define COUNT_DB_SONGS "SELECT COUNT(*) FROM SONG"
 
@@ -46,7 +49,8 @@
 #define INSERT_DB_URL "INSERT INTO YOUTUBE_URL VALUES(?,?,?)"
 #define VIEW_DB_URLS "SELECT * FROM YOUTUBE_URL"
 #define COUNT_DB_URLS "SELECT COUNT(*) FROM YOUTUBE_URL"
-#define DELETE_DB_URL  "DELETE FROM YOUTUBE_URL where yt_url=?" 
+#define DELETE_DB_URL  "DELETE FROM YOUTUBE_URL where yt_url=?"
+#define DELETE_DB_URL_UUID  "DELETE FROM YOUTUBE_URL where url_uuid=?" 
 #define DELETE_DB_URLS  "DELETE  FROM YOUTUBE_URL"
 
 sqlite3* openDB(char *filename);

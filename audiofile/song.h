@@ -30,13 +30,16 @@ static int callback(void *data, int argc, char **argv, char **azColName);
 // db functions
 song_t **initSongs(int limit);
 song_t *viewSongById(char *uuid);  
+song_t *viewSongByName(char *songName);  
 void printSong(song_t *mySong); 
 int getSongTableSize(); 
 void insertSong(char *fileName, char *currentTime, char *streamingPath);
 int createSong(song_t* newSong);
 int viewSongs(); 
-int updateSong(char *prevSongName, char *newSongName); 
-int deleteSong(char *songName); 
+int updateSongByName(char *prevSongName, char *newSongName); 
+int updateSongById(char *uuid, char *newSongName); 
+int deleteSongByName(char *songName); 
+int deleteSongById(char *songUuid); 
 int deleteAllSongs();  
 int checkSongExist(char *songName); 
 

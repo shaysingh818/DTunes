@@ -3,9 +3,13 @@
 
 // audio file library tests
 void testCreateAudioFile();
+void testUpdateAudioFileByName(); 
+void testUpdateAudioFileById(); 
 void testDeleteAudioFile();
 void testDeleteAllAudioFiles();
 void testLoadAudioFiles();
+void testViewSongByName();
+void testViewSongById();  
 void testSyncAudioFilesPath(); 
 void runAudioFilesTest(); 
 

@@ -36,7 +36,7 @@ void insertSongCmd(endpoint_t *e, char* argv[]){
 void updateSongCmd(endpoint_t *e, char *argv[]){
     if (strcmp(argv[1], e->commandLineArg) == 0){
         // insert song model struct into db
-        int dbResult = updateSong(argv[3], argv[2]);
+        int dbResult = updateSongByName(argv[3], argv[2]);
         // check if database insert was successful 
         if(dbResult){
             printf("\033[0;32m");
@@ -60,9 +60,22 @@ void viewSongsCmd(endpoint_t *e, char* argv[]){
 
 void deleteSongCmd(endpoint_t *e, char* argv[]){
     if (strcmp(argv[1], e->commandLineArg) == 0){
-        int result = deleteSong(argv[2]);
+        int result = deleteSongByName(argv[2]);
         if(result){
-            d_log("DTUNES", "Deleted song");
+            d_log("DTUNES", "Deleted song by name");
+        }else{
+            printf("Something went wrong: refer to unit tests\n");
+        }
+    }
+}
+
+
+
+void deleteSongByIdCmd(endpoint_t *e, char* argv[]){
+    if (strcmp(argv[1], e->commandLineArg) == 0){
+        int result = deleteSongById(argv[2]);
+        if(result){
+            d_log("DTUNES", "Deleted song by id");
         }else{
             printf("Something went wrong: refer to unit tests\n");
         }
@@ -126,16 +139,6 @@ void testAudioFileLibrary(endpoint_t *e, char* argv[]){
 
 void songEndpoints(endpoint_t **head){
 	
-	// sync songs in directory
-	endpoint_t *e6 = createEndpoint(
-		"sync-songs",
-		"sync",
-		"sync audio files in directory to database"
-    );
-    e6->endpointLogic =  syncAudioFilesToDb;
-    appendEndpoint(head, e6);
-
-
 	// delete songs
 	endpoint_t *e5 = createEndpoint(
 		"delete-songs",
