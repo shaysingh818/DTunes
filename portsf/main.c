@@ -6,6 +6,8 @@ Write sinewave as text
 #include <stdio.h> 
 #include <stdlib.h> 
 #include <math.h>
+#include "include/portsf.h"
+
 
 #ifndef M_PI
 #define M_PI (3.141592654)
