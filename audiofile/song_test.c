@@ -132,6 +132,17 @@ void testLoadAudioFiles(){
 }
 
 
+
+void testSyncAudioFilesPath(){
+	int result = loadAudioFilesFromDirectory("data/audiofiles");
+    if(result){
+    	d_log("PASSED", "SYNC SONGS TO DIRECTORY");
+    }else{
+    	d_log("FAILED", "SYNC SONGS TO DIRECTORY");
+    }
+}
+
+
 void runAudioFilesTest(){
 	// testing audio file storage
     printf("\033[0;37m");
@@ -140,4 +151,5 @@ void runAudioFilesTest(){
     testDeleteAudioFile();
     testDeleteAllAudioFiles();
     testLoadAudioFiles();
+	testSyncAudioFilesPath();
 }

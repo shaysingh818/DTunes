@@ -6,6 +6,7 @@ void testCreateAudioFile();
 void testDeleteAudioFile();
 void testDeleteAllAudioFiles();
 void testLoadAudioFiles();
+void testSyncAudioFilesPath(); 
 void runAudioFilesTest(); 
 
 #endif

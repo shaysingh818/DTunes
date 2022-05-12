@@ -389,7 +389,6 @@ int syncDirectoryInformation(char *filePath){
 		// extract desired audiofile streaming location
 		char *streamingPath = combineFileStrs(cwd, tempFileName);
 
-
 		// change dir for db insert
 		if(chdir("../../") != 0){	
 			dlog("ERROR", "CHANGE DIR DATABASE I THINK"); 

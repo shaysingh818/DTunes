@@ -33,7 +33,7 @@ int insertDbResult = createPlaylist(newPlaylist);
 ```
 
 
-1. For creating a playlist, the user simply needs to specify the name. The name is used as a way to identify a collection of songs in a group. The name can represent a group of your favorite songs from a genre, or a group of songs used to emulate some DSP concept or training a machine learning model. 
+1. For creating a playlist, the user should specify the name of the playlist that they want to create. The name is used as a way to identify a collection of songs in a group. The name can represent a group of your favorite songs from a genre, or a group of songs used to emulate some DSP concept or training a machine learning model. 
 
 2. For testing the create playlist functionality, the system should ensure that invalid names/empty parameters can't be passed. For now, the testing is very simple for this feature. 
 
@@ -41,7 +41,7 @@ int insertDbResult = createPlaylist(newPlaylist);
 
 ```int viewPlaylists()```
 
-1. For viewing a playlist, the system allocates playlist structures and determines the amount by using a ```count``` query in the database. The system returns a list of playlist structures. This is a helper method and is not what is used in the main implementation for viewing playlist. 
+1. For viewing a playlist, the system allocates playlist structures and determines the amount by using a ```count``` query in the database. The system returns a list of playlist structures. This is a helper method and is not what is used in the main implementation for viewing a playlist. 
 
 2. The view playlists method uses the ```initPlaylists(int limit)``` method to retrieve a list of playlists from the database. Using the returned array, the user can dereference the structure fields and view it on the terminal. 
 
@@ -49,4 +49,22 @@ int insertDbResult = createPlaylist(newPlaylist);
 
 ## Deleting a playlist
 
-1. For deleting a playlist, there's functionality to delete a playlist by name or, delete all of the playlists in the system. These methods are primarily for handeling data migrations as the project continues to grow. The method annotations are defined above. 
+```c 
+int deletePlaylist(char *playlistUuid);
+int deletePlaylistByName(char *playlistName); 
+```
+
+1. ```int deletePlaylist(char *playlistUuid);``` : This function deletes a playlist using a UUID generated from inserting a playlist. The UUID is a unique identifer for deleting/viewing an individual playlist. 
+
+2. ```int deletePlaylistByName(char *playlistName);``` : This function is similar to deletePlaylist(), except it lets you delete using the name of the playlist. There has not been any testing done for deleting playlists with the same name. 
+
+
+## Add song to playlist
+
+```c 
+int addSongToPlaylist(char *songUuid, char *playlistUuid);
+```
+1. **Purpose**: Adds a song to a playlist using the unique identifer for the given playlist and the song to be added. 
+2. **Parameters**
+	* ```char *playlistUuid``` : UUID (unique identifer of the playlist	
+	* ```char *songUuid``` : UUID (unique identifer of the song to add to the playlist

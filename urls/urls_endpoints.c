@@ -70,12 +70,20 @@ void YTBackup(endpoint_t *e, char* argv[]){
             grabDatabaseUrls(2); // default 2 threads
         }
 
-		int result = loadAudioFilesFromDirectory("../audiofiles");
+		 char cwd[256];
+    	if(getcwd(cwd, sizeof(cwd)) == NULL){
+        	dlog("ERROR", "CURRENT WORKING DIRECTORY");
+    	}
+
+
+		/**
+		int result = loadAudioFilesFromDirectory("data/audiofiles");
         if(result){
             d_log("SYNC SERVICE", "Synced songs");
         }else{
             d_log("ERROR", "Failed to sync songs");
         }
+		*/
 
     }
 }
