@@ -62,6 +62,7 @@ void deleteAllYoutubeUrlsCmd(endpoint_t *e, char* argv[]){
 void YTBackup(endpoint_t *e, char* argv[]){
     // test view songs  
     if (strcmp(argv[1], e->commandLineArg) == 0){
+
         if(argv[2]){
             int threadCount;
             sscanf(argv[2], "%d", &threadCount);
@@ -70,20 +71,24 @@ void YTBackup(endpoint_t *e, char* argv[]){
             grabDatabaseUrls(2); // default 2 threads
         }
 
-		 char cwd[256];
+		char cwd[256];
     	if(getcwd(cwd, sizeof(cwd)) == NULL){
         	dlog("ERROR", "CURRENT WORKING DIRECTORY");
     	}
 
+		dlog("CWD DEBUG", cwd); 
 
-		/**
+		//change dir for db insert
+        if(chdir("../../") != 0){
+            dlog("ERROR", "CHANGE DIR DATABASE I THINK");
+        }
+
 		int result = loadAudioFilesFromDirectory("data/audiofiles");
         if(result){
             d_log("SYNC SERVICE", "Synced songs");
         }else{
             d_log("ERROR", "Failed to sync songs");
         }
-		*/
 
     }
 }

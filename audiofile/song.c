@@ -158,7 +158,6 @@ void insertSong(char *fileName, char *currentTime, char *streamingPath){
     song_t *newSong;
     newSong = (song_t*)malloc(sizeof(song_t));
     printf("\033[0;32m");
-    d_log_time("STRUCTURE ALLOCATION", "CREATED SONG");
 
     // set values
     strcpy(newSong->name, fileName);
@@ -181,6 +180,14 @@ void insertSong(char *fileName, char *currentTime, char *streamingPath){
 
 int createSong(song_t* newSong){	
 	// open db
+
+	char cwd[256];
+    if(getcwd(cwd, sizeof(cwd)) == NULL){
+        dlog("ERROR", "CURRENT WORKING DIRECTORY");
+    }
+
+    strcat(cwd, "/");
+
 	sqlite3 *db = openDB(DB_PATH);
 	// prepare statement	
 	char *errMsg = 0; 
@@ -389,22 +396,12 @@ int syncDirectoryInformation(char *filePath){
 		// extract desired audiofile streaming location
 		char *streamingPath = combineFileStrs(cwd, tempFileName);
 
-		// change dir for db insert
-		if(chdir("../../") != 0){	
-			dlog("ERROR", "CHANGE DIR DATABASE I THINK"); 
-			return FALSE; 
-		}
-	
-		// get second current working directory
-		dlog("CURRENT DIR", cwd);
-
 		int fileCondition1 = strcmp(entry->d_name, "..") == 0; 
 		int fileCondition2 = strcmp(entry->d_name, ".") == 0;
-		dlog("FILENAME", entry->d_name);  
-		dlog_int("FILE CONDITION", fileCondition1); 
-		dlog_int("FILE CONDITION 2 ", fileCondition2); 
+
 		if(fileCondition1 == 0 & fileCondition2 == 0){
 			insertSong(entry->d_name, currTime, streamingPath);
+			dlog("SYNC SONG", tempFileName); 
 		}
 	}
 
