@@ -41,22 +41,34 @@ int insertDbResult = createPlaylist(newPlaylist);
 
 ```int viewPlaylists()```
 
-1. For viewing a playlist, the system allocates playlist structures and determines the amount by using a ```count``` query in the database. The system returns a list of playlist structures. This is a helper method and is not what is used in the main implementation for viewing a playlist. 
 
-2. The view playlists method uses the ```initPlaylists(int limit)``` method to retrieve a list of playlists from the database. Using the returned array, the user can dereference the structure fields and view it on the terminal. 
+```c 
+int viewPlaylists(); 
+```
 
-3. For now, the view playlist method is very simple, later down the road, functionality will be implemented to filter playlists by certain attributes and perform more complex queries. 
+1. **Purpose**: This function is responsible for viewing all the playlist entites that are currently in the database. 
+
 
 ## Deleting a playlist
 
 ```c 
 int deletePlaylist(char *playlistUuid);
-int deletePlaylistByName(char *playlistName); 
 ```
 
-1. ```int deletePlaylist(char *playlistUuid);``` : This function deletes a playlist using a UUID generated from inserting a playlist. The UUID is a unique identifer for deleting/viewing an individual playlist. 
+1. **Purpose**: This function deletes a playlist using a UUID generated from inserting a playlist. The UUID is a unique identifer for deleting/viewing an individual playlist.
 
-2. ```int deletePlaylistByName(char *playlistName);``` : This function is similar to deletePlaylist(), except it lets you delete using the name of the playlist. There has not been any testing done for deleting playlists with the same name. 
+2. **Parameters**:
+	 * ```char *playlistUuid``` : UUID (unique identifer of the playlist
+
+
+```c
+int deletePlaylistByName(char *playlistName);
+```  
+
+1. **Purpose**: Delete a playlist by specifying the name. This is similar to the delete playlist method using the UUID. .
+
+2. **Parameters**:
+	* ```char *playlistName``` : Name of the playlist, no testing has been done for deleting multiple playlists with the same name. 
 
 
 ## Add song to playlist
@@ -64,7 +76,7 @@ int deletePlaylistByName(char *playlistName);
 ```c 
 int addSongToPlaylist(char *songUuid, char *playlistUuid);
 ```
-1. **Purpose**: Adds a song to a playlist using the unique identifer for the given playlist and the song to be added. 
+1. **Purpose**: Adds a song to a playlist using the unique identifer for the given playlist and the song to be added. This function can be called through the CLI or using the API.  
 2. **Parameters**
 	* ```char *playlistUuid``` : UUID (unique identifer of the playlist	
 	* ```char *songUuid``` : UUID (unique identifer of the song to add to the playlist
