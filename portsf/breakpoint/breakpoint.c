@@ -1,4 +1,11 @@
 #include "breakpoint.h"
+#include "log.h"
+
+
+void generateBreakpointFile(char *filename, int range, char *option){
+
+
+}
 
 
 float larger(float first, float second){
@@ -22,8 +29,32 @@ breakpoint_t maxpoint(const breakpoint_t* points, long npoints){
 			point.time = points[i].time; 
 		}
 	}
-
 	return point; 
+}
+
+
+void retrieveBreakpoint(breakpoint_t *points, char *line, int count){
+	int retrieveStatus; 
+	retrieveStatus = sscanf(
+		line, 
+		"%lf%lf",
+		&points[count].time, 
+		&points[count ].value
+	);
+
+	switch(retrieveStatus){
+		case(0):
+			dlog_int("NON NUMERIC DATA AT LINE", count+1); 
+			break;
+	
+		case(1):	
+			dlog_int("INCOMPLETE BREAKPOINT FOUND AT LINE", count+1); 
+			break; 
+		
+		case(2):
+			dlog_int("RETRIEVED BREAKPOINT", count+1); 
+			break; 			
+	} 
 } 
 
 
@@ -46,29 +77,10 @@ breakpoint_t* getBreakpoints(FILE *fp, long* psize){
 	}
 
 	while(fgets(line, 80, fp)){
-		got = sscanf(
-			line, 
-			"%lf%lf",
-			&points[npoints].time, 
-			&points[npoints].value
-		); 
 
-		if(got < 0){
-			continue; 
-		}
-
-		if(got == 0){
-			printf("Line %ld has non numeric data\n", npoints+1); 
-			break; 
-		}
-
-		if(got == 1){
-			printf("Incomplete breakpoint found at point %ld\n", npoints+1); 
-			break; 
-		}
-
+		retrieveBreakpoint(points, line, npoints); 
 		if(points[npoints].time < lasttime){
-			printf("data error at point %ld: time not increasing\n", npoints+1);
+			dlog_int("TIME NOT INCREASING AT LINE", npoints+1); 
 			break; 
 		}
 
@@ -87,13 +99,11 @@ breakpoint_t* getBreakpoints(FILE *fp, long* psize){
 		}	
 	}
 
-
 	if(npoints){
 		*psize = npoints; 
 	}
 
 	return points; 
-
 } 
 
 int main(int argc, char **argv){
