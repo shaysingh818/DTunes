@@ -1,6 +1,8 @@
 #include <stdio.h> 
 #include <stdlib.h>
 
+#define NPOINTS 64
+
 
 struct BreakPoint {
 	double time; 

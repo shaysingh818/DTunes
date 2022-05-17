@@ -22,6 +22,8 @@ breakpoint_t maxpoint(const breakpoint_t* points, long npoints){
 			point.time = points[i].time; 
 		}
 	}
+
+	return point; 
 } 
 
 
@@ -70,11 +72,10 @@ breakpoint_t* getBreakpoints(FILE *fp, long* psize){
 			break; 
 		}
 
-
 		lasttime = points[npoints].time; 
 		if(++npoints == size){
 			breakpoint_t* tmp; 
-			size += npoints; 
+			size += NPOINTS; 
 			tmp = (breakpoint_t*)realloc(points, sizeof(breakpoint_t) * size); 
 			if(tmp == NULL){
 				npoints = 0; 
@@ -83,8 +84,7 @@ breakpoint_t* getBreakpoints(FILE *fp, long* psize){
 				break; 
 			}
 			points = tmp; 
-		}
-		
+		}	
 	}
 
 
@@ -99,6 +99,51 @@ breakpoint_t* getBreakpoints(FILE *fp, long* psize){
 int main(int argc, char **argv){
 
 	// breakpoint file: Contains time and value
-	
+	long size; 
+	double dur; 
+	breakpoint_t point, *points; 
+	FILE* fp; 
+
+	if(argc < 2){
+		printf("Usage: breakpoint infile.txt \n"); 
+		return 0; 
+	}
+
+	fp = fopen(argv[1], "r"); 
+	if(fp == NULL){
+		return 0; 
+	}
+
+	size = 0; 
+	points = getBreakpoints(fp, &size);
+	if(points == NULL){
+		printf("no breakpoints in file\n"); 
+		fclose(fp); 
+		return 1; 
+	} 
+
+	if(size < 2){
+		printf("Need at least two breakpoints\n"); 
+		free(points); 
+		fclose(fp); 
+		return 1; 
+	}
+
+	if(points[0].time != 0){
+		printf("Error in breakpoint file, first time must be 0.0\n"); 
+		free(points); 
+		fclose(fp); 
+		return 1; 
+	}
+
+	printf("read %ld breakpoint\n", size); 
+	dur = points[size-1].time; 
+	printf("Duration: %f seconds\n", dur); 
+	point = maxpoint(points, size); 
+	printf("Maximum value %f at %f secs \n", point.value, point.time); 
+	free(points); 
+	fclose(fp); 
+	return 0; 
+
 	
 }
