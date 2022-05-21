@@ -2,10 +2,6 @@
 #include "log.h"
 
 
-void generateBreakpointFile(char *filename, int range, char *option){
-
-
-}
 
 
 float larger(float first, float second){
@@ -106,8 +102,12 @@ breakpoint_t* getBreakpoints(FILE *fp, long* psize){
 	return points; 
 } 
 
+
+
+
 int main(int argc, char **argv){
 
+	
 	// breakpoint file: Contains time and value
 	long size; 
 	double dur; 
@@ -153,7 +153,10 @@ int main(int argc, char **argv){
 	printf("Maximum value %f at %f secs \n", point.value, point.time); 
 	free(points); 
 	fclose(fp); 
+
+
 	return 0; 
+
 
 	
 }

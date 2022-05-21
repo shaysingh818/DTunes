@@ -14,3 +14,13 @@
 ## Sound creation
 
 1. https://www.leshylabs.com/apps/sfMaker/
+
+
+
+## Breakpoint Files
+
+1. Create a stable library that can read and write breakpoint files. The library should be able to check for the maximum time value in a breakpoint file. The file should contain only a time and a value of some sort. The library should validate the following. 
+	* Format of the breakpoint file. Should only contain time and value
+	* Ensure that the time value is increasing each time
+	* Make sure there are no negative values in the file. 
+	

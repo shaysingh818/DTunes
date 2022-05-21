@@ -2,6 +2,16 @@
 #include <stdio.h> 
 #include <stdlib.h> 
 
+
+#define TRUE 1
+#define FALSE 0
+
+// function init porsf
+int initPortsf(){
+	return TRUE; 
+}
+
+
 // function to check sample rate
 int checkSampleType(psf_stype type){
 	int accept = 1; 
@@ -31,10 +41,11 @@ int checkSampleType(psf_stype type){
 }
 
 
-int displaySampleRate(){
+// display sample rate in wav file
+int displaySampleRate(char *filename){
 	PSF_PROPS props;
 	int sf;
-	sf = psf_sndOpen("sample.wav",&props,0);
+	sf = psf_sndOpen(filename, &props,0);
 	if(sf < 0){
 		printf("Error: unable to open soundfile\n");
 		return 1;
@@ -69,69 +80,47 @@ int testFunction(){
 }
 
 
+void convertToFloat(char *filename, char *outfile){
+
+	PSF_PROPS props; 
+	long framesread, totalread;
+	int inputFile = -1, outputFile = -1
+	int error = 0; 
+	psf_format outformat = PSF_FMT_UNKNOWN; 
+	PSF_CHPEAK* peaks = NULL; 
+	float* frame = NULL;  
+
+	// init portsf	
+	if(psf_init()){
+		printf("Unable to start porsf\n");
+	}
+
+	// open file
+	inputFile = psf_sndOpen(filename, &props , 0);
+	if(inputFile < 0){
+		printf("Unable to open input file\n"); 
+	}
+
+	// check if file is already in floats form
+	if(props.samptype == PSF_SAMP_IEEE_FLOAT){
+		printf("File is in floats form already\n"); 
+	}
+
+	props.samptype = PSF_SAMP_IEEE_FLOAT;
+	// check if outfile extension is known 
+
+	outformat = psf_getFormatExt(outfile); 
+	if(outformat == PSF_FMT_UNKNOWN){
+		
+	}
+
+	
+
+}
+
+
 
 int main(){
 
-	PSF_PROPS props; 
-	long framesread, totalread; 
-
-	int ifd = -1, odf = -1; 
-	int error = 0; 
-
-	psf_format outformat = PSF_FMT_UNKNOWN; 
-	PSF_CHPEAK* peaks = NULL; 
-	float* frame = NULL; 
-	
-	printf("Soundfile to float format\n"); 
-	
-	if(psf_init()){
-		printf("Unable to start portsf\n"); 
-		return 1; 
-	}
-
-	ifd = psf_sndOpen("sample.wav", &props, 0); 
-	if(ifd < 0){
-		printf("Unable to open file\n"); 
-		return 1; 
-	}
-
-	// check if file is in float form already
-	if(props.samptype  == PSF_SAMP_IEEE_FLOAT){
-		printf("FILE IS already in float form\n"); 
-	}
-
-	props.samptype = PSF_SAMP_IEEE_FLOAT; 
-	outformat = psf_getFormatExt("soundtrack.wav"); 
-
-	if(outformat == PSF_FMT_UNKNOWN){
-		printf("Unknown format for file\n"); 
-	}
-
-
-	// allocate space for frames
-	frame = (float*)malloc(props.chans * sizeof(float)); 
-	if(frame == NULL){
-		printf("No Memory\n"); 
-	}
-
-	// allocate space for PEAK info
-	peaks = (PSF_CHPEAK*)malloc(props.chans * sizeof(PSF_CHPEAK)); 
-	if(peaks == NULL){
-		puts("No memory\n"); 
-	}
-
-	printf("Copying\n"); 
-
-	framesread = psf_sndReadFloatFrames(ifd, frame, 1); 
-	totalread = 0; 
-
-	while(framesread == 1){
-		totalread++; 
-		if(psf_sndWriteFloatFrames(ofd, frame, 1) != 1){
-			printf("Error writting to outfile\n"); 
-			break; 
-		}
-
-	}
 
 }
