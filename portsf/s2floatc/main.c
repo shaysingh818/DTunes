@@ -117,12 +117,15 @@ void convertToFloat(char *filename, char *outfile){
 		goto exit; 
 	}
 
+	printf("FRAME BEFORE %ld\n", frame); 
 	// allocate space for one sample frame
 	frame = (float*)malloc(props.chans * sizeof(float)); 
 	if(frame == NULL){
 		puts("No Memory lef\n"); 
 		goto exit; 
 	}
+
+	printf("FRAME AFTER %ld\n", frame); 
 
 	/* allocate space for PEAK info */
 	peaks = (PSF_CHPEAK*)malloc(props.chans * sizeof(PSF_CHPEAK)); 
@@ -135,7 +138,8 @@ void convertToFloat(char *filename, char *outfile){
 
 	// single frame copy, report any errors if any 
 	framesread = psf_sndReadFloatFrames(inputFile, frame, 1);
-	totalread = 0; 
+	totalread = 0;
+	printf("FRAME VALUE %ld\n", framesread);  
 	while(framesread == 1){
 		totalread++;
 		if(psf_sndWriteFloatFrames(outputFile, frame, 1) != 1){
@@ -162,6 +166,7 @@ void convertToFloat(char *filename, char *outfile){
 		printf("PEAK INFORMATION:\n"); 
 		for(int i = 0; i < props.chans; i++){
 			peaktime = (double)peaks[i].pos / props.srate; 
+			printf("PEAK TIME: %f\n", peaktime); 
 			printf("CH %d:\t%.4f at %.4f secs\n", i+1, peaks[i].val, peaktime); 
 		}
 	}
@@ -188,22 +193,6 @@ void convertToFloat(char *filename, char *outfile){
 		// return error; 
 
 }
-
-
-
-/**
-	1. Set up variables
-	2. Obtain and validate arguments from user
-	3. Allocate memory, open the infile
-	4. Read peak amplitude of the infile, if not found
-	4b. Scan the whole infile to obtain peak value; rewind file ready for processing stage
-	4c. If peak > 0, open outfile; otherwise, quit
-	5. Perform main processing loop
-	6. Report to the user
-	7. Close files, free memory
-*/
-
-
 
 
 
