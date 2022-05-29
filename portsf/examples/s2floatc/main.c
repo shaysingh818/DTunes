@@ -117,7 +117,7 @@ void convertToFloat(char *filename, char *outfile){
 		goto exit; 
 	}
 
-	printf("FRAME BEFORE %ld\n", frame); 
+	//printf("FRAME BEFORE %f\n", frame); 
 	// allocate space for one sample frame
 	frame = (float*)malloc(props.chans * sizeof(float)); 
 	if(frame == NULL){
@@ -125,7 +125,7 @@ void convertToFloat(char *filename, char *outfile){
 		goto exit; 
 	}
 
-	printf("FRAME AFTER %ld\n", frame); 
+	//printf("FRAME AFTER %ld\n", frame); 
 
 	/* allocate space for PEAK info */
 	peaks = (PSF_CHPEAK*)malloc(props.chans * sizeof(PSF_CHPEAK)); 
@@ -148,8 +148,7 @@ void convertToFloat(char *filename, char *outfile){
 		}
 
 		// do any processing here
-
-
+		printf("FRAME READ: %ld\n", totalread); 
 		framesread = psf_sndReadFloatFrames(inputFile, frame, 1); 	
 
 	}

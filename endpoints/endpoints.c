@@ -46,7 +46,3 @@ void printEndpoints(endpoint_t *head_ref){
         head_ref = head_ref->next;
     }
 }
-
-
-
-
