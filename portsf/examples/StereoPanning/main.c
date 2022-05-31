@@ -1,112 +1,95 @@
-#include "lib/lib.h"
+#include "../include/wrapper/wrapper.h"
 
-
+#define NFRAMES (1024)
 
 int main(int argc, char **argv){
 	
-	// variables
-	PSF_PROPS props;
-	long framesread, totalread;
-    int inputFile = -1, outputFile = -1;
- 	psf_format outformat = PSF_FMT_UNKNOWN;
-	PSF_CHPEAK* peaks = NULL; 
-	float* frame = NULL; 
-	double dbval, pos, inpeak = 0.0; 
-	float ampfac, scalefac; 
+	// portsf variables
+    PSF_PROPS inprops, outprops;
+	PANPOS thispos; 	
+    psf_format outformat = PSF_FMT_UNKNOWN;
+
+	// new variables
+	unsigned long nframes = NFRAMES; 
+	long framesread, totalread; 
+	int ifd = -1, ofd = -1; 
+	double pos;
+
+	float* inframe = NULL; 
+	float* outframe = NULL; 
 
 	if(argc < 2){
-		printf("Not enough args supplied\n");
+		dlog("USAGE", "./sfpan infile panpos"); 
 		return 1; 
 	}
 
-	pos = (atof(argv[1])); 
-	if(pos < -1.0 || pos > 1.0){
-		printf("pan position incorrect\n "); 
+	if(pos >= -1 && pos <= 1.0){
+		dlog("MESSAGE", "PAN POSITION IS BETWEEN SPEAKERS"); 
+	}else{
+		dlog("ERROR", "Pan position not in between speakers"); 
 		return 1; 
 	}
 
-	 // init portsf  
+	// init portsf  
     if(psf_init()){
-        printf("Unable to start porsf\n");
-		return 1; 
+        printf("Unable to start portsf\n");
+        return 1;
     }
 
-	
-	// debug_psf(&props); 
+	// open input file
+    int openFile = sfOpen(&inprops, argv[1], &ifd);
+    if(openFile){
+        dlog("FILE", "Opened input file");
+    }
 
-	// open file
-	int openFile = openSampleFile(&props, "sample.wav", &inputFile);
-	if(openFile){
-		dlog("FILE", "Opened input file");  
-	}
-
+	outprops = inprops; 
+	outprops.chans = 2; 
 
 	// create output file
-	int outfileResult  = createOutputFile(&props, "output.wav", &outputFile, outformat); 
-	if(outfileResult){
-		dlog("OUTPUT FILE", "Created output file");  
-	}
+    int outfileResult  = sfOutFile(&outprops, "outsound2.wav", &ofd, outformat);
+    if(outfileResult){
+        dlog("OUTPUT FILE", "Created output file");
+    }
 
+	// get peak information 
+    int allocateResult = sfAllocate(&inprops, &inframe);
+    if(allocateResult){
+        dlog("ALLOCATE", "Allocated sample frames");
+    }
 
-	// get peak information	
-	int allocateResult = allocateSampleFrames(&props, &peaks, &frame);
-	if(allocateResult){
-		dlog("ALLOCATE", "Allocated sample frames");  
-	}
-
-	// read frame
-	framesread = psf_sndReadFloatFrames(inputFile, frame, 1); 
-	totalread = 0;  	
-	
-
-	// main loop
+	totalread = 0; 
+	framesread = psf_sndReadFloatFrames(ifd, inframe, 1); 	
 	while(framesread == 1){
+		// tracking vars
+		totalread++; 
+		int i, out_i; 
+		// copy panning frames
+		for(i = 0, out_i = 0; i < framesread; i++){
+			inframe[i] = inframe[i]*thispos.left; 
+			inframe[i] = inframe[i]*thispos.left; 
+		}
 
-		if(psf_sndWriteFloatFrames(outputFile, frame, 1) != 1){
-            printf("Error writting to outfile\n");
+		 // check if there's an error writting to output
+        if(psf_sndWriteFloatFrames(ofd, inframe, 1) != 1){
+            dlog("ERROR", "Writing to output file");
             break;
         }
 
-		framesread = psf_sndReadFloatFrames(inputFile, frame, 1);
-		totalread += 1;  
-	
-	}
-
-
-	// check file read status
-	if(framesread < 0){
-        printf("Error reading input file, outfile is incomplete\n");
-    }else{
-        printf("Done %ld sample frames copied to %s\n", totalread, "output.wav");
-    }
-
-	
-	// display peak information
-	int peakResult = displayPeakInformation(&props, peaks, &outputFile); 
-	if(peakResult){
-		dlog("ALLOCATED", "Allocated peak frames and channels");  
+		framesread = psf_sndReadFloatFrames(ifd, inframe, 1);
 	}
 
 	
-	// cleanup
-	exit:
-		if(inputFile >= 0){
-			psf_sndClose(inputFile); 
-		}
+    exit:
+		// clear input/output files
+        if(ifd >= 0){ psf_sndClose(ifd);}
+        if(ofd >= 0){ psf_sndClose(ofd);}
 
-		if(outputFile >= 0){
-			psf_sndClose(outputFile); 
-		}
-
-		if(frame){
-			free(frame); 
-		}
-
-		if(peaks){
-			free(peaks); 
-		}
-
-		psf_finish(); 
+		// clear input/output frames
+        if(inframe){ free(inframe); }
+        if(outframe){ free(outframe); }
+	
+		// deinit portsf
+        psf_finish();
 
 
 	return 0; 

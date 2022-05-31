@@ -1,17 +1,25 @@
 BIN=bin
 CC=gcc
-TARGET=stereoPanning
+TARGET=sfpan
 
-OBJECT_FILES = main.o log.o lib.o
+OBJECT_FILES = main.o log.o wrapper.o
 
 all: $(OBJECT_FILES) 
 	gcc -o $(TARGET) $(OBJECT_FILES) -lportsf -lm
 
-log.o: logging/log.c logging/log.h
-	gcc -c logging/log.c
+log.o: ../include/logging/log.c ../include/logging/log.h
+	gcc -c ../include/logging/log.c
 
-lib.o: lib/lib.c lib/lib.h
-	gcc -c lib/lib.c
+wrapper.o: ../include/wrapper/wrapper.c ../include/wrapper/wrapper.h
+	gcc -c ../include/wrapper/wrapper.c
 
 main.o: main.c 
-	gcc -c main.c  
+	gcc -c main.c
+
+
+clean_binary:   
+	rm $(TARGET)
+
+clean:
+	rm -f *.o *~
+ 

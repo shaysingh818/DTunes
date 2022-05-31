@@ -1,4 +1,4 @@
-#include "../include/lib/lib.h"
+#include "../include/wrapper/wrapper.h"
 
 // number of frames without loop over
 #define NFRAMES (1024)
@@ -17,6 +17,7 @@ int main(int argc, char **argv){
 	int ifd = -1, ofd = -1; 
 	float* frame = NULL; 
 	unsigned long nframes = NFRAMES; 
+	unsigned long blocksize; 
 
 	// normalization variables
 	double dbval, inpeak = 0.0; 
@@ -25,7 +26,7 @@ int main(int argc, char **argv){
 	
 
 	// check supplied arguments 
-    if(argc < 4){
+    if(argc < 3){
 		dlog("ARGUMENT ERROR", "Not enough args supplied"); 
 		dlog("USAGE", "./sfnorm infile dbfactor"); 
         return 1;
@@ -48,7 +49,7 @@ int main(int argc, char **argv){
     }
 
 	// open input file
-    int openFile = openSampleFile(&props, "sample.wav", &inputFile);
+    int openFile = openSampleFile(&props, "sample.wav", &ifd);
     if(openFile){
         dlog("FILE", "Opened input file");
     }
@@ -101,10 +102,32 @@ int main(int argc, char **argv){
 	scalefac = (float)(ampfac / inpeak); 
 	
 	// create output file
-    int outfileResult  = createOutputFile(&props, "outsound2.wav", &outputFile, outformat);
+    int outfileResult  = createOutputFile(&props, "outsound2.wav", &ofd, outformat);
     if(outfileResult){
         dlog("OUTPUT FILE", "Created output file");
     }
+
+
+	// do all our cleanup
+	// do all the cleanup
+    exit:
+        if(ifd >= 0){
+            psf_sndClose(ifd);
+        }
+
+        if(ofd >= 0){
+            psf_sndClose(ofd);
+        }
+
+        if(frame){
+            free(frame);
+        }
+
+        if(peaks){
+            free(peaks);
+        }
+        psf_finish();
+
 
 	
 
