@@ -42,43 +42,53 @@ int main(int argc, char **argv){
         dlog("FILE", "Opened input file");
     }
 
-	outprops = inprops; 
-	outprops.chans = 2; 
+	debug_psf(&inprops);
 
-	// create output file
-    int outfileResult  = sfOutFile(&outprops, "outsound2.wav", &ofd, outformat);
-    if(outfileResult){
-        dlog("OUTPUT FILE", "Created output file");
-    }
+	if(inprops.chans != 1){
+		dlog("ERROR", "Infile must be mono"); 
+		goto exit; 
+	}
 
-	// get peak information 
-    int allocateResult = sfAllocate(&inprops, &inframe);
-    if(allocateResult){
+	int out = sfOutFile(&inprops, "outfile.wav", &ofd, outformat);
+	if(out){
+		dlog("OUTFILE", "Created output file"); 
+	} 
+
+	// allocate amount of frames
+	int allocate = sfAllocateSize(&inprops, &inframe, nframes);
+    if(allocate){
         dlog("ALLOCATE", "Allocated sample frames");
     }
 
-	totalread = 0; 
-	framesread = psf_sndReadFloatFrames(ifd, inframe, 1); 	
-	while(framesread == 1){
-		// tracking vars
-		totalread++; 
-		int i, out_i; 
-		// copy panning frames
-		for(i = 0, out_i = 0; i < framesread; i++){
-			inframe[i] = inframe[i]*thispos.left; 
-			inframe[i] = inframe[i]*thispos.left; 
+	// main processing loop
+	totalread = 0;
+	
+	framesread = psf_sndReadFloatFrames(ifd, inframe, nframes);
+	while(framesread > 0){
+		for(int i = 0; i < framesread; i++){
+			printf("Frame value: %f\n", inframe[i]);
+		}
+		
+		framesread = psf_sndReadFloatFrames(ifd, inframe, nframes);
+	}
+	
+	
+	/**framesread = psf_sndReadFloatFrames(ifd, inframe, 1);
+	while(framesread == 1){	
+		// loop through frames
+		for(int i = 0; i < inprops.chans; i++){
+			printf("Frame value: %f\n", inframe[i]); 
+			inframe[i] *= 2;  
 		}
 
-		 // check if there's an error writting to output
-        if(psf_sndWriteFloatFrames(ofd, inframe, 1) != 1){
-            dlog("ERROR", "Writing to output file");
-            break;
-        }
-
-		framesread = psf_sndReadFloatFrames(ifd, inframe, 1);
-	}
-
+		framesread = psf_sndReadFloatFrames(ifd, inframe,1);
 	
+		totalread++; 
+ 
+	}*/
+
+
+
     exit:
 		// clear input/output files
         if(ifd >= 0){ psf_sndClose(ifd);}

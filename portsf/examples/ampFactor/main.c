@@ -69,7 +69,8 @@ int main(int argc, char **argv){
 	framesread = psf_sndReadFloatFrames(inputFile, frame, 1); 
 	// perform main processing loop
 	while(framesread ==  1){
-		totalread++; 
+		totalread++;
+		dlog_int("READ", totalread);  
 
 		// increase level
 		for(int i = 0; i < inprops.chans; i++){
