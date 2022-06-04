@@ -49,7 +49,10 @@ int main(int argc, char **argv){
 		goto exit; 
 	}
 
-	int out = sfOutFile(&inprops, "outfile.wav", &ofd, outformat);
+	outprops = inprops; 
+	outprops.chans = 2; 
+
+	int out = sfOutFile(&outprops, "outfile.wav", &ofd, outformat);
 	if(out){
 		dlog("OUTFILE", "Created output file"); 
 	} 
@@ -60,35 +63,34 @@ int main(int argc, char **argv){
         dlog("ALLOCATE", "Allocated sample frames");
     }
 
+	// allocate outframes
+	outframe = (float*)malloc(nframes * outprops.chans * sizeof(float)); 
+	if(outframe == NULL){
+		dlog("MEMORY", "NO MEMORY"); 
+		goto exit; 
+	}
+
 	// main processing loop
 	totalread = 0;
 	
 	framesread = psf_sndReadFloatFrames(ifd, inframe, nframes);
 	while(framesread > 0){
-		for(int i = 0; i < framesread; i++){
+		int i, out_i; 
+		for(i= 0, out_i = 0; i < framesread; i++){
+			outframe[out_i++] = (float)(inframe[i]*thispos.left);
+			outframe[out_i++] = (float)(inframe[i]*thispos.right);
 			printf("Frame value: %f\n", inframe[i]);
+		}
+
+		if(psf_sndWriteFloatFrames(ofd, outframe, framesread) != framesread){
+			dlog("ERROR", "WRITING OUTFILE"); 
+			break; 
 		}
 		
 		framesread = psf_sndReadFloatFrames(ifd, inframe, nframes);
 	}
 	
 	
-	/**framesread = psf_sndReadFloatFrames(ifd, inframe, 1);
-	while(framesread == 1){	
-		// loop through frames
-		for(int i = 0; i < inprops.chans; i++){
-			printf("Frame value: %f\n", inframe[i]); 
-			inframe[i] *= 2;  
-		}
-
-		framesread = psf_sndReadFloatFrames(ifd, inframe,1);
-	
-		totalread++; 
- 
-	}*/
-
-
-
     exit:
 		// clear input/output files
         if(ifd >= 0){ psf_sndClose(ifd);}

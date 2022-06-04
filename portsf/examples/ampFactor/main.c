@@ -70,7 +70,6 @@ int main(int argc, char **argv){
 	// perform main processing loop
 	while(framesread ==  1){
 		totalread++;
-		dlog_int("READ", totalread);  
 
 		// increase level
 		for(int i = 0; i < inprops.chans; i++){

@@ -49,18 +49,24 @@ int main(int argc, char **argv){
     }
 
 	// open input file
-    int openFile = openSampleFile(&props, "sample.wav", &ifd);
+    int openFile = sfOpen(&props, "sample.wav", &ifd);
     if(openFile){
         dlog("FILE", "Opened input file");
     }
 
 	// get peak information 
-    int allocateResult = allocateSampleFrames(&props, &peaks, &frame);
+    int allocateResult = sfAllocate(&props, &frame);
     if(allocateResult){
         dlog("ALLOCATE", "Allocated sample frames");
     }
 
 	frame = (float*)malloc(NFRAMES * props.chans * sizeof(float)); 
+	
+	// create output file
+    int outfileResult  = sfOutFile(&props, "outsound2.wav", &ofd, outformat);
+    if(outfileResult){
+        dlog("OUTPUT FILE", "Created output file");
+    }
 
 	framesread = psf_sndReadFloatFrames(ifd, frame, nframes); 
 	while(framesread > 0){
@@ -101,11 +107,6 @@ int main(int argc, char **argv){
 	// calculate scale factor
 	scalefac = (float)(ampfac / inpeak); 
 	
-	// create output file
-    int outfileResult  = createOutputFile(&props, "outsound2.wav", &ofd, outformat);
-    if(outfileResult){
-        dlog("OUTPUT FILE", "Created output file");
-    }
 
 
 	// do all our cleanup
@@ -129,10 +130,6 @@ int main(int argc, char **argv){
         psf_finish();
 
 
-	
-
-
-	
 }
 
 
