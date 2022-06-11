@@ -9,6 +9,20 @@ PANPOS simplepan(double position){
 }
 
 
+PANPOS constantpower(double position){
+	PANPOS pos; 
+	const double piovr2 = 4.0 * atan(1.0) * 0.5; 
+	const double root2ovr2 = sqrt(2.0) * 0.5; 
+	double thispos = position * piovr2; 
+	// each channel uses a 1/4 of a cycle
+	double angle = thispos * 0.5; 
+	// adjust positions
+	pos.left = root2ovr2 * (cos(angle) - sin(angle)); 
+	pos.right = root2ovr2 * (cos(angle) + sin(angle)); 
+	return pos; 
+}
+
+
 double maxsamp(float* buf, unsigned long blocksize){
     // maximum abs value of a sample buffer
     double absval, peak = 0.0;

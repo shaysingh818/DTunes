@@ -17,6 +17,7 @@ typedef struct panpos {
 
 // helper functions 
 PANPOS simplepan(double position);
+PANPOS constantpower(double position);
 double maxsamp(float* buf, unsigned long blocksize);
 
 // portsf wrapper functions

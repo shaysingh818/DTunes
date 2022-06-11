@@ -1,8 +1,15 @@
 #include "../include/wrapper/wrapper.h"
+#include "../include/breakpoint/breakpoint.h"
 
 #define NFRAMES (1024)
 
 int main(int argc, char **argv){
+
+
+	// breakpoint variables
+	FILE* fp; 
+	unsigned long size; 
+	breakpoint_t* points = NULL; 
 	
 	// portsf variables
     PSF_PROPS inprops, outprops;
@@ -72,11 +79,12 @@ int main(int argc, char **argv){
 
 	// main processing loop
 	totalread = 0;
-	
+
+	thispos = constantpower(pos); 	
 	framesread = psf_sndReadFloatFrames(ifd, inframe, nframes);
 	while(framesread > 0){
 		int i, out_i; 
-		for(i= 0, out_i = 0; i < framesread; i++){
+		for(i = 0, out_i = 0; i < framesread; i++){
 			outframe[out_i++] = (float)(inframe[i]*thispos.left);
 			outframe[out_i++] = (float)(inframe[i]*thispos.right);
 			printf("Frame value: %f\n", inframe[i]);
