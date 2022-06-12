@@ -107,7 +107,7 @@ OUTPUT init_sound(char *name, int srate){
 	inprops.samptype = PSF_SAMP_16; 
 	inprops.format = PSF_STDWAVE; 
 	inprops.chformat = MC_MONO; 
-	return psf_sndOpen(name, &inprops, 0); 
+	return psf_sndCreate(name, &inprops, 0, 0, PSF_CREATE_RDWR); 
 }
 
 

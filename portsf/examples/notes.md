@@ -27,3 +27,17 @@
 	* Output time slice using portsf
 
 
+## Digital Audio Signals
+
+**Signals**: Information carriers, functions that can describe information. 
+	* Time is continous variable through the function
+	* Can build function tables out of a signal
+
+**Quantization**: Finding a numerical value that will represent the input signal
+	* Digital conversion: Audio coding
+
+**Sinusoids**: Simplest waveform
+	* given to waves that have a particular shape
+	* outputs are sine and cosine
+
+

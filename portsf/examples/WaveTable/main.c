@@ -15,73 +15,91 @@ enum ARG_RESE {WAVEFORM_GIVEN, FORMULA_GIVEN};
 typedef enum ARG_RESE ARG_RES;
 
 
-/* decode command line arguments */ 
+
+	
+// 	/* Check for output files */ 
+// 	if(output == NULL){
+// 		printf("No output file was given\n"); exit(1); 
+// 	}
+
+// 	if(wavename == NULL && formula == -1){
+// 		printf("Formula and wave form is not specified\n"); 
+// 	}
+	
+// 	if(wavename != NULL && formula != -1){
+// 		printf("Formula and waveform supplied\n"); 
+// 	}
+
+// 	if(wavename == NULL) return FORMULA_GIVEN; 
+// 	else return WAVEFORM_GIVEN;
+// }
+
 ARG_RES decode_args(int argc, char **argv){
-	int i = 0; 
-	char *a = argv[0]; 
-	while(--argc){
-		a = argv[i]; 
-		if(a[0] == '-'){  /* found tag argument */ 
-			switch(a[1]){
+	for(int i = 0; i < argc; i++){
+		char *currentArg = argv[i];
+		// get first index of char pointer 
+		char firstIndex = currentArg[0];
+		if(firstIndex == '-'){
+			printf("Tag Argument: %s\n", &currentArg[1]); 
+			// set variables based on tag arguments
+			char current = currentArg[1]; 
+			switch(current){
 				case 'w':
 					if(argc == 0) printf("No wave argument supplied"); 
-				    wavename = argv[i+1]; 
-					argc--; i += 2; 
+				    wavename = argv[i+1];
 					break; 
-				case 'f':	
-					if(argc == 0) printf("No wave argument supplied"); 
+				case 'f':
 					if(strcmp(argv[i+1], "sine") == 0){
-						formula = SINE;
-					}else if (strcmp(argv[i+1], "cosine") == 0){
-						formula = COSINE;
+						formula = SINE; 
+					}else if(strcmp(argv[i+1], "cosine") == 0){
+						formula = COSINE; 
 					}else{
 						printf("Invalid formula name\n"); 
-					} 
-					argc--; i += 2; 
+					}
+					
+					printf("FORMULA %d\n", formula); 
 					break; 
-				case 's':
-					if(argc == 0) printf("No speed given\n"); exit(1); 
+				case 's':	
 					speed = atof(argv[i+1]); 
-					argc--; i += 2; 
-
+					printf("Speed set: %f\n", speed); 
 				case 't':	
-					if(argc == 0) printf("No duration given\n"); exit(1); 
-					duration = atof(argv[i+1]);	
-					argc--; i += 2; 
+					duration = atof(argv[i+1]);
+					printf("Duration set: %f\n", duration); 	
 					break; 
 				case 'o':	
 					output = argv[i+1];	
-					argc--; i += 2; 
-					break; 
+					break;
+				default: 
+					printf("Hitting default case\n");  
 			}
-		}else{
-			printf("No tag found\n"); exit(1); 
 		}
 	}
 
-	
-	/* Check for output files */ 
-	if(output == NULL){
-		printf("No output file was given\n"); exit(1); 
-	}
 
+	if(output == NULL) {
+		printf("No output file given\n"); 
+		exit(1); 
+	}
 	if(wavename == NULL && formula == -1){
-		printf("Formula and wave form is not specified\n"); 
-	}
-	
-	if(wavename != NULL && formula != -1){
-		printf("Formula and waveform supplied\n"); 
+		printf("No waveform or formula specified\n"); 
+		exit(1); 
 	}
 
+	if(wavename != NULL && formula != -1){
+		printf("Both waveform and formula specified\n"); 
+		exit(1); 
+	}
 	if(wavename == NULL) return FORMULA_GIVEN; 
-	else return WAVEFORM_GIVEN;
+	else return WAVEFORM_GIVEN; 
 } 
+
 
 
 
 int main(int argc, char **argv){
 	
-	int format = decode_args(argc, argv); 
+	int format = decode_args(argc, argv);	
+	printf("Formula: %d\n", formula); 
 	OUTPUT ff; 
 	WAVEFORM xx; 
 	psf_init(); 
@@ -90,6 +108,7 @@ int main(int argc, char **argv){
 	}else{
 		xx = createformula(formula); 
 	}
+	printf("Output: %s\n", output); 
 	ff = init_sound(output, sr); 	
 	copywaveform(xx, speed, ff, duration); 
 	close_sound(ff); 
