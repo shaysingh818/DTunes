@@ -7,6 +7,7 @@ int main(int argc, char **argv){
 	printf("testing phaedra library\n");
 
 	// select default device
-	PaStreamParameters inputParams; 
-	selectDefaultDeviceInfo(inputParams); 
+	//phaedraInit();
+	play("sample.wav");  
+	
 }

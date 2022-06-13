@@ -5,7 +5,7 @@ TARGET=phaedra
 OBJECT_FILES = main.o log.o phaedra.o
 
 all: $(OBJECT_FILES) 
-	gcc -o $(TARGET) $(OBJECT_FILES) -lportaudio  -lm
+	gcc -o $(TARGET) $(OBJECT_FILES) -lportaudio -lportsf  -lm
 
 phaedra.o: phaedra.c phaedra.h
 	gcc -c phaedra.c
