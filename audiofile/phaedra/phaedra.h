@@ -14,33 +14,45 @@
 #define TWO_PI (3.14159265f * 2.0f)
 #define SI (0)
 
-struct Player {
-	char name[20];  
-	PaStream *audioStream; 
-};
+static double inLatency = -1;
+static double outLatency = -1;
 
-typedef struct panpos {
-    double left;
-    double right;
-} PANPOS;
+typedef struct CallbackData {
+	int sf;
+	long nread; 
+} mydata; 
 
-static int init = 0;
 
 PaStream *stream; /* default stream for now */  
 
-typedef struct Player player_t; 
+/* callback function */ 
+int audioCallback(
+	const void *input, void *output,
+	unsigned long frameCount,
+	const PaStreamCallbackTimeInfo *timeInfo,
+	PaStreamCallbackFlags statusFlags,
+	void *userData
+);
 
-/* init functions */  
-PaError initPa(void); 
-void phaedraInit(); 
 
-/* frame reading */ 
+/* original init function */
+PaStreamParameters* setInputParams(PaStreamParameters *inputParams);
+PaStreamParameters* setOutputParams(PaStreamParameters *outputParams); 
+PaError initStream(mydata *data, int callback); 
+
+/* frame reading functions */ 
 void outBlockMono(float *samples, long numsamples); 
 void outBlockInterleaved(float *samples, long numframes); 
+void inSampleStereo(float *sampleLeft, float *sampleRight); 
+void outSampleStereo(float sampleLeft, float sampleRight); 
+float inSampleMono(void); 
+void outSampleMono(float sample); 
 
-/* play wav file */ 
+/* check sample type */ 
+char *checkSampleType(psf_stype type);
+ 
+/* play wav file */
+void displayAudioInformation(char *filename); 
+void playCallback(char *filename);  
 void play(char *filename); 
-
-
-
 

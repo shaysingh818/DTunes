@@ -1,3 +1,5 @@
 audiofiles/
 kupdf.net_audio-programming.pdf
-*.o 
+*.o
+*.wav
+*.mp3 

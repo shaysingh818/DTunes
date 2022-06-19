@@ -8,7 +8,7 @@ def download_video(url):
 		'outtmpl': '../audiofiles/%(title)s.%(ext)s', # <--- pay attention here
 		'postprocessors': [{
 		'key': 'FFmpegExtractAudio',
-		'preferredcodec': 'mp3',
+		'preferredcodec': 'wav',
 		'preferredquality': '192',
 		}],
 	}
