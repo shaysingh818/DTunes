@@ -15,7 +15,7 @@ int audioCallback(const void *input, void *output,
 	out = (float*)output; 
 	memset(out, 0, sizeof(float) * MAX_FRAMES);
 
-	nread = psf_sndReadFloatFrames(sf, out, FRAME_BLOCK_LEN);
+	nread = psf_sndReadFloatFrames(sf, out, 512);
 	printf("NREAD: %ld\n", nread); 
 
 	if(nread < frameCount){
