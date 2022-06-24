@@ -54,5 +54,8 @@ char *checkSampleType(psf_stype type);
 /* play wav file */
 void displayAudioInformation(char *filename); 
 void playCallback(char *filename);  
-void play(char *filename); 
+void play(char *filename);
+
+/* testing the sdl queue */ 
+void sdlQueue();  
 

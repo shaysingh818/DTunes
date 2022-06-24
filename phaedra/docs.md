@@ -46,6 +46,27 @@ When streaming multiple files, there needs to be data structures that handle the
 	* Graph adjacency lists
 	* Singly/Doubly Linked List based Queue
 
+
+**Input Files for Queueing Structures**: The queue operations and commands will be saved in csv files containing the queue operation, wav file link, and date/time values of command. For each data structure, csv file will be generated for storing queue commands. When a specific data structure is chosen for queueing, it's corresponding csv file will be used as input to populate the queue. 
+
+1. These are examples of what the queue files could look like on each line
+	* ``PUSH,data/file.wav,20220531``
+	* ``APPEND,data/file2.wav,20220731``
+	* ``NUDGE,data/file3.wav,20220415``
+
+2. **Queue Creation Using Input Files**: Using the input queue files, the system should read all the operations from the input file and populate the queue/buffer accordingly. This process should cross reference the operation and use the correct insert/delete or relocation method specified above. 
+
+### Singly/Doubly Linked List Queue (SDL Queue)
+This is the overall design implementation for creating a audio queue using a doubly linked list. The queue should keep track of the next and previous audio file references. The queue will have multiple methods for removing, inserting and replacing audio files in a track. This queue will be the temporary storage solution when loaded from the database
+
+1. **Operations for SDL queue**: These are the types of insert operations that will exist for queue based on the singly/doubly linked list. These are operations unique to this data structure. 
+	* **push**: Pushes an audio file to the beginning of the queue
+	* **append**: Adds files to the back/end of the queue
+	* **nudge**: This is an "insert after" operation
+	* **removepos**: Removes a file at a specific position
+	* **pop**: Removes the last file item on the queue
+
+
 ## Accounting for multiple compression formats
 Put together a list of all possible audio file formats that we might need. Use the portsf sample type checking function to see what bit rate the file is. Refer to this website for all possible compression formats: http://mauvecloud.net/sounds/index.html
 

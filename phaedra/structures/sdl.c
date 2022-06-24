@@ -1,4 +1,20 @@
-#include "ll.h"
+#include "sdl.h"
+
+
+void pushCommand(char *operation, char *filePath){
+	
+	/* get current time */ 
+	time_t rawtime; 
+	struct tm *timeinfo; 
+	time(&rawtime); 
+	timeinfo = localtime(&rawtime); 
+	char *dateTime = asctime(timeinfo); 
+
+	FILE *fp; 
+	fp = fopen(SDL_QUEUE_INPUT, "w+"); 
+	fprintf(fp, "%s,%s,%s\n", operation, filePath, dateTime); 
+	fclose(fp); 
+}
 
 
 void push(audio_t **headRef, char *file, int time, int plays){
@@ -83,7 +99,7 @@ void append(audio_t **headRef, char *file, int time, int plays){
 void printAudioNode(audio_t *audioNode){
 	printf("File Path: %s\n", audioNode->filePath); 
 	printf("Time Duration: %d\n", audioNode->timeDuration); 
-	printf("File Plays: %s\n", audioNode->plays); 
+	printf("File Plays: %d\n", audioNode->plays); 
 }
 
 

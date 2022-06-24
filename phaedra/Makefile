@@ -2,7 +2,7 @@ BIN=bin
 CC=gcc
 TARGET=phaedra
 
-OBJECT_FILES = main.o log.o phaedra.o phaedra_endpoints.o endpoints.o
+OBJECT_FILES = main.o log.o sdl.o phaedra.o phaedra_endpoints.o endpoints.o 
 
 all: $(OBJECT_FILES) 
 	gcc -o $(TARGET) $(OBJECT_FILES) -lportaudio -lportsf  -lm
@@ -12,6 +12,9 @@ phaedra.o: phaedra.c phaedra.h
 
 log.o: logging/log.c logging/log.h
 	gcc -c logging/log.c
+
+sdl.o: structures/sdl.c structures/sdl.h
+	gcc -c structures/sdl.c
 
 db.o: db/db.c db/db.h
 	gcc -c db/db.c 

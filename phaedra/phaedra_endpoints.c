@@ -30,6 +30,14 @@ void checkSampleTypeCmd(endpoint_t *e, char* argv[]){
 }
 
 
+void testSDLQueue(endpoint_t *e, char* argv[]){
+	
+	if (strcmp(argv[1], e->commandLineArg) == 0){
+		sdlQueue();  
+	}	
+}
+
+
 void phaedraEndpoints(endpoint_t **head){
 
 	// play audio endpoint 
@@ -59,5 +67,14 @@ void phaedraEndpoints(endpoint_t **head){
 	e3->endpointLogic = checkSampleTypeCmd; 
 	appendEndpoint(head, e3); 
 
+
+	// testing SDL queue	
+	endpoint_t *e4 = createEndpoint(
+		"test-sdl-queue",
+		"sdl",
+		"add files to the sdl queue"
+	);	
+	e4->endpointLogic = testSDLQueue; 
+	appendEndpoint(head, e4); 
 
 }
