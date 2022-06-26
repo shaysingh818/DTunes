@@ -4,17 +4,18 @@
 
 PLAYLIST_OBJECTS= playlist.o playlist_endpoints.o playlist_test.o
 SONG_OBJECTS= song.o song_test.o song_endpoints.o 
+PHAEDRA_OBJECTS= phaedra.o phaedra_endpoints.o 
 URLS_OBJECTS= urls.o urls_test.o urls_endpoints.o 
 DB_OBJECTS = db.o db_test.o db_endpoints.o endpoints.o
 MAIN_HEADER_FILES = endpoints/endpoints.h audiofile/song_endpoints.h playlist/playlist_endpoints.h urls/urls_endpoints.h db/db_endpoints.h
-OBJECT_FILES = $(DB_OBJECTS) $(PLAYLIST_OBJECTS) $(SONG_OBJECTS) $(URLS_OBJECTS)
+OBJECT_FILES = $(DB_OBJECTS) $(PLAYLIST_OBJECTS) $(SONG_OBJECTS) $(PHAEDRA_OBJECTS) $(URLS_OBJECTS)
 
 BIN=bin
 CC=gcc
 TARGET=dtunes
 
 all: main.o $(OBJECT_FILES)
-	gcc -o $(TARGET) main.o $(OBJECT_FILES) -lsqlite3 -lpthread -luuid
+	gcc -o $(TARGET) main.o $(OBJECT_FILES) -lportaudio -lportsf -lm -lsqlite3 -lpthread -luuid
 
 endpoints.o: endpoints/endpoints.c endpoints/endpoints.h
 	gcc -c endpoints/endpoints.c
@@ -36,6 +37,12 @@ song_test.o: audiofile/song_test.c audiofile/song_test.h
 
 song_endpoints.o: audiofile/song_endpoints.c audiofile/song_endpoints.h
 	gcc -c audiofile/song_endpoints.c
+
+phaedra.o: phaedra/phaedra.c phaedra/phaedra.h
+	gcc -c phaedra/phaedra.c
+
+phaedra_endpoints.o: phaedra/phaedra_endpoints.c phaedra/phaedra_endpoints.h
+	gcc -c phaedra/phaedra_endpoints.c
 
 urls.o: urls/urls.c urls/urls.h
 	gcc -c urls/urls.c

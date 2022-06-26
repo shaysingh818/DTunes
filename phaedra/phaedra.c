@@ -1,5 +1,5 @@
 #include "phaedra.h"
-#include "sdl/sdl.h"
+#include "../db/db.h"
 
 int audioCallback(const void *input, void *output,
 				unsigned long frameCount,
@@ -17,9 +17,10 @@ int audioCallback(const void *input, void *output,
 	memset(out, 0, sizeof(float) * MAX_FRAMES);
 
 	nread = psf_sndReadFloatFrames(sf, out, 512);
-	printf("NREAD: %ld\n", nread); 
+	//printf("NREAD: %ld\n", nread); 
 
 	if(nread < frameCount){
+		printf("Song is done\n"); 
 		return paComplete; 
 	}
 
@@ -253,11 +254,24 @@ void playCallback(char *filename){
 	/* play stream */
 	if(err == paNoError){
 		err = Pa_StartStream(stream);
-		if(err == paNoError){
-			while(Pa_GetStreamTime(stream) < 60); 
-			
+		if(err != paNoError){
+			printf("Error starting stream\n"); 
 		}
+		/* go through entire file */ 
+		while(Pa_IsStreamActive(stream)){
+			Pa_Sleep(100); 
+		}
+
+		
+		psf_sndClose(sfd); 
+		psf_finish();	
+
+		err = Pa_CloseStream(stream); 
+		
+
+		
 	}
+	free(data); 
 }
 
 void play(char *filename){
@@ -308,14 +322,69 @@ void play(char *filename){
 }
 
 
-void sdlQueue(){
-
-	// testing for the sdl queue
-	audio_t *head = NULL; 
-	
-	push(&head, "first.wav", 60, 2);	
-	push(&head, "second.wav", 60, 1);
-
-	printList(head);  
+queue_t* initQueue(){
+	queue_t* q = (queue_t*)malloc(sizeof(queue_t)); 
+	q->front = q->rear = NULL; 
+	return q; 
 }
 
+
+audionode_t *createNode(char *filePath){
+	audionode_t *temp = (audionode_t*)malloc(sizeof(audionode_t)); 
+	temp->filePath = filePath; 
+	/* get current time of insert */
+	time_t rawtime; 
+	struct tm *timeinfo; 
+	time(&rawtime); 
+	timeinfo = localtime(&rawtime);  
+	temp->currentTime = asctime(timeinfo); 
+	temp->plays = 0;
+	return temp;  
+}
+
+
+void pushToQueue(queue_t *q, char *filePath){
+
+	audionode_t *temp = createNode(filePath); 
+	if(q->rear == NULL){
+		q->front = q->rear = temp; 
+		return; 
+	}
+	q->rear->next = temp; 
+	q->rear = temp;
+	dlog("AUDIO QUEUE", "PUSHED AUDIO FILE ONTO QUEUE"); 
+}
+
+
+void removeFromQueue(queue_t *q){
+
+	if(q->front == NULL){
+		return; 
+	}
+	audionode_t *temp = q->front; 
+	q->front = q->front->next; 
+	
+	if(q->front == NULL){
+		q->rear = NULL; 
+	}
+
+	free(temp); 
+	dlog("AUDIO QUEUE", "REMOVED AUDIO FILE FROM QUEUE"); 
+}
+
+
+
+void printQueue(queue_t *q){
+	while(q->front != NULL){
+		printf("File on queue: %s\n", q->front->filePath); 
+		removeFromQueue(q); 
+	}
+}
+
+
+void playQueue(queue_t *q){
+	while(q->front != NULL){	
+		playCallback(q->front->filePath); 
+		removeFromQueue(q); 
+	}
+}

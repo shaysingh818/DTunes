@@ -1,5 +1,6 @@
 #include "endpoints/endpoints.h"
 #include "db/db_endpoints.h"
+#include "phaedra/phaedra_endpoints.h"
 #include "audiofile/song_endpoints.h"
 #include "playlist/playlist_endpoints.h"
 #include "urls/urls_endpoints.h"
@@ -42,7 +43,8 @@ int main(int argc, char* argv[]){
 
 	// configure endpoints
 	dbEndpoints(&head); 
-	playlistEndpoints(&head); 
+	playlistEndpoints(&head);
+	phaedraEndpoints(&head);  
 	songEndpoints(&head);
 	urlEndpoints(&head);  
 

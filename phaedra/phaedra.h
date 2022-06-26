@@ -1,8 +1,12 @@
+#ifndef PHAEDRA_H
+#define PHAEDRA_H
+
 #include <stdio.h> 
+#include <string.h> 
+#include <stdbool.h> 
 #include <math.h> 
 #include <portaudio.h>
 #include <portsf.h>  
-#include "logging/log.h"
 
 #define FRAME_BLOCK_LEN 512
 
@@ -14,8 +18,11 @@
 #define TWO_PI (3.14159265f * 2.0f)
 #define SI (0)
 
+
 static double inLatency = -1;
 static double outLatency = -1;
+
+PaStream *stream; /* default stream for now */  
 
 typedef struct CallbackData {
 	int sf;
@@ -23,7 +30,23 @@ typedef struct CallbackData {
 } mydata; 
 
 
-PaStream *stream; /* default stream for now */  
+/* audio node stored at each slot on the queue */ 
+struct AudioNode {
+	char *filePath; 
+	char *currentTime; 
+	int plays; 
+	struct AudioNode* next; 
+};
+
+typedef struct AudioNode audionode_t; 
+
+
+/* reference for audio queue */ 
+struct AudioQueue {
+	audionode_t *front, *rear; 
+}; 
+
+typedef struct AudioQueue queue_t; 
 
 /* callback function */ 
 int audioCallback(
@@ -56,6 +79,14 @@ void displayAudioInformation(char *filename);
 void playCallback(char *filename);  
 void play(char *filename);
 
-/* testing the sdl queue */ 
-void sdlQueue();  
 
+/* queueing functions */ 
+queue_t* initQueue(); 
+audionode_t* createNode(char *filePath); 
+void pushToQueue(queue_t *q, char *filePath); 
+void removeFromQueue(queue_t *q); 
+void printQueue(queue_t *q); 
+void playQueue(queue_t *q);  
+
+
+#endif

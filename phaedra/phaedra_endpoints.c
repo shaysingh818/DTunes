@@ -1,5 +1,6 @@
 #include "phaedra.h"
 #include "phaedra_endpoints.h"
+#include "../db/db.h"
 
 
 void playAudioCmd(endpoint_t *e, char* argv[]){
@@ -30,13 +31,20 @@ void checkSampleTypeCmd(endpoint_t *e, char* argv[]){
 }
 
 
-void testSDLQueue(endpoint_t *e, char* argv[]){
+void writeToQueue(endpoint_t *e, char* argv[]){
 	
 	if (strcmp(argv[1], e->commandLineArg) == 0){
-		sdlQueue();  
+
+		queue_t *q = initQueue();
+	
+		pushToQueue(q, "phaedra/test_files/bruises.wav"); 
+		pushToQueue(q, "phaedra/test_files/hill.wav"); 
+		pushToQueue(q, "phaedra/test_files/disclosure.wav"); 
+		pushToQueue(q, "phaedra/test_files/amiwrong.wav");
+		playQueue(q); 
+
 	}	
 }
-
 
 void phaedraEndpoints(endpoint_t **head){
 
@@ -65,16 +73,17 @@ void phaedraEndpoints(endpoint_t **head){
 		"check audio sample type"
 	);	
 	e3->endpointLogic = checkSampleTypeCmd; 
-	appendEndpoint(head, e3); 
+	appendEndpoint(head, e3);
 
-
-	// testing SDL queue	
+	 
+	// show audio file info	
 	endpoint_t *e4 = createEndpoint(
-		"test-sdl-queue",
-		"sdl",
-		"add files to the sdl queue"
+		"queue",
+		"qu",
+		"add audio files to queue"
 	);	
-	e4->endpointLogic = testSDLQueue; 
+	e4->endpointLogic = writeToQueue; 
 	appendEndpoint(head, e4); 
+
 
 }
