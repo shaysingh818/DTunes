@@ -14,30 +14,30 @@ These are the main requirements for being able to stream/play and audio file. Th
 | suggestedLatency          | selected based on logic, default is 0.2 (not entirely sure) |
 | hostApiSpecificStreamInfo | Set to NULL for now                                         |
 
-2. **Creating A Stream**: For creating an audio stream, the input and output device parameters need to be set along with initializing the portaudio library. Once the default input and output device are chosen, there is logic to handle whether the use wants to stream audio using a callback, or the iterative method. If the user wants to stream using a callback, a callback function and  data parameters must be supplied when opening the stream. At the moment, there isn't a more effiecient way to handle a streaming function without a callback. If a user wants to stream iterativley, they supply no data and set the callback boolean to "false".  	
+2. **Creating Multiple Types of Audio Streams**: For creating an audio stream, the input and output device parameters need to be set along with initializing the portaudio library. The stream should also be started when it's created. We need to create multiple types of streams and play audio frames using different techniques. We'll first want a stream that can utilize a callback function. In the callback function, data parameters from portsf need to be supplied. For iterative streaming, we'll need a stream that doesn't utilize a callback function and uses the blocking API. As a result of the requirements, there's a couple additions needed to phaedra.
+	* Create a streaming function that uses a callback
+	* Stream audio file iteratively without callback
 
 3. **Accounting for different sample types**: When streaming an audio file, we need to know what bit/sample rate the file is. The wav file can be either of these formats, 8, 16, 24, 32 and 32 floating with IEEE format. If the format does not contain any of these numbers, it should not be streamable to the DAC. There should be hardcoded logic to check the sample rate and prevent the file from being played if it doesn't meet this criteria. 
 
-4. **Duration Tracking**: When the audio file is being streamed, it should indicate it's current time value. As the file is being played, the duration values of the file should be stored locally for access. The user should be able to skip to any time duration in the audio file, and stream the content at the desired time value. These are some basic functionalites that should be available to the user
-	* Grab the entire time duration of the wav file
-	* Play audio file at certain time value
-	* Skip any amount of time beind or ahead of the real time stream
-	* Pause the stream at certain time duration
-	* Stop at certain time duration 
+4. **Duration Tracking**: When the audio file is being streamed, it should indicate it's current time value. As the file is being played, the duration values of the file should be stored locally for access. The user should be able to skip to any time duration in the audio file, and stream the content at the desired time value. These are some basic functionalites that should be available to the user. There should also be basic audio controls included for the player. 
+ 	* **Stop**: Stop the current queue entirely
+	* **Pause**: Pause the wav file
+	* **Select Duration**: Rewind to a certain duration point in the file
+	* **Play**: Play the audio file
+	* **Skip**: Skip to the next song in the queue  
+
 
 ## Audio Queueing
-When streaming multiple files, there needs to be data structures that handle the order of how audio files are played. The use of data structures serve as a way to expiriment with optimal memory usage.  This audio queueing component is needed for recieving audo file links from the database and placing them in whatever order the user desires. For each data structure, there will be a contiguous and noncontiguous version created. 
-
-**Queue Data Structures**: For queueing multiple audio files on phaedra, we'll need to utilize some data stuctures. A portion of the data structures will be soley reposible for in memory storage whereas others will be used for optimization and reccomendation. These are some the data structures we'll use for queueing multiple audio files
-	* **Linked List Based Queue**: Noncontiguous data structure
-	* **Array Based Queue**: Contiguous data structure
-	* **Graphs**: For reccomendation and playing audio files with realationships
-	* **Matrices**: For state vector represenation of the audio environment
-
-**Input Files for Queueing Structures**: The queue operations and commands will be saved in csv files containing the queue operation, wav file link, and date/time values of command. For each data structure, csv file will be generated for storing queue commands. When a specific data structure is chosen for queueing, it's corresponding csv file will be used as input to populate the queue. 
+When streaming multiple files, there needs to be data structures that handle the order of how audio files are played. The use of data structures serve as a way to expiriment with optimal memory usage.  This audio queueing component is needed for recieving audo file links from the database and placing them in whatever order the user desires. 
 
 
-2. **Loading data into the Queue**: Using the input queue files, the system should read all the file streaming links from the input file and populate the queue/buffer accordingly. The purpose of the file is to test the in memory audio queueing operations. 
+**Singular Queues**: 
+
+**Circular Queues**: Circular queues are continious. The last element of the queue should be connected to the first node in the queue. The purpose for a circular queue is to create a continous autoplay in the background. We'll want our player to keep playing songs in the background until the user manipulates the stream using the audio controls. 
+	* Create a circular queue for phaedra
+	* If possible, merge circular/singular queue together
+
 
 ### Phaedra Audio Queue
 This is the design implementation for the phaedra audio queue. This will cover the implementation for the linked list and array based queue. This queue is responsible for playing audio files in the order specified by the user. 
@@ -48,12 +48,9 @@ This is the design implementation for the phaedra audio queue. This will cover t
 	* **dequeue**: Remove item from the queue
 	* **front**: Get first item in queue
 	* **rear**: Get item at the end of the queue
-	* **writeCommand**: Operation for writting queue commands to a file
 
-2. **Playing files through the queue**: Once the queue is populated from the input file, the audio library should start streaming files in the specified order. There needs to be method that iterates through every item in the queue and plays each file. When a song is done playing, we should check the current commands in the file in case anything changes and repopulate the queue. 
 
-## Accounting for multiple compression formats
-Put together a list of all possible audio file formats that we might need. Use the portsf sample type checking function to see what bit rate the file is. Refer to this website for all possible compression formats: http://mauvecloud.net/sounds/index.html
+## Server/Client Remote Streaming
 
 
 

@@ -6,7 +6,6 @@
 // phaedra functions
 void playAudioCmd(endpoint_t *e, char* argv[]);
 void playAudioCallbackCmd(endpoint_t *e, char* argv[]);
-void checkSampleTypeCmd(endpoint_t *e, char* argv[]);
 void writeToQueue(endpoint_t *e, char* argv[]); 
 void phaedraEndpoints(endpoint_t **head); 
 

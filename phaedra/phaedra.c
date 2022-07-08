@@ -1,6 +1,7 @@
 #include "phaedra.h"
 #include "../db/db.h"
 
+
 int audioCallback(const void *input, void *output,
 				unsigned long frameCount,
 				const PaStreamCallbackTimeInfo *timeInfo,
@@ -16,7 +17,7 @@ int audioCallback(const void *input, void *output,
 	out = (float*)output; 
 	memset(out, 0, sizeof(float) * MAX_FRAMES);
 
-	nread = psf_sndReadFloatFrames(sf, out, 512);
+	nread = psf_sndReadFloatFrames(sf, out, FRAME_BLOCK_LEN);
 	//printf("NREAD: %ld\n", nread); 
 
 	if(nread < frameCount){
@@ -80,8 +81,8 @@ PaStreamParameters* setOutputParams(PaStreamParameters *outputParams){
 	return outPars; 
 }
 
-/* create bool that does it with a callback or not */ 
-PaError initStream(mydata *data, int callback){
+
+PaError initStream(void){
 
 	PaStreamParameters inputParams, outputParams, *inPars, *outPars; 
 	PaError err;
@@ -90,42 +91,25 @@ PaError initStream(mydata *data, int callback){
 	
 	/* set input params */ 	
 	inPars = setInputParams(&inputParams); 
-
 	/* set output params */ 
 	outPars = setOutputParams(&outputParams); 
-
-	if(callback){
-
-		printf("Using audio callback stream\n"); 
-		/* create stream with callback */
-		err = Pa_OpenStream(
-			&stream, 
-			inPars, 
-			outPars, 
-			SAMPLING_RATE, 
-			FRAME_BLOCK_LEN, 
-			paNoFlag, 
-			audioCallback, 
-			data
-		);
-	}else {
 		
-		printf("Using blocking API\n"); 
-		err = Pa_OpenStream(
-			&stream, 
-			inPars, 
-			outPars, 
-			SAMPLING_RATE, 
-			FRAME_BLOCK_LEN, 
-			paNoFlag, 
-			NULL, 
-			NULL
-		);
-
-	}
+	printf("Created NON blocking stream\n"); 
+	err = Pa_OpenStream(
+		&stream, 
+		inPars, 
+		outPars, 
+		SAMPLING_RATE, 
+		FRAME_BLOCK_LEN, 
+		paNoFlag, 
+		NULL, 
+		NULL
+	);
 
 	/* start the stream */ 
-	if(err != paNoError) goto error; 
+	if(err != paNoError) goto error;
+	err = Pa_StartStream(stream);  
+	if(err != paNoError) goto error;
 
 	return err; 
 	 	 
@@ -133,65 +117,26 @@ PaError initStream(mydata *data, int callback){
 		printf("Error occured while initializing phaedra\n"); 
 		printf("Error msg: %s\n", Pa_GetErrorText(err)); 
 		Pa_Terminate(); 
+		return err;	
+}
+
+
+PaError closeStream(void){
+
+	PaError err; 
+	err = Pa_CloseStream(stream); 
+	if (err != paNoError) goto error; 
+	err = Pa_Terminate(); 	
+	if (err != paNoError) goto error; 
+	dlog("PHAEDRA", "Closing audio stream"); 
+	return err; 
+
+	error:
+		dlog("ERROR", "Closing stream"); 
+		printf("Error msg: %s\n", Pa_GetErrorText(err)); 
+		Pa_Terminate(); 
 		return err; 
-	
 }
-
-
-/* frame reading functions for later use */ 
-void outBlockMono(float *samples, long numsamples){
-	static float samp[MAX_FRAMES];
-	long j,k;
-	//initPa(); 
-	for ( j = 0, k=0; j< numsamples; j++, k+=2) {
-		samp[k+1] = samp[k] = samples[j];
-	}
-
-	Pa_WriteStream(stream, &samp[0], numsamples );
-}
-
-void outBlockInterleaved(float *samples, long numframes){
-	//initPa(); 
-	Pa_WriteStream( stream, samples, numframes );
-}
-
-
-void inSampleStereo(float *sampleLeft, float *sampleRight){
-	float samples[2];
-	//if (!isOpened) initPablio();
-	Pa_ReadStream( stream, samples, 1 );
-	*sampleLeft = samples[0];
-	*sampleRight = samples[1];
-}
-
-
-void outSampleStereo(float sampleLeft, float sampleRight){
-	float samples[2];
-	//if (!isOpened) initPablio();
-	samples[0] = sampleLeft;
-	samples[1] = sampleRight;
-	Pa_WriteStream( stream, &samples[0], 1 );
-}
-
-
-
-float inSampleMono(void) {
-	float samples[2];
-	//if (!isOpened) initPablio();
-	Pa_ReadStream( stream, samples, 1 );
-	return samples[0] + samples[1]; /* mix left and right channels */
-}
-
-
-void outSampleMono(float sample) {
-	int err;
-	float samples[2];
-	//if (!isOpened) initPablio();
-	samples[0] = sample;
-	samples[1] = sample;
-	err = Pa_WriteStream( stream, &samples[0], 1 );
-}
-
 
 
 char* checkSampleType(psf_stype type){
@@ -221,21 +166,13 @@ char* checkSampleType(psf_stype type){
 
 
 
-void displayAudioInformation(char *filename){
+void play(char *filename){
 
-	float buf[MAX_FRAMES]; 
-	int sfd; 
-	PSF_PROPS props; 
-	sfd = psf_sndOpen(filename, &props, 0); 
-	if(sfd < 0){ dlog("PHAEDRA", "Error opening file"); }	
-
-	char *result = checkSampleType(props.samptype); 
-	dlog("SAMPLE TYPE", result); 
-	dlog_int("CHANNELS", props.chans); 
-}
-
-
-void playCallback(char *filename){
+	/**
+		This is the first prototyped method of a function that plays a wav file
+		The real time solutions for portaudio are not perfected, for now,  i'm going
+		to use the outBlockInterleaved stream writing function
+	*/ 
 
 	int sfd;
     long nread;
@@ -244,82 +181,32 @@ void playCallback(char *filename){
     PSF_PROPS props;
     psf_init();
     sfd = psf_sndOpen(filename, &props, 0);
-    if(sfd < 0){ dlog("PHAEDRA", "Error opening file"); }
+    if(sfd < 0){ dlog("PHAEDRA", "Error opening file"); } // exit program here }
     if(props.chans > 2) { dlog("PHAEDRA", "Invalid number of channels"); }
-
-	mydata *data = (mydata*)malloc(sizeof(mydata)); 
-	data->sf = sfd; 
-	err = initStream(data, 1); 
 	
-	/* play stream */
-	if(err == paNoError){
-		err = Pa_StartStream(stream);
-		if(err != paNoError){
-			printf("Error starting stream\n"); 
-		}
-		/* go through entire file */ 
-		while(Pa_IsStreamActive(stream)){
-			Pa_Sleep(100); 
-		}
-
-		
-		psf_sndClose(sfd); 
-		psf_finish();	
-
-		err = Pa_CloseStream(stream); 
-		
-
-		
-	}
-	free(data); 
-}
-
-void play(char *filename){
-
-	/* portsf */ 	 
-    int sfd;
-	long nread; 
-	float buf[MAX_FRAMES]; 
-	PSF_PROPS props;
-    psf_init();
-    sfd = psf_sndOpen(filename, &props, 0);
-    if(sfd < 0){ dlog("PHAEDRA", "Error opening file"); }
-    if(props.chans > 2) { dlog("PHAEDRA", "Invalid number of channels"); }
-
-	/* start stream */ 	
-	PaError err;
-	initStream(NULL, 0); 
-	err = Pa_StartStream(stream); 
-	if(err != paNoError) goto error;
-
-	/* non blocking streaming method */ 	
-	while(Pa_GetStreamTime(stream) < 60){
-		err = Pa_ReadStream(stream, buf, 512); 
-		if(err == paNoError){
-			do {
-				nread = psf_sndReadFloatFrames(sfd, buf, 512);
-				Pa_WriteStream( stream, buf, 512);
-
-			} while(nread == 512); 
-		}else{
-			printf("%s \n", Pa_GetErrorText(err)); 
-		}
-		Pa_CloseStream(stream); 
-		Pa_Terminate(); 
-	} 
-
-		
-	error:
-		printf("Error occured when starting stream\n"); 
+	/* create stream */ 	 
+	err = initStream();
+	if(err) {
+		dlog("STREAM ERROR", "Intializing stream"); 
+		dlog_int("ERROR NUMBER", err); 
 		printf("Error msg: %s\n", Pa_GetErrorText(err)); 
-		Pa_Terminate(); 
-
+		exit(-1); 
+	}
+	
+	do {
+		nread = psf_sndReadFloatFrames(sfd, buf, FRAME_BLOCK_LEN);  
+		Pa_WriteStream(stream, buf, FRAME_BLOCK_LEN);
+	} while(nread == FRAME_BLOCK_LEN); 
 
 	psf_sndClose(sfd); 
-	psf_finish();	
+	psf_finish();
 
-	
+	err = closeStream(); 
+	dlog("PHAEDRA", "Closed audio file stream");  
+
+
 }
+
 
 
 queue_t* initQueue(){
@@ -384,7 +271,7 @@ void printQueue(queue_t *q){
 
 void playQueue(queue_t *q){
 	while(q->front != NULL){	
-		playCallback(q->front->filePath); 
+		play(q->front->filePath); 
 		removeFromQueue(q); 
 	}
 }

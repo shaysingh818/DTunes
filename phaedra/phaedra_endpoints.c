@@ -17,17 +17,9 @@ void playAudioCallbackCmd(endpoint_t *e, char* argv[]){
 
 	if (strcmp(argv[1], e->commandLineArg) == 0){
 		dlog("PHAEDRA", "Play audio file with callback"); 
-		playCallback(argv[2]); 
+		//playCallback(argv[2]); 
 	}	
 
-}
-
-
-void checkSampleTypeCmd(endpoint_t *e, char* argv[]){
-
-	if (strcmp(argv[1], e->commandLineArg) == 0){
-		displayAudioInformation(argv[2]); 
-	}	
 }
 
 
@@ -65,25 +57,15 @@ void phaedraEndpoints(endpoint_t **head){
 	);	
 	e2->endpointLogic = playAudioCallbackCmd; 
 	appendEndpoint(head, e2); 
-
-	// show audio file info	
-	endpoint_t *e3 = createEndpoint(
-		"check-sampletype",
-		"cs",
-		"check audio sample type"
-	);	
-	e3->endpointLogic = checkSampleTypeCmd; 
-	appendEndpoint(head, e3);
-
 	 
 	// show audio file info	
-	endpoint_t *e4 = createEndpoint(
+	endpoint_t *e3 = createEndpoint(
 		"queue",
 		"qu",
 		"add audio files to queue"
 	);	
-	e4->endpointLogic = writeToQueue; 
-	appendEndpoint(head, e4); 
+	e3->endpointLogic = writeToQueue; 
+	appendEndpoint(head, e3); 
 
 
 }

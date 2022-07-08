@@ -44,9 +44,9 @@ int main(int argc, char* argv[]){
 	// configure endpoints
 	dbEndpoints(&head); 
 	playlistEndpoints(&head);
-	phaedraEndpoints(&head);  
 	songEndpoints(&head);
 	urlEndpoints(&head);  
+	phaedraEndpoints(&head);  
 
 	if(strcmp(argv[1], "help") == 0){
 		printEndpoints(head); 
