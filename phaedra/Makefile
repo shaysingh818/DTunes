@@ -28,3 +28,9 @@ db.o: ../db/db.c ../db/db.h
 
 main.o: main.c $(MAIN_HEADER_FILES)
 	gcc -c main.c
+
+clean_binary:	
+	rm $(TARGET)
+
+clean:
+	rm -f *.o *~

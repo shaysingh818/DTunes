@@ -50,17 +50,7 @@ struct AudioQueue {
 typedef struct AudioQueue queue_t; 
 
 
-/* utlities for creating audio streams */
-PaStreamParameters* setInputParams(PaStreamParameters *inputParams);
-PaStreamParameters* setOutputParams(PaStreamParameters *outputParams); 
-PaError initStream(void);
-PaError closeStream(void);  
-
-
-/* check sample type */ 
-char *checkSampleType(psf_stype type);
- 
-/* play wav file */
+/* audio callback function */ 
 int audioCallback(
 	const void *input, void *output,
 	unsigned long frameCount,
@@ -68,7 +58,20 @@ int audioCallback(
 	PaStreamCallbackFlags statusFlags,
 	void *userData
 );
-void play(char *filename);
+
+/* utlities for creating audio streams */
+PaStreamParameters* setInputParams(PaStreamParameters *inputParams);
+PaStreamParameters* setOutputParams(PaStreamParameters *outputParams); 
+PaError initStream(void);
+PaError initCallbackStream(mydata *data); 
+PaError closeStream(void);  
+
+
+/* check sample type */ 
+char *checkSampleType(psf_stype type);
+ 
+/* play wav file */
+void play(char *filename, int streamType);
 
 
 /* queueing functions */ 

@@ -32,7 +32,7 @@ These are the main requirements for being able to stream/play and audio file. Th
 When streaming multiple files, there needs to be data structures that handle the order of how audio files are played. The use of data structures serve as a way to expiriment with optimal memory usage.  This audio queueing component is needed for recieving audo file links from the database and placing them in whatever order the user desires. 
 
 
-**Singular Queues**: 
+**Singular Queues**: These types of queues play a list of songs in order and stop once the queue reaches the end of the list. This type of queue is the initial implementation for the phaedra audio queue.  
 
 **Circular Queues**: Circular queues are continious. The last element of the queue should be connected to the first node in the queue. The purpose for a circular queue is to create a continous autoplay in the background. We'll want our player to keep playing songs in the background until the user manipulates the stream using the audio controls. 
 	* Create a circular queue for phaedra
@@ -51,6 +51,10 @@ This is the design implementation for the phaedra audio queue. This will cover t
 
 
 ## Server/Client Remote Streaming
+Currently, our audio streams are streamed to the users DAC (Digital Audio Converter) locally. Instead of creating streams locally, we'll create a server that can stream audio over sockets.By creating a server, we can make a networked environment for the phaedra audio player.  The server should have multiple ports for listening to different audio streams. Each audio stream can contain data from a phaedra audio queue, or just a single wav file. It should also be designed as a "command and control" center for telling the audio streams how to behave. We can also design network commands that control when/how the audio file is played. There should be a user interface to view the current state/behavior of the server. We'll also want some security measures for how files are streamed/accessed. 
+
+
+
 
 
 

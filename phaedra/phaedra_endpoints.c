@@ -7,7 +7,7 @@ void playAudioCmd(endpoint_t *e, char* argv[]){
 
 	if (strcmp(argv[1], e->commandLineArg) == 0){
 		dlog("PHAEDRA", "Play audio file"); 
-		play(argv[2]); 
+		play(argv[2], 2); 
 	}	
 
 }
