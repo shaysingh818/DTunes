@@ -1,9 +1,9 @@
 # MAKEFILE FOR ISOLATED PHAEDRA COMPILATION
 
-MAIN_HEADER_FILES = ../db/db.h ../endpoints/endpoints.h phaedra.h phaedra_endpoints.h
+MAIN_HEADER_FILES = ../db/db.h ../endpoints/endpoints.h phaedra.h phaedra_test.h phaedra_endpoints.h
 DB = db.o
 ENDPNTS = endpoints.o
-PHAEDRA = phaedra.o phaedra_endpoints.o
+PHAEDRA = phaedra.o phaedra_endpoints.o phaedra_test.o
 OBJECT_FILES =  $(DB) $(ENDPNTS) $(PHAEDRA) 
 
 BIN=bin
@@ -11,7 +11,7 @@ CC=gcc
 TARGET=phaedra
 
 
-all: main.o db.o endpoints.o phaedra.o phaedra_endpoints.o
+all: main.o db.o endpoints.o phaedra.o phaedra_endpoints.o phaedra_test.o
 	gcc -o $(TARGET) main.o $(OBJECT_FILES) -lportaudio -lportsf -lm -lpthread -lsqlite3
 
 phaedra.o: phaedra.c phaedra.h
@@ -19,6 +19,9 @@ phaedra.o: phaedra.c phaedra.h
 
 phaedra_endpoints.o: phaedra_endpoints.c phaedra_endpoints.h
 	gcc -c phaedra_endpoints.c
+
+phaedra_test.o: phaedra_test.c phaedra_test.h
+	gcc -c phaedra_test.c
 
 endpoints.o: ../endpoints/endpoints.c ../endpoints/endpoints.h
 	gcc -c ../endpoints/endpoints.c

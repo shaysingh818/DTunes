@@ -38,6 +38,15 @@ void writeToQueue(endpoint_t *e, char* argv[]){
 	}	
 }
 
+
+void testPhaedra(endpoint_t *e, char* argv[]){
+	
+	if (strcmp(argv[1], e->commandLineArg) == 0){
+		dlog("PHAEDRA", "RUNNING TESTS"); 
+		runTests(); 
+	}	
+}
+
 void phaedraEndpoints(endpoint_t **head){
 
 	// play audio endpoint 
@@ -65,7 +74,17 @@ void phaedraEndpoints(endpoint_t **head){
 		"add audio files to queue"
 	);	
 	e3->endpointLogic = writeToQueue; 
-	appendEndpoint(head, e3); 
+	appendEndpoint(head, e3);
+
+ 
+	// show audio file info	
+	endpoint_t *e4 = createEndpoint(
+		"test",
+		"test",
+		"test phaedra library"
+	);	
+	e4->endpointLogic = testPhaedra; 
+	appendEndpoint(head, e4); 
 
 
 }

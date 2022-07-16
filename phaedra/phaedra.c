@@ -92,7 +92,6 @@ PaError initStream(void){
 	inPars = setInputParams(&inputParams); 
 	outPars = setOutputParams(&outputParams); 
 		
-	printf("Created NON blocking stream\n"); 
 	err = Pa_OpenStream(
 		&stream, 
 		inPars, 
