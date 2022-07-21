@@ -14,28 +14,23 @@ Whatever audio data source i'm utilizing, there should be a standard file system
 
 
 1. **Database Syncing**: The local file system has sync it's meta data to the database instance. The contents in the current file system should replicate what's in the database. This feature will depend on the file ledger/logger for keeping the file system contents synced with the database. For database syncing to work, the file structure will need to be specific for certain data models
-	* **Audio File Collection Model**: For the audio data management system, the database will need to a store a representation of audio files stored in a "folder". The persistent disk folder is the equivalent of a playlist/collection of audio files.
+	* **Audio File Collection**: For the audio data management system, the database will need to a store a representation of audio files stored in a "folder". The persistent disk folder is the equivalent of a playlist/collection of audio files. For this model, these are the relevant fields needed (Similar to the existing playlist model)
+	* **Name**: Name of the audio collection
+	* **Date Created**: Date the collection was created
+	* **UUID**: Unique identifier for the collection
+	* **Disk Space**: Disk space the collection takes up
+	* **Number of files**: Number of audio files in the collection
 	 
 
-  
+2. **File Replication**: To prevent the loss of audio files, we'll need to have the ability to replicate files/collections for backup. We should have configuration settings for backing up certain collections using the database. The replication process should be networked and able to send replicas to other devices with DTunes installed. Essentially, we'll need our file system to be able to communicate over sockets to transfer data to other devices. 
 
-2. **File Replication**: 
+3. **File Ledger/Logger**: To have full transparency of the file system, there should be a module dedicated to logging the activites that happen inside the file system. The logger should send reports to the database and local files on the system. There should be logs for certain types of actions that happen within the file system. These are the types of logs that should be generated. 
+	* **New File**: New file created/inserted into the system
+	* **File Moves**: Alert if a file has moved locations
+	* **File Deleted**: Alert if a file has been deleted
+	* **Folder Created**: Alert if a file collection has been created
 
-3. **File Ledger/Logger**: 
 
-4. **Dataset Generation**: 
-
-
-
-# Exporting/Importing dataset files
-1. This is a feature that isn't urgent. We'll need to rewrite our own version of pandas or some type of library that can read/process csv files. A seperate feature document will be rewritten for the custom csv file library. The current temporary solutions are bad and not worth shipping into the main code base yet. 
-
-3. For generating large datasets, we'll need a function that can export the urls saved in the database to a csv or json file. We'll need a function that can export the data with a data format as a parameter. The json/csv file doesn't contain the raw video data, only the urls themselves. This is so that other machines can backup/redownload videos from previous versions. 
-
-4. We need to be able to take all the urls from the database and write them to a cvs file wwith specific name format. The name format should be written like this, <date of export><urlcount>.csv. The csv file should contain the youtube url, and date it was inserted into the database. Overall, this should be able to export all the urls from the database to a file. 
-
-5. For importing csv files, we'll need to read the url from each column in the csv file and throw it into a massive array pool. The array pool will then be thrown to to the "thread argument builder" and start the multithreaded download process. This should do the same thing as downloading a bunch of urls from the database, except with a csv file. The csv file should also be thrown in as a command line argument. We also might want to add some sort of validation to make the csv file is correctly read. This section is for importing csv files directly to the threaded downloader
-
-6. We'll also want something that can take in a csv file and sync it to the database. This should go through each section in the csv file and add the given url to the database. There should be some type of method that ensures the csv file is formatted correctly for the database schema. 
-
+**Music Scheduling System**: https://en.wikipedia.org/wiki/Music_scheduling_system
+**Playlist MarkUp Language**: https://en.wikipedia.org/wiki/Playlist_markup_language
 

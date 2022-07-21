@@ -13,6 +13,16 @@ CREATE TABLE PLAYLIST (
 );
 
 
+
+CREATE TABLE COLLECTION (
+    collection_uuid VARCHAR(37) PRIMARY KEY,
+    name VARCHAR(255) UNIQUE,
+    date_created VARCHAR(255),
+	disk_space VARCHAR(255), 
+	file_count VARCHAR(255)
+);
+
+
 CREATE TABLE SONG (
     song_uuid VARCHAR(37) PRIMARY KEY,
     name VARCHAR(255) UNIQUE,

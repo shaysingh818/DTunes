@@ -53,6 +53,12 @@
 #define DELETE_DB_URL_UUID  "DELETE FROM YOUTUBE_URL where url_uuid=?" 
 #define DELETE_DB_URLS  "DELETE  FROM YOUTUBE_URL"
 
+
+// collections queries
+#define INSERT_DB_COLLECTION  "INSERT INTO COLLECTION VALUES(?,?,?,?,?)"
+
+
+
 sqlite3* openDB(char *filename);
 char* getCurrentTime();
 
