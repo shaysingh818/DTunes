@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h> 
 #include <sqlite3.h>
+#include <sys/stat.h> 
 #include <time.h> 
 #include <uuid/uuid.h>
 #include <dirent.h>
@@ -17,15 +18,15 @@
 #define DB_PATH "../adms/db/dtunes.db"
 
 /* collection db queries */ 
-#define INSERT_DB_COLLECTION  "INSERT INTO COLLECTION VALUES(?,?,?,?,?)"
-#define VIEW_DB_COLLECTION "SELECT * FROM COLLECTION"
+#define INSERT_DB_COLLECTION  "INSERT INTO COLLECTION VALUES(?,?,?,?)"
+#define VIEW_DB_COLLECTIONS "SELECT * FROM COLLECTION"
+#define VIEW_DB_COLLECTION "SELECT * FROM COLLECTION WHERE name=?"
 #define COUNT_DB_COLLECTION "SELECT COUNT(*) FROM COLLECTION"
-#define DELETE_DB_COLLECTION_UUID  "DELETE FROM COLLECTION where collection_uuid=?" 
-#define DELETE_DB_COLLECTION  "DELETE  FROM COLLECTION"
+#define DELETE_DB_COLLECTION  "DELETE FROM COLLECTION WHERE name=?" 
+#define DELETE_DB_COLLECTIONS  "DELETE  FROM COLLECTION"
 
 
 struct Collection {
-	uuid_t collectionID; 
 	char name[100]; 
 	char dateCreated[30]; 
 	char diskSpace[100]; 
@@ -40,11 +41,11 @@ char* getCurrentTime();
 
 // crud operations
 collection_t **initCollections(int limit);
-collection_t *viewCollectionUUID(char **uuid);  
+collection_t *viewCollection(char *name);  
 int createCollection(char *name);
 int getCollectionTableSize();  
 int viewCollections(); 
-int deleteCollection(char *collectionUUID); 
+int deleteCollection(char *name); 
 int deleteAllCollections(); 
 int viewCollectionFiles(); 
 

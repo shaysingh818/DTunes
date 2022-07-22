@@ -33,11 +33,6 @@ int createCollection(char *name){
 	collection_t *newCollection; 
 	newCollection = (collection_t*)malloc(sizeof(collection_t)); 
 
-	// create uuid
-	char collection_uuid[37]; 
-	uuid_generate_time_safe(newCollection->collectionID); 
-	uuid_unparse_lower(newCollection->collectionID, collection_uuid); 
-
 	strcpy(newCollection->name, name); 
 	strcpy(newCollection->dateCreated, currentTime); 
 	strcpy(newCollection->diskSpace, "0 GB"); 
@@ -65,17 +60,25 @@ int createCollection(char *name){
         return 0;
     }
 
-	sqlite3_bind_text(sql, 1, newCollection->collectionID, -1, NULL);
-	sqlite3_bind_text(sql, 2, newCollection->name, -1, NULL);
-	sqlite3_bind_text(sql, 3, newCollection->dateCreated, -1, NULL);	
-	sqlite3_bind_text(sql, 4, newCollection->diskSpace, -1, NULL);
-	sqlite3_bind_text(sql, 5, newCollection->fileCount, -1, NULL);
+	sqlite3_bind_text(sql, 1, newCollection->name, -1, NULL);
+	sqlite3_bind_text(sql, 2, newCollection->dateCreated, -1, NULL);	
+	sqlite3_bind_text(sql, 3, newCollection->diskSpace, -1, NULL);
+	sqlite3_bind_text(sql, 4, newCollection->fileCount, -1, NULL);
 	sqlite3_step(sql); 
 	sqlite3_close(db);
 
-	return 1;  
 
 	// create folder with collection name
+	if(chdir(ADMS_PATH) != 0){
+        perror("chdir() to /error failed");
+        return FALSE;
+    }
+	mkdir(newCollection->name, S_IRWXU);
+
+
+	return 1;  
+
+	
 }
 
 collection_t **initCollections(int limit){
@@ -88,7 +91,7 @@ collection_t **initCollections(int limit){
     // open db
     sqlite3 *db = openDB(DB_PATH);
     sqlite3_stmt *sql;
-    char *query = VIEW_DB_COLLECTION;
+    char *query = VIEW_DB_COLLECTIONS;
     int result = sqlite3_prepare_v2(db, query, -1, &sql, NULL);
     if(result != SQLITE_OK){
         fprintf(stderr, "Failed to view playlists:  %s\n",sqlite3_errmsg(db));
@@ -103,15 +106,13 @@ collection_t **initCollections(int limit){
         const char *column0 = sqlite3_column_text(sql, 0);
         const char *column1 = sqlite3_column_text(sql, 1);
         const char *column2 = sqlite3_column_text(sql, 2);
-        const char *column3 = sqlite3_column_text(sql, 2);
-        const char *column4 = sqlite3_column_text(sql, 2);
+        const char *column3 = sqlite3_column_text(sql, 3);
 
-        uuid_parse(column0, collections[indexCount]->collectionID);
         // store values:
-        strcpy(collections[indexCount]->name, column1);
-        strcpy(collections[indexCount]->dateCreated, column2);
-        strcpy(collections[indexCount]->diskSpace, column3);
-        strcpy(collections[indexCount]->fileCount, column4);
+        strcpy(collections[indexCount]->name, column0);
+        strcpy(collections[indexCount]->dateCreated, column1);
+        strcpy(collections[indexCount]->diskSpace, column2);
+        strcpy(collections[indexCount]->fileCount, column3);
         indexCount += 1;
     }
 
@@ -162,13 +163,11 @@ int viewCollections(){
     // print header 
     printf("\n");
     printf("\e[0;31m");
-    printf("%-45s %-25s %-15s\n", "UUID", "Name", "Date");
+    printf("%-45s %-25s\n", "Name", "Date");
     //generateBanner(100);
     // View song in format for terminal
     for(int i = 0; i < collectionLimit; i++){
-        char collection_uuid[37];
-        uuid_unparse_lower((*p)[i]->collectionID, collection_uuid);
-        printf("%-45s %-25s %-15s", collection_uuid, (*p)[i]->name, (*p)[i]->dateCreated);
+        printf("%-45s %-25s", (*p)[i]->name, (*p)[i]->dateCreated);
     }
     printf("\n");
 
@@ -178,14 +177,14 @@ int viewCollections(){
 
 
 
-int deleteCollection(char *collectionUUID){
+int deleteCollection(char *name){
 
     sqlite3 *db = openDB(DB_PATH);
     sqlite3_stmt *sql;
 
     // prepare statement
-    int result = sqlite3_prepare_v2(db, DELETE_DB_COLLECTION_UUID, -1, &sql, NULL);
-    sqlite3_bind_text(sql, 1, collectionUUID, -1, NULL);
+    int result = sqlite3_prepare_v2(db, DELETE_DB_COLLECTION, -1, &sql, NULL);
+    sqlite3_bind_text(sql, 1, name, -1, NULL);
 
     // check for sql cursor errors
     if(result != SQLITE_OK){
@@ -198,6 +197,15 @@ int deleteCollection(char *collectionUUID){
     sqlite3_close(db);
 
 	// delete folder of songs
+	if(chdir(ADMS_PATH) != 0){
+        perror("chdir() to /error failed");
+        return FALSE;
+    }
+
+	int ret = rmdir(name);
+	if(ret == 0){
+		printf("File directory removed\n"); 		
+	}
 
     return TRUE;
 }
@@ -208,7 +216,7 @@ int deleteAllCollections(){
      // open db
     sqlite3 *db = openDB(DB_PATH);
     sqlite3_stmt *sql;
-    char *query = DELETE_DB_COLLECTION;
+    char *query = DELETE_DB_COLLECTIONS;
     char *errMsg = 0;
 
     int result = sqlite3_prepare_v2(db, query, -1, &sql, NULL);
@@ -222,6 +230,15 @@ int deleteAllCollections(){
     sqlite3_close(db);
 
 	// delete all folders
+	DIR *collectionsPath = opendir(ADMS_PATH); 
+	struct dirent *next_file; 
+	char filepath[300]; 
+	
+	while((next_file = readdir(collectionsPath)) != NULL){
+		sprintf(filepath, "%s/%s", ADMS_PATH, next_file->d_name); 
+		remove(filepath); 
+	}
+	closedir(collectionsPath); 
 
     return TRUE;
 }

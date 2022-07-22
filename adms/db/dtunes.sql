@@ -15,8 +15,7 @@ CREATE TABLE PLAYLIST (
 
 
 CREATE TABLE COLLECTION (
-    collection_uuid VARCHAR(37) PRIMARY KEY,
-    name VARCHAR(255) UNIQUE,
+    name VARCHAR(255) UNIQUE PRIMARY KEY,
     date_created VARCHAR(255),
 	disk_space VARCHAR(255), 
 	file_count VARCHAR(255)
