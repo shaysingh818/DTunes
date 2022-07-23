@@ -3,14 +3,6 @@
 #include <stdio.h> 
 
 
-void generateBanner(int amount){
-	char *str = malloc(amount * sizeof(char *));  
-    for(int i = 0; i < amount; i++){
-		strcat(str, "=");  
-    }
-    printf("%s\n", str);
-	free(str); 
-}
 
 int main(int argc, char* argv[]){
 

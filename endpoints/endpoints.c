@@ -1,5 +1,4 @@
 #include "endpoints.h"
-#include "../db/db.h"
 
 endpoint_t *createEndpoint(char *name, char *commandLineArg, char *docString){
     // create endpoint

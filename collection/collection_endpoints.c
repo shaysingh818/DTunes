@@ -1,6 +1,6 @@
 #include "collection.h"
 #include "collection_endpoints.h"
-
+#include "collection_test.h"
 
 // create playlist
 void insertCollectionCmd(endpoint_t *e, char* argv[]){
@@ -52,6 +52,15 @@ void deleteAllCollectionsCmd(endpoint_t *e, char* argv[]){
 }
 
 
+
+void runCollectionTestsCmd(endpoint_t *e, char* argv[]){	
+    if (strcmp(argv[1], e->commandLineArg) == 0){
+		runCollectionTests(); 
+    }
+
+}
+
+
 void collectionEndpoints(endpoint_t **head) {
 
 	// create collection
@@ -92,5 +101,15 @@ void collectionEndpoints(endpoint_t **head) {
     );
     e4->endpointLogic = deleteAllCollectionsCmd;
     appendEndpoint(head, e4);
+
+
+	// delete all collections
+    endpoint_t *e5 = createEndpoint(
+        "test-collections",
+        "tc",
+        "test collection methods"
+    );
+    e5->endpointLogic = runCollectionTestsCmd;
+    appendEndpoint(head, e5);
 
 }

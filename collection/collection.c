@@ -1,5 +1,5 @@
 #include "collection.h"
-
+#include "../logging/log.h"
 
 sqlite3* openDB(char *filename){
     sqlite3 *db;
@@ -13,15 +13,15 @@ sqlite3* openDB(char *filename){
 }
 
 
-// Get current time for date timestamp on create/update
-char* getCurrentTime(){
-    time_t rawtime;
-    struct tm * timeinfo;
-    // get time
-    time(&rawtime);
-    timeinfo = localtime(&rawtime);
-    // return current time
-    return asctime(timeinfo);
+static int callback(void *data, int argc, char **argv, char **azColName){
+   int i;
+   fprintf(stderr, "%s: ", (const char*)data);
+   
+   for(i = 0; i<argc; i++) {
+      printf("%s = %s\n", azColName[i], argv[i] ? argv[i] : "NULL");
+   }
+   printf("\n");
+   return 0;
 }
 
 
@@ -31,7 +31,7 @@ int createCollection(char *name){
 	// create data model for sqlite3 
 	char *currentTime = getCurrentTime(); 
 	collection_t *newCollection; 
-	newCollection = (collection_t*)malloc(sizeof(collection_t)); 
+	newCollection = (collection_t*)malloc(sizeof(collection_t));
 
 	strcpy(newCollection->name, name); 
 	strcpy(newCollection->dateCreated, currentTime); 
@@ -69,17 +69,49 @@ int createCollection(char *name){
 
 
 	// create folder with collection name
+	char formattedName[100]; 
+	sprintf(formattedName, "collection-%s", name); 
+
 	if(chdir(ADMS_PATH) != 0){
         perror("chdir() to /error failed");
         return FALSE;
     }
-	mkdir(newCollection->name, S_IRWXU);
+	mkdir(formattedName, S_IRWXU);
 
 
 	return 1;  
 
 	
 }
+
+
+int updateCollectionById(char *uuid, char *newName){
+    // open db
+    char *sql;
+    sqlite3 *db = openDB(DB_PATH);
+    char *errMsg = 0;
+    const char* data = "Callback function called";
+    // prepare statement
+    char string[200];
+    sprintf(string, "UPDATE COLLECTION set name ='%s' WHERE collection_uuid='%s'; ", newName, uuid);
+    sql = string; \
+            "SELECT * from COLLECTION";
+
+    int result = sqlite3_exec(db, sql, callback, (void*)data, &errMsg);
+
+    // check for sql cursor errors
+    if(result != SQLITE_OK){
+        fprintf(stderr, "Failed to delete song:  %s\n",errMsg);
+         sqlite3_free(errMsg);
+        return FALSE;
+    }
+
+    //sqlite3_step(sql); 
+    sqlite3_close(db);
+
+    return TRUE;
+}
+
 
 collection_t **initCollections(int limit){
 
@@ -211,6 +243,7 @@ int deleteCollection(char *name){
 }
 
 
+
 int deleteAllCollections(){
 
      // open db
@@ -244,5 +277,144 @@ int deleteAllCollections(){
 }
 
 
+int checkCollectionExist(char *collectionName){
 
+    // open db
+    sqlite3 *db = openDB(DB_PATH);
+    sqlite3_stmt *res;
+    char *sql = DELETE_DB_COLLECTION;
+    char *err_msg = 0;
+
+    // print headers
+    int rc = sqlite3_prepare_v2(db, sql, -1, &res, 0);
+    if(rc == SQLITE_OK){
+        sqlite3_bind_text(res, 1, collectionName, -1, NULL);
+    }else {
+        fprintf(stderr, "Failed to execute statement: %s\n", sqlite3_errmsg(db));
+    }
+
+    // check if playlist exists
+    int row = sqlite3_step(res);
+    if(row == SQLITE_ROW){
+        return TRUE;
+    }
+
+    return FALSE;
+}
+
+
+
+char* combineFileStrs(const char *cwd, const char *fileName){
+    char *result = malloc(strlen(cwd) + strlen(fileName) + 1);
+    strcpy(result, cwd);
+    strcat(result, fileName);
+    return result;
+}
+
+
+void removeChar(char *testString, char charToRemove){
+    char *d = testString;
+    do {
+        while (*d == charToRemove){
+            ++d;
+        }
+    } while(*testString++ = *d++);
+}
+
+
+
+void renameFile(char *fileName, char *newFileName){
+    int result = rename(fileName, newFileName);
+    if(result == 0){
+        if(DEBUG == TRUE){
+            d_log("FILE", "RENAMED");
+        }
+    }else{
+        d_log("FILE", "RENAME ERROR");
+    }
+}
+
+
+
+// function to count amount of files in directory
+int countFiles(char *directoryPath){
+
+    int file_count = 0;
+    DIR * dirp;
+    struct dirent * entry;
+
+    dirp = opendir(directoryPath); /* There should be error handling after this */
+    while ((entry = readdir(dirp)) != NULL) {
+        if (entry->d_type == DT_REG) { /* If the entry is a regular file */
+         file_count++;
+        }
+    }
+    closedir(dirp);
+    return file_count;
+}
+
+
+void clearAudioFileDirectory(char *desiredPath){
+    DIR *audioFolder = opendir(desiredPath);
+    struct dirent *next_file;
+    char filepath[300];
+
+    while((next_file=readdir(audioFolder)) != NULL){
+        sprintf(filepath, "%s/%s", desiredPath, next_file->d_name);
+        remove(filepath);
+    }
+    closedir(audioFolder);
+}
+
+
+
+
+int renameCollectionFiles(char *collectionName){
+
+	DIR *folder;
+    struct dirent *entry;
+    int files = 0;
+    folder = opendir(collectionName);
+    if(folder == NULL){
+        perror("Unable to read directory\n");
+    }
+
+    char cwd[256];
+    if(getcwd(cwd, sizeof(cwd)) == NULL){
+        dlog("ERROR", "CURRENT WORKING DIRECTORY");
+    }
+    strcat(cwd, "/");
+
+	while((entry=readdir(folder))){
+        files++;
+        // file information
+        char *tempFileName = entry->d_name;
+        char *currTime = getCurrentTime();
+
+        // file name processing
+        removeChar(tempFileName, ' ');
+        removeChar(tempFileName, ',');
+        removeChar(tempFileName, '\'');
+
+        // get previous file name 
+        char *idk = malloc(strlen(tempFileName) + 1);
+        strcpy(idk, tempFileName);
+
+        // extract desired audiofile streaming location
+        char *streamingPath = combineFileStrs(cwd, tempFileName);
+
+        int fileCondition1 = strcmp(entry->d_name, "..") == 0;
+        int fileCondition2 = strcmp(entry->d_name, ".") == 0;
+
+        if(fileCondition1 == 0 & fileCondition2 == 0){
+            //insertSong(entry->d_name, currTime, streamingPath);
+            dlog("SYNC SONG", tempFileName);
+        }
+    }
+
+    closedir(folder);
+
+    return TRUE;
+
+}
 

@@ -10,9 +10,13 @@
 #include <uuid/uuid.h>
 #include <dirent.h>
 #include <unistd.h>
+#include <errno.h>
+
+
 
 #define TRUE 1
 #define FALSE 0
+#define DEBUG TRUE
 
 #define ADMS_PATH "../adms/collections"
 #define DB_PATH "../adms/db/dtunes.db"
@@ -39,15 +43,27 @@ typedef struct Collection collection_t;
 sqlite3* openDB(char *filename); 
 char* getCurrentTime(); 
 
-// crud operations
+// database operations
 collection_t **initCollections(int limit);
 collection_t *viewCollection(char *name);  
 int createCollection(char *name);
+int updateCollectionById(char *uuid, char *newName); 
 int getCollectionTableSize();  
 int viewCollections(); 
 int deleteCollection(char *name); 
 int deleteAllCollections(); 
 int viewCollectionFiles(); 
+int checkCollectionExists(char *collectionName);
+
+// helpers
+char* combineFileStrs(const char *cwd, const char *fileName); 
+void removeChar(char *testString, char charToRemove);
+void renameFile(char *fileName, char *newFileName); 
+int countFiles(char *directoryPath); 
+void clearAudioFileDirectory(char *desiredPath);  
+int renameCollectionFiles(char *collectionName); 
+
+
 
 #endif
 
