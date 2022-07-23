@@ -1,6 +1,6 @@
 #include "phaedra_test.h"
 #include "phaedra.h"
-#include "../db/db.h"
+#include "../logging/log.h"
 
 void testSetIOParams(){
 

@@ -1,5 +1,5 @@
 #include "endpoints.h"
-#include "../db/db.h"
+#include "../logging/log.h"
 
 endpoint_t *createEndpoint(char *name, char *commandLineArg, char *docString){
     // create endpoint

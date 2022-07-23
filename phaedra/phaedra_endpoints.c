@@ -1,6 +1,7 @@
 #include "phaedra.h"
 #include "phaedra_endpoints.h"
-#include "../db/db.h"
+#include "phaedra_test.h"
+#include "../logging/log.h"
 
 
 void playAudioCmd(endpoint_t *e, char* argv[]){

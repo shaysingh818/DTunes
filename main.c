@@ -1,10 +1,6 @@
 #include "endpoints/endpoints.h"
-#include "db/db_endpoints.h"
 #include "phaedra/phaedra_endpoints.h"
-#include "audiofile/song_endpoints.h"
-#include "playlist/playlist_endpoints.h"
-#include "urls/urls_endpoints.h"
-
+#include "collection/collection_endpoints.h"
 
 #define TRUE 1
 #define FALSE 0
@@ -42,10 +38,7 @@ int main(int argc, char* argv[]){
 	}
 
 	// configure endpoints
-	dbEndpoints(&head); 
-	playlistEndpoints(&head);
-	songEndpoints(&head);
-	urlEndpoints(&head);  
+	collectionEndpoints(&head);
 	phaedraEndpoints(&head);  
 
 	if(strcmp(argv[1], "help") == 0){

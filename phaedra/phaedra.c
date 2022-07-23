@@ -1,5 +1,5 @@
 #include "phaedra.h"
-#include "../db/db.h"
+#include "../logging/log.h"
 
 
 int audioCallback(const void *input, void *output,
