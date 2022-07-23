@@ -150,19 +150,23 @@ void testRenameFile(){
     struct dirent *entry;
     int files = 0;
 
-    folder = opendir("../adms/testing");
+    folder = opendir("adms/testing");
      if(folder == NULL){
         perror("Unable to read directory\n");
     }
 
 
     // change to desired directory
-    if(chdir("../adms/testing") != 0){
+    if(chdir("adms/testing") != 0){
         dlog("ERROR", "CHANGE DIR");
     }
 
     system("touch testingfile.txt");
-    renameFile("testingfile.txt", "newfile.txt");
+    int result = renameFile("testingfile.txt", "newfile.txt");
+
+	if(result == FALSE){
+		dlog("FAILED", "RENAME FILE"); 
+	}
 
     while((entry=readdir(folder))){
         files++;
@@ -279,9 +283,6 @@ void runCollectionTests() {
 	testRemoveChar();
 	testRenameFile();
 	testCountFilesDirectory();
-
-	runCollectionTests(); 
-
 	
 
 }

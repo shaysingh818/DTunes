@@ -323,15 +323,12 @@ void removeChar(char *testString, char charToRemove){
 
 
 
-void renameFile(char *fileName, char *newFileName){
+int renameFile(char *fileName, char *newFileName){
     int result = rename(fileName, newFileName);
     if(result == 0){
-        if(DEBUG == TRUE){
-            d_log("FILE", "RENAMED");
-        }
-    }else{
-        d_log("FILE", "RENAME ERROR");
+		return TRUE; 
     }
+	return FALSE; 
 }
 
 

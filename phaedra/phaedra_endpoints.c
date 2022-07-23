@@ -1,5 +1,6 @@
 #include "phaedra.h"
 #include "phaedra_endpoints.h"
+#include "phaedra_test.h"
 #include "../logging/log.h"
 
 

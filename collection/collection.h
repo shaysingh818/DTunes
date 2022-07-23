@@ -18,8 +18,8 @@
 #define FALSE 0
 #define DEBUG TRUE
 
-#define ADMS_PATH "../adms/collections"
-#define DB_PATH "../adms/db/dtunes.db"
+#define ADMS_PATH "adms/collections"
+#define DB_PATH "adms/db/dtunes.db"
 
 /* collection db queries */ 
 #define INSERT_DB_COLLECTION  "INSERT INTO COLLECTION VALUES(?,?,?,?)"
@@ -58,7 +58,7 @@ int checkCollectionExists(char *collectionName);
 // helpers
 char* combineFileStrs(const char *cwd, const char *fileName); 
 void removeChar(char *testString, char charToRemove);
-void renameFile(char *fileName, char *newFileName); 
+int renameFile(char *fileName, char *newFileName); 
 int countFiles(char *directoryPath); 
 void clearAudioFileDirectory(char *desiredPath);  
 int renameCollectionFiles(char *collectionName); 

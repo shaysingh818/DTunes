@@ -29,15 +29,6 @@ void dlog_int(char *type, int message){
 }
 
 
-// logging functions
-void dlog_float(char *type, float* message){
-    printf("[%s]: %f\n", type, message);
-}
-
-
-void dlog_f(char *type, float message){
-    printf("[%s]: %ld\n", type, message);
-}
 
 void dlog_counter(char *type, char *message, int counter){
     printf("[%d]: %s  %s\n", counter, type, message);
