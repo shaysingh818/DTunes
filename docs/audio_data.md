@@ -23,9 +23,7 @@ The local file system has sync it's meta data to the database instance. The cont
 
 2. Add CRUD operations the audio collections model. We should be able to create, read, update and delete collections in the system.  When a collection is created/deleted, a corresponding folder should show up or dissapear in the system. Create test cases to understand the limit on how many collections can be created at a time. 
 
-3. Create a general view for seeing audio files stored within a collection. When the user selects a collection, they should be able to see all the audio files stored within it.
-
-4. Allow audio files from collection to be queued into the phaedra module. If an audio collection is selected, all the files in that collection should be added to the phaedra queue and played in order. 
+3. Create a general view for seeing audio files stored within a collection. When the user selects a collection, they should be able to see all the audio files stored within it. Allow audio files from the view to be queued into phaedra. This should take all the files from the audio collection and play all the files on "autoplay" without having to play the file each time. 
 
 
 
