@@ -52,8 +52,8 @@ int getCollectionTableSize();
 int viewCollections(); 
 int deleteCollection(char *name); 
 int deleteAllCollections(); 
-int viewCollectionFiles(); 
 int checkCollectionExists(char *collectionName);
+int viewCollectionFiles(char *name); 
 
 // helpers
 char* combineFileStrs(const char *cwd, const char *fileName); 
