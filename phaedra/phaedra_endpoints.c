@@ -28,6 +28,16 @@ void writeToQueue(endpoint_t *e, char* argv[]){
 	
 	if (strcmp(argv[1], e->commandLineArg) == 0){
 
+		queue_t *q = initQueue(1000); 
+		enqueue(q, "phaedra/test_files/bruises.wav"); 
+		enqueue(q, "phaedra/test_files/hill.wav"); 
+		enqueue(q, "phaedra/test_files/disclosure.wav"); 
+
+		dequeue(q); 
+		dequeue(q);
+		playQueue(q);  
+
+		/**
 		queue_t *q = initQueue();
 	
 		pushToQueue(q, "phaedra/test_files/bruises.wav"); 
@@ -35,18 +45,12 @@ void writeToQueue(endpoint_t *e, char* argv[]){
 		pushToQueue(q, "phaedra/test_files/disclosure.wav"); 
 		pushToQueue(q, "phaedra/test_files/amiwrong.wav");
 		playQueue(q); 
+		*/
 
 	}	
 }
 
 
-void testPhaedra(endpoint_t *e, char* argv[]){
-	
-	if (strcmp(argv[1], e->commandLineArg) == 0){
-		dlog("PHAEDRA", "RUNNING TESTS"); 
-		runTests(); 
-	}	
-}
 
 void phaedraEndpoints(endpoint_t **head){
 
@@ -78,14 +82,4 @@ void phaedraEndpoints(endpoint_t **head){
 	appendEndpoint(head, e3);
 
  
-	// show audio file info	
-	endpoint_t *e4 = createEndpoint(
-		"test",
-		"test",
-		"test phaedra library"
-	);	
-	e4->endpointLogic = testPhaedra; 
-	appendEndpoint(head, e4); 
-
-
 }

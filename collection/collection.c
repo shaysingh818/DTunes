@@ -1,3 +1,4 @@
+#include "../phaedra/phaedra.h"
 #include "collection.h"
 #include "../logging/log.h"
 
@@ -278,10 +279,9 @@ int deleteAllCollections(){
 
 
 int checkCollectionExist(char *collectionName){
-
-
-	int status = FALSE; 
+	
     // open db
+	int status = FALSE; 
     sqlite3 *db = openDB(DB_PATH);
     sqlite3_stmt *res;
     char *sql = VIEW_DB_COLLECTION;
@@ -345,6 +345,72 @@ int viewCollectionFiles(char *name){
 	return TRUE; 
 		 
 }
+
+void queueCollectionFiles(char *name){
+
+	// check if collection exists
+	int result = checkCollectionExist(name); 
+	if(result == FALSE){
+		dlog("ERROR", "COLLECTION DOES NOT EXIST"); 
+	}
+
+	// get collection folder name
+	char collectionName[50]; 
+	sprintf(collectionName, "collection-%s", name);
+
+	// generate base streaming paths
+	char baseStreamPath[256]; 	
+	sprintf(baseStreamPath, "%s/%s", ADMS_PATH, collectionName);
+
+	printf("\e[0;32m"); 
+	dlog("BASE PATH", baseStreamPath);
+	
+	
+    DIR * dirp;
+    struct dirent * entry;
+	
+	// create string array of file names
+	queue_t *q = initQueue(1000); 
+	int arrayIndex = 0; 
+	int fileCount = countFiles(baseStreamPath);
+	char **fileNames = malloc(fileCount * sizeof(char*));
+    for(int i = 0; i < fileCount; i++){
+        fileNames[i] = malloc(512 * sizeof(char));
+    }
+ 
+    dirp = opendir(baseStreamPath); /* There should be error handling after this */
+    while ((entry = readdir(dirp)) != NULL) {
+
+		// ignore dot files
+        int fileCondition1 = strcmp(entry->d_name, "..") == 0;
+        int fileCondition2 = strcmp(entry->d_name, ".") == 0;
+		
+        if(fileCondition1 == 0 & fileCondition2 == 0){
+
+			char streamingPath[512];	
+			sprintf(streamingPath, "%s/%s", baseStreamPath, entry->d_name);
+			strcpy(fileNames[arrayIndex], streamingPath);			
+			
+			arrayIndex += 1; 
+		} 
+	}
+
+
+    closedir(dirp);
+	
+	// iterate through array of filename and add to queue
+	for(int i = 0; i < fileCount; i++){
+		enqueue(q, fileNames[i]); 
+	}
+	
+    printf("\e[0;37m");
+	dlog("FREE", "Freed file names");	
+	free(fileNames);
+	
+	playQueue(q); 
+
+}
+
 
 
 char* combineFileStrs(const char *cwd, const char *fileName){
@@ -419,8 +485,6 @@ int renameCollectionFiles(char *name){
 		return FALSE; 
 	}
 
-
-	
 	if(chdir(ADMS_PATH) != 0){
         perror("chdir() to /error failed");
         return FALSE;
@@ -437,8 +501,7 @@ int renameCollectionFiles(char *name){
     }
     strcat(cwd, "/");
 
-
-	 
+ 
 	char buffer[512]; 
 	sprintf(buffer, "%s%s", cwd, collectionName);
 
@@ -455,19 +518,20 @@ int renameCollectionFiles(char *name){
 
 
 	while((entry=readdir(folder))){
-        files++;
-        // file information
-        char *tempFileName = entry->d_name;
-        char *currTime = getCurrentTime();
 
-        // file name processing
+        files++;
+	
+		// create copy of current file name
+		char *currFileName = malloc(strlen(entry->d_name) + 1); 
+		strcpy(currFileName, entry->d_name); 
+		dlog("COPY", currFileName); 
+
+        // file information processing
+        char *tempFileName = entry->d_name; 
         removeChar(tempFileName, ' ');
         removeChar(tempFileName, ',');
         removeChar(tempFileName, '\'');
 
-        // get previous file name 
-        char *idk = malloc(strlen(tempFileName) + 1);
-        strcpy(idk, tempFileName);
 
 		// ignore dot files
         int fileCondition1 = strcmp(entry->d_name, "..") == 0;
@@ -475,37 +539,23 @@ int renameCollectionFiles(char *name){
 			
         if(fileCondition1 == 0 & fileCondition2 == 0){ 
 
+			// format new path for processed file name
 			char newPath[1024]; 
-			sprintf(newPath, "%s/%s", buffer, idk);
+			sprintf(newPath, "%s/%s", buffer, tempFileName);
 
-			
+			// format new path for existing path
 			char existingPath[1024]; 
-			sprintf(existingPath, "%s/%s", buffer, entry->d_name);
+			sprintf(existingPath, "%s/%s", buffer, currFileName);
 		
 			dlog("CURR FILE", existingPath); 
 			dlog("NEW FILE", newPath);
 			
-			int result = renameFile(entry->d_name, idk); 
+			int result = renameFile(existingPath, newPath); 
 			if(result == FALSE){
 				dlog("FAILED", "rename file"); 
 			} 
 		}
 
-
-		/**
-
-		USE THIS LATER FOR QUEUEING AUDIO FILES
-
-        char *streamingPath = combineFileStrs(cwd, tempFileName);
-		dlog("STREAMING PATH", streamingPath); 
-
-        int fileCondition1 = strcmp(entry->d_name, "..") == 0;
-        int fileCondition2 = strcmp(entry->d_name, ".") == 0;
-
-        if(fileCondition1 == 0 & fileCondition2 == 0){
-            //insertSong(entry->d_name, currTime, streamingPath);
-            dlog("SYNC SONG", tempFileName);
-        } */
     }
 
     closedir(folder);

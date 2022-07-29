@@ -53,7 +53,8 @@ int viewCollections();
 int deleteCollection(char *name); 
 int deleteAllCollections(); 
 int checkCollectionExists(char *collectionName);
-int viewCollectionFiles(char *name); 
+int viewCollectionFiles(char *name);
+void queueCollectionFiles(char *name);  
 
 // helpers
 char* combineFileStrs(const char *cwd, const char *fileName); 

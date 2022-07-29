@@ -79,6 +79,15 @@ void cleanCollectionFilesCmd(endpoint_t *e, char* argv[]){
 }
 
 
+
+void queueCollectionFilesCmd(endpoint_t *e, char* argv[]){	
+	
+    if (strcmp(argv[1], e->commandLineArg) == 0){
+		queueCollectionFiles(argv[2]); 
+    }
+}
+
+
 void runCollectionTestsCmd(endpoint_t *e, char* argv[]){	
     if (strcmp(argv[1], e->commandLineArg) == 0){
 		runCollectionTests(); 
@@ -139,7 +148,7 @@ void collectionEndpoints(endpoint_t **head) {
     appendEndpoint(head, e5);
 
 	
-	// view collectionf files
+	// view collection files
     endpoint_t *e6 = createEndpoint(
         "view-collection-files",
         "vcf",
@@ -157,5 +166,16 @@ void collectionEndpoints(endpoint_t **head) {
     );
     e7->endpointLogic = cleanCollectionFilesCmd;
     appendEndpoint(head, e7);
+
+
+	
+	// queue collection files
+    endpoint_t *e8 = createEndpoint(
+        "queue-collection-files",
+        "qcf",
+        "play audio files in collection"
+    );
+    e8->endpointLogic = queueCollectionFilesCmd;
+    appendEndpoint(head, e8);
 
 }

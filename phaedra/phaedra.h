@@ -7,6 +7,12 @@
 #include <math.h> 
 #include <portaudio.h>
 #include <portsf.h>  
+#include <limits.h>
+#include <time.h>
+#include <unistd.h>
+ 
+
+#define QUEUE_MAX 512
 
 #define FRAME_BLOCK_LEN 512
 
@@ -20,6 +26,7 @@
 #define SI (0)
 
 
+
 static double inLatency = -1;
 static double outLatency = -1;
 
@@ -29,25 +36,6 @@ typedef struct CallbackData {
 	int sf;
 	long nread; 
 } mydata; 
-
-
-/* audio node stored at each slot on the queue */ 
-struct AudioNode {
-	char *filePath; 
-	char *currentTime; 
-	int plays; 
-	struct AudioNode* next; 
-};
-
-typedef struct AudioNode audionode_t; 
-
-
-/* reference for audio queue */ 
-struct AudioQueue {
-	audionode_t *front, *rear; 
-}; 
-
-typedef struct AudioQueue queue_t; 
 
 
 /* audio callback function */ 
@@ -74,13 +62,38 @@ char *checkSampleType(psf_stype type);
 void play(char *filename, int streamType);
 
 
+
+/* audio node stored at each slot on the queue */ 
+struct AudioNode {
+	char *filePath; 
+	char *currentTime; 
+	int plays; 
+};
+
+typedef struct AudioNode audionode_t; 
+
+
+/* reference for audio queue */ 
+struct Queue {
+	unsigned capacity;  
+	int frontIndex, rearIndex, itemCount; 
+	audionode_t* front, rear; 
+	audionode_t **items; 
+}; 
+
+typedef struct Queue queue_t; 
+
+
 /* queueing functions */ 
-queue_t* initQueue(); 
-audionode_t* createNode(char *filePath); 
-void pushToQueue(queue_t *q, char *filePath); 
-void removeFromQueue(queue_t *q); 
-void printQueue(queue_t *q); 
-void playQueue(queue_t *q);  
+int isFull(queue_t* queue); 
+int isEmpty(queue_t* queue); 
+queue_t *initQueue(unsigned capacity); 
+audionode_t *createNode(char *filePath); 
+void enqueue(queue_t* queue, char *filePath); 
+void dequeue(queue_t *queue); 
+int front(queue_t* queue); 
+int rear(queue_t* queue); 
+void playQueue(queue_t *queue);
 
 
 #endif
