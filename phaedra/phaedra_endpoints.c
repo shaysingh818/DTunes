@@ -37,16 +37,6 @@ void writeToQueue(endpoint_t *e, char* argv[]){
 		dequeue(q);
 		playQueue(q);  
 
-		/**
-		queue_t *q = initQueue();
-	
-		pushToQueue(q, "phaedra/test_files/bruises.wav"); 
-		pushToQueue(q, "phaedra/test_files/hill.wav"); 
-		pushToQueue(q, "phaedra/test_files/disclosure.wav"); 
-		pushToQueue(q, "phaedra/test_files/amiwrong.wav");
-		playQueue(q); 
-		*/
-
 	}	
 }
 
