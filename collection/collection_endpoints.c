@@ -1,6 +1,8 @@
 #include "collection.h"
 #include "collection_endpoints.h"
 #include "collection_test.h"
+#include "../logging/log.h"
+
 
 // create playlist
 void insertCollectionCmd(endpoint_t *e, char* argv[]){
@@ -53,6 +55,39 @@ void deleteAllCollectionsCmd(endpoint_t *e, char* argv[]){
 
 
 
+void viewCollectionFilesCmd(endpoint_t *e, char* argv[]){
+
+    if (strcmp(argv[1], e->commandLineArg) == 0){
+        int result = viewCollectionFiles(argv[2]);
+        if(!result){
+			dlog("FAILED", "VIEW COLLECTION FILES"); 
+		}
+    }
+
+}
+
+
+
+void cleanCollectionFilesCmd(endpoint_t *e, char* argv[]){	
+	
+    if (strcmp(argv[1], e->commandLineArg) == 0){
+        int result = renameCollectionFiles(argv[2]);
+        if(!result){
+			dlog("FAILED", "CLEAN COLLECTION FILES"); 
+		}
+    }
+}
+
+
+
+void queueCollectionFilesCmd(endpoint_t *e, char* argv[]){	
+	
+    if (strcmp(argv[1], e->commandLineArg) == 0){
+		queueCollectionFiles(argv[2]); 
+    }
+}
+
+
 void runCollectionTestsCmd(endpoint_t *e, char* argv[]){	
     if (strcmp(argv[1], e->commandLineArg) == 0){
 		runCollectionTests(); 
@@ -103,7 +138,7 @@ void collectionEndpoints(endpoint_t **head) {
     appendEndpoint(head, e4);
 
 
-	// delete all collections
+	// test collections module
     endpoint_t *e5 = createEndpoint(
         "test-collections",
         "tc",
@@ -111,5 +146,36 @@ void collectionEndpoints(endpoint_t **head) {
     );
     e5->endpointLogic = runCollectionTestsCmd;
     appendEndpoint(head, e5);
+
+	
+	// view collection files
+    endpoint_t *e6 = createEndpoint(
+        "view-collection-files",
+        "vcf",
+        "view audio files in collection"
+    );
+    e6->endpointLogic = viewCollectionFilesCmd;
+    appendEndpoint(head, e6);
+
+	
+	// clean collection files
+    endpoint_t *e7 = createEndpoint(
+        "clean-collection-files",
+        "ccf",
+        "clean audio file names in collection"
+    );
+    e7->endpointLogic = cleanCollectionFilesCmd;
+    appendEndpoint(head, e7);
+
+
+	
+	// queue collection files
+    endpoint_t *e8 = createEndpoint(
+        "queue-collection-files",
+        "qcf",
+        "play audio files in collection"
+    );
+    e8->endpointLogic = queueCollectionFilesCmd;
+    appendEndpoint(head, e8);
 
 }

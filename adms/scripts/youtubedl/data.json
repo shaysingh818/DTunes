@@ -1,0 +1,11 @@
+{
+	"collections": {
+		"collection_testing": {
+			"path": "../../collections/collection-testing",
+			"videos": [
+				"https://www.youtube.com/watch?v=0yW7w8F2TVA",
+				"https://www.youtube.com/watch?v=AdjuCtUduWQ"
+			]
+		}
+	}
+}
