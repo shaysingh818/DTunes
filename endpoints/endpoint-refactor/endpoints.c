@@ -61,9 +61,33 @@ page_t *createPage(char *name, char *documentation, endpoint_t *head){
 	p->endpointCount = 0;  
 	p->head = head; 
 
-	return p; 
-	
+	return p; 	
 }
+
+
+endpoint_t *constructEndpoint(char *name, char *documentation, int protocol, int argsLength,  char *args[][2]){
+
+    endpoint_t *test = createEndpoint(
+        name,
+        documentation,
+        protocol,2
+    );
+
+    for(int i = 0; i < test->numArgs; i++){
+
+        // iterate through args and create
+        char *name = args[i][0];
+        char *documentation = args[i][1];
+
+        // create argument
+        arg_t *a = createArgument(name, documentation);
+        test->args[i] = a; 
+    }
+
+    return test;
+}
+
+
 
 
 void appendEndpoint(endpoint_t **head_ref, endpoint_t *e){
@@ -71,6 +95,11 @@ void appendEndpoint(endpoint_t **head_ref, endpoint_t *e){
 	(*head_ref) = e; 
 }
 
+
+void appendPage(page_t **head_ref, page_t *p){
+	p->next = (*head_ref); 
+	(*head_ref) = p; 
+}
 
 
 void generateBanner(int amount){
@@ -109,3 +138,25 @@ void printEndpoint(endpoint_t *e){
 
 	printf("\n");
 }
+
+
+void printPageEndpoints(page_t *p){
+
+	printf("\n"); 
+    printf("\e[0;31m");
+	printf(
+		COLOR_BOLD "Module: %s, %s\n" COLOR_OFF, 
+		p->name, p->documentation
+	); 	
+	generateBanner(60); 	
+
+	while(p->head != NULL){
+		endpoint_t *currEndpoint = p->head;
+		printf(
+			COLOR_BOLD "%-25s %-25s\n" COLOR_OFF, 
+			currEndpoint->name, currEndpoint->documentation
+		); 	
+		p->head = p->head->next; 
+	}
+}
+
