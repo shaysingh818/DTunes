@@ -21,7 +21,7 @@ endpoint_t *createEndpoint(char *name, char *documentation, int protocol, int nu
 	strcpy(e->name, name); 
 	strcpy(e->documentation, documentation);
 	e->numArgs = numArgs;  
-	e->protocol = protocol; 
+	e->protocol = protocol;
 
 	return e; 
 }
@@ -88,6 +88,17 @@ endpoint_t *constructEndpoint(char *name, char *documentation, int protocol, int
 }
 
 
+page_t *searchPage(page_t *headRef, char *name){
+	page_t *result = NULL; 
+	while(headRef != NULL){
+		if(strcmp(name, headRef->name) == 0){
+			result = headRef; 
+			return result; 
+		}
+		headRef = headRef->next; 
+	}
+	return result; 
+}
 
 
 void appendEndpoint(endpoint_t **head_ref, endpoint_t *e){
@@ -102,6 +113,7 @@ void appendPage(page_t **head_ref, page_t *p){
 }
 
 
+
 void generateBanner(int amount){
     char *str = malloc(amount * sizeof(char *));
     for(int i = 0; i < amount; i++){
@@ -112,13 +124,17 @@ void generateBanner(int amount){
 }
 
 
-void printPage(page_t *p){
+void printPages(page_t *headRef){
 	printf("\n"); 
     printf("\e[0;31m");
-	printf(COLOR_BOLD "Module Name: %-15s\n", p->name);
-	printf(COLOR_BOLD "Description: %-15s\n", p->documentation);  	
-	printf(COLOR_BOLD "%s %d\n\n" COLOR_OFF, "Endpoint Count", p->endpointCount);
-	printf("Type '%s help' to view the endpoints for this page\n", p->name); 
+	generateBanner(60); 
+	while(headRef != NULL){
+		printf(
+			COLOR_BOLD "%-25s %-25s\n", 
+			headRef->name, headRef->documentation
+		); 	
+		headRef = headRef->next; 
+	}
 	printf("\n");  
 }
 
@@ -144,10 +160,7 @@ void printPageEndpoints(page_t *p){
 
 	printf("\n"); 
     printf("\e[0;31m");
-	printf(
-		COLOR_BOLD "Module: %s, %s\n" COLOR_OFF, 
-		p->name, p->documentation
-	); 	
+	printf(COLOR_BOLD "Module: %s\n" COLOR_OFF,p->name); 	
 	generateBanner(60); 	
 
 	while(p->head != NULL){
@@ -158,5 +171,71 @@ void printPageEndpoints(page_t *p){
 		); 	
 		p->head = p->head->next; 
 	}
+	printf("\n"); 
 }
+
+
+void pageHelp(page_t *headRef, char *name){
+	while(headRef != NULL){
+		if(strcmp(name, headRef->name) == 0){
+			printPageEndpoints(headRef); 
+			break; 
+		}
+		headRef = headRef->next; 
+	}
+}
+
+
+void endpointHelp(endpoint_t *headRef, char *name){
+	while(headRef != NULL){
+		if(strcmp(name, headRef->name) == 0){
+			printEndpoint(headRef); 
+			break; 
+		}
+		headRef = headRef->next; 
+	}
+}
+
+
+void executePageEndpoints(page_t *p, char *argv[]){
+	// iterate through page endpoints
+	while(p->head != NULL){
+
+		// execute with correct args supplied
+		if(strcmp(argv[2], p->head->name)){
+			p->head->endpointLogic(p->head, argv); 
+		}
+		p->head = p->head->next; 
+	}
+}
+
+void executionCycle(page_t *headRef, int argc, char *argv[]){
+
+	char *page; 
+	char *pageEndpoint; 
+
+	for(int i = 0; i < argc; i++){
+		char *currentArg = argv[i];
+		switch(i){
+			case 1:
+				printf("Module: %s\n", currentArg);
+				if(strcmp(currentArg, "help") == 0){
+					printPages(headRef); 
+				} 
+				break;
+
+			case 2:
+				if(strcmp(currentArg, "help") == 0){
+					pageHelp(headRef, argv[i-1]); 	
+				} else {	
+					// search execute endpoints for page
+					page_t *p = searchPage(headRef, argv[i-1]); 
+					printf("Execute %s endpoints\n", p->name); 
+					executePageEndpoints(p, argv); 			
+				}
+		} 
+ 
+	}
+}
+
 
