@@ -34,6 +34,7 @@ void playCmd(endpoint_t *e, char *argv[]){
 }
 
 
+
 page_t *collectionsPage(){
 
 	/**
@@ -48,29 +49,30 @@ page_t *collectionsPage(){
 		{"name", "Name of the collection you want to create"},	
 	}; 
 
-	endpoint_t *create = constructEndpoint(
+	constructEndpoint(
 		"create",
 		"endpoint to create collections and store in databse",
 		0, 2,	
-		args
+		args,
+		createCollectionCmd, 
+		&head
 	);
 
-	create->endpointLogic = createCollectionCmd; 
-	appendEndpoint(&head, create); 
  
 	char *args1[][2] = {
 		{"update", "update collection in the database"},
 		{"name", "Name of the collection you want to update"},	
 	}; 
 
-	endpoint_t *update = constructEndpoint(
+	constructEndpoint(
 		"update",
-		"endpoint to update collections in the databse",
+		"endpoint to update collections in the database",
 		0, 2,	
-		args1
+		args1,
+		updateCollectionCmd, 
+		&head
 	); 
-	update->endpointLogic = updateCollectionCmd; 
-	appendEndpoint(&head, update); 
+
 
 	// create page
 	page_t *p = createPage(
@@ -93,29 +95,29 @@ page_t *phaedraPage(){
 		{"name", "name of wav file"},	
 	}; 
 
-	endpoint_t *play = constructEndpoint(
+	constructEndpoint(
 		"play",
 		"endpoint to play file on phaedra",
 		0, 2,	
-		args
+		args,
+		playCmd, 
+		&head
 	);
 
-	play->endpointLogic = playCmd; 
-	appendEndpoint(&head, play); 
  
 	char *args1[][2] = {
 		{"queue", "queue files on phaedra"},
 		{"name", "Name of the queue"},	
 	}; 
 
-	endpoint_t *queue = constructEndpoint(
+	constructEndpoint(
 		"queue",
 		"queue files on phaedra",
 		0, 2,	
-		args1
+		args1,
+		queuePhaedraCmd, 
+		&head
 	);
-	queue->endpointLogic = queuePhaedraCmd; 
-	appendEndpoint(&head, queue); 
 
 	// create page
 	page_t *p = createPage(

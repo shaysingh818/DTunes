@@ -65,7 +65,13 @@ page_t *createPage(char *name, char *documentation, endpoint_t *head){
 }
 
 
-endpoint_t *constructEndpoint(char *name, char *documentation, int protocol, int argsLength,  char *args[][2]){
+void constructEndpoint(
+		char *name, char *documentation, 
+		int protocol, int argsLength,
+		char *args[][2],
+		void (*function)(struct Endpoint* e, char* argv[]),
+		endpoint_t **head){
+
 
     endpoint_t *test = createEndpoint(
         name,
@@ -84,7 +90,9 @@ endpoint_t *constructEndpoint(char *name, char *documentation, int protocol, int
         test->args[i] = a; 
     }
 
-    return test;
+	test->endpointLogic = function; 
+	appendEndpoint(head, test); 
+
 }
 
 
@@ -246,7 +254,6 @@ void executionCycle(page_t *headRef, int argc, char *argv[]){
 				if(strcmp(currentArg, "help") == 0){
 					endpoint_t *e = searchEndpoint(headRef, argv[i-1]); 
 					printEndpoint(e); 
-					//endpointHelp(e, argv[i-1]); 	
 				}
 		} 
  

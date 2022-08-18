@@ -52,10 +52,12 @@ page_t *createPage(char *name, char *documentation, endpoint_t * head);
 arg_t *createArgument(char *name, char *documentation); 
 
 // special methods
-endpoint_t *constructEndpoint(
+void constructEndpoint(
 	char *name, char *documentation,
-	int protocol, int argsLength, 
-	char *args[][2]
+	int protocol, int argsLength,
+	char *args[][2], 
+	void (*function)(struct Endpoint* e, char* argv[]),
+	endpoint_t **head
 ); 
 
 

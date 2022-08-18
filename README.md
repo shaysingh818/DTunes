@@ -1,69 +1,148 @@
 # DTunes: 
-DTunes is an audio engine dedicated to audio processing and composition. The purpose of this engine is to understand music production/theory concepts and combine it with computational algorithms. A list of features include reading audio frequencies and perform common auio processing techniques, audio composition (composing music), feature extraction, and lastly , playing and queueing audio files using specific data structures. Concepts in graph theory will also be applied to create algorithms that investigate similarities and relationships in audio files. Overall, DTunes intends to be a project to apply algorithms to understand the composition of music and create the ultimate audio experience for a computer scientist. 
+This is a personal audio repository. Can be used as a personal music application, similar to spotify, youtube soundcloud etc. (Have to get the songs from youtube tho). The bigger picture is being able to create algorithms that can group/cluster songs in playlists based on certain attributes. The system auto-creates playlists groups based on certain similarties and reccomends them to the user. It could also be used as a search engine for certain audio files. Using the clustering algorithms, the application is able to index/find groups of auio files based on what the user wants. 
 
-# Features
-Current features for DTunes include, Audio File Storage, MP3 dataset generation and Playlist Creation. 
 
-## Audio File Storage 
-Audio files can be stored in sqlite3 database. The library contains a structure that stores all the needed information such as, the file path, name, date created etc. The file storage structure is also used for in memory operations needed for the internal toolset. The audio file library has basic functionality such as creating, reading, updating and deleting files from the database. 
 
-## MP3 Dataset Generation 
-DTunes requires audio files of all types, MP3, wav, AIFF. I wanted to create some sort of "scraper" that could get audio files from a large repository. YouTube was the next best option. Using the well known library, ```youtubedl```, a wrapper was implemented for a MP3 downloader. The wrapper includes functionality for multithreading to optimize download speeds. The wrapper is a C program that uses a python script for downloading youtube videos. The wrapper calls the script and multithreads the runtime so that the script is not downloading urls linearly. 
+# Goals
+1. Listen to music with out AD's
+2. Modify/Manipulate audio files
+3. Create audio visualizers
+4. Create a sick audio library that kicks spotify/youtube's ass. 
+5. Collect a shit ton of audiofiles
+6. Learn about audio signal processing
 
-## Playlist (Audio Collection)
-For audio players, playlists are usually implemented to save a batch of songs to listen to or process. The playlist collection library allows you to add a subset of songs from the repository using a ONE TO MANY relationship. A playlist can store many songs and the user can view all the songs in the playist using the name or the UUID. 
+## To Do
+2. Run through every feature and make sure it works
+	* Hook youtube dl process to insert-song
+3. Make functions to update names of songs
+4. Create function that tests every feature
+	* Make output neater
+5. Create scripts that install all required libraries
+	* FFMPEG
+	* Youtube dl
+	* SQLITE3
 
-# Getting Started
-DTunes is currently working only on UNIX based systems. For windows users, you can use something like WSL, or a ubuntu virtual machine. 
 
-## Installing
-Clone the github repository and save the folder to a desired location. 
-```bash
-git clone https://github.com/shaysingh818/DTunes
-```
+8. Create a custom local endpoint library
+	* Make somthing similar to web controllers without http
+	* Make it easy to test the endpoints
+	* Migrate endpoint system to DTunes
 
-cd into the ```/DTunes``` directory where the Makefile is located
-```bash
-cd DTunes/
-```
+1. Create a view for youtube urls
+	* see all the current urls stored in db
 
-Before compiling the source code, there are some required libraries needed to run the initial build. Run the ```install.sh``` with the following command. 
+7. Create youtube url download backup process
+	* Go through all stored urls in the database
+	* Download each youtube url
+	* Eliminate duplicates
+	
+9. Create one to many entity relationship for Playlist -> Song
+	* Be able to add song to an existing playlist in the database
+	* Create a table for adding multiple songs to ONE playlist
+	* View songs in playlist
 
-``` bash
-./install.sh
-```
- After all the libraries are installed, you can compile the source with these commands. 
- ```bash
- make clean
- make clean_binary 
- make
- ```
- 
-The use of ```make clean``` and ```make clean_binary``` is in case this is your second time compiling the source. The two different commands clean the object files and the binary. If anything goes wrong during the compilation process, feel free to E-mail issues to shalinsingh818@gmail.com.
+10. Use youtube DL as data source for inital songs/videos to store
+	* Create a python script that downloads youtube videos to a local directory
+	* Store all the videos in a local folder for the src code
+	* Be able to filter file extension, quality, playback speed.
 
-## Command Line Reference
-| Command Line Argument                          | Purpose                                                                          |
-|------------------------------------------------|----------------------------------------------------------------------------------|
-| ```./dtunes help```                            | View help menu for all command line interface options.                           |
-| ```./dtunes tu```                              | Run unit tests for mp3 dataset generation library                                |
-| ```./dtunes tp```                              | Run unit tests for playlist creation library                                     |
-| ```./dtunes ts```                              | Run unit tests for audio file storage                                            |
-| ```./dtunes tdb```                             | Run unit tests for functions interacting with the database repository            |
-| ```./dtunes cu <youtube url>```                | Insert youtube url to the database. This is for the backup process               |
-| ```./dtunes vu```                              | View all youtube urls in the database                                            |
-| ```./dtunes du <youtube url>```                | Delete specific youtube url in the database                                      |
-| ```./dtunes dus ```                            | Delete all youtube urls in the database                                          |
-| ```./dtunes yb ```                             | Download all youtube urls saved in the database                                  |
-| ```./dtunes cs <youtube url>```                | Add a song to the database directly, using a youtube url.                        |
-| ```./dtunes vs ```                             | View current audio files stored in the database                                  |
-| ```./dtunes ds <SONG UUID> ```                 | Delete song using UUID, you can view uuids by using the vs command.              |
-| ```./dtunes dsn <SONG NAME> ```                | Delete song by name, this is not advised since some songs can have the same name |
-| ```./dtunes das ```                            | Delete all songs in the database                                                 |
-| ```./dtunes cp <PLAYLIST NAME> ```             | Create a playlist collection                                                     |
-| ```./dtunes vp```                              | View all playlist collections on dtunes                                          |
-| ```./dtunes asp <PLAYLIST UUID> <SONG UUID>``` | Add song to playlist with playlist UUID and SONG uuid.                           |
-| ```./dtunes vsp <PLAYLIST UUID>```             | View songs in playlist using the playlist UUID                                   |
-| ```./dtunes dp <PLAYLIST UUID>```              | Delete playlist by UUID.                                                         |
+11. Create makefiles that can generate different binaries
+	* Create binaries that test individual componenets of the system
+	* Test song, playlist and endpoint library
+
+
+
+## Audio File Syncing
+Read files from local directory into sqlite3 database
+
+1. Read file information in directory and rename files with desired format
+	* File names need to parse out anything larger than 15 characters
+	* Assign each audio file with current time for song insert
+	* Parse file extension
+	* Need to grab the current path that we can stream/listen to the audio file from
+	* Somehow need to extract subtitles from audio file if possible
+
+2. Integrate youtube dl python script in c code base
+	* Store youtube urls in db
+	* Don't allow duplicate downloads, skip existing youtube urls
+	* Refactor python script to take youtube url as command line arg
+	* Create function or process to monitor youtube downloads
+
+3. Need to be able to update names
+	* Specify the song id and update name
+	* File names are too long 
+	* Figure out way to automatically rename them shorter
+
+4. Download songs using backup YT urls in database
+	* Be able to download songs using urls in db
+
+
+
+## Streaming/Playing Audio
+
+1. Figure out how to play/stream audio file in c
+	* Read audio file from local path
+	* Play audio file and view audio signal output
+
+2. Audio Queueing
+	* Create a custom library for listening to audio files
+	* Be able to play audio files in certain selected order
+	* Use data structures to store temporary queues etc. 
+
+
+## Community detection for auto generating playlists
+Implement various community detection algorithms for finding similarities in audio files. Results should auto create playlists of "communities" that have been found in the graph. Figure out how to properly label the communities. 
+
+## Centrality algorithms for finding songs that have high influence in the network
+Implmement centrality algorothms that can detect which nodes are important or play a key factor in the audio application. Use centrality as a way to understand the data flowing through the system.
+
+
+
+
+## Fixes/Improvements/BUGS
+
+1. Unique ID generation for database tables
+	* Unique ID generation is not built in with C
+	* Keep track of the last insert row id
+	* Use last row insert id + 1 as next row id
+
+2. Blank space for date column
+	* Date created columns in structures add blank spaces on entries
+
+
+
+# Graph Algorithms
+
+1. BFS/DFS (Breadth/Depth first search)
+2. Minimum Spanning Tree
+3. Random Walk
+4. All pairs shortest path
+5. Single Source shortest path
+
+
+## Centrality 
+1. Degree Centrality
+2. Closeness Centrality
+3. Betweeness Centrality
+4. Page Rank
+
+
+## Community Detection
+1. Triangle Count and Clustering Coeif
+2. Local/Global Clustering Coefficient
+3. Label Propogation
+4. Louvain Modularity
+
+
+
+
+
+
+
+
+
+
+
 
 
 
