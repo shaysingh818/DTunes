@@ -10,6 +10,9 @@
 #define COLOR_BOLD  "\e[1m"
 #define COLOR_OFF   "\e[m"
 
+#define BUFFER_LENGTH 1024
+#define DEFAULT_PORT "8888"
+#define ENDPOINT_IP "127.0.0.1"
 
 struct Argument {
 	char *name; 
@@ -43,6 +46,7 @@ struct Page {
 typedef struct Page page_t;
 
 
+// structural methods
 endpoint_t *createEndpoint(char *name, char *documentation, int protocol, int numArgs); 
 page_t *createPage(char *name, char *documentation, endpoint_t * head); 
 arg_t *createArgument(char *name, char *documentation); 
@@ -54,9 +58,10 @@ endpoint_t *constructEndpoint(
 	char *args[][2]
 ); 
 
+
 // return search by name
-endpoint_t *searchEndpoint(char *name); 
 page_t *searchPage(page_t *headRef, char *name); 
+endpoint_t *searchEndpoint(page_t *p, char *name); 
 
 // mutators
 void appendEndpoint(endpoint_t **head_ref, endpoint_t *e); 

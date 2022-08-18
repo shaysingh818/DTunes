@@ -1,6 +1,6 @@
 #include "endpoints.h"
 #include <stdio.h> 
-
+#include <pthread.h> 
 
 // endpoint defined functions
 void createCollectionCmd(endpoint_t *e, char *argv[]){

@@ -4,7 +4,7 @@
 endpoint_t *createEndpoint(char *name, char *documentation, int protocol, int numArgs){
 
 	endpoint_t *e = (endpoint_t*)malloc(sizeof(endpoint_t));
-	
+
 	// allocate space for name and documentation
 	size_t nameLength = strlen(name) + 1; 
 	size_t documentationLength = strlen(documentation) + 1; 
@@ -100,6 +100,18 @@ page_t *searchPage(page_t *headRef, char *name){
 	return result; 
 }
 
+
+endpoint_t *searchEndpoint(page_t *p, char *name){
+	endpoint_t *result = NULL; 
+	while(p->head != NULL){
+		if(strcmp(name, p->head->name) == 0){
+			result = p->head; 
+			return result; 
+		}
+		p->head = p->head->next; 
+	}
+	return result; 
+}
 
 void appendEndpoint(endpoint_t **head_ref, endpoint_t *e){
 	e->next = (*head_ref); 
@@ -202,7 +214,7 @@ void executePageEndpoints(page_t *p, char *argv[]){
 	while(p->head != NULL){
 
 		// execute with correct args supplied
-		if(strcmp(argv[2], p->head->name)){
+		if(strcmp(argv[2], p->head->name) == 0){
 			p->head->endpointLogic(p->head, argv); 
 		}
 		p->head = p->head->next; 
@@ -211,14 +223,10 @@ void executePageEndpoints(page_t *p, char *argv[]){
 
 void executionCycle(page_t *headRef, int argc, char *argv[]){
 
-	char *page; 
-	char *pageEndpoint; 
-
 	for(int i = 0; i < argc; i++){
 		char *currentArg = argv[i];
 		switch(i){
 			case 1:
-				printf("Module: %s\n", currentArg);
 				if(strcmp(currentArg, "help") == 0){
 					printPages(headRef); 
 				} 
@@ -230,8 +238,15 @@ void executionCycle(page_t *headRef, int argc, char *argv[]){
 				} else {	
 					// search execute endpoints for page
 					page_t *p = searchPage(headRef, argv[i-1]); 
-					printf("Execute %s endpoints\n", p->name); 
 					executePageEndpoints(p, argv); 			
+				}
+				break; 
+
+			case 3:
+				if(strcmp(currentArg, "help") == 0){
+					endpoint_t *e = searchEndpoint(headRef, argv[i-1]); 
+					printEndpoint(e); 
+					//endpointHelp(e, argv[i-1]); 	
 				}
 		} 
  
