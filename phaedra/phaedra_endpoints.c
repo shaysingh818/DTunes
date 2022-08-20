@@ -6,70 +6,92 @@
 
 void playAudioCmd(endpoint_t *e, char* argv[]){
 
-	if (strcmp(argv[1], e->commandLineArg) == 0){
-		dlog("PHAEDRA", "Play audio file"); 
-		play(argv[2], 2); 
-	}	
+	dlog("PHAEDRA", "Play audio file"); 
+	play(argv[3], 2);
 
 }
 
 
 void playAudioCallbackCmd(endpoint_t *e, char* argv[]){
 
-	if (strcmp(argv[1], e->commandLineArg) == 0){
-		dlog("PHAEDRA", "Play audio file with callback"); 
-		//playCallback(argv[2]); 
-	}	
+	dlog("PHAEDRA", "Play audio file with callback"); 
+	//playCallback(argv[2]); 
+
 
 }
-
 
 void writeToQueue(endpoint_t *e, char* argv[]){
 	
-	if (strcmp(argv[1], e->commandLineArg) == 0){
+	queue_t *q = initQueue(1000); 
+	enqueue(q, "phaedra/test_files/bruises.wav"); 
+	enqueue(q, "phaedra/test_files/hill.wav"); 
+	enqueue(q, "phaedra/test_files/disclosure.wav"); 
 
-		queue_t *q = initQueue(1000); 
-		enqueue(q, "phaedra/test_files/bruises.wav"); 
-		enqueue(q, "phaedra/test_files/hill.wav"); 
-		enqueue(q, "phaedra/test_files/disclosure.wav"); 
-
-		dequeue(q); 
-		dequeue(q);
-		playQueue(q);  
-
-	}	
+	dequeue(q); 
+	dequeue(q);
+	playQueue(q);  	
 }
 
 
+page_t *phaedraModule(){
 
-void phaedraEndpoints(endpoint_t **head){
+	// create endpoint  
+    endpoint_t *head = NULL;
 
-	// play audio endpoint 
-	endpoint_t *e1 = createEndpoint(
-		"play-audio",
-		"pa",
-		"play wav, aiff or mp3 file"
-	);	
-	e1->endpointLogic = playAudioCmd; 
-	appendEndpoint(head, e1);
- 
-	// play audio endpoint 
-	endpoint_t *e2 = createEndpoint(
-		"play-audio-callback",
-		"pac",
-		"play wav, aiff or mp3 file with callback"
-	);	
-	e2->endpointLogic = playAudioCallbackCmd; 
-	appendEndpoint(head, e2); 
-	 
-	// show audio file info	
-	endpoint_t *e3 = createEndpoint(
-		"queue",
-		"qu",
-		"add audio files to queue"
-	);	
-	e3->endpointLogic = writeToQueue; 
-	appendEndpoint(head, e3);
+	// play audio file
+    char *playArgs[][2] = {
+        {"play", "play action"},
+        {"name", "Name of the file you want to play"},
+    };
 
- 
+    constructEndpoint(
+        "play",
+        "play wav, aiff or mp3 file",
+        0, 2,
+        playArgs,
+        playAudioCmd,
+        &head
+    );
+
+	// play audio file with callback
+    char *callbackArgs[][2] = {
+        {"play-callback", "play with audio callback"},
+        {"name", "Name of the file you want to play"},
+    };
+
+    constructEndpoint(
+        "play-callback",
+        "play wav, aiff or mp3 file with callback",
+        0, 2,
+        callbackArgs,
+        playAudioCallbackCmd,
+        &head
+    );
+
+	// play audio file queue
+    char *queueArgs[][2] = {
+        {"queue", "play audio files with queue"},
+        {"name", "Name of the file you want to play"},
+    };
+
+    constructEndpoint(
+        "queue",
+        "play audio files with queue",
+        0, 2,
+        queueArgs,
+        writeToQueue,
+        &head
+    );
+
+	// create page
+    page_t *p = createPage(
+        "phaedra",  
+        "Audio player module for DTunes",
+        head
+    );
+
+    return p; 
+	
 }
+
+

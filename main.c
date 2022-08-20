@@ -18,8 +18,6 @@ void printDTunesBanner(FILE *fptr){
 int main(int argc, char* argv[]){
 
 	
-	endpoint_t *head = NULL;
-
 	char *filename = "banner.txt"; 
 	FILE *fptr = NULL; 
 
@@ -28,26 +26,17 @@ int main(int argc, char* argv[]){
 		return 1; 
 	}
 		
-	printDTunesBanner(fptr); 
+	printDTunesBanner(fptr);
 
-	// argument debugger
-	if(DEBUG == 1){
-		printf("Arg 0: %s\n", argv[0]); 
-		printf("Arg 1: %s\n", argv[1]); 
-		printf("Arg 2: %s\n", argv[2]);
-	}
+	page_t *head = NULL; 
+	
+	page_t *p = phaedraModule();
+	appendPage(&head, p); 
+ 
+	page_t *p1 = collectionsModule();
+	appendPage(&head, p1); 
 
-	// configure endpoints
-	collectionEndpoints(&head);
-	phaedraEndpoints(&head);  
-
-	if(strcmp(argv[1], "help") == 0){
-		printEndpoints(head); 
-	}
-
-	execEndpoints(argc, argv, head);
-	printf("\n");  
-
+	executionCycle(head, argc, argv); 
 	
 
 

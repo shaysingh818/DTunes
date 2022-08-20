@@ -14,7 +14,6 @@ void dlog_float(char *type, float* messsage);
 void dlog_f(char *type, float messsage);
 void dlog_counter(char *type, char *message, int counter);
 void d_log_time(char* type, char* message);
-void generateBanner(int amount);
 
 #endif
 
