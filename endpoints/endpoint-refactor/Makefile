@@ -3,7 +3,7 @@ MAIN_HEADER_FILES = endpoints.h
 
 BIN=bin
 CC=gcc
-TARGET=endpnt_refactor
+TARGET=dtunes
 
 FLAGS = -lm
 

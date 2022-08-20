@@ -1,6 +1,7 @@
 #include "../phaedra/phaedra.h"
 #include "collection.h"
 #include "../logging/log.h"
+#include "../endpoints/endpoint-refactor/endpoints.h"
 
 sqlite3* openDB(char *filename){
     sqlite3 *db;
