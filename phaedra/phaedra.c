@@ -327,8 +327,6 @@ void enqueue(queue_t* queue, char *filePath){
 	queue->rearIndex = (queue->rearIndex + 1) % queue->capacity;
 	queue->items[queue->rearIndex] = item; 
 	queue->itemCount = queue->itemCount + 1;
-	printf("\e[0;31m"); 
-	dlog("PUSH", item->filePath);  
 }
 
 
@@ -339,7 +337,6 @@ void dequeue(queue_t* queue){
 	}
 
 	audionode_t *item = queue->items[queue->frontIndex]; 
-	dlog("POP", item->filePath); 
 	queue->frontIndex = (queue->frontIndex + 1) % queue->capacity; 
 	queue->itemCount = queue->itemCount - 1;
 }
