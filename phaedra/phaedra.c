@@ -364,7 +364,7 @@ int rear(queue_t* queue) {
 void playQueue(queue_t* queue){
 
 	dlog("PHAEDRA", "STARTING QUEUE"); 
-	for(int i = queue->frontIndex; i < queue->rearIndex; i++){
+	for(int i = queue->frontIndex; i <= queue->rearIndex; i++){
 		play(queue->items[i]->filePath, 1);
 	}
 

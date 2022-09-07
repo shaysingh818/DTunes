@@ -26,9 +26,11 @@ def read_from_file(filename: str):
 	# read videos from text file
 	with open(filename) as json_file:
 		data = json.load(json_file)
-		get_collection = data["collections"]["collection_testing"]
-		for video in get_collection["videos"]:
-			download_video(video, get_collection["path"])
+		collections = data["collections"]
+		for item in collections:
+			collection_obj = data["collections"][item]
+			for video in collection_obj["videos"]:
+				download_video(video, collection_obj["path"])
 
 def main():
 
