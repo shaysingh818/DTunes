@@ -1,147 +1,53 @@
 # DTunes: 
-This is a personal audio repository. Can be used as a personal music application, similar to spotify, youtube soundcloud etc. (Have to get the songs from youtube tho). The bigger picture is being able to create algorithms that can group/cluster songs in playlists based on certain attributes. The system auto-creates playlists groups based on certain similarties and reccomends them to the user. It could also be used as a search engine for certain audio files. Using the clustering algorithms, the application is able to index/find groups of auio files based on what the user wants. 
+DTunes is an audio engine dedicated to audio processing and composition. The purpose of this engine is to understand music production/theory concepts and combine it with computational algorithms. A list of features include reading audio frequencies and perform common audio processing techniques, audio composition (composing music), feature extraction, and lastly , playing and queuing audio files using specific data structures. Concepts in graph theory will also be applied to create algorithms that investigate similarities and relationships in audio files. Overall, DTunes intends to be a project to apply algorithms to understand the composition of music and create the ultimate audio experience for a computer scientist.
 
 
 
-# Goals
-1. Listen to music with out AD's
-2. Modify/Manipulate audio files
-3. Create audio visualizers
-4. Create a sick audio library that kicks spotify/youtube's ass. 
-5. Collect a shit ton of audiofiles
-6. Learn about audio signal processing
+## Setup
 
-## To Do
-2. Run through every feature and make sure it works
-	* Hook youtube dl process to insert-song
-3. Make functions to update names of songs
-4. Create function that tests every feature
-	* Make output neater
-5. Create scripts that install all required libraries
-	* FFMPEG
-	* Youtube dl
-	* SQLITE3
+1. Run the install.sh file
+```
+bash install.sh
+```
 
+2. Run the make file
+```
+make
+```
 
-8. Create a custom local endpoint library
-	* Make somthing similar to web controllers without http
-	* Make it easy to test the endpoints
-	* Migrate endpoint system to DTunes
+3. Execute the CLI tool and use the help command.
+```
+./dtunes help
+```
 
-1. Create a view for youtube urls
-	* see all the current urls stored in db
-
-7. Create youtube url download backup process
-	* Go through all stored urls in the database
-	* Download each youtube url
-	* Eliminate duplicates
-	
-9. Create one to many entity relationship for Playlist -> Song
-	* Be able to add song to an existing playlist in the database
-	* Create a table for adding multiple songs to ONE playlist
-	* View songs in playlist
-
-10. Use youtube DL as data source for inital songs/videos to store
-	* Create a python script that downloads youtube videos to a local directory
-	* Store all the videos in a local folder for the src code
-	* Be able to filter file extension, quality, playback speed.
-
-11. Create makefiles that can generate different binaries
-	* Create binaries that test individual componenets of the system
-	* Test song, playlist and endpoint library
+```
+ (                      )       (     
+ )\ )   *   )        ( /(       )\ )  
+(()/( ` )  /(    (   )\()) (   (()/(  
+ /(_)) ( )(_))   )\ ((_)\  )\   /(_)) 
+(_))_ (_(_()) _ ((_) _((_)((_) (_))   
+ |   \|_   _|| | | || \| || __|/ __|  
+ | |) | | |  | |_| || .` || _| \__ \  
+ |___/  |_|   \___/ |_|\_||___||___/  
 
 
+                              
 
-## Audio File Syncing
-Read files from local directory into sqlite3 database
+============================================================
+collections               Collections to store audio files in DTunes
+phaedra                   Audio player module for DTunes
 
-1. Read file information in directory and rename files with desired format
-	* File names need to parse out anything larger than 15 characters
-	* Assign each audio file with current time for song insert
-	* Parse file extension
-	* Need to grab the current path that we can stream/listen to the audio file from
-	* Somehow need to extract subtitles from audio file if possible
+```
 
-2. Integrate youtube dl python script in c code base
-	* Store youtube urls in db
-	* Don't allow duplicate downloads, skip existing youtube urls
-	* Refactor python script to take youtube url as command line arg
-	* Create function or process to monitor youtube downloads
+4. You should see two modules, collections and phaedra. To get help on how to use the modules, type “help” after the module name.
 
-3. Need to be able to update names
-	* Specify the song id and update name
-	* File names are too long 
-	* Figure out way to automatically rename them shorter
-
-4. Download songs using backup YT urls in database
-	* Be able to download songs using urls in db
+```
+./dtunes collections help
+./dtunes phaedra help
+```
 
 
-
-## Streaming/Playing Audio
-
-1. Figure out how to play/stream audio file in c
-	* Read audio file from local path
-	* Play audio file and view audio signal output
-
-2. Audio Queueing
-	* Create a custom library for listening to audio files
-	* Be able to play audio files in certain selected order
-	* Use data structures to store temporary queues etc. 
-
-
-## Community detection for auto generating playlists
-Implement various community detection algorithms for finding similarities in audio files. Results should auto create playlists of "communities" that have been found in the graph. Figure out how to properly label the communities. 
-
-## Centrality algorithms for finding songs that have high influence in the network
-Implmement centrality algorothms that can detect which nodes are important or play a key factor in the audio application. Use centrality as a way to understand the data flowing through the system.
-
-
-
-
-## Fixes/Improvements/BUGS
-
-1. Unique ID generation for database tables
-	* Unique ID generation is not built in with C
-	* Keep track of the last insert row id
-	* Use last row insert id + 1 as next row id
-
-2. Blank space for date column
-	* Date created columns in structures add blank spaces on entries
-
-
-
-# Graph Algorithms
-
-1. BFS/DFS (Breadth/Depth first search)
-2. Minimum Spanning Tree
-3. Random Walk
-4. All pairs shortest path
-5. Single Source shortest path
-
-
-## Centrality 
-1. Degree Centrality
-2. Closeness Centrality
-3. Betweeness Centrality
-4. Page Rank
-
-
-## Community Detection
-1. Triangle Count and Clustering Coeif
-2. Local/Global Clustering Coefficient
-3. Label Propogation
-4. Louvain Modularity
-
-
-
-
-
-
-
-
-
-
+## Syncing Audio Files to DTunes
 
 
 
