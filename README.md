@@ -49,6 +49,30 @@ phaedra                   Audio player module for DTunes
 
 ## Syncing Audio Files to DTunes
 
+1. Create a collection with a name of your choice. 
+```
+./dtunes collections create testing
+```
+
+
+2. Change directory to ```adms/scripts```. Go into to the data.json file and paste in the following. 
+```json
+{
+    "collections": {
+        "collection_testing": {
+            "path": "../../collections/collection-testing",
+            "videos": [
+                "https://www.youtube.com/watch?v=tLJH_NtkWBw",
+                "https://www.youtube.com/watch?v=5wrKDFIJZuA",
+                "https://www.youtube.com/watch?v=-heXdwWVr3I",
+                "https://www.youtube.com/watch?v=oj8_wufhE28"
+            ]
+        }
+    }
+}
+
+
+```
 
 
 
