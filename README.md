@@ -47,7 +47,7 @@ phaedra                   Audio player module for DTunes
 ```
 
 
-## Syncing Audio Files to DTunes
+## Bulk Syncing Audio Files to DTunes
 
 1. Create a collection with a name of your choice. 
 ```
@@ -70,9 +70,18 @@ phaedra                   Audio player module for DTunes
         }
     }
 }
-
-
 ```
+
+3. Change directory to the dtunes binary, check if there are files in the testing collection. 
+```
+./dtunes collections vcf testing
+```
+
+4. If files show up in that collection, queue the files with phaedra
+```
+./dtunes collections queue testing
+```
+
 
 
 
