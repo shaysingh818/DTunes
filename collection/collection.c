@@ -401,7 +401,8 @@ void queueCollectionFiles(char *name){
 	
 	// iterate through array of filename and add to queue
 	for(int i = 0; i < fileCount; i++){
-		enqueue(q, fileNames[i]); 
+		enqueue(q, fileNames[i]);
+		dlog("ENQUEUE", fileNames[i]);  
 	}
 	
     printf("\e[0;37m");

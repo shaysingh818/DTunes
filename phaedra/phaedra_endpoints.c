@@ -23,13 +23,25 @@ void playAudioCallbackCmd(endpoint_t *e, char* argv[]){
 void writeToQueue(endpoint_t *e, char* argv[]){
 	
 	queue_t *q = initQueue(1000); 
-	enqueue(q, "phaedra/test_files/bruises.wav"); 
-	enqueue(q, "phaedra/test_files/hill.wav"); 
-	enqueue(q, "phaedra/test_files/disclosure.wav"); 
+	enqueue(q, "phaedra/test_files/bruises.wav");
+	//enqueue(q, "phaedra/test_files/bruises.wav");
 
-	dequeue(q); 
-	dequeue(q);
-	playQueue(q);  	
+	dlog("PHAEDRA", "FIXING TEST QUEUE ISSUE");
+
+	for(int i = q->frontIndex; i <= q->rearIndex; i++){
+		printf("Front item: %s\n", q->items[i]->filePath);  
+	}
+
+	//printf("Rear item: %s\n", q->rear->filePath); 
+
+	//playQueue(q);  	
+}
+
+
+void testPhaedraCmd(endpoint_t *e, char* argv[]){
+
+	// run test cases for phaedra
+	runTests(); 
 }
 
 
@@ -80,6 +92,20 @@ page_t *phaedraModule(){
         0, 2,
         queueArgs,
         writeToQueue,
+        &head
+    );
+
+	// test phaedra
+    char *testArgs[][2] = {
+        {"test", "run tests for phaedra"}
+    };
+
+    constructEndpoint(
+        "test",
+        "test functionality for phaedra",
+        0, 1,
+        testArgs,
+        testPhaedraCmd,
         &head
     );
 

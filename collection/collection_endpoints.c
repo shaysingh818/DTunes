@@ -83,7 +83,8 @@ void queueCollectionFilesCmd(endpoint_t *e, char* argv[]){
 void runCollectionTestsCmd(endpoint_t *e, char* argv[]){
 
     // test library
-    runCollectionTests(); 
+    runCollectionTests();
+	printf("\n");  
 	
 }
 
@@ -159,7 +160,7 @@ page_t *collectionsModule(){
 
     constructEndpoint(
         "vcf",
-        "endpoint view files in a collection",
+        "view files in a collection",
         0, 2,
         args4,
         viewCollectionFilesCmd,
@@ -175,7 +176,7 @@ page_t *collectionsModule(){
 
     constructEndpoint(
         "ccf",
-        "endpoint view files in a collection",
+        "format file names in a collection",
         0, 2,
         args5,
         cleanCollectionFilesCmd,

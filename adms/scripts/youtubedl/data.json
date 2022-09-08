@@ -1,10 +1,12 @@
 {
 	"collections": {
-		"collection_testing": {
-			"path": "../../collections/collection-testing",
+		"collection_piano": {
+			"path": "../../collections/collection-piano",
 			"videos": [
-				"https://www.youtube.com/watch?v=0yW7w8F2TVA",
-				"https://www.youtube.com/watch?v=AdjuCtUduWQ"
+				"https://www.youtube.com/watch?v=tLJH_NtkWBw",
+				"https://www.youtube.com/watch?v=5wrKDFIJZuA",
+				"https://www.youtube.com/watch?v=-heXdwWVr3I",
+				"https://www.youtube.com/watch?v=oj8_wufhE28"
 			]
 		}
 	}
