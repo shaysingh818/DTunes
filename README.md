@@ -5,7 +5,7 @@ DTunes is an audio engine dedicated to audio processing and composition. The pur
 
 ## Setup
 
-1. Run the install.sh file
+1. Run the install.sh file. 
 ```
 bash install.sh
 ```
