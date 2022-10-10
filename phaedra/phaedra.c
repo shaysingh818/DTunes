@@ -277,17 +277,36 @@ void play(char *filename, int streamType){
 
 
 
-queue_t* initQueue(){
-	queue_t* q = (queue_t*)malloc(sizeof(queue_t)); 
-	q->front = q->rear = NULL; 
-	return q; 
+int isFull(queue_t* queue){
+	return (queue->itemCount == queue->capacity); 
 }
+
+int isEmpty(queue_t* queue){
+	return (queue->itemCount == 0); 
+}
+
+
+queue_t *initQueue(unsigned setCapacity){
+
+	// set attributes
+	queue_t* queue = (queue_t*)malloc(sizeof(queue_t)); 
+	queue->capacity = setCapacity; 
+	queue->frontIndex = queue->itemCount = 0; 
+	queue->rearIndex = setCapacity - 1; 
+
+	// allocate space for queue
+	queue->items = malloc(queue->capacity * sizeof(audionode_t*)); 
+	for(int i = 0; i < queue->capacity; i++){
+		queue->items[i] = malloc(sizeof(audionode_t)); 
+	}
+
+	return queue; 
+} 
 
 
 audionode_t *createNode(char *filePath){
 	audionode_t *temp = (audionode_t*)malloc(sizeof(audionode_t)); 
 	temp->filePath = filePath; 
-	/* get current time of insert */
 	time_t rawtime; 
 	struct tm *timeinfo; 
 	time(&rawtime); 
@@ -298,48 +317,60 @@ audionode_t *createNode(char *filePath){
 }
 
 
-void pushToQueue(queue_t *q, char *filePath){
 
-	audionode_t *temp = createNode(filePath); 
-	if(q->rear == NULL){
-		q->front = q->rear = temp; 
+void enqueue(queue_t* queue, char *filePath){
+	if(isFull(queue)){
 		return; 
 	}
-	q->rear->next = temp; 
-	q->rear = temp;
-	dlog("AUDIO QUEUE", "PUSHED AUDIO FILE ONTO QUEUE"); 
+
+	audionode_t *item = createNode(filePath); 
+	queue->rearIndex = (queue->rearIndex + 1) % queue->capacity;
+	queue->items[queue->rearIndex] = item; 
+	queue->itemCount = queue->itemCount + 1;
 }
 
 
-void removeFromQueue(queue_t *q){
 
-	if(q->front == NULL){
+void dequeue(queue_t* queue){
+	if(isEmpty(queue)){
 		return; 
 	}
-	audionode_t *temp = q->front; 
-	q->front = q->front->next; 
-	
-	if(q->front == NULL){
-		q->rear = NULL; 
-	}
 
-	free(temp); 
-	dlog("AUDIO QUEUE", "REMOVED AUDIO FILE FROM QUEUE"); 
+	audionode_t *item = queue->items[queue->frontIndex]; 
+	queue->frontIndex = (queue->frontIndex + 1) % queue->capacity; 
+	queue->itemCount = queue->itemCount - 1;
 }
 
 
 
-void printQueue(queue_t *q){
-	while(q->front != NULL){
-		printf("File on queue: %s\n", q->front->filePath); 
-		removeFromQueue(q); 
+int front(queue_t* queue) {
+	if(isEmpty(queue)){
+		return INT_MIN;  
 	}
+	return queue->frontIndex; 
 }
 
 
-void playQueue(queue_t *q){
-	while(q->front != NULL){	
-		play(q->front->filePath, 2); 
-		removeFromQueue(q); 
+
+int rear(queue_t* queue) {
+	if(isEmpty(queue)){
+		return INT_MIN;  
 	}
+	return queue->rearIndex; 
 }
+
+
+
+void playQueue(queue_t* queue){
+
+	dlog("PHAEDRA", "STARTING QUEUE"); 
+	for(int i = queue->frontIndex; i <= queue->rearIndex; i++){
+		play(queue->items[i]->filePath, 1);
+	}
+
+}
+
+
+
+
+

@@ -1,115 +1,227 @@
 #include "collection.h"
 #include "collection_endpoints.h"
 #include "collection_test.h"
+#include "../logging/log.h"
+
 
 // create playlist
 void insertCollectionCmd(endpoint_t *e, char* argv[]){
-    if(strcmp(argv[1], e->commandLineArg) == 0){
 
-        // insert collection to system
-        int insertDbResult = createCollection(argv[2]);
-        if(insertDbResult){
-            printf("\033[0;32m");
-            printf("[DTUNES]: Created Playlist\n");
-        }else{
-            printf("\e[0;31m");
-            printf("Something went wrong, refer to test cases\n");
-        }
-
+    // insert collection to system
+    int insertDbResult = createCollection(argv[3]);
+    if(insertDbResult){
+        printf("\033[0;32m");
+        printf("[DTUNES]: Created Playlist\n");
+    }else{
+        printf("\e[0;31m");
+        printf("Something went wrong, refer to test cases\n");
     }
+
 }
 
 
 void viewCollectionsCmd(endpoint_t *e, char* argv[]){
-	if (strcmp(argv[1], e->commandLineArg) == 0){
-        int result = viewCollections();
-        printf("\n");
-    }
+
+    int result = viewCollections();
+    printf("\n");
+    
 }
 
 
 void deleteCollectionCmd(endpoint_t *e, char* argv[]){
-    if (strcmp(argv[1], e->commandLineArg) == 0){
-        int result = deleteCollection(argv[2]);
-        if(result){
-            printf("[DTUNES]: Deleted Collection: %s\n", argv[2]);
-        }else{
-            printf("Something went wrong: refer to unit tests\n");
-        }
+
+    // delete collection
+    int result = deleteCollection(argv[3]);
+    if(result){
+        printf("[DTUNES]: Deleted Collection: %s\n", argv[2]);
+    }else{
+        printf("Something went wrong: refer to unit tests\n");
     }
 }
 
 
 void deleteAllCollectionsCmd(endpoint_t *e, char* argv[]){
-    if (strcmp(argv[1], e->commandLineArg) == 0){
-        int result = deleteAllCollections();
-        if(result){
-            printf("[DTUNES]: Deleted Collections\n");
-        }else{
-            printf("Something went wrong: refer to unit tests\n");
-        }
+    int result = deleteAllCollections();
+    if(result){
+        printf("[DTUNES]: Deleted Collections\n");
+    }else{
+        printf("Something went wrong: refer to unit tests\n");
     }
 }
 
 
 
-void runCollectionTestsCmd(endpoint_t *e, char* argv[]){	
-    if (strcmp(argv[1], e->commandLineArg) == 0){
-		runCollectionTests(); 
+void viewCollectionFilesCmd(endpoint_t *e, char* argv[]){
+
+    int result = viewCollectionFiles(argv[3]);
+    if(!result){
+        dlog("FAILED", "VIEW COLLECTION FILES"); 
     }
 
 }
 
 
-void collectionEndpoints(endpoint_t **head) {
+
+void cleanCollectionFilesCmd(endpoint_t *e, char* argv[]){	
+	
+    int result = renameCollectionFiles(argv[3]);
+    if(!result){
+        dlog("FAILED", "CLEAN COLLECTION FILES"); 
+    }
+}
+
+
+
+void queueCollectionFilesCmd(endpoint_t *e, char* argv[]){	
+
+    // queue files in collection
+    queueCollectionFiles(argv[3]); 
+
+}
+
+
+void runCollectionTestsCmd(endpoint_t *e, char* argv[]){
+
+    // test library
+    runCollectionTests();
+	printf("\n");  
+	
+}
+
+
+page_t *collectionsModule(){
+    
+    endpoint_t *head = NULL;
 
 	// create collection
-    endpoint_t *e1 = createEndpoint(
-        "create-collection",
-        "cc",
-        "create audio collection in DTunes"
-    );
-    e1->endpointLogic = insertCollectionCmd;
-    appendEndpoint(head, e1);
+    char *args[][2] = {
+        {"create", "create a collection, store in database"},
+        {"name", "Name of the collection you want to create"},
+    };
 
+    constructEndpoint(
+        "create",
+        "endpoint to create collections and store in databse",
+        0, 2,
+        args,
+        insertCollectionCmd,
+        &head
+    );
 
 	// view collections
-    endpoint_t *e2 = createEndpoint(
-        "view-collection",
-        "vc",
-        "view audio collections on DTunes"
+    char *args1[][2] = {
+        {"view", "view collections in database"}
+    };
+
+    constructEndpoint(
+        "view",
+        "view collections in database",
+        0, 1,
+        args1,
+        viewCollectionsCmd,
+        &head
     );
-    e2->endpointLogic = viewCollectionsCmd;
-    appendEndpoint(head, e2);
 
+	// delete collection by id	
+    char *args2[][2] = {
+        {"delete", "delete collection"},
+        {"id", "id of collection you want to delete"},
+    };
 
-	// delete collection by id
-    endpoint_t *e3 = createEndpoint(
-        "delete-collection",
-        "dc",
-        "view audio collection by uuid"
+    constructEndpoint(
+        "delete",
+        "endpoint to delete specific collection",
+        0, 2,
+        args2,
+        deleteCollectionCmd,
+        &head
     );
-    e3->endpointLogic = deleteCollectionCmd;
-    appendEndpoint(head, e3);
 
+	// delete all collections	
+    char *args3[][2] = {
+        {"delete-all", "delete all collections"}
+    };
 
-	// delete all collections
-    endpoint_t *e4 = createEndpoint(
-        "delete-all-collection",
-        "dac",
-        "delete all collections"
+    constructEndpoint(
+        "delete-all",
+        "endpoint to delete specific collection",
+        0, 1,
+        args3,
+        deleteAllCollectionsCmd,
+        &head
     );
-    e4->endpointLogic = deleteAllCollectionsCmd;
-    appendEndpoint(head, e4);
 
 
-	// delete all collections
-    endpoint_t *e5 = createEndpoint(
-        "test-collections",
-        "tc",
-        "test collection methods"
+	// view collection files
+    char *args4[][2] = {
+        {"vcf", "view collection files"},
+        {"name", "name of collection"},
+    };
+
+    constructEndpoint(
+        "vcf",
+        "view files in a collection",
+        0, 2,
+        args4,
+        viewCollectionFilesCmd,
+        &head
     );
-    e5->endpointLogic = runCollectionTestsCmd;
-    appendEndpoint(head, e5);
+
+
+	// clean collection files
+    char *args5[][2] = {
+        {"ccf", "clean collection files"},
+        {"name", "name of collection"},
+    };
+
+    constructEndpoint(
+        "ccf",
+        "format file names in a collection",
+        0, 2,
+        args5,
+        cleanCollectionFilesCmd,
+        &head
+    );
+
+	// queue collection files
+    char *args6[][2] = {
+        {"queue", "queue collection files"},
+        {"name", "name of collection"},
+    };
+
+    constructEndpoint(
+        "queue",
+        "endpoint to queue files in a collection",
+        0, 2,
+        args6,
+        queueCollectionFilesCmd,
+        &head
+    );
+
+
+	// test collections
+    char *args7[][2] = {
+        {"test", "test collections module"}
+    };
+
+    constructEndpoint(
+        "test",
+        "test collections module",
+        0, 1,
+        args7,
+        runCollectionTestsCmd,
+        &head
+    );
+
+
+	// create page
+    page_t *p = createPage(
+        "collections",
+        "Collections to store audio files in DTunes",
+        head
+    );
+
+    return p;	
 
 }
+

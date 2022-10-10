@@ -1,11 +1,14 @@
 import youtube_dl
+import json
 import sys
 
-def download_video(url):	
+def download_video(url, path):	
+	
+	print(f"PATH: {path}")
 	# youtube options
 	ydl_opts = {
 		'format': 'bestaudio/best',
-		'outtmpl': '../audiofiles/%(title)s.%(ext)s', # <--- pay attention here
+		'outtmpl': f'{path}/%(title)s.%(ext)s', # <--- pay attention here
 		'postprocessors': [{
 		'key': 'FFmpegExtractAudio',
 		'preferredcodec': 'wav',
@@ -21,19 +24,17 @@ def download_video(url):
 
 def read_from_file(filename: str):
 	# read videos from text file
-	f = open(filename, "r")
-	for line in f:
-		print(line)
-		try:
-			download_video(line)
-		except Exception as e:
-			print(e)
+	with open(filename) as json_file:
+		data = json.load(json_file)
+		collections = data["collections"]
+		for item in collections:
+			collection_obj = data["collections"][item]
+			for video in collection_obj["videos"]:
+				download_video(video, collection_obj["path"])
 
 def main():
-	if len(sys.argv) < 1:
-		print("Missing command line arg: ")
-	else:
-		download_video(sys.argv[1])
+
+	read_from_file("data.json")
 
 	
 

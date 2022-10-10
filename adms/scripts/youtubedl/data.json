@@ -1,0 +1,13 @@
+{
+	"collections": {
+		"collection_piano": {
+			"path": "../../collections/collection-piano",
+			"videos": [
+				"https://www.youtube.com/watch?v=tLJH_NtkWBw",
+				"https://www.youtube.com/watch?v=5wrKDFIJZuA",
+				"https://www.youtube.com/watch?v=-heXdwWVr3I",
+				"https://www.youtube.com/watch?v=oj8_wufhE28"
+			]
+		}
+	}
+}
