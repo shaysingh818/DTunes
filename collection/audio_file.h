@@ -34,7 +34,7 @@ typedef struct AudioFile audiofile_t;
 
 audiofile_t **initAudioFiles(int limit);
 audiofile_t *viewAudioFile(char *name);
-int createAudioFile(char *name);
+int createAudioFile(char *name, char *setStreamingPath);
 int updateAudioFileById(char *uuid, char *newName);
 int getAudioFileTableSize();
 int viewAudioFiles();

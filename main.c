@@ -38,7 +38,5 @@ int main(int argc, char* argv[]){
 
 	executionCycle(head, argc, argv); 
 	
-
-
 	return 0; 
 }	

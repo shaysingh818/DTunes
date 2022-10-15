@@ -35,10 +35,15 @@ int createCollection(char *name){
 	collection_t *newCollection; 
 	newCollection = (collection_t*)malloc(sizeof(collection_t));
 
+	// get collection file path
+	char collectionFilePath[300];
+	sprintf(collectionFilePath, "%s/collection-%s", ADMS_PATH, name); 
+	
 	strcpy(newCollection->name, name); 
 	strcpy(newCollection->dateCreated, currentTime); 
 	strcpy(newCollection->diskSpace, "0 GB"); 
 	strcpy(newCollection->fileCount, "0 Files"); 
+	strcpy(newCollection->collectionPath, collectionFilePath); 
 
 	// insert to sqlite3
 	sqlite3 *db = openDB(DB_PATH); 
@@ -66,6 +71,7 @@ int createCollection(char *name){
 	sqlite3_bind_text(sql, 2, newCollection->dateCreated, -1, NULL);	
 	sqlite3_bind_text(sql, 3, newCollection->diskSpace, -1, NULL);
 	sqlite3_bind_text(sql, 4, newCollection->fileCount, -1, NULL);
+	sqlite3_bind_text(sql, 5, newCollection->collectionPath, -1, NULL);
 	sqlite3_step(sql); 
 	sqlite3_close(db);
 
@@ -153,7 +159,36 @@ collection_t **initCollections(int limit){
 
     sqlite3_close(db);
     return collections;
+}
 
+collection_t *viewCollection(char *collectionName){
+
+	collection_t *collection; 
+	collection = (collection_t*)malloc(sizeof(collection_t)); 
+	
+	sqlite3 *db = openDB(DB_PATH);
+    sqlite3_stmt *sql;
+    char *query = VIEW_PLAYLIST_BY_NAME;
+
+	int result = sqlite3_prepare_v2(db, query, -1, &sql, NULL);
+    if(result != SQLITE_OK){
+        fprintf(stderr, "Failed to query song by uuid:  %s\n",sqlite3_errmsg(db));
+        sqlite3_close(db);
+        return FALSE;
+    }
+
+	sqlite3_bind_text(sql, 1, collectionName, -1, NULL);
+    result = sqlite3_step(sql);
+    if(result == SQLITE_ROW){
+
+		const char *column0 = sqlite3_column_text(sql, 0);
+        const char *column1 = sqlite3_column_text(sql, 1);
+        const char *column2 = sqlite3_column_text(sql, 2);
+        const char *column3 = sqlite3_column_text(sql, 3);
+
+
+	}
+	
 }
 
 
@@ -267,7 +302,7 @@ int deleteAllCollections(){
 	// delete all folders
 	DIR *collectionsPath = opendir(ADMS_PATH); 
 	struct dirent *next_file; 
-	char filepath[300]; 
+	char filepath[1000]; 
 	
 	while((next_file = readdir(collectionsPath)) != NULL){
 		sprintf(filepath, "%s/%s", ADMS_PATH, next_file->d_name); 
@@ -276,6 +311,34 @@ int deleteAllCollections(){
 	closedir(collectionsPath); 
 
     return TRUE;
+}
+
+
+int getRelationTableSize(char *collectionName){
+
+	// get amount of files in collection
+	sqlite3 *db = openDB(DB_PATH);
+    sqlite3_stmt *sql;
+    char *query = COUNT_COLLECTION_RELATIONS;
+    int result = sqlite3_prepare_v2(db, query, -1, &sql, NULL);
+    if(result != SQLITE_OK){
+        fprintf(stderr, "Failed to query playlist realation size:  %s\n",sqlite3_errmsg(db));
+        sqlite3_close(db);
+        return FALSE;
+    }
+	
+	sqlite3_bind_text(sql, 1, collectionName, -1, NULL); 
+	int relationLimit;
+    result = sqlite3_step(sql);
+    if(result == SQLITE_ROW){
+        const char *columnValue = sqlite3_column_text(sql, 0);
+        sscanf(columnValue, "%d", &relationLimit); 
+    }
+
+	sqlite3_finalize(sql);
+    sqlite3_close(db);
+
+	return relationLimit; 
 }
 
 
@@ -306,11 +369,88 @@ int checkCollectionExist(char *collectionName){
 	sqlite3_close(db);
 
 	return status;  
-
-
-
 }
 
+
+int addFileToCollection(char *collectionName, char *fileName){
+	
+	sqlite3 *db = openDB(DB_PATH); 
+	
+	char *errMsg = 0; 
+	sqlite3_stmt *sql; 
+	int result = sqlite3_prepare_v2(db, ADD_COLLECTION_FILE, -1, &sql, NULL); 
+	
+	if(result != SQLITE_OK){
+        fprintf(stderr, "Failed to insert:  %s\n",sqlite3_errmsg(db));
+        sqlite3_close(db);
+        return FALSE;
+    }
+
+	uuid_t relation_uuid_str; 
+	char relation_uuid[37]; 
+	uuid_generate_time_safe(relation_uuid_str); 
+	uuid_unparse_lower(relation_uuid_str, relation_uuid); 
+
+	sqlite3_bind_text(sql, 1, relation_uuid, -1, NULL);	
+    sqlite3_bind_text(sql, 2, collectionName, -1, NULL);
+    sqlite3_bind_text(sql, 3, fileName, -1, NULL);
+
+	sqlite3_step(sql); 
+	sqlite3_close(db); 
+
+	return TRUE; 
+	
+}
+
+
+int syncCollectionsFilesToDB(char *collectionName){
+	
+	// check if collection exists
+	int result = checkCollectionExist(collectionName); 
+	if(result == FALSE){
+		dlog("ERROR", "COLLECTION DOES NOT EXIST"); 
+		return FALSE; 
+	}
+
+	collection_t *collection = viewCollection(collectionName); 
+	char *path = collection->collectionPath; 
+
+    DIR *audioFolder = opendir(path);
+	struct dirent *entry;
+
+    while((entry=readdir(audioFolder)) != NULL){
+		
+        int fileCondition1 = strcmp(entry->d_name, "..") == 0;
+        int fileCondition2 = strcmp(entry->d_name, ".") == 0;
+			
+        if(fileCondition1 == 0 & fileCondition2 == 0){
+			dlog("FILE", entry->d_name);
+
+			char buffer[1000]; 
+			sprintf(buffer, "%s/%s", path, entry->d_name);
+
+			int result = createAudioFile(
+				entry->d_name, 
+				buffer
+			); 
+
+			if(result == TRUE){
+				dlog("INSERT SONG", "TRUE"); 
+			}
+
+			int addResult = addFileToCollection(
+				collectionName, 
+				entry->d_name
+			); 
+
+			if(addResult == TRUE){
+				dlog("COLLECTION->FILE", "TRUE"); 
+			}
+		}
+    }
+
+	return TRUE; 	
+}
 
 int viewCollectionFiles(char *name){
 

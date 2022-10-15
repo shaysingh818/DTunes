@@ -1,7 +1,9 @@
+#include "../endpoints/endpoints.h"
 #include "audio_file.h"
+#include "collection.h"
 #include "../logging/log.h"
 
-int createCollection(char *setName, char *setStreamingPath){
+int createAudioFile(char *setName, char *setStreamingPath){
 
     // create data model for sqlite3 
     char *currentTime = getCurrentTime();
