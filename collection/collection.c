@@ -172,13 +172,12 @@ collection_t **initCollections(int limit){
 		collections[indexCount]->collectionPath = (char*)malloc(pathLength * sizeof(char));
 	
         // store values:
-        strcpy(collections[indexCount]->name, column0);
-        strcpy(collections[indexCount]->dateCreated, column1);
-        strcpy(collections[indexCount]->diskSpace, column2);
-        strcpy(collections[indexCount]->fileCount, column3);	
-        strcpy(collections[indexCount]->collectionPath, column4);
-
-        indexCount += 1;
+		strcpy(collections[indexCount]->name, column0);
+		strcpy(collections[indexCount]->dateCreated, column1);
+		strcpy(collections[indexCount]->diskSpace, column2);
+		strcpy(collections[indexCount]->fileCount, column3);	
+		strcpy(collections[indexCount]->collectionPath, column4);
+		indexCount += 1;
     }
 
     sqlite3_close(db);
