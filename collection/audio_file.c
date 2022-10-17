@@ -6,11 +6,11 @@
 int createAudioFile(char *setName, char *setStreamingPath){
 
     // create data model for sqlite3 
-    char *currentTime = getCurrentTime();
-    audiofile_t *newAudioFile;
-    newAudioFile = (audiofile_t*)malloc(sizeof(audiofile_t));
+	char *currentTime = getCurrentTime();
+	audiofile_t *newAudioFile;
+	newAudioFile = (audiofile_t*)malloc(sizeof(audiofile_t));
 
-	/* get length of string params */	
+	/* get length of string params */
 	size_t nameLength = strlen(setName) + 1; 
 	size_t dateLength = strlen(currentTime) + 1; 
 	size_t pathLength = strlen(setStreamingPath) + 1; 	
@@ -21,44 +21,39 @@ int createAudioFile(char *setName, char *setStreamingPath){
 	newAudioFile->streamingPath = (char*)malloc(pathLength * sizeof(char)); 
 
 	/* set values */
-    strcpy(newAudioFile->name, setName);
-    strcpy(newAudioFile->dateCreated, currentTime);
-    strcpy(newAudioFile->streamingPath, setStreamingPath);
+	strcpy(newAudioFile->name, setName);
+	strcpy(newAudioFile->dateCreated, currentTime);
+	strcpy(newAudioFile->streamingPath, setStreamingPath);
 
     // insert to sqlite3
-    sqlite3 *db = openDB(DB_PATH);
+	sqlite3 *db = openDB(DB_PATH);
 
-    char *errMsg = 0;
-    sqlite3_stmt *sql;
+	char *errMsg = 0;
+	sqlite3_stmt *sql;
 
     // insert query
-    int result = sqlite3_prepare_v2(
-        db,
-        INSERT_DB_FILE,
-        -1,
-        &sql,
-        NULL
-    );
+	int result = sqlite3_prepare_v2(
+		db,
+		INSERT_DB_FILE,
+		-1,
+		&sql,
+		NULL
+	);
 
 
-     // check for sql cursor errors
-    if(result != SQLITE_OK){
-        fprintf(stderr, "Failed to insert:  %s\n",sqlite3_errmsg(db));
-        sqlite3_close(db);
-    }
+	// check for sql cursor errors
+	if(result != SQLITE_OK){
+		fprintf(stderr, "Failed to insert:  %s\n",sqlite3_errmsg(db));
+		sqlite3_close(db);
+	}
 
 	sqlite3_bind_text(sql, 1, newAudioFile->name, -1, NULL);
-    sqlite3_bind_text(sql, 2, newAudioFile->dateCreated, -1, NULL);
-    sqlite3_bind_text(sql, 3, newAudioFile->streamingPath, -1, NULL);
-
-	int step = sqlite3_step(sql);
-    //printf("HEY %s: \n", sqlite3_column_text(sql, 5));
-    //printf("HEY %s\n", sqlite3_column_text(sql, 5));
-
+	sqlite3_bind_text(sql, 2, newAudioFile->dateCreated, -1, NULL);
+	sqlite3_bind_text(sql, 3, newAudioFile->streamingPath, -1, NULL);
+	sqlite3_step(sql);
     sqlite3_close(db);
 
-
-    return TRUE;
+	return TRUE;
 }
 
 
@@ -88,6 +83,14 @@ audiofile_t **initAudioFiles(int limit){
         const char *column0 = sqlite3_column_text(sql, 0);
         const char *column1 = sqlite3_column_text(sql, 1);
         const char *column2 = sqlite3_column_text(sql, 2);
+
+		size_t nameLength = strlen(column0) + 1;
+        size_t dateLength = strlen(column1) + 1;
+        size_t pathLength = strlen(column2) + 1;
+
+		files[indexCount]->name = (char*)malloc(nameLength * sizeof(char));
+        files[indexCount]->dateCreated = (char*)malloc(dateLength * sizeof(char));
+        files[indexCount]->streamingPath = (char*)malloc(pathLength * sizeof(char));
 
         // store values:
         strcpy(files[indexCount]->name, column0);
