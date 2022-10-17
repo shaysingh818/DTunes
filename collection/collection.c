@@ -67,7 +67,7 @@ int createCollection(char *name){
  	sqlite3_stmt *sql;
 
 	// insert query
-    int result = sqlite3_prepare_v2(
+	int result = sqlite3_prepare_v2(
 		db, 
 		INSERT_DB_COLLECTION,
 		-1, 
@@ -76,11 +76,11 @@ int createCollection(char *name){
 	);
 
 	 // check for sql cursor errors
-    if(result != SQLITE_OK){
+	if(result != SQLITE_OK){
         fprintf(stderr, "Failed to insert:  %s\n",sqlite3_errmsg(db));
         sqlite3_close(db);
         return 0;
-    }
+	}
 
 	sqlite3_bind_text(sql, 1, newCollection->name, -1, NULL);
 	sqlite3_bind_text(sql, 2, newCollection->dateCreated, -1, NULL);	
@@ -97,12 +97,10 @@ int createCollection(char *name){
 	if(chdir(ADMS_PATH) != 0){
         perror("chdir() to /error failed");
         return FALSE;
-    }
+	}
 	mkdir(formattedName, S_IRWXU);
 
 	return 1;  
-
-	
 }
 
 
@@ -155,11 +153,11 @@ collection_t **initCollections(int limit){
     int indexCount = 0;
     while ((result = sqlite3_step(sql)) == SQLITE_ROW) {
         // extract column values    
-        const char *column0 = sqlite3_column_text(sql, 0);
-        const char *column1 = sqlite3_column_text(sql, 1);
-        const char *column2 = sqlite3_column_text(sql, 2);
-        const char *column3 = sqlite3_column_text(sql, 3);
-        const char *column4 = sqlite3_column_text(sql, 4);
+		const char *column0 = sqlite3_column_text(sql, 0);
+		const char *column1 = sqlite3_column_text(sql, 1);
+		const char *column2 = sqlite3_column_text(sql, 2);
+		const char *column3 = sqlite3_column_text(sql, 3);
+		const char *column4 = sqlite3_column_text(sql, 4);
 
 		size_t nameLength = strlen(column0) + 1; 
 		size_t dateLength = strlen(column1) + 1; 
@@ -194,25 +192,25 @@ collection_t *viewCollection(char *collectionName){
 	collection = (collection_t*)malloc(sizeof(collection_t)); 
 	
 	sqlite3 *db = openDB(DB_PATH);
-    sqlite3_stmt *sql;
-    char *query = VIEW_DB_COLLECTION;
+	sqlite3_stmt *sql;
+	char *query = VIEW_DB_COLLECTION;
 
 	int result = sqlite3_prepare_v2(db, query, -1, &sql, NULL);
-    if(result != SQLITE_OK){
+	if(result != SQLITE_OK){
         fprintf(stderr, "Failed to query song by uuid:  %s\n",sqlite3_errmsg(db));
         sqlite3_close(db);
         return FALSE;
-    }
+	}
 
 	sqlite3_bind_text(sql, 1, collectionName, -1, NULL);
-    result = sqlite3_step(sql);
-    if(result == SQLITE_ROW){
+	result = sqlite3_step(sql);
+	if(result == SQLITE_ROW){
 
 		const char *column0 = sqlite3_column_text(sql, 0);
-        const char *column1 = sqlite3_column_text(sql, 1);
-        const char *column2 = sqlite3_column_text(sql, 2);
-        const char *column3 = sqlite3_column_text(sql, 3);	
-        const char *column4 = sqlite3_column_text(sql, 4);
+		const char *column1 = sqlite3_column_text(sql, 1);
+		const char *column2 = sqlite3_column_text(sql, 2);
+		const char *column3 = sqlite3_column_text(sql, 3);	
+		const char *column4 = sqlite3_column_text(sql, 4);
 	
 		size_t nameLength = strlen(column0) + 1; 
 		size_t dateLength = strlen(column1) + 1; 
@@ -236,8 +234,7 @@ collection_t *viewCollection(char *collectionName){
 	}
 
 	sqlite3_finalize(sql);
-    sqlite3_close(db);
-
+	sqlite3_close(db);
 
 	return collection; 
 	
@@ -469,8 +466,8 @@ int addFileToCollection(char *collectionName, char *fileName){
 	uuid_unparse_lower(relation_uuid_str, relation_uuid); 
 
 	sqlite3_bind_text(sql, 1, relation_uuid, -1, NULL);	
-    sqlite3_bind_text(sql, 2, collectionName, -1, NULL);
-    sqlite3_bind_text(sql, 3, fileName, -1, NULL);
+	sqlite3_bind_text(sql, 2, collectionName, -1, NULL);
+	sqlite3_bind_text(sql, 3, fileName, -1, NULL);
 
 	sqlite3_step(sql); 
 	sqlite3_close(db); 
@@ -492,15 +489,15 @@ int syncCollectionsFilesToDB(char *collectionName){
 	collection_t *collection = viewCollection(collectionName); 
 	char *path = collection->collectionPath; 
 
-    DIR *audioFolder = opendir(path);
+	DIR *audioFolder = opendir(path);
 	struct dirent *entry;
 
-    while((entry=readdir(audioFolder)) != NULL){
+	while((entry=readdir(audioFolder)) != NULL){
 		
-        int fileCondition1 = strcmp(entry->d_name, "..") == 0;
-        int fileCondition2 = strcmp(entry->d_name, ".") == 0;
+		int fileCondition1 = strcmp(entry->d_name, "..") == 0;
+		int fileCondition2 = strcmp(entry->d_name, ".") == 0;
 			
-        if(fileCondition1 == 0 & fileCondition2 == 0){
+		if(fileCondition1 == 0 & fileCondition2 == 0){
 
 			char buffer[1000]; 
 			sprintf(buffer, "%s/%s", path, entry->d_name);
