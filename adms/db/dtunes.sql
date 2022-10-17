@@ -10,9 +10,9 @@ CREATE TABLE COLLECTION (
 
 
 CREATE TABLE AUDIO_FILE (
-    name VARCHAR(255) UNIQUE PRIMARY KEY,
-    date_created VARCHAR(255),
-    streaming_path VARCHAR(255)
+    name VARCHAR(1000) PRIMARY KEY,
+    date_created VARCHAR(1000),
+    streaming_path VARCHAR(1000)
 );
 
 

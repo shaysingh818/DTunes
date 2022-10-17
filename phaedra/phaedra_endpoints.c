@@ -38,6 +38,13 @@ void writeToQueue(endpoint_t *e, char* argv[]){
 }
 
 
+
+void fuck(endpoint_t *e, char* argv[]){
+
+	dlog("PHAEDRA", "What in the fuck is happening"); 
+}
+
+
 void testPhaedraCmd(endpoint_t *e, char* argv[]){
 
 	// run test cases for phaedra
@@ -59,7 +66,7 @@ page_t *phaedraModule(){
     constructEndpoint(
         "play",
         "play wav, aiff or mp3 file",
-        0, 2,
+        2,
         playArgs,
         playAudioCmd,
         &head
@@ -74,7 +81,7 @@ page_t *phaedraModule(){
     constructEndpoint(
         "play-callback",
         "play wav, aiff or mp3 file with callback",
-        0, 2,
+        2,
         callbackArgs,
         playAudioCallbackCmd,
         &head
@@ -89,7 +96,7 @@ page_t *phaedraModule(){
     constructEndpoint(
         "queue",
         "play audio files with queue",
-        0, 2,
+        2,
         queueArgs,
         writeToQueue,
         &head
@@ -103,7 +110,7 @@ page_t *phaedraModule(){
     constructEndpoint(
         "test",
         "test functionality for phaedra",
-        0, 1,
+        1,
         testArgs,
         testPhaedraCmd,
         &head

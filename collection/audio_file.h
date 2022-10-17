@@ -14,19 +14,18 @@
 
 
 /* audio file db queries */
-#define INSERT_DB_FILE  "INSERT INTO AUDIO_FILE VALUES(?,?,?,?)"
+#define INSERT_DB_FILE "INSERT INTO AUDIO_FILE VALUES(?,?,?)"
 #define VIEW_DB_FILES "SELECT * FROM AUDIO_FILE"
 #define VIEW_DB_FILE "SELECT * FROM AUDIO_FILE WHERE name=?"
-#define VIEW_DB_COLLECTION_FILES "SELECT * FROM AUDIO_FILE"
 #define COUNT_DB_FILE "SELECT COUNT(*) FROM AUDIO_FILE"
-#define DELETE_DB_FILE  "DELETE FROM AUDIO_FILE WHERE name=?" 
-#define DELETE_DB_FILES  "DELETE  FROM AUDIO_FILE"
+#define DELETE_DB_FILE "DELETE FROM AUDIO_FILE WHERE name=?" 
+#define DELETE_DB_FILES "DELETE  FROM AUDIO_FILE"
 
 
 struct AudioFile {
-    char name[100];
-    char dateCreated[30];
-    char streamingPath[100];
+    char *name;
+    char *dateCreated;
+    char *streamingPath;
 };
 
 typedef struct AudioFile audiofile_t;
@@ -34,14 +33,13 @@ typedef struct AudioFile audiofile_t;
 
 audiofile_t **initAudioFiles(int limit);
 audiofile_t *viewAudioFile(char *name);
-int createAudioFile(char *name, char *setStreamingPath);
+int createAudioFile(char *setName, char *setStreamingPath);
 int updateAudioFileById(char *uuid, char *newName);
 int getAudioFileTableSize();
 int viewAudioFiles();
 int deleteAudioFile(char *name);
 int deleteAllAudioFiles();
 int checkAudioFileExists(char *name);
-int viewAudioFileFiles(char *name);
 
 
 #endif

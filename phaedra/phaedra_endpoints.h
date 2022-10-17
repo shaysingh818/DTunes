@@ -7,6 +7,7 @@
 void playAudioCmd(endpoint_t *e, char* argv[]);
 void playAudioCallbackCmd(endpoint_t *e, char* argv[]);
 void writeToQueue(endpoint_t *e, char* argv[]);
+void fuck(endpoint_t *e, char* argv[]);
 
 // page
 page_t *phaedraModule(); 

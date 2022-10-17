@@ -10,6 +10,17 @@ int createAudioFile(char *setName, char *setStreamingPath){
     audiofile_t *newAudioFile;
     newAudioFile = (audiofile_t*)malloc(sizeof(audiofile_t));
 
+	/* get length of string params */	
+	size_t nameLength = strlen(setName) + 1; 
+	size_t dateLength = strlen(currentTime) + 1; 
+	size_t pathLength = strlen(setStreamingPath) + 1; 	
+
+	/* allocate string space */
+	newAudioFile->name = (char*)malloc(nameLength * sizeof(char));	
+	newAudioFile->dateCreated = (char*)malloc(dateLength * sizeof(char)); 
+	newAudioFile->streamingPath = (char*)malloc(pathLength * sizeof(char)); 
+
+	/* set values */
     strcpy(newAudioFile->name, setName);
     strcpy(newAudioFile->dateCreated, currentTime);
     strcpy(newAudioFile->streamingPath, setStreamingPath);
@@ -29,21 +40,25 @@ int createAudioFile(char *setName, char *setStreamingPath){
         NULL
     );
 
+
      // check for sql cursor errors
     if(result != SQLITE_OK){
         fprintf(stderr, "Failed to insert:  %s\n",sqlite3_errmsg(db));
         sqlite3_close(db);
-        return 0;
     }
 
 	sqlite3_bind_text(sql, 1, newAudioFile->name, -1, NULL);
     sqlite3_bind_text(sql, 2, newAudioFile->dateCreated, -1, NULL);
     sqlite3_bind_text(sql, 3, newAudioFile->streamingPath, -1, NULL);
-    sqlite3_step(sql);
+
+	int step = sqlite3_step(sql);
+    //printf("HEY %s: \n", sqlite3_column_text(sql, 5));
+    //printf("HEY %s\n", sqlite3_column_text(sql, 5));
+
     sqlite3_close(db);
 
 
-    return 1;
+    return TRUE;
 }
 
 
@@ -83,6 +98,48 @@ audiofile_t **initAudioFiles(int limit){
 
     sqlite3_close(db);
     return files;
+}
+
+
+audiofile_t *viewAudioFile(char *name){
+
+    audiofile_t *audiofile;
+    audiofile = (audiofile_t*)malloc(sizeof(audiofile_t));
+
+    sqlite3 *db = openDB(DB_PATH);
+    sqlite3_stmt *sql;
+    char *query = VIEW_DB_FILE;
+
+    int result = sqlite3_prepare_v2(db, query, -1, &sql, NULL);
+    if(result != SQLITE_OK){
+        fprintf(stderr, "Failed to query song by uuid:  %s\n",sqlite3_errmsg(db));
+        sqlite3_close(db);
+        return FALSE;
+    }
+
+    sqlite3_bind_text(sql, 1, name, -1, NULL);
+    result = sqlite3_step(sql);
+    if(result == SQLITE_ROW){
+
+        const char *column0 = sqlite3_column_text(sql, 0);
+        const char *column1 = sqlite3_column_text(sql, 1);
+        const char *column2 = sqlite3_column_text(sql, 2);
+
+		size_t nameLength = strlen(column0) + 1;
+        size_t dateLength = strlen(column1) + 1;
+        size_t pathLength = strlen(column2) + 1;
+
+		audiofile->name = (char*)malloc(nameLength * sizeof(char));
+        audiofile->dateCreated = (char*)malloc(dateLength * sizeof(char));
+        audiofile->streamingPath = (char*)malloc(pathLength * sizeof(char));
+
+        // copy fields
+        strcpy(audiofile->name, column0);
+        strcpy(audiofile->dateCreated, column1);
+        strcpy(audiofile->streamingPath, column2);
+    }
+
+    return audiofile;
 }
 
 

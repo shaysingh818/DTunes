@@ -26,18 +26,20 @@
 #define VIEW_DB_COLLECTIONS "SELECT * FROM COLLECTION"
 #define VIEW_DB_COLLECTION "SELECT * FROM COLLECTION WHERE name=?"
 #define ADD_COLLECTION_FILE "INSERT INTO COLLECTION_FILE VALUES(?,?,?)"
+#define VIEW_DB_COLLECTION_FILES  "SELECT * FROM COLLECTION_FILE WHERE collection=?"
 #define COUNT_DB_COLLECTION "SELECT COUNT(*) FROM COLLECTION"
 #define COUNT_COLLECTION_RELATIONS "SELECT COUNT(*) FROM COLLECTION_FILE WHERE collection=?"
 #define DELETE_DB_COLLECTION  "DELETE FROM COLLECTION WHERE name=?" 
 #define DELETE_DB_COLLECTIONS  "DELETE  FROM COLLECTION"
+#define DELETE_DB_COLLECTION_FILES  "DELETE  FROM COLLECTION_FILE"
 
 
 struct Collection {
-	char name[100]; 
-	char dateCreated[30]; 
-	char diskSpace[100]; 
-	char fileCount[100];
-	char collectionPath[1000]; 
+	char *name; 
+	char *dateCreated; 
+	char *diskSpace; 
+	char *fileCount;
+	char *collectionPath; 
 };
 
 typedef struct Collection collection_t; 
@@ -49,20 +51,30 @@ char* getCurrentTime();
 // database operations
 collection_t **initCollections(int limit);
 collection_t *viewCollection(char *name);  
+
+/* crud operations */ 
 int createCollection(char *name);
 int updateCollectionById(char *uuid, char *newName); 
 int getCollectionTableSize();  
 int viewCollections(); 
+int deleteCollection(char *name); 
 int deleteAllCollections();
-int getRelationTableSize(char *collectionName);  
+int deleteAllCollectionFileRelations();
 int checkCollectionExists(char *collectionName);
-int syncCollectionsFilesToDB(char *collectionName); 
+
+/* one to many relations */ 
+int getRelationTableSize(char *collectionName);  
 int addFileToCollection(char *collectionName, char *fileName); 
 int viewCollectionFiles(char *name);
-int deleteCollection(char *name); 
+
+/* sync functions */ 
+int syncCollectionsFilesToDB(char *collectionName);
+int syncAllCollectionsFilesToDB(); 
+
+/* queues */ 
 void queueCollectionFiles(char *name);  
 
-// helpers
+/* helpers */
 char* combineFileStrs(const char *cwd, const char *fileName); 
 void removeChar(char *testString, char charToRemove);
 int renameFile(char *fileName, char *newFileName); 
@@ -70,7 +82,4 @@ int countFiles(char *directoryPath);
 void clearAudioFileDirectory(char *desiredPath);  
 int renameCollectionFiles(char *collectionName); 
 
-
-
 #endif
-
