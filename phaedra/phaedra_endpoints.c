@@ -6,8 +6,8 @@
 
 void playAudioCmd(endpoint_t *e, char* argv[]){
 
-	dlog("PHAEDRA", "Play audio file"); 
-	play(argv[3], 2);
+	dlog("PHAEDRA", "Play audio file");	
+	playThreaded("phaedra/test_files/Charlie.wav"); 	
 
 }
 
@@ -15,6 +15,7 @@ void playAudioCmd(endpoint_t *e, char* argv[]){
 void playAudioCallbackCmd(endpoint_t *e, char* argv[]){
 
 	dlog("PHAEDRA", "Play audio file with callback"); 
+
 	//playCallback(argv[2]); 
 
 

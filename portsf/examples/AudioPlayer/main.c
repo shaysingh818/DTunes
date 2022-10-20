@@ -1,30 +1,35 @@
-#define MINIAUDIO_IMPLEMENTATION
-#include "miniaudio.h"
-
 #include <stdio.h>
+#include <ncurses.h>
 
-int main(int argc, char** argv)
-{
-    ma_result result;
-    ma_engine engine;
+void keyboardInput(char key){
+	switch(key){
+		case 'D':
+			printf("Go forward in queue\n");
+			break;  
+		case 'A':
+			printf("Go back\n"); 
+			break; 
+		case ' ':
+			printf("Pause"); 
+			break; 
+		case 'P':
+			// check if player is stopped
+			printf("Play\n"); 
+			break; 
+	}
+}
 
-    if (argc < 2) {
-        printf("No input file.");
-        return -1;
-    }
 
-    result = ma_engine_init(NULL, &engine);
-    if (result != MA_SUCCESS) {
-        printf("Failed to initialize audio engine.");
-        return -1;
-    }
+int main(int argc, char** argv){
 
-    ma_engine_play_sound(&engine, argv[1], NULL);
 
-    printf("Press Enter to quit...");
-    getchar();
+	while(1){
+		char ch = getchar();
+		keyboardInput(ch); 
+	}
 
-    ma_engine_uninit(&engine);
 
-    return 0;
+
+
+
 }

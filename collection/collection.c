@@ -575,9 +575,9 @@ audiofile_t **loadCollectionFiles(char *collectionName){
 	}
 
 	sqlite3 *db = openDB(DB_PATH);
-    sqlite3_stmt *sql; 
-    char *query = VIEW_DB_COLLECTION_FILES; 
-    int result = sqlite3_prepare_v2(db, query, -1, &sql, NULL);
+	sqlite3_stmt *sql; 
+	char *query = VIEW_DB_COLLECTION_FILES; 
+	int result = sqlite3_prepare_v2(db, query, -1, &sql, NULL);
 	if(result != SQLITE_OK){
 		fprintf(stderr, "Failed to view songs: %s\n", sqlite3_errmsg(db)); 
 		sqlite3_close(db); 
@@ -607,7 +607,7 @@ int viewCollectionFiles(char *name){
 	collection_t *collection = viewCollection(name); 
 
 	printf("\n"); 	
-    printf("\e[0;31m");
+	printf("\e[0;31m");
 	for(int i = 0; i < relationLimit; i++){
 		dlog("FILE DB", files[i]->name); 
 	}
@@ -678,7 +678,7 @@ void queueCollectionFiles(char *name){
     printf("\e[0;37m");
 	dlog("FREE", "Freed file names");	
 	free(fileNames);
-	playQueue(q); 
+	//playQueue(q); 
 }
 
 

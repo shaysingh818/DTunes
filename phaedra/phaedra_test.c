@@ -25,6 +25,7 @@ void testSetIOParams(){
 
 void testInitStream(){
 
+	/**
     PaError err;
 
 	err = initStream();
@@ -36,13 +37,14 @@ void testInitStream(){
    }
 
 	printf("\033[0;32m");	
-	dlog("PASSED", "CREATED PHAEDRA STREAM");
+	dlog("PASSED", "CREATED PHAEDRA STREAM"); */
 
 }
 
 
 void testCallBackStream(){
 
+	/**
     PaError err;
 
 	err = initStream();
@@ -54,7 +56,7 @@ void testCallBackStream(){
    }
 
 	printf("\033[0;32m");	
-	dlog("PASSED", "CREATED PHAEDRA STREAM");
+	dlog("PASSED", "CREATED PHAEDRA STREAM"); */
 }
 
 
