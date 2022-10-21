@@ -27,6 +27,12 @@
 static double inLatency = -1;
 static double outLatency = -1;
 
+enum playerState {
+	PLAY,
+	RESUME, 
+	PAUSE,
+	DONE
+};
 
 /* audio node stored at each slot on the queue */ 
 struct AudioNode {
@@ -53,8 +59,8 @@ struct Player {
 	long nread; 
 	float buf[MAX_FRAMES];
 	int duration; 
-	bool playing; 
-	char *filePath; 
+	char *filePath;
+	enum playerState state; 
 	PaError err; 
 	PSF_PROPS props; 
 	PaStream *stream; 
@@ -97,15 +103,18 @@ PaError closeStream(player_t *player);
 
 /* check sample type */ 
 char *checkSampleType(psf_stype type);
-void *playerController(void *playerArgs); 
 
 /* play wav file */
 //void play(char *filename, int streamType, int duration);
 
 /* player functions */ 
-player_t *initPlayer(bool callback); 
-void *play(void *playerArgs); 
+player_t *initPlayer(bool callback);
+void reinitPlayer(player_t *player); 
+void resume(player_t *player, char *filePath); 
+void play(player_t *player, char *filePath); 
 void pauseFile(player_t* player, char *filePath); 
+void *playerController(void *playerArgs); 
+void playerHandler(player_t *player, char *filePath);  
 
 /* queueing functions */ 
 int isFull(queue_t* queue); 

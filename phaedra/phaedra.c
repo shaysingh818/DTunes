@@ -164,32 +164,6 @@ char* checkSampleType(psf_stype type){
 }
 
 
-void *playerController(void *playerArgs){
-	
-	thread_args_t *args = (thread_args_t*)playerArgs; 
-	player_t *player = args->player; 
-	char *filePath = args->filePath; 
-
-	while(true){
-		char key = getchar(); 
-    	switch(key){
-        	case 'D':
-            	printf("Go forward in queue\n");
-            	break;
-        	case 'A':
-            	printf("Go back\n");
-            	break;
-        	case 'S':
-				player->playing = false; 
-				pauseFile(player, filePath); 
-            	break;
-        	case 'P':
-            	printf("Player");
-            	break;
-    	}
-
-	}
-}
 
 
 PaError initPlayerStream(player_t *player){
@@ -234,8 +208,8 @@ player_t *initPlayer(bool callback){
 	// create instance of player struct
 	player_t *player;
 	player = (player_t*)malloc(sizeof(player_t)); 
-	player->duration = 0; 
-	player->playing = false; 
+	player->duration = 0;
+	player->state = PLAY;  
 	
 	if(callback == false){
 	
@@ -267,51 +241,181 @@ player_t *initPlayer(bool callback){
 
 }
 
-void *play(void *playerArgs){
 
-	thread_args_t *args = (thread_args_t*)playerArgs; 
-	player_t *player = args->player; 
-	char *filePath = args->filePath;
 
-	dlog("FILE", filePath);  
+void resume(player_t *player, char *filePath){
+
+	// reopen stream
+
+	printf("RESUME: %d\n", player->duration);  
+
+	player->err = initPlayerStream(player); 
+	if(player->err) {
+		dlog("STREAM ERROR", "Intializing player stream"); 
+		dlog_int("ERROR NUMBER", player->err); 
+		printf("Error msg: %s\n", Pa_GetErrorText(player->err)); 
+		exit(-1); 
+	} 
 
     psf_init();
 	player->filePath = filePath; 
     player->sfd = psf_sndOpen(filePath, &player->props, 0);
     if(player->sfd < 0){ dlog("PHAEDRA", "Error opening file"); } 
     if(player->props.chans > 2) { dlog("PHAEDRA", "Invalid number of channels"); }
-
-	int counter = 0; 	
-	if(player->duration != 0){
-		counter = (long)(player->duration * player->props.srate + counter);
-	}
-
-	psf_sndSeek(player->sfd, counter, PSF_SEEK_SET); 
-	
+	long counter;
+	//counter = (long)(player->duration * player->props.srate); 
+	psf_sndSeek(player->sfd, player->duration, PSF_SEEK_SET);
+ 
 	do {
+	
+		if(player->state == PAUSE){
+			//player->duration = durationTracker; 
+			break; 
+		}
 
 		player->nread = psf_sndReadFloatFrames(
 			player->sfd, player->buf, FRAME_BLOCK_LEN
-		);  
+		);
+
 		Pa_WriteStream(
 			player->stream, player->buf, FRAME_BLOCK_LEN
 		);
 
+		player->duration += FRAME_BLOCK_LEN; 
+
 	} while(player->nread == FRAME_BLOCK_LEN);
- 
+
+				
 	psf_sndClose(player->sfd); 
 	psf_finish();
-
 	player->err = closeStream(player); 
-	dlog("PHAEDRA", "Closed audio file stream");  
+	player->state = DONE; 
+	dlog("PHAEDRA RESUME", "Closed audio file stream");  
 
 }
 
+void play(player_t *player, char *filePath){
 
-void pauseFile(player_t *player, char *filePath){
-	if(player->playing == false){
-		Pa_StopStream(player->stream); 
-	} 
+
+    psf_init();
+	player->filePath = filePath; 
+    player->sfd = psf_sndOpen(filePath, &player->props, 0);
+    if(player->sfd < 0){ dlog("PHAEDRA", "Error opening file"); } 
+    if(player->props.chans > 2) { dlog("PHAEDRA", "Invalid number of channels"); }	
+	dlog_int("Duration", player->duration);
+
+
+	if(player->state == RESUME){
+
+		// reinit stream
+		player->err = initPlayerStream(player); 
+		if(player->err) {
+			dlog("STREAM ERROR", "Intializing player stream"); 
+			dlog_int("ERROR NUMBER", player->err); 
+			printf("Error msg: %s\n", Pa_GetErrorText(player->err)); 
+			exit(-1); 
+		} 
+
+		// seek to current duration
+		psf_sndSeek(player->sfd, player->duration, PSF_SEEK_SET);
+	}
+
+ 
+	do {
+	
+		if(player->state == PAUSE){
+			break; 
+		}
+
+		player->nread = psf_sndReadFloatFrames(
+			player->sfd, player->buf, FRAME_BLOCK_LEN
+		);
+
+		Pa_WriteStream(
+			player->stream, player->buf, FRAME_BLOCK_LEN
+		);
+
+		printf("Duration playing: %d\n", player->duration); 
+		player->duration += FRAME_BLOCK_LEN;  
+
+	} while(player->nread == FRAME_BLOCK_LEN);
+
+				
+	psf_sndClose(player->sfd); 
+	psf_finish();
+	player->err = closeStream(player);
+	player->state = DONE;  
+	dlog("PHAEDRA", "Closed audio file stream");  
+}
+
+
+
+void *playerController(void *playerArgs){
+	
+	thread_args_t *args = (thread_args_t*)playerArgs; 
+	player_t *player = args->player; 
+	char *filePath = args->filePath; 
+
+	while(true){
+		char key = getchar(); 
+    	switch(key){
+        	case 'D':
+            	printf("Go forward in queue\n");
+            	break;
+        	case 'A':
+            	printf("Go back\n");
+            	break;
+        	case 'S':
+				player->state = PAUSE;
+            	break;
+			case 'P':
+				player->state = PLAY; 
+				break;  
+        	case 'R':
+				player->state = RESUME;	
+				break; 
+
+			default:
+				break;  
+    	}
+
+	}
+}
+
+
+void playerHandler(player_t *player, char *filePath){
+	
+	while(true){
+
+		switch(player->state){
+
+			case PLAY: 
+				play(player, filePath); 
+				break; 
+
+			case RESUME: 
+		
+				dlog("PHAEDRA", "Player state resume"); 
+	            resume(player, filePath);
+				break; 
+
+			case PAUSE:
+				Pa_StopStream(player->stream);  
+				dlog("PHAEDRA", "Player state");
+				dlog_int("FRAMES READ", player->duration);	
+				dlog_int("DURATION", player->duration); 	
+				dlog_int("STATE", player->state);
+				printf("[STREAM STATUS]: %s\n", Pa_GetErrorText(player->err));  
+				player->state = DONE; 	
+				break; 
+
+			default:
+				break; 
+
+		}
+
+	}
+
 }
 
 
@@ -404,11 +508,7 @@ void cycleQueue(queue_t* queue, player_t *player){
 	dlog("PHAEDRA", "STARTING QUEUE"); 
 	for(int i = queue->frontIndex; i <= queue->rearIndex; i++){
 		//play(queue->items[i]->filePath, 1, 0);
-		if(player->playing == true){
-			playThreaded(queue->items[i]->filePath); 		
-		} else {
-			pauseFile(player, queue->items[i]->filePath);
-		}
+		playThreaded(queue->items[i]->filePath); 		
 	}
 }
 
@@ -417,7 +517,6 @@ void playThreaded(char *filePath){
 
 	player_t* player = initPlayer(false);
 	player->filePath = filePath; 
-	player->playing = true; 
 
 	thread_args_t *arg = (thread_args_t*)malloc(sizeof(thread_args_t)); 
 	arg->player = player; 
@@ -425,7 +524,7 @@ void playThreaded(char *filePath){
 
 	// create thread for player controller
 	pthread_t controllerThread; 
-	pthread_t playerThread; 
+	// pthread_t playerThread; 
 	
 	pthread_create(
 		&controllerThread,
@@ -433,19 +532,16 @@ void playThreaded(char *filePath){
 		playerController, 
 		arg
 	);
- 
-	// create thread for playing audio queue
-	pthread_create(
-		&playerThread,
-		NULL, 
-		play, 
-		arg
-	); 
+
+	dlog("PHAEDRA", "Player state"); 
+	printf("Duration: %d\n", player->duration); 	
+	printf("State: %d\n", player->state); 
+	playerHandler(player, filePath);
 
 	pthread_join(controllerThread, NULL); 	
-	pthread_join(playerThread, NULL); 
-
+	//pthread_join(playerThread, NULL); 
 	pthread_exit(NULL); 
+	
 
 
 }
