@@ -243,57 +243,6 @@ player_t *initPlayer(bool callback){
 
 
 
-void resume(player_t *player, char *filePath){
-
-	// reopen stream
-
-	printf("RESUME: %d\n", player->duration);  
-
-	player->err = initPlayerStream(player); 
-	if(player->err) {
-		dlog("STREAM ERROR", "Intializing player stream"); 
-		dlog_int("ERROR NUMBER", player->err); 
-		printf("Error msg: %s\n", Pa_GetErrorText(player->err)); 
-		exit(-1); 
-	} 
-
-    psf_init();
-	player->filePath = filePath; 
-    player->sfd = psf_sndOpen(filePath, &player->props, 0);
-    if(player->sfd < 0){ dlog("PHAEDRA", "Error opening file"); } 
-    if(player->props.chans > 2) { dlog("PHAEDRA", "Invalid number of channels"); }
-	long counter;
-	//counter = (long)(player->duration * player->props.srate); 
-	psf_sndSeek(player->sfd, player->duration, PSF_SEEK_SET);
- 
-	do {
-	
-		if(player->state == PAUSE){
-			//player->duration = durationTracker; 
-			break; 
-		}
-
-		player->nread = psf_sndReadFloatFrames(
-			player->sfd, player->buf, FRAME_BLOCK_LEN
-		);
-
-		Pa_WriteStream(
-			player->stream, player->buf, FRAME_BLOCK_LEN
-		);
-
-		player->duration += FRAME_BLOCK_LEN; 
-
-	} while(player->nread == FRAME_BLOCK_LEN);
-
-				
-	psf_sndClose(player->sfd); 
-	psf_finish();
-	player->err = closeStream(player); 
-	player->state = DONE; 
-	dlog("PHAEDRA RESUME", "Closed audio file stream");  
-
-}
-
 void play(player_t *player, char *filePath){
 
 
@@ -319,7 +268,6 @@ void play(player_t *player, char *filePath){
 		// seek to current duration
 		psf_sndSeek(player->sfd, player->duration, PSF_SEEK_SET);
 	}
-
  
 	do {
 	
@@ -340,14 +288,20 @@ void play(player_t *player, char *filePath){
 
 	} while(player->nread == FRAME_BLOCK_LEN);
 
-				
-	psf_sndClose(player->sfd); 
-	psf_finish();
-	player->err = closeStream(player);
-	player->state = DONE;  
-	dlog("PHAEDRA", "Closed audio file stream");  
-}
 
+	if (player->state == PAUSE){
+		psf_sndClose(player->sfd); 
+		psf_finish();
+		player->err = closeStream(player);
+
+	} else if(player->state == PLAY || player->state == RESUME){
+		psf_sndClose(player->sfd); 
+		psf_finish();
+		player->err = closeStream(player);
+		dlog("PHAEDRA", "Closed file stream that't not being used");  
+		player->state = DONE; 
+	} 
+}
 
 
 void *playerController(void *playerArgs){
@@ -357,35 +311,45 @@ void *playerController(void *playerArgs){
 	char *filePath = args->filePath; 
 
 	while(true){
-		char key = getchar(); 
-    	switch(key){
-        	case 'D':
-            	printf("Go forward in queue\n");
-            	break;
-        	case 'A':
-            	printf("Go back\n");
-            	break;
-        	case 'S':
-				player->state = PAUSE;
-            	break;
-			case 'P':
-				player->state = PLAY; 
-				break;  
-        	case 'R':
-				player->state = RESUME;	
-				break; 
-
-			default:
-				break;  
-    	}
-
+		char key; 
+		if (player->state != DONE){
+			key = getchar(); 
+    		switch(key){
+        		case 'D':
+            		printf("Go forward in queue\n");
+            		break;
+        		case 'A':
+            		printf("Go back\n");
+            		break;
+        		case 'S':
+					dlog("PHAEDRA", "Player state");
+					dlog_int("FRAMES READ", player->duration);	
+					dlog_int("DURATION", player->duration); 	
+					dlog_int("STATE", player->state);
+					printf("[STREAM STATUS]: %s\n", Pa_GetErrorText(player->err));  
+					player->state = PAUSE;
+					break;
+				case 'P':
+					player->state = PLAY; 
+					break;  
+        		case 'R':
+					player->state = RESUME;	
+					break; 
+				default:
+					
+					break;  
+    		}
+		}else {
+			printf("Hanging out\n"); 
+		}
 	}
 }
 
 
 void playerHandler(player_t *player, char *filePath){
-	
-	while(true){
+
+	bool active = true; 	
+	while(active != false){
 
 		switch(player->state){
 
@@ -396,25 +360,24 @@ void playerHandler(player_t *player, char *filePath){
 			case RESUME: 
 		
 				dlog("PHAEDRA", "Player state resume"); 
-	            resume(player, filePath);
+	            play(player, filePath);
 				break; 
 
 			case PAUSE:
 				Pa_StopStream(player->stream);  
-				dlog("PHAEDRA", "Player state");
-				dlog_int("FRAMES READ", player->duration);	
-				dlog_int("DURATION", player->duration); 	
-				dlog_int("STATE", player->state);
-				printf("[STREAM STATUS]: %s\n", Pa_GetErrorText(player->err));  
-				player->state = DONE; 	
-				break; 
+				//player->state = DONE; 	
+				break;
+
+			case DONE:
+				dlog("PHAEDRA", "DONE"); 
+				active = false;  
 
 			default:
 				break; 
-
 		}
-
 	}
+
+	dlog("PHAEDRA", "Reached the end of the player handler"); 
 
 }
 
@@ -503,18 +466,39 @@ int rear(queue_t* queue) {
 
 
 
-void cycleQueue(queue_t* queue, player_t *player){
+void cycleQueue(queue_t* queue){
 
 	dlog("PHAEDRA", "STARTING QUEUE"); 
 	for(int i = queue->frontIndex; i <= queue->rearIndex; i++){
-		//play(queue->items[i]->filePath, 1, 0);
-		playThreaded(queue->items[i]->filePath); 		
+
+		// init new player 
+		player_t* player = initPlayer(false);
+		player->filePath = queue->items[i]->filePath; 
+
+		// create new controller for player
+		thread_args_t *arg = (thread_args_t*)malloc(sizeof(thread_args_t)); 
+		arg->player = player; 
+		arg->filePath = player->filePath;
+ 
+		// create thread for controller
+		pthread_t controllerThread; 	
+		pthread_create(
+			&controllerThread,
+			NULL, 
+			playerController, 
+			arg
+		);
+
+		playerHandler(player, queue->items[i]->filePath);
+		pthread_join(controllerThread, NULL); 	
+		pthread_exit(NULL); 
 	}
 }
 
 
-void playThreaded(char *filePath){
+void playThreaded(){
 
+	/**
 	player_t* player = initPlayer(false);
 	player->filePath = filePath; 
 
@@ -535,12 +519,15 @@ void playThreaded(char *filePath){
 
 	dlog("PHAEDRA", "Player state"); 
 	printf("Duration: %d\n", player->duration); 	
-	printf("State: %d\n", player->state); 
-	playerHandler(player, filePath);
+	printf("State: %d\n", player->state); */
 
-	pthread_join(controllerThread, NULL); 	
-	//pthread_join(playerThread, NULL); 
-	pthread_exit(NULL); 
+	// add items to queue
+	queue_t *q = initQueue(100); 
+	enqueue(q, "phaedra/test_files/Charlie.wav");
+	enqueue(q, "phaedra/test_files/bella.wav");
+	enqueue(q, "phaedra/test_files/imitation.wav"); 
+	cycleQueue(q); 
+
 	
 
 

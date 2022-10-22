@@ -125,7 +125,7 @@ void enqueue(queue_t* queue, char *filePath);
 void dequeue(queue_t *queue); 
 int front(queue_t* queue); 
 int rear(queue_t* queue); 
-void playQueue(queue_t *queue);
-void playThreaded(char *filePath); 
+void cycleQueue(queue_t *queue);
+void playThreaded(); 
 
 #endif

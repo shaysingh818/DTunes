@@ -7,7 +7,7 @@
 void playAudioCmd(endpoint_t *e, char* argv[]){
 
 	dlog("PHAEDRA", "Play audio file");	
-	playThreaded("phaedra/test_files/Charlie.wav"); 	
+	playThreaded(); 	
 
 }
 
