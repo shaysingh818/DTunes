@@ -24,15 +24,9 @@
 #define TWO_PI (3.14159265f * 2.0f)
 #define SI (0)
 
+
 static double inLatency = -1;
 static double outLatency = -1;
-
-enum playerState {
-	PLAY,
-	RESUME, 
-	PAUSE,
-	DONE
-};
 
 /* audio node stored at each slot on the queue */ 
 struct AudioNode {
@@ -60,7 +54,6 @@ struct Player {
 	float buf[MAX_FRAMES];
 	int duration; 
 	char *filePath;
-	enum playerState state; 
 	PaError err; 
 	PSF_PROPS props; 
 	PaStream *stream; 
@@ -71,7 +64,8 @@ typedef struct Player player_t;
 
 struct ThreadArgs {
 	player_t *player; 
-	char *filePath; 
+	char *filePath;
+	bool active;  
 }; 
 
 typedef struct ThreadArgs thread_args_t; 
@@ -104,17 +98,9 @@ PaError closeStream(player_t *player);
 /* check sample type */ 
 char *checkSampleType(psf_stype type);
 
-/* play wav file */
-//void play(char *filename, int streamType, int duration);
-
 /* player functions */ 
 player_t *initPlayer(bool callback);
-void reinitPlayer(player_t *player); 
-void resume(player_t *player, char *filePath); 
 void play(player_t *player, char *filePath); 
-void pauseFile(player_t* player, char *filePath); 
-void *playerController(void *playerArgs); 
-void playerHandler(player_t *player, char *filePath);  
 
 /* queueing functions */ 
 int isFull(queue_t* queue); 
@@ -126,6 +112,5 @@ void dequeue(queue_t *queue);
 int front(queue_t* queue); 
 int rear(queue_t* queue); 
 void cycleQueue(queue_t *queue);
-void playThreaded(); 
 
 #endif

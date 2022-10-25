@@ -665,8 +665,6 @@ void queueCollectionFiles(char *name){
 			arrayIndex += 1; 
 		} 
 	}
-
-
     closedir(dirp);
 	
 	// iterate through array of filename and add to queue
@@ -675,10 +673,11 @@ void queueCollectionFiles(char *name){
 		dlog("ENQUEUE", fileNames[i]);  
 	}
 	
-    printf("\e[0;37m");
 	dlog("FREE", "Freed file names");	
 	free(fileNames);
-	//playQueue(q); 
+
+	printf("\e[0;37m"); 
+	cycleQueue(q); 
 }
 
 

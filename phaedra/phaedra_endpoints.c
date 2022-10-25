@@ -6,8 +6,13 @@
 
 void playAudioCmd(endpoint_t *e, char* argv[]){
 
-	dlog("PHAEDRA", "Play audio file");	
-	playThreaded(); 	
+	dlog("PHAEDRA", "Test audio file queue ");
+	
+	queue_t *q = initQueue(100); 
+	enqueue(q, "phaedra/test_files/1.wav"); 
+	enqueue(q, "phaedra/test_files/2.wav");
+	enqueue(q, "phaedra/test_files/3.wav");
+	cycleQueue(q); 
 
 }
 
@@ -15,8 +20,7 @@ void playAudioCmd(endpoint_t *e, char* argv[]){
 void playAudioCallbackCmd(endpoint_t *e, char* argv[]){
 
 	dlog("PHAEDRA", "Play audio file with callback"); 
-
-	//playCallback(argv[2]); 
+	/* @TODO Need to eventually add callback function for portaudio */ 
 
 
 }
@@ -24,18 +28,16 @@ void playAudioCallbackCmd(endpoint_t *e, char* argv[]){
 void writeToQueue(endpoint_t *e, char* argv[]){
 	
 	queue_t *q = initQueue(1000); 
-	enqueue(q, "phaedra/test_files/bruises.wav");
-	//enqueue(q, "phaedra/test_files/bruises.wav");
+	enqueue(q, "phaedra/test_files/1.wav");
+	enqueue(q, "phaedra/test_files/2.wav");
+	enqueue(q, "phaedra/test_files/3.wav");
 
+	// test queue by printing
 	dlog("PHAEDRA", "FIXING TEST QUEUE ISSUE");
-
 	for(int i = q->frontIndex; i <= q->rearIndex; i++){
 		printf("Front item: %s\n", q->items[i]->filePath);  
 	}
 
-	//printf("Rear item: %s\n", q->rear->filePath); 
-
-	//playQueue(q);  	
 }
 
 
