@@ -76,6 +76,24 @@ void queueCollectionFilesCmd(endpoint_t *e, char* argv[]){
 
     // queue files in collection
     queueCollectionFiles(argv[3]); 
+}
+
+
+void syncCollectionFilesCmd(endpoint_t *e, char* argv[]){
+
+	int result = syncCollectionsFilesToDB(argv[3]); 
+	if(result == TRUE){
+		dlog("SYNC RESULT", "SUCCESS"); 
+	} 	
+
+}
+
+void syncAllCollectionFilesCmd(endpoint_t *e, char* argv[]){
+
+    int result = syncAllCollectionsFilesToDB(); 
+    if(result == TRUE){
+        dlog("SYNC RESULT", "SUCCESS"); 
+    }   
 
 }
 
@@ -102,7 +120,7 @@ page_t *collectionsModule(){
     constructEndpoint(
         "create",
         "endpoint to create collections and store in databse",
-        0, 2,
+        2,
         args,
         insertCollectionCmd,
         &head
@@ -116,7 +134,7 @@ page_t *collectionsModule(){
     constructEndpoint(
         "view",
         "view collections in database",
-        0, 1,
+        1,
         args1,
         viewCollectionsCmd,
         &head
@@ -131,7 +149,7 @@ page_t *collectionsModule(){
     constructEndpoint(
         "delete",
         "endpoint to delete specific collection",
-        0, 2,
+        2,
         args2,
         deleteCollectionCmd,
         &head
@@ -145,7 +163,7 @@ page_t *collectionsModule(){
     constructEndpoint(
         "delete-all",
         "endpoint to delete specific collection",
-        0, 1,
+        1,
         args3,
         deleteAllCollectionsCmd,
         &head
@@ -161,7 +179,7 @@ page_t *collectionsModule(){
     constructEndpoint(
         "vcf",
         "view files in a collection",
-        0, 2,
+        2,
         args4,
         viewCollectionFilesCmd,
         &head
@@ -177,11 +195,12 @@ page_t *collectionsModule(){
     constructEndpoint(
         "ccf",
         "format file names in a collection",
-        0, 2,
+        2,
         args5,
         cleanCollectionFilesCmd,
         &head
     );
+
 
 	// queue collection files
     char *args6[][2] = {
@@ -192,7 +211,7 @@ page_t *collectionsModule(){
     constructEndpoint(
         "queue",
         "endpoint to queue files in a collection",
-        0, 2,
+        2,
         args6,
         queueCollectionFilesCmd,
         &head
@@ -207,11 +226,41 @@ page_t *collectionsModule(){
     constructEndpoint(
         "test",
         "test collections module",
-        0, 1,
+        1,
         args7,
         runCollectionTestsCmd,
         &head
     );
+
+
+	// test collections
+    char *args8[][2] = {
+        {"sync", "sync collection files to database"}
+    };
+
+    constructEndpoint(
+        "sync",
+        "sync collections to database",
+        1,
+        args7,
+        syncCollectionFilesCmd,
+        &head
+    );
+
+    // test collections
+    char *args9[][2] = {
+        {"sync-all", "sync collection files to database"}
+    };
+
+    constructEndpoint(
+        "sync-all",
+        "sync all collections to database",
+        1,
+        args8,
+        syncAllCollectionFilesCmd,
+        &head
+    );
+
 
 
 	// create page

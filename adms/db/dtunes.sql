@@ -1,43 +1,27 @@
 /** Current DB schema for DTUNES */
 
-CREATE TABLE YOUTUBE_URL (
-    url_uuid VARCHAR(37) PRIMARY KEY,
-    yt_url VARCHAR(255) UNIQUE,
-    date_created VARCHAR(255)
-);
-
-CREATE TABLE PLAYLIST (
-    playlist_uuid VARCHAR(37) PRIMARY KEY,
-    name VARCHAR(255) UNIQUE,
-    date_created VARCHAR(255)
-);
-
-
-
 CREATE TABLE COLLECTION (
     name VARCHAR(255) UNIQUE PRIMARY KEY,
     date_created VARCHAR(255),
 	disk_space VARCHAR(255), 
-	file_count VARCHAR(255)
+	file_count VARCHAR(255),
+	collection_path VARCHAR(1000)
 );
 
 
-CREATE TABLE SONG (
-    song_uuid VARCHAR(37) PRIMARY KEY,
-    name VARCHAR(255) UNIQUE,
-    date_created VARCHAR(255),
-    file_path VARCHAR(255),
-    subtitles VARCHAR(1000),
-    plays INT
+CREATE TABLE AUDIO_FILE (
+    name VARCHAR(1000) PRIMARY KEY,
+    date_created VARCHAR(1000),
+    streaming_path VARCHAR(1000)
 );
 
 
-CREATE TABLE PLAYLIST_SONG (
+CREATE TABLE COLLECTION_FILE (
     relation_id VARCHAR(37) PRIMARY KEY,
-    playlist VARCHAR(37),
-    song VARCHAR(37),
-    FOREIGN KEY(playlist) REFERENCES PLAYLIST(playlist_uuid),
-    FOREIGN KEY(song) REFERENCES SONG(song_uuid)
+    collection VARCHAR(255),
+    audio_file VARCHAR(255),
+    FOREIGN KEY(collection) REFERENCES COLLECTION(name),
+    FOREIGN KEY(audio_file) REFERENCES AUDIO_FILE(name)
 );
 
 

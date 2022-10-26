@@ -6,8 +6,13 @@
 
 void playAudioCmd(endpoint_t *e, char* argv[]){
 
-	dlog("PHAEDRA", "Play audio file"); 
-	play(argv[3], 2);
+	dlog("PHAEDRA", "Test audio file queue ");
+	
+	queue_t *q = initQueue(100); 
+	enqueue(q, "phaedra/test_files/1.wav"); 
+	enqueue(q, "phaedra/test_files/2.wav");
+	enqueue(q, "phaedra/test_files/3.wav");
+	cycleQueue(q); 
 
 }
 
@@ -15,7 +20,7 @@ void playAudioCmd(endpoint_t *e, char* argv[]){
 void playAudioCallbackCmd(endpoint_t *e, char* argv[]){
 
 	dlog("PHAEDRA", "Play audio file with callback"); 
-	//playCallback(argv[2]); 
+	/* @TODO Need to eventually add callback function for portaudio */ 
 
 
 }
@@ -23,18 +28,23 @@ void playAudioCallbackCmd(endpoint_t *e, char* argv[]){
 void writeToQueue(endpoint_t *e, char* argv[]){
 	
 	queue_t *q = initQueue(1000); 
-	enqueue(q, "phaedra/test_files/bruises.wav");
-	//enqueue(q, "phaedra/test_files/bruises.wav");
+	enqueue(q, "phaedra/test_files/1.wav");
+	enqueue(q, "phaedra/test_files/2.wav");
+	enqueue(q, "phaedra/test_files/3.wav");
 
+	// test queue by printing
 	dlog("PHAEDRA", "FIXING TEST QUEUE ISSUE");
-
 	for(int i = q->frontIndex; i <= q->rearIndex; i++){
 		printf("Front item: %s\n", q->items[i]->filePath);  
 	}
 
-	//printf("Rear item: %s\n", q->rear->filePath); 
+}
 
-	//playQueue(q);  	
+
+
+void fuck(endpoint_t *e, char* argv[]){
+
+	dlog("PHAEDRA", "What in the fuck is happening"); 
 }
 
 
@@ -59,7 +69,7 @@ page_t *phaedraModule(){
     constructEndpoint(
         "play",
         "play wav, aiff or mp3 file",
-        0, 2,
+        2,
         playArgs,
         playAudioCmd,
         &head
@@ -74,7 +84,7 @@ page_t *phaedraModule(){
     constructEndpoint(
         "play-callback",
         "play wav, aiff or mp3 file with callback",
-        0, 2,
+        2,
         callbackArgs,
         playAudioCallbackCmd,
         &head
@@ -89,7 +99,7 @@ page_t *phaedraModule(){
     constructEndpoint(
         "queue",
         "play audio files with queue",
-        0, 2,
+        2,
         queueArgs,
         writeToQueue,
         &head
@@ -103,7 +113,7 @@ page_t *phaedraModule(){
     constructEndpoint(
         "test",
         "test functionality for phaedra",
-        0, 1,
+        1,
         testArgs,
         testPhaedraCmd,
         &head

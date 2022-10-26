@@ -81,43 +81,6 @@ PaStreamParameters* setOutputParams(PaStreamParameters *outputParams){
 }
 
 
-PaError initStream(void){
-
-	PaStreamParameters inputParams, outputParams, *inPars, *outPars; 
-	PaError err;
-	err = Pa_Initialize(); 
-	if(err != paNoError) goto error; 
-	
-	/* set input and output params */ 	
-	inPars = setInputParams(&inputParams); 
-	outPars = setOutputParams(&outputParams); 
-		
-	err = Pa_OpenStream(
-		&stream, 
-		inPars, 
-		outPars, 
-		SAMPLING_RATE, 
-		FRAME_BLOCK_LEN, 
-		paNoFlag, 
-		NULL, 
-		NULL
-	);
-
-	/* start the stream */ 
-	if(err != paNoError) goto error;
-	err = Pa_StartStream(stream);  
-	if(err != paNoError) goto error;
-
-	return err; 
-	 	 
-	error:
-		printf("Error occured while initializing phaedra\n"); 
-		printf("Error msg: %s\n", Pa_GetErrorText(err)); 
-		Pa_Terminate(); 
-		return err;	
-}
-
-
 PaError initCallbackStream(mydata *data){
 
 	PaStreamParameters inputParams, outputParams, *inPars, *outPars; 
@@ -158,21 +121,20 @@ PaError initCallbackStream(mydata *data){
 }
 
 
-PaError closeStream(void){
+PaError closeStream(player_t *player){
 
-	PaError err; 
-	err = Pa_CloseStream(stream); 
-	if (err != paNoError) goto error; 
-	err = Pa_Terminate(); 	
-	if (err != paNoError) goto error; 
+	player->err = Pa_CloseStream(player->stream); 
+	if (player->err != paNoError) goto error; 
+	player->err = Pa_Terminate(); 	
+	if (player->err != paNoError) goto error; 
 	dlog("PHAEDRA", "Closing audio stream"); 
-	return err; 
+	return player->err; 
 
 	error:
 		dlog("ERROR", "Closing stream"); 
-		printf("Error msg: %s\n", Pa_GetErrorText(err)); 
+		printf("Error msg: %s\n", Pa_GetErrorText(player->err)); 
 		Pa_Terminate(); 
-		return err; 
+		return player->err; 
 }
 
 
@@ -203,76 +165,111 @@ char* checkSampleType(psf_stype type){
 
 
 
-void play(char *filename, int streamType){
 
-	/**
-		This is the first prototyped method of a function that plays a wav file
-		The real time solutions for portaudio are not perfected, for now,  i'm going
-		to use the outBlockInterleaved stream writing function
-	*/ 
+PaError initPlayerStream(player_t *player){
 
-	int sfd;
-    long nread;
-    float buf[MAX_FRAMES];
-	PaError err; 
-    PSF_PROPS props;
-    psf_init();
-    sfd = psf_sndOpen(filename, &props, 0);
-    if(sfd < 0){ dlog("PHAEDRA", "Error opening file"); } // exit program here }
-    if(props.chans > 2) { dlog("PHAEDRA", "Invalid number of channels"); }
+	PaStreamParameters inputParams, outputParams, *inPars, *outPars; 
+	player->err = Pa_Initialize(); 
+	if(player->err != paNoError) goto error;
+
+	inPars = setInputParams(&inputParams); 
+	outPars = setOutputParams(&outputParams); 
+
+	player->err = Pa_OpenStream(
+		&player->stream, 
+		inPars, 
+		outPars, 
+		SAMPLING_RATE, 
+		FRAME_BLOCK_LEN, 
+		paNoFlag, 
+		NULL, 
+		NULL
+	);
+
+	/* start the stream */ 
+	if(player->err != paNoError) goto error;
+	player->err = Pa_StartStream(player->stream);  
+	if(player->err != paNoError) goto error;
+
+	return player->err; 
+
+	error:
+	 	printf("Error occured while initializing phaedra\n"); 
+		printf("Error msg: %s\n", Pa_GetErrorText(player->err)); 
+		Pa_Terminate(); 
+		return player->err;	
+}
+
+
+
+player_t *initPlayer(bool callback){
+
+
+	// create instance of player struct
+	player_t *player;
+	player = (player_t*)malloc(sizeof(player_t)); 
+	player->duration = 0;
 	
-	/* check stream type and initialize */
-	if(streamType == 1){
-
-		err = initStream(); 
-		if(err) {
-			dlog("STREAM ERROR", "Intializing stream"); 
-			dlog_int("ERROR NUMBER", err); 
-			printf("Error msg: %s\n", Pa_GetErrorText(err)); 
+	if(callback == false){
+	
+		player->err = initPlayerStream(player); 
+		if(player->err) {
+			dlog("STREAM ERROR", "Intializing player stream"); 
+			dlog_int("ERROR NUMBER", player->err); 
+			printf("Error msg: %s\n", Pa_GetErrorText(player->err)); 
 			exit(-1); 
 		}
 
-		do {
-			nread = psf_sndReadFloatFrames(sfd, buf, FRAME_BLOCK_LEN);  
-			Pa_WriteStream(stream, buf, FRAME_BLOCK_LEN);
-		} while(nread == FRAME_BLOCK_LEN); 
-
-	}else if(streamType == 2){
-
+	} else {
+	
 		/* create callback data to pass to stream */ 
 		mydata *data = (mydata*)malloc(sizeof(mydata)); 
-		data->sf = sfd; 
+		data->sf = player->sfd; 
 
-		err = initCallbackStream(data);
-		if(err) {
+		player->err = initCallbackStream(data);
+		if(player->err) {
 			dlog("STREAM ERROR", "Intializing callback stream"); 
-			dlog_int("ERROR NUMBER", err); 
-			printf("Error msg: %s\n", Pa_GetErrorText(err)); 
+			dlog_int("ERROR NUMBER", player->err); 
+			printf("Error msg: %s\n", Pa_GetErrorText(player->err)); 
 			exit(-1); 
 		}
 
-		/* play stream here */
-		while(Pa_IsStreamActive(stream)){
-			Pa_Sleep(100); 
-		}
-
-		free(data); 
-		
-	}else {
-
-		dlog("PHAEDRA", "No stream type selected"); 
-		exit(-1); 
 	}
 
+	return player; 
+
+}
+
+
+
+void play(player_t *player, char *filePath){
+
+    psf_init();
+	player->filePath = filePath; 
+    player->sfd = psf_sndOpen(filePath, &player->props, 0);
+    if(player->sfd < 0){ dlog("PHAEDRA", "Error opening file"); } 
+    if(player->props.chans > 2) { dlog("PHAEDRA", "Invalid number of channels"); }	
+	dlog_int("Duration", player->duration);
  
+	do {
+	
+		player->nread = psf_sndReadFloatFrames(
+			player->sfd, player->buf, FRAME_BLOCK_LEN
+		);
 
-	psf_sndClose(sfd); 
+		Pa_WriteStream(
+			player->stream, player->buf, FRAME_BLOCK_LEN
+		);
+
+		player->duration += FRAME_BLOCK_LEN;  
+
+	} while(player->nread == FRAME_BLOCK_LEN);
+
+
+	psf_sndClose(player->sfd); 
 	psf_finish();
-
-	err = closeStream(); 
-	dlog("PHAEDRA", "Closed audio file stream");  
-
-
+	player->err = closeStream(player);
+	dlog("PHAEDRA", "Closed file stream that't not being used");  
 }
 
 
@@ -361,16 +358,21 @@ int rear(queue_t* queue) {
 
 
 
-void playQueue(queue_t* queue){
+void cycleQueue(queue_t* queue){
 
 	dlog("PHAEDRA", "STARTING QUEUE"); 
 	for(int i = queue->frontIndex; i <= queue->rearIndex; i++){
-		play(queue->items[i]->filePath, 1);
+		// init new player 
+		player_t* player = initPlayer(false);
+		player->filePath = queue->items[i]->filePath; 
+
+		// print out player state
+		dlog_int("DURATION", player->duration); 
+		dlog("PLAYER FILEPATH", player->filePath); 
+		
+		play(player, queue->items[i]->filePath);
+		dlog("PHAEDRA", "FREE PLAYER INSTANCE"); 
+		free(player); 
+		dlog("PHAEDRA", "GOING TO NEXT"); 
 	}
-
 }
-
-
-
-
-

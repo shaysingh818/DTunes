@@ -27,7 +27,6 @@ struct Endpoint {
     char *documentation;
     arg_t **args;
 	int numArgs;  
-	int protocol; 
     void (*endpointLogic)(struct Endpoint* e, char* argv[]);
     struct Endpoint* next;
 };
@@ -47,14 +46,14 @@ typedef struct Page page_t;
 
 
 // structural methods
-endpoint_t *createEndpoint(char *name, char *documentation, int protocol, int numArgs); 
+endpoint_t *createEndpoint(char *name, char *documentation,int numArgs); 
 page_t *createPage(char *name, char *documentation, endpoint_t * head); 
 arg_t *createArgument(char *name, char *documentation); 
 
 // special methods
 void constructEndpoint(
 	char *name, char *documentation,
-	int protocol, int argsLength,
+	int argsLength,
 	char *args[][2], 
 	void (*function)(struct Endpoint* e, char* argv[]),
 	endpoint_t **head

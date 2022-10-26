@@ -7,8 +7,8 @@ PHAEDRA_OBJECTS= phaedra.o phaedra_endpoints.o phaedra_test.o
 PHAEDRA_HEADER = phaedra/phaedra_endpoints.h
 ENDPOINTS_OBJECTS = endpoints.o log.o
 MAIN_HEADER_FILES = endpoints/endpoints.h collection/collection_endpoints.h
-COLLECTION_OBJECTS = collection.o collection_test.o collection_endpoints.o
-OBJECT_FILES = $(PHAEDRA_OBJECTS) $(ENDPOINTS_OBJECTS) $(COLLECTION_OBJECTS)
+COLLECTION_OBJECTS = collection.o audio_file.o collection_test.o collection_endpoints.o
+OBJECT_FILES = $(PHAEDRA_OBJECTS) $(ENDPOINTS_OBJECTS) $(COLLECTION_OBJECTS) $(KEYBOARD_OBJECTS)
 
 BIN=bin
 CC=gcc
@@ -36,6 +36,9 @@ phaedra_endpoints.o: phaedra/phaedra_endpoints.c phaedra/phaedra_endpoints.h
 
 collection.o: collection/collection.c collection/collection.h
 	gcc -c collection/collection.c
+
+audio_file.o: collection/audio_file.c collection/audio_file.h
+	gcc -c collection/audio_file.c
 
 collection_test.o: collection/collection_test.c collection/collection_test.h
 	gcc -c collection/collection_test.c

@@ -1,7 +1,7 @@
 #include "endpoints.h"
 
 
-endpoint_t *createEndpoint(char *name, char *documentation, int protocol, int numArgs){
+endpoint_t *createEndpoint(char *name, char *documentation, int numArgs){
 
 	endpoint_t *e = (endpoint_t*)malloc(sizeof(endpoint_t));
 
@@ -21,7 +21,6 @@ endpoint_t *createEndpoint(char *name, char *documentation, int protocol, int nu
 	strcpy(e->name, name); 
 	strcpy(e->documentation, documentation);
 	e->numArgs = numArgs;  
-	e->protocol = protocol;
 
 	return e; 
 }
@@ -67,16 +66,16 @@ page_t *createPage(char *name, char *documentation, endpoint_t *head){
 
 void constructEndpoint(
 		char *name, char *documentation, 
-		int protocol, int argsLength,
+		int argsLength,
 		char *args[][2],
 		void (*function)(struct Endpoint* e, char* argv[]),
 		endpoint_t **head){
 
-
+	
     endpoint_t *test = createEndpoint(
         name,
         documentation,
-        protocol,2
+        argsLength
     );
 
     for(int i = 0; i < test->numArgs; i++){

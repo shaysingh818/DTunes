@@ -8,12 +8,11 @@
 #include <portaudio.h>
 #include <portsf.h>  
 #include <limits.h>
+#include <pthread.h> 
 #include <time.h>
 #include <unistd.h>
  
-
 #define QUEUE_MAX 512
-
 #define FRAME_BLOCK_LEN 512
 
 #define SAMPLING_RATE 44100
@@ -26,9 +25,51 @@
 #define SI (0)
 
 
-
 static double inLatency = -1;
 static double outLatency = -1;
+
+/* audio node stored at each slot on the queue */ 
+struct AudioNode {
+	char *filePath; 
+	char *currentTime; 
+	int plays; 
+};
+
+typedef struct AudioNode audionode_t; 
+
+/* reference for audio queue */ 
+struct Queue {
+	unsigned capacity;  
+	int frontIndex, rearIndex, itemCount; 
+	audionode_t* front, rear; 
+	audionode_t **items; 
+}; 
+
+typedef struct Queue queue_t; 
+
+
+struct Player {
+	int sfd; 
+	long nread; 
+	float buf[MAX_FRAMES];
+	int duration; 
+	char *filePath;
+	PaError err; 
+	PSF_PROPS props; 
+	PaStream *stream; 
+}; 
+
+typedef struct Player player_t; 
+
+
+struct ThreadArgs {
+	player_t *player; 
+	char *filePath;
+	bool active;  
+}; 
+
+typedef struct ThreadArgs thread_args_t; 
+
 
 PaStream *stream; /* default stream for now */  
 
@@ -50,39 +91,16 @@ int audioCallback(
 /* utlities for creating audio streams */
 PaStreamParameters* setInputParams(PaStreamParameters *inputParams);
 PaStreamParameters* setOutputParams(PaStreamParameters *outputParams); 
-PaError initStream(void);
 PaError initCallbackStream(mydata *data); 
-PaError closeStream(void);  
+PaError closeStream(player_t *player);  
 
 
 /* check sample type */ 
 char *checkSampleType(psf_stype type);
- 
-/* play wav file */
-void play(char *filename, int streamType);
 
-
-
-/* audio node stored at each slot on the queue */ 
-struct AudioNode {
-	char *filePath; 
-	char *currentTime; 
-	int plays; 
-};
-
-typedef struct AudioNode audionode_t; 
-
-
-/* reference for audio queue */ 
-struct Queue {
-	unsigned capacity;  
-	int frontIndex, rearIndex, itemCount; 
-	audionode_t* front, rear; 
-	audionode_t **items; 
-}; 
-
-typedef struct Queue queue_t; 
-
+/* player functions */ 
+player_t *initPlayer(bool callback);
+void play(player_t *player, char *filePath); 
 
 /* queueing functions */ 
 int isFull(queue_t* queue); 
@@ -93,7 +111,6 @@ void enqueue(queue_t* queue, char *filePath);
 void dequeue(queue_t *queue); 
 int front(queue_t* queue); 
 int rear(queue_t* queue); 
-void playQueue(queue_t *queue);
-
+void cycleQueue(queue_t *queue);
 
 #endif
