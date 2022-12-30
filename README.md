@@ -1,5 +1,5 @@
 # DTunes: 
-DTunes is an audio engine for researching audio composition and processing techniques. The purpose of this engine is to understand music production/theory concepts and combine it with computational algorithms. A list of features include reading audio frequencies and perform common audio processing techniques, audio composition (composing music), general audio feature extraction, and experimenting with ways to play audio files stored in queuing data structures.  The purpose of this project is to understand music composition and create the ultimate audio experience from the perspective of a computer scientist or researcher.
+DTunes is simple audio wav player written in C. It allows you to create collections(playlists) and store multiple audio files within the collection. Songs can be played via autoplay or by manually specifying a wav file from a collection file path. 
 
 ## Setup
 
