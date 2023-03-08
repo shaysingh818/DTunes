@@ -13,7 +13,5 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - name: install portaudio
-      run: sudo apt-get install libasound-dev
-    - name: make
-      run: make
+    - name: run cargo
+      run: cargo run
