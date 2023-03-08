@@ -1,0 +1,8 @@
+fatal: not a git repository (or any of the parent directories): .git
+CMake Warning:
+  Manually-specified variables were not used by the project:
+
+    CMAKE_ASM_COMPILER
+    CMAKE_ASM_FLAGS
+
+
