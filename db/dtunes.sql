@@ -10,9 +10,9 @@ CREATE TABLE AUDIO_FILE (
     file_name VARCHAR(1000) PRIMARY KEY,
 	file_type VARCHAR(255),
 	duration INT,
-	date_modifed VARCHAR(255),
-    date_created VARCHAR(1000),
-    sample_rate INT
+    sample_rate INT,
+	date_modified VARCHAR(255),
+    date_created VARCHAR(1000)
 );
 
 

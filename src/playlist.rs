@@ -138,16 +138,25 @@ mod playlist_instance {
 
         /* Create connection and insert playlist into db  */ 
         let conn = Connection::open("db/dtunes.db")?;
-        //let mut equality_status = true; 
+        let mut equality_status = true; 
 
         /* insert dummy playlist */ 
         let mut my_playlist : Playlist = Playlist::new("playlist_update");
+        let modified_time = my_playlist.date_modified.clone(); 
         my_playlist.insert(&conn)?;
 
         /* update playlist */ 
         my_playlist.name = String::from("playlist_update_1");
         my_playlist.update(&conn)?;
+
+        /* ensure that modified times are different */ 
+        let recent_modified_time = my_playlist.date_modified;
+        if modified_time == recent_modified_time {
+            equality_status = false; 
+        }
+
         conn.execute("DELETE FROM PLAYLIST", [])?; 
+        assert_eq!(equality_status, true); 
 
         Ok(()) 
     }
