@@ -92,7 +92,7 @@ impl AudioFile {
 
     pub fn play_wav(filepath: &str) -> Result<(), Box<dyn std::error::Error>> {
 
-        let mut sl = Soloud::default()?; 
+        let sl = Soloud::default()?; 
         let mut wav = audio::Wav::default();
 
         wav.load(&std::path::Path::new(filepath))?;
