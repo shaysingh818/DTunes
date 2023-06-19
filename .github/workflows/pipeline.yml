@@ -1,4 +1,4 @@
-name: DTunee CI
+name: DTunes CI
 
 on:
   push:
@@ -13,5 +13,5 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - name: run cargo
-      run: cargo run
+    - name: Build and Test
+      run: cargo test

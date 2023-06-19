@@ -1,128 +1,156 @@
+use chrono; 
 use rusqlite::{Connection, Result};
-use crate::db::*; 
 
 #[derive(Debug)]
 pub struct Playlist {
-    id: String, 
-    name: String, 
-    date: String,
-    file_count: String 
+    pub name: String, 
+    pub date_created: String,
+    pub date_modified: String,
+    pub file_count: usize,
+    pub disk_space: usize 
 }
 
 
-pub fn create_playlist_table() -> Result<()> {
+impl Playlist {
 
-    let conn = Connection::open(DB_PATH)?;
+    pub fn new(name: &str) -> Playlist {
+        Playlist {
+            name: String::from(name),
+            date_created: chrono::offset::Local::now().to_string(),
+            date_modified: chrono::offset::Local::now().to_string(),
+            file_count: 0, 
+            disk_space: 0
 
-    conn.execute(
-        "CREATE TABLE IF NOT EXISTS playlist (
-            id integer primary key, 
-            name text not null unique,
-            date_created TIMESTAMP default CURRENT_TIMESTAMP,
-            file_count integer
-        )",
-        [],
-    )?;
-    
-    println!("Playlist: table has been created ");
-
-    Ok(())    
-
-}
-
-pub fn insert_playlist(name: &str) -> Result<()> {
-
-    let conn = Connection::open(DB_PATH)?;
-    conn.execute(INSERT_PLAYLIST, &[name, "0"])?; 
-    
-    match conn {
-        Err(e) => println!("{:?}", e),
-         _ => () 
+        }
     }
 
-    Ok(())    
-    
-}
-
-
-pub fn view_playlists(playlist_result: &mut Vec<Playlist>) -> Result<()> {
-
-    let conn = Connection::open(DB_PATH)?;
-    let mut stmt = conn.prepare(VIEW_PLAYLISTS)?;
-
-    let playlists = stmt.query_map([], |row| {
-        Ok(Playlist {
-            id: row.get(0)?,
-            name: row.get(1)?,
-            date: row.get(2)?, 
-            file_count: row.get(3)?
-        })
-    })?;
-
-    for p in playlists {
-        playlist_result.push(p.unwrap()); 
+    pub fn insert(&mut self, conn: &Connection) -> Result<()> {
+        conn.execute(
+            "INSERT INTO playlist 
+                (name, date_created, date_modified, file_count, disk_space) 
+                VALUES (?1, ?2, ?3, ?4, ?5)",
+            [
+                &self.name,
+                &self.date_created,
+                &self.date_modified, 
+                &self.file_count.to_string(),
+                &self.disk_space.to_string()
+            ],
+        )?;
+        Ok(())
     }
 
-    Ok(())
-}
+    pub fn retrieve(conn: &Connection) -> Result<Vec<Playlist>> {
+       let mut stmt = conn.prepare("SELECT * FROM PLAYLIST")?;
+       let rows = stmt.query_map([], |row| {
+            Ok(Playlist {
+                name: row.get(0)?,
+                date_created: row.get(1)?,
+                date_modified: row.get(2)?,
+                disk_space: row.get(3)?,
+                file_count: row.get(4)?
+            })
+       })?;
 
+       let mut playlists = Vec::new(); 
+       for playlist in rows {
+            playlists.push(playlist?);
+       }
+
+       Ok(playlists)
+    }
+
+    pub fn update(&mut self, conn: &Connection) -> Result<()> {
+
+        /* change date modified */ 
+        self.date_modified = chrono::offset::Local::now().to_string(); 
+        
+        conn.execute(
+            "UPDATE playlist
+                SET name=?, date_created=?, date_modified=?,
+                file_count=?, disk_space=?
+                WHERE name=?",
+            [
+                &self.name,
+                &self.date_created,
+                &self.date_modified, 
+                &self.file_count.to_string(),
+                &self.disk_space.to_string(),
+                &self.name
+            ],
+        )?;
+        Ok(())
+    }
+
+
+
+}
 
 
 #[cfg(test)]
-mod playlist_db {
-
-    use crate::playlist::*;
+mod playlist_instance {
+ 
+    use crate::playlist::Playlist;
     use rusqlite::{Connection, Result};
 
-    /* tests for the board instance */
-
     #[test]
-    fn test_create_playlist_table() {
+    fn test_create_and_view_playlists() -> Result<()> {
 
-        let result = create_playlist_table(); 
-
-        match result {
-            Err(e) => println!("{:?}", e),
-            _ => () 
-        }
-
-    }
-
-    #[test]
-    fn test_insert_playlist() -> Result<()> {
-
-        let playlist_names : Vec<String> = Vec::new(); 
-        playlist_names.push("testing"); 
-        playlist_names.push("testing1"); 
-        playlist_names.push("testing2"); 
-        playlist_names.push("testing3"); 
-
-        let result = insert_playlist("testing"); 
-
-        match result {
-            Err(e) => println!("{:?}", e),
-            _ => () 
-        }
-
-        /* query database */
+        /* Create connection and insert playlist into db  */ 
         let conn = Connection::open("db/dtunes.db")?;
-        let mut stmt = conn.prepare("SELECT * FROM playlist")?;
+        let mut equality_status = true; 
 
-        let playlists = stmt.query_map([], |row| {
-            Ok(Playlist {
-                id: row.get(0)?,
-                name: row.get(1)?,
-                date: row.get(2)?, 
-                file_count: row.get(3)?
-            })
-        })?;
-
-        for p in playlists {
-            let playlist : Playlist = p.unwrap(); 
-            assert_eq!(playlist.name, "testing"); 
+        /* insert 5 dummy playlists */ 
+        for i in 0..5 {
+            let playlist_value = format!("playlist_{}", i);
+            let mut my_playlist : Playlist = Playlist::new(&playlist_value);
+            my_playlist.insert(&conn)?;
         }
 
-        Ok(())    
+        /* expected playlist names */
+        let mut playlist_names = Vec::new(); 
+        playlist_names.push("playlist_0");
+        playlist_names.push("playlist_1");
+        playlist_names.push("playlist_2");
+        playlist_names.push("playlist_3");
+        playlist_names.push("playlist_4");
+
+        /* check playlist data */ 
+        let playlists : Vec<Playlist> = Playlist::retrieve(&conn)?;
+        let mut counter = 0;  
+        for p in playlists {    
+            if &p.name != &playlist_names[counter] {
+                equality_status = false;                 
+            }
+            counter += 1;  
+        }
+
+        /* delete playlists and validate */
+        conn.execute("DELETE FROM PLAYLIST", [])?; 
+        assert_eq!(equality_status, true); 
+
+        Ok(()) 
+
     }
+
+    #[test]
+    fn test_update_playlist() -> Result<()> {
+
+        /* Create connection and insert playlist into db  */ 
+        let conn = Connection::open("db/dtunes.db")?;
+        //let mut equality_status = true; 
+
+        /* insert dummy playlist */ 
+        let mut my_playlist : Playlist = Playlist::new("playlist_update");
+        my_playlist.insert(&conn)?;
+
+        /* update playlist */ 
+        my_playlist.name = String::from("playlist_update_1");
+        my_playlist.update(&conn)?;
+        conn.execute("DELETE FROM PLAYLIST", [])?; 
+
+        Ok(()) 
+    }
+
 
 }
