@@ -90,6 +90,31 @@ impl AudioFile {
     }
 
 
+    pub fn delete(&mut self, conn: &Connection) -> Result<()> {
+        conn.execute(
+            "DELETE FROM audio_file WHERE name=?",
+            [&self.file_name],
+        )?;
+        Ok(())
+    }
+
+
+    fn view(&mut self, conn: &Connection) -> Result<AudioFile> {
+        let query = "SELECT * FROM audio_file WHERE name = ?";
+        conn.query_row(query, &[&self.file_name], |row| {
+            Ok(AudioFile {
+                file_name: row.get(0)?,
+                file_type: row.get(1)?,
+                duration: row.get(2)?,
+                sample_rate: row.get(3)?,
+                date_created: row.get(4)?,
+                date_modified: row.get(5)?
+            })
+        })
+    }
+
+
+
     pub fn play_wav(filepath: &str) -> Result<(), Box<dyn std::error::Error>> {
 
         let sl = Soloud::default()?; 

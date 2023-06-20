@@ -82,6 +82,29 @@ impl Playlist {
         Ok(())
     }
 
+    pub fn delete(&mut self, conn: &Connection) -> Result<()> {
+        conn.execute(
+            "DELETE FROM playlist WHERE name=?",
+            [&self.name],
+        )?;
+        Ok(())
+    }
+
+
+    fn view(&mut self, conn: &Connection) -> Result<Playlist> {
+        let query = "SELECT * FROM playlist WHERE name = ?";
+        conn.query_row(query, &[&self.name], |row| {
+            Ok(Playlist {
+                name: row.get(0)?,
+                date_created: row.get(1)?,
+                date_modified: row.get(2)?,
+                disk_space: row.get(3)?,
+                file_count: row.get(4)?
+            })
+        })
+    }
+
+
 
 
 }
@@ -161,5 +184,27 @@ mod playlist_instance {
         Ok(()) 
     }
 
+
+    #[test]
+    fn test_view_playlist_by_name() -> Result<()> {
+
+        /* Create connection and insert playlist into db  */ 
+        let conn = Connection::open("db/dtunes.db")?;
+        let mut equality_status = true; 
+
+        /* insert dummy playlist */ 
+        let mut my_playlist : Playlist = Playlist::new("test_playlist");
+        my_playlist.insert(&conn)?;
+
+        let playlist = my_playlist.view(&conn)?; 
+        if playlist.name != my_playlist.name {
+            equality_status = false;
+        }
+
+        conn.execute("DELETE FROM PLAYLIST where name =?", [&playlist.name])?; 
+        assert_eq!(equality_status, true); 
+
+        Ok(())
+    }
 
 }
