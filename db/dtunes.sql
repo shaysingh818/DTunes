@@ -7,17 +7,17 @@ CREATE TABLE PLAYLIST (
 );
 
 CREATE TABLE AUDIO_FILE (
-    file_name VARCHAR(1000) PRIMARY KEY,
+    file_name VARCHAR(255) UNIQUE PRIMARY KEY,
 	file_type VARCHAR(255),
 	duration INT,
     sample_rate INT,
 	date_modified VARCHAR(255),
-    date_created VARCHAR(1000)
+    date_created VARCHAR(255)
 );
 
 
 CREATE TABLE PLAYLIST_FILE (
-    relation_id VARCHAR(37) PRIMARY KEY,
+    relation_id INTEGER PRIMARY KEY AUTOINCREMENT,
     playlist VARCHAR(255),
     audio_file VARCHAR(255),
     FOREIGN KEY(playlist) REFERENCES PLAYLIST(name),

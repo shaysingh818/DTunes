@@ -92,7 +92,7 @@ impl AudioFile {
 
     pub fn delete(&mut self, conn: &Connection) -> Result<()> {
         conn.execute(
-            "DELETE FROM audio_file WHERE name=?",
+            "DELETE FROM audio_file WHERE file_name=?",
             [&self.file_name],
         )?;
         Ok(())
@@ -100,7 +100,7 @@ impl AudioFile {
 
 
     fn view(&mut self, conn: &Connection) -> Result<AudioFile> {
-        let query = "SELECT * FROM audio_file WHERE name = ?";
+        let query = "SELECT * FROM audio_file WHERE file_name = ?";
         conn.query_row(query, &[&self.file_name], |row| {
             Ok(AudioFile {
                 file_name: row.get(0)?,
@@ -212,6 +212,49 @@ mod audio_file_instance {
         assert_eq!(equality_status, true); 
 
         Ok(()) 
+    }
+
+
+    #[test]
+    fn test_view_file_by_name() -> Result<()> {
+
+        /* Create connection and insert playlist into db  */ 
+        let conn = Connection::open("db/dtunes.db")?;
+        let mut equality_status = true; 
+
+        /* insert dummy playlist */ 
+        let mut my_file : AudioFile = AudioFile::new("test_file", "mp3", 1000, 2);
+        my_file.insert(&conn)?;
+
+        let audio_file = my_file.view(&conn)?; 
+        if audio_file.file_name != my_file.file_name {
+            equality_status = false;
+        }
+
+        conn.execute("DELETE FROM AUDIO_FILE where file_name =?", [&my_file.file_name])?; 
+        assert_eq!(equality_status, true); 
+
+        Ok(())
+    }
+
+
+    #[test]
+    fn test_delete_playlist_by_name() -> Result<()> {
+
+        /* Create connection and insert playlist into db  */ 
+        let conn = Connection::open("db/dtunes.db")?;
+
+        /* insert dummy playlist */ 
+        let mut my_file : AudioFile = AudioFile::new("test_file", "mp3", 1000, 2);
+        my_file.insert(&conn)?;
+
+        /* delete the playlist by name */ 
+        my_file.delete(&conn)?; 
+
+        let result = conn.execute("SELECT * FROM AUDIO_FILE where file_name =?", [&my_file.file_name])?; 
+        assert_eq!(result, 1); 
+
+        Ok(())
     }
 
 

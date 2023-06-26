@@ -1,5 +1,6 @@
 use chrono; 
 use rusqlite::{Connection, Result};
+use crate::audio_file::AudioFile;
 
 #[derive(Debug)]
 pub struct Playlist {
@@ -91,7 +92,7 @@ impl Playlist {
     }
 
 
-    fn view(&mut self, conn: &Connection) -> Result<Playlist> {
+    pub fn view(&mut self, conn: &Connection) -> Result<Playlist> {
         let query = "SELECT * FROM playlist WHERE name = ?";
         conn.query_row(query, &[&self.name], |row| {
             Ok(Playlist {
@@ -104,9 +105,44 @@ impl Playlist {
         })
     }
 
+    pub fn add_audio_file(&mut self, conn: &Connection, audio_file: &AudioFile) -> Result<()> {
+        conn.execute(
+            "INSERT INTO PLAYLIST_FILE
+                (playlist, audio_file)
+            VALUES (?1, ?2)
+            ",
+            [&self.name, &audio_file.file_name],
+        )?;
 
+        Ok(())
+    }
 
+    pub fn retrieve_audio_files(&mut self, conn: &Connection) -> Result<Vec<AudioFile>> {
 
+        /* many to many query */ 
+        let query = "SELECT * FROM AUDIO_FILE WHERE file_name = ( 
+            SELECT audio_file FROM PLAYLIST_FILE WHERE playlist=?);";
+        let mut stmt = conn.prepare(query)?; 
+            
+        /* return audio files */
+        let rows = stmt.query_map([&self.name], |row| {
+            Ok(AudioFile {
+                file_name: row.get(0)?,
+                file_type: row.get(1)?,
+                duration: row.get(2)?,
+                sample_rate: row.get(3)?,
+                date_created: row.get(4)?,
+                date_modified: row.get(5)?
+            })
+        })?;
+
+        /*  store files here */ 
+       let mut audio_files = Vec::new();
+       for audio_file in rows {
+            audio_files.push(audio_file?); 
+        }
+       Ok(audio_files)
+    }
 }
 
 
@@ -114,6 +150,7 @@ impl Playlist {
 mod playlist_instance {
  
     use crate::playlist::Playlist;
+    use crate::audio_file::AudioFile;
     use rusqlite::{Connection, Result};
 
     #[test]
@@ -204,6 +241,60 @@ mod playlist_instance {
         conn.execute("DELETE FROM PLAYLIST where name =?", [&playlist.name])?; 
         assert_eq!(equality_status, true); 
 
+        Ok(())
+    }
+
+
+    #[test]
+    fn test_delete_playlist_by_name() -> Result<()> {
+
+        /* Create connection and insert playlist into db  */ 
+        let conn = Connection::open("db/dtunes.db")?;
+
+        /* insert dummy playlist */ 
+        let mut my_playlist : Playlist = Playlist::new("test_playlist");
+        my_playlist.insert(&conn)?;
+
+        /* delete the playlist by name */ 
+        my_playlist.delete(&conn)?; 
+
+        let result = conn.execute("SELECT * FROM PLAYLIST where name =?", [&my_playlist.name])?; 
+        println!("RESULT: {:?}", result); 
+        assert_eq!(result, 1); 
+
+        Ok(())
+    }
+
+
+    #[test]
+    fn test_add_file_to_playlist() -> Result<()> {
+
+        /* Create connection and insert playlist into db  */ 
+        let conn = Connection::open("db/dtunes.db")?;
+
+        /* insert dummy playlist */ 
+        let mut my_playlist : Playlist = Playlist::new("test_my_playlist");
+        my_playlist.insert(&conn)?;
+
+        /* insert 5 dummy audio files */ 
+        for i in 0..5 {
+            let file_value = format!("test_audio_file_{}", i);
+            let mut my_file : AudioFile = AudioFile::new(&file_value, "mp3", 1000, 2);
+            my_file.insert(&conn)?;
+            my_playlist.add_audio_file(&conn, &my_file)?; 
+        }
+
+        /* test retrieving audio file vector */ 
+        let audio_files : Vec<AudioFile> = my_playlist.retrieve_audio_files(&conn)?;
+        for item in audio_files {
+            println!("File: {:?}", &item.file_name); 
+        }
+
+
+        /* delete entries */
+        conn.execute("DELETE FROM PLAYLIST_FILE", [])?;
+        conn.execute("DELETE FROM AUDIO_FILE", [])?;
+        conn.execute("DELETE FROM PLAYLIST", [])?;
         Ok(())
     }
 
