@@ -21,5 +21,5 @@ CREATE TABLE PLAYLIST_FILE (
     playlist VARCHAR(255),
     audio_file VARCHAR(255),
     FOREIGN KEY(playlist) REFERENCES PLAYLIST(name),
-    FOREIGN KEY(audio_file) REFERENCES AUDIO_FILE(name)
+    FOREIGN KEY(audio_file) REFERENCES AUDIO_FILE(file_name)
 );

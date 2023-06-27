@@ -120,7 +120,7 @@ impl Playlist {
     pub fn retrieve_audio_files(&mut self, conn: &Connection) -> Result<Vec<AudioFile>> {
 
         /* many to many query */ 
-        let query = "SELECT * FROM AUDIO_FILE WHERE file_name = ( 
+        let query = "SELECT * FROM AUDIO_FILE WHERE file_name IN ( 
             SELECT audio_file FROM PLAYLIST_FILE WHERE playlist=?);";
         let mut stmt = conn.prepare(query)?; 
             
@@ -143,6 +143,17 @@ impl Playlist {
         }
        Ok(audio_files)
     }
+
+    pub fn remove_audio_file(&mut self, conn: &Connection, file_name: &str) -> Result<()> {
+        conn.execute(
+            "DELETE FROM PLAYLIST_FILE
+                WHERE playlist=? AND audio_file=?
+            ",
+            [&self.name, file_name],
+        )?;
+        Ok(())
+    }
+
 }
 
 
@@ -259,7 +270,6 @@ mod playlist_instance {
         my_playlist.delete(&conn)?; 
 
         let result = conn.execute("SELECT * FROM PLAYLIST where name =?", [&my_playlist.name])?; 
-        println!("RESULT: {:?}", result); 
         assert_eq!(result, 1); 
 
         Ok(())
@@ -271,6 +281,7 @@ mod playlist_instance {
 
         /* Create connection and insert playlist into db  */ 
         let conn = Connection::open("db/dtunes.db")?;
+        let mut equality_status = true; 
 
         /* insert dummy playlist */ 
         let mut my_playlist : Playlist = Playlist::new("test_my_playlist");
@@ -284,10 +295,22 @@ mod playlist_instance {
             my_playlist.add_audio_file(&conn, &my_file)?; 
         }
 
+        /* expected playlist names */
+        let mut file_names = Vec::new(); 
+        file_names.push("test_audio_file_0");
+        file_names.push("test_audio_file_1");
+        file_names.push("test_audio_file_2");
+        file_names.push("test_audio_file_3");
+        file_names.push("test_audio_file_4");
+
         /* test retrieving audio file vector */ 
+        let mut idx_counter = 0; 
         let audio_files : Vec<AudioFile> = my_playlist.retrieve_audio_files(&conn)?;
         for item in audio_files {
-            println!("File: {:?}", &item.file_name); 
+            if file_names[idx_counter] != &item.file_name {
+                equality_status = false;
+            }
+            idx_counter += 1;
         }
 
 
@@ -295,7 +318,56 @@ mod playlist_instance {
         conn.execute("DELETE FROM PLAYLIST_FILE", [])?;
         conn.execute("DELETE FROM AUDIO_FILE", [])?;
         conn.execute("DELETE FROM PLAYLIST", [])?;
+        assert_eq!(equality_status, true); 
         Ok(())
+    }
+
+
+    #[test]
+    fn test_remove_file_from_playlist() -> Result<()> {
+
+        /* Create connection and insert playlist into db  */ 
+        let conn = Connection::open("db/dtunes.db")?;
+        let mut equality_status = true; 
+
+        /* insert dummy playlist */ 
+        let mut my_playlist : Playlist = Playlist::new("test_my_playlist_remove");
+        my_playlist.insert(&conn)?;
+
+        /* insert 5 dummy audio files */ 
+        for i in 0..5 {
+            let file_value = format!("test_remove_audio_file_{}", i);
+            let mut my_file : AudioFile = AudioFile::new(&file_value, "mp3", 1000, 2);
+            my_file.insert(&conn)?;
+            my_playlist.add_audio_file(&conn, &my_file)?; 
+        }
+
+        /* expected playlist names */
+        let mut file_names = Vec::new(); 
+        file_names.push("test_remove_audio_file_0");
+        file_names.push("test_remove_audio_file_1");
+        file_names.push("test_remove_audio_file_2");
+
+        /* remove file from playlist */ 
+        my_playlist.remove_audio_file(&conn, &"test_remove_audio_file_4")?; 
+        my_playlist.remove_audio_file(&conn, &"test_remove_audio_file_3")?;
+        
+        let mut idx_counter = 0;
+        let audio_files : Vec<AudioFile> = my_playlist.retrieve_audio_files(&conn)?;
+        for item in audio_files {
+            if file_names[idx_counter] != &item.file_name {
+                equality_status = false;
+            }
+            idx_counter += 1;
+        }
+
+        /* delete entries */
+        conn.execute("DELETE FROM PLAYLIST_FILE", [])?;
+        conn.execute("DELETE FROM AUDIO_FILE", [])?;
+        conn.execute("DELETE FROM PLAYLIST", [])?;
+        assert_eq!(equality_status, true); 
+        Ok(())
+
     }
 
 }
