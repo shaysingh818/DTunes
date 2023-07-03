@@ -8,7 +8,7 @@ pub struct Source {
     pub api_key: String,
     pub storage_path: String,
     pub description: String,
-    pub status: bool
+    pub status: bool,
     pub date_created: String,
     pub date_modified: String
 }
