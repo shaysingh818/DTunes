@@ -42,13 +42,12 @@ CREATE TABLE POMODORO_AUDIO_FILE (
     FOREIGN KEY(audio_file) REFERENCES AUDIO_FILE(file_name)
 );
 
-
 CREATE TABLE SOURCE (
 	source_name VARCHAR(100),
 	url VARCHAR(100), 
 	api_key VARCHAR(100),
 	storage_path VARCHAR(100),
-	summary VARCHAR(1000),
+	description VARCHAR(1000),
 	status BOOLEAN,
 	date_modified VARCHAR(255),
     date_created VARCHAR(255)
@@ -56,9 +55,9 @@ CREATE TABLE SOURCE (
 
 CREATE TABLE FILE_TYPE (
 	extension_name VARCHAR(100) UNIQUE PRIMARY KEY,
-    date_created VARCHAR(255)
+    date_created VARCHAR(255),
+	date_modified VARCHAR(255)
 );
-
 
 CREATE TABLE SOURCE_FILE_TYPE (
     relation_id INTEGER PRIMARY KEY AUTOINCREMENT,
