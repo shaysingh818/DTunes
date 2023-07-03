@@ -239,7 +239,7 @@ mod audio_file_instance {
 
 
     #[test]
-    fn test_delete_playlist_by_name() -> Result<()> {
+    fn test_delete_file_by_name() -> Result<()> {
 
         /* Create connection and insert playlist into db  */ 
         let conn = Connection::open("db/dtunes.db")?;

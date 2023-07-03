@@ -133,6 +133,34 @@ impl Pomodoro {
         Ok(())
     }
 
+
+    pub fn retrieve_audio_files(&mut self, conn: &Connection) -> Result<Vec<AudioFile>> {
+
+        /* many to many query */ 
+        let query = "SELECT * FROM AUDIO_FILE WHERE file_name IN ( 
+            SELECT audio_file FROM POMODORO_AUDIO_FILE WHERE pomodoro=?);";
+        let mut stmt = conn.prepare(query)?; 
+            
+        /* return audio files */
+        let rows = stmt.query_map([&self.name], |row| {
+            Ok(AudioFile {
+                file_name: row.get(0)?,
+                file_type: row.get(1)?,
+                duration: row.get(2)?,
+                sample_rate: row.get(3)?,
+                date_created: row.get(4)?,
+                date_modified: row.get(5)?
+            })
+        })?;
+
+        /*  store files here */ 
+       let mut audio_files = Vec::new();
+       for audio_file in rows {
+            audio_files.push(audio_file?); 
+        }
+       Ok(audio_files)
+    }
+
     pub fn remove_audio_file(&mut self, conn: &Connection, file_name: &str) -> Result<()> {
         conn.execute(
             "DELETE FROM POMODORO_AUDIO_FILE
@@ -154,7 +182,7 @@ mod pomodoro_instance {
     use rusqlite::{Connection, Result};
 
     #[test]
-    fn test_create_and_view_playlists() -> Result<()> {
+    fn test_create_and_view_sessions() -> Result<()> {
 
         /* Create connection and insert playlist into db  */ 
         let conn = Connection::open("db/dtunes.db")?;
@@ -258,6 +286,137 @@ mod pomodoro_instance {
 
         conn.execute("DELETE FROM POMODORO where name =?", [&my_session.name])?; 
         assert_eq!(equality_status, true); 
+
+        Ok(())
+    }
+
+    #[test]
+    fn test_add_file_to_session() -> Result<()> {
+
+        /* Create connection and insert playlist into db  */ 
+        let conn = Connection::open("db/dtunes.db")?;
+        let mut equality_status = true;   
+
+        /* insert dummy session */ 
+        let mut my_session : Pomodoro = Pomodoro::new(
+            &"the_audio_session",
+            60,
+            60, 
+            10,
+            15
+        );
+        my_session.insert(&conn)?;
+
+        /* insert 5 dummy audio files */ 
+        for i in 0..5 {
+            let file_value = format!("test_audio_session_file_{}", i);
+            let mut my_file : AudioFile = AudioFile::new(&file_value, "mp3", 1000, 2);
+            my_file.insert(&conn)?;
+            my_session.add_audio_file(&conn, &my_file)?; 
+        }
+
+        /* expected playlist names */
+        let mut file_names = Vec::new(); 
+        file_names.push("test_audio_session_file_0");
+        file_names.push("test_audio_session_file_1");
+        file_names.push("test_audio_session_file_2");
+        file_names.push("test_audio_session_file_3");
+        file_names.push("test_audio_session_file_4");
+
+        /* test retrieving audio file vector */ 
+        let mut idx_counter = 0; 
+        let audio_files : Vec<AudioFile> = my_session.retrieve_audio_files(&conn)?;
+        for item in audio_files {
+            if file_names[idx_counter] != &item.file_name {
+                equality_status = false;
+            }
+            idx_counter += 1;
+        }
+
+
+        /* delete entries */
+        conn.execute("DELETE FROM POMODORO_AUDIO_FILE", [])?;
+        conn.execute("DELETE FROM AUDIO_FILE", [])?;
+        conn.execute("DELETE FROM POMODORO", [])?;
+        assert_eq!(equality_status, true); 
+        Ok(())
+    }
+
+
+    #[test]
+    fn test_remove_file_from_session() -> Result<()> {
+
+        /* Create connection and insert playlist into db  */ 
+        let conn = Connection::open("db/dtunes.db")?;
+        let mut equality_status = true; 
+
+        /* insert dummy session */ 
+        let mut my_session : Pomodoro = Pomodoro::new(
+            &"the_audio_session_remove",
+            60,
+            60, 
+            10,
+            15
+        );
+        my_session.insert(&conn)?;
+
+        /* insert 5 dummy audio files */ 
+        for i in 0..5 {
+            let file_value = format!("test_remove_audio_file_session_{}", i);
+            let mut my_file : AudioFile = AudioFile::new(&file_value, "mp3", 1000, 2);
+            my_file.insert(&conn)?;
+            my_session.add_audio_file(&conn, &my_file)?; 
+        }
+
+        /* expected playlist names */
+        let mut file_names = Vec::new(); 
+        file_names.push("test_remove_audio_file_session_0");
+        file_names.push("test_remove_audio_file_session_1");
+        file_names.push("test_remove_audio_file_session_2");
+
+        /* remove file from playlist */ 
+        my_session.remove_audio_file(&conn, &"test_remove_audio_file_session_4")?; 
+        my_session.remove_audio_file(&conn, &"test_remove_audio_file_session_3")?;
+        
+        let mut idx_counter = 0;
+        let audio_files : Vec<AudioFile> = my_session.retrieve_audio_files(&conn)?;
+        for item in audio_files {
+            if file_names[idx_counter] != &item.file_name {
+                equality_status = false;
+            }
+            idx_counter += 1;
+        }
+
+        /* delete entries */
+        conn.execute("DELETE FROM POMODORO_AUDIO_FILE", [])?;
+        conn.execute("DELETE FROM AUDIO_FILE", [])?;
+        conn.execute("DELETE FROM POMODORO", [])?;
+        assert_eq!(equality_status, true); 
+        Ok(())
+    }
+
+
+    #[test]
+    fn test_delete_session_by_name() -> Result<()> {
+
+        /* Create connection and insert playlist into db  */ 
+        let conn = Connection::open("db/dtunes.db")?;
+
+        /* insert dummy session */ 
+        let mut my_session : Pomodoro = Pomodoro::new(
+            &"the_audio_session_remove_test",
+            60,
+            60, 
+            10,
+            15
+        );
+        my_session.insert(&conn)?;
+
+        /* delete the playlist by name */ 
+        my_session.delete(&conn)?; 
+
+        let result = conn.execute("SELECT * FROM POMODORO where name =?", [&my_session.name])?; 
+        assert_eq!(result, 1); 
 
         Ok(())
     }
