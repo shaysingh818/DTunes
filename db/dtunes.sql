@@ -48,7 +48,7 @@ CREATE TABLE SOURCE (
 	api_key VARCHAR(100),
 	storage_path VARCHAR(100),
 	description VARCHAR(1000),
-	status BOOLEAN,
+	status INT,
 	date_modified VARCHAR(255),
     date_created VARCHAR(255)
 );
