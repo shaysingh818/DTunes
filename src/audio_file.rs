@@ -146,11 +146,14 @@ mod audio_file_instance {
     use crate::audio_file::AudioFile;
     use rusqlite::{Connection, Result};
 
+    /* test database instance */ 
+    static DB_PATH: &str = "db/unit/audio_file_instance.db";
+
     #[test]
     fn test_create_and_view_audio_file() -> Result<()> {
 
         /* Create connection and insert playlist into db  */ 
-        let conn = Connection::open("db/dtunes.db")?;
+        let conn = Connection::open(DB_PATH)?;
         let mut equality_status = true; 
 
         /* insert 5 dummy playlists */ 
@@ -190,7 +193,7 @@ mod audio_file_instance {
     fn test_update_audio_file() -> Result<()> {
 
         /* Create connection and insert playlist into db  */ 
-        let conn = Connection::open("db/dtunes.db")?;
+        let conn = Connection::open(DB_PATH)?;
         let mut equality_status = true; 
 
         /* insert dummy playlist */ 
@@ -219,7 +222,7 @@ mod audio_file_instance {
     fn test_view_file_by_name() -> Result<()> {
 
         /* Create connection and insert playlist into db  */ 
-        let conn = Connection::open("db/dtunes.db")?;
+        let conn = Connection::open(DB_PATH)?;
         let mut equality_status = true; 
 
         /* insert dummy playlist */ 
@@ -242,7 +245,7 @@ mod audio_file_instance {
     fn test_delete_file_by_name() -> Result<()> {
 
         /* Create connection and insert playlist into db  */ 
-        let conn = Connection::open("db/dtunes.db")?;
+        let conn = Connection::open(DB_PATH)?;
 
         /* insert dummy playlist */ 
         let mut my_file : AudioFile = AudioFile::new("test_file", "mp3", 1000, 2);

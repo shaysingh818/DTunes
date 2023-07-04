@@ -226,12 +226,15 @@ mod source_instance {
     use crate::source::{Source, FileType};
     use rusqlite::{Connection, Result};
 
+    /* test database instance */ 
+    static DB_PATH: &str = "db/unit/source_instance.db";
+
 
     #[test]
     fn test_create_and_view_sources() -> Result<()> {
 
         /* Create connection and insert playlist into db  */ 
-        let conn = Connection::open("db/dtunes.db")?;
+        let conn = Connection::open(DB_PATH)?;
         let mut equality_status = true; 
 
         /* insert 5 dummy playlists */ 
@@ -278,7 +281,7 @@ mod source_instance {
     fn test_update_source() -> Result<()> {
 
         /* Create connection and insert playlist into db  */ 
-        let conn = Connection::open("db/dtunes.db")?;
+        let conn = Connection::open(DB_PATH)?;
         let mut equality_status = true; 
 
         /* insert dummy source */ 
@@ -312,7 +315,7 @@ mod source_instance {
     fn test_view_source_by_name() -> Result<()> {
 
         /* Create connection and insert playlist into db  */ 
-        let conn = Connection::open("db/dtunes.db")?;
+        let conn = Connection::open(DB_PATH)?;
         let mut equality_status = true; 
 
         /* insert dummy source */ 
@@ -341,7 +344,7 @@ mod source_instance {
     fn test_delete_source_by_name() -> Result<()> {
 
         /* Create connection and insert playlist into db  */ 
-        let conn = Connection::open("db/dtunes.db")?;
+        let conn = Connection::open(DB_PATH)?;
 
         /* insert dummy playlist */ 
         let mut my_source : Source = Source::new(
@@ -367,7 +370,7 @@ mod source_instance {
     fn test_create_and_view_file_types() -> Result<()> {
 
         /* Create connection and insert playlist into db  */ 
-        let conn = Connection::open("db/dtunes.db")?;
+        let conn = Connection::open(DB_PATH)?;
         let mut equality_status = true; 
 
         /* insert 5 dummy playlists */ 
@@ -407,7 +410,7 @@ mod source_instance {
     fn test_update_file_type() -> Result<()> {
 
         /* Create connection and insert playlist into db  */ 
-        let conn = Connection::open("db/dtunes.db")?;
+        let conn = Connection::open(DB_PATH)?;
         let mut equality_status = true; 
 
         /* insert dummy file type */ 
@@ -435,7 +438,7 @@ mod source_instance {
     fn test_view_file_type_by_name() -> Result<()> {
 
         /* Create connection and insert playlist into db  */ 
-        let conn = Connection::open("db/dtunes.db")?;
+        let conn = Connection::open(DB_PATH)?;
         let mut equality_status = true; 
 
         /* insert dummy file type */ 
@@ -453,12 +456,11 @@ mod source_instance {
         Ok(())
     }
 
-
     #[test]
     fn test_delete_file_type_by_name() -> Result<()> {
 
         /* Create connection and insert playlist into db  */ 
-        let conn = Connection::open("db/dtunes.db")?;
+        let conn = Connection::open(DB_PATH)?;
 
         /* insert dummy file type */ 
         let mut file_type : FileType = FileType::new("mp5");

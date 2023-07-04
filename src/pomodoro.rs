@@ -181,11 +181,14 @@ mod pomodoro_instance {
     use crate::audio_file::AudioFile;
     use rusqlite::{Connection, Result};
 
+    /* test database instance */ 
+    static DB_PATH: &str = "db/unit/pomodoro_instance.db";
+
     #[test]
     fn test_create_and_view_sessions() -> Result<()> {
 
         /* Create connection and insert playlist into db  */ 
-        let conn = Connection::open("db/dtunes.db")?;
+        let conn = Connection::open(DB_PATH)?;
         let mut equality_status = true; 
 
         /* insert 5 dummy playlists */ 
@@ -232,7 +235,7 @@ mod pomodoro_instance {
     fn test_update_pomodoro() -> Result<()> {
 
         /* Create connection and insert playlist into db  */ 
-        let conn = Connection::open("db/dtunes.db")?;
+        let conn = Connection::open(DB_PATH)?;
         let mut equality_status = true; 
 
         /* insert dummy playlist */ 
@@ -266,7 +269,7 @@ mod pomodoro_instance {
     fn test_view_session_by_name() -> Result<()> {
 
         /* Create connection and insert playlist into db  */ 
-        let conn = Connection::open("db/dtunes.db")?;
+        let conn = Connection::open(DB_PATH)?;
         let mut equality_status = true; 
 
         /* insert dummy session */ 
@@ -294,7 +297,7 @@ mod pomodoro_instance {
     fn test_add_file_to_session() -> Result<()> {
 
         /* Create connection and insert playlist into db  */ 
-        let conn = Connection::open("db/dtunes.db")?;
+        let conn = Connection::open(DB_PATH)?;
         let mut equality_status = true;   
 
         /* insert dummy session */ 
@@ -347,7 +350,7 @@ mod pomodoro_instance {
     fn test_remove_file_from_session() -> Result<()> {
 
         /* Create connection and insert playlist into db  */ 
-        let conn = Connection::open("db/dtunes.db")?;
+        let conn = Connection::open(DB_PATH)?;
         let mut equality_status = true; 
 
         /* insert dummy session */ 
@@ -400,7 +403,7 @@ mod pomodoro_instance {
     fn test_delete_session_by_name() -> Result<()> {
 
         /* Create connection and insert playlist into db  */ 
-        let conn = Connection::open("db/dtunes.db")?;
+        let conn = Connection::open(DB_PATH)?;
 
         /* insert dummy session */ 
         let mut my_session : Pomodoro = Pomodoro::new(
