@@ -42,7 +42,7 @@ impl Playlist {
     }
 
     pub fn retrieve(conn: &Connection) -> Result<Vec<Playlist>> {
-       let mut stmt = conn.prepare("SELECT * FROM PLAYLIST")?;
+       let mut stmt = conn.prepare("SELECT * FROM PLAYLIST ORDER BY date_modified")?;
        let rows = stmt.query_map([], |row| {
             Ok(Playlist {
                 name: row.get(0)?,

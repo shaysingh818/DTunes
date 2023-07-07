@@ -63,7 +63,7 @@ impl Source {
     }
 
     pub fn retrieve(conn: &Connection) -> Result<Vec<Source>> {
-       let mut stmt = conn.prepare("SELECT * FROM SOURCE")?;
+       let mut stmt = conn.prepare("SELECT * FROM SOURCE ORDER BY date_modified")?;
        let rows = stmt.query_map([], |row| {
             Ok(Source {
                 source_name: row.get(0)?,
@@ -161,7 +161,7 @@ impl FileType {
     }
 
     pub fn retrieve(conn: &Connection) -> Result<Vec<FileType>> {
-       let mut stmt = conn.prepare("SELECT * FROM FILE_TYPE")?;
+       let mut stmt = conn.prepare("SELECT * FROM FILE_TYPE ORDER BY date_modified")?;
        let rows = stmt.query_map([], |row| {
             Ok(FileType {
                 extension_name: row.get(0)?,

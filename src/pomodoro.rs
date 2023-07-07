@@ -53,7 +53,7 @@ impl Pomodoro {
     }
 
     pub fn retrieve(conn: &Connection) -> Result<Vec<Pomodoro>> {
-       let mut stmt = conn.prepare("SELECT * FROM POMODORO")?;
+       let mut stmt = conn.prepare("SELECT * FROM POMODORO ORDER BY date_modified")?;
        let rows = stmt.query_map([], |row| {
             Ok(Pomodoro {
                 name: row.get(0)?,

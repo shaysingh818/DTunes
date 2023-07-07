@@ -1,0 +1,134 @@
+cargo:rerun-if-changed=build/android.rs
+cargo:rerun-if-changed=build/link.rs
+cargo:rerun-if-changed=build/main.rs
+cargo:rerun-if-changed=build/source.rs
+cargo:rerun-if-env-changed=CC
+cargo:rerun-if-env-changed=CXX
+cargo:rerun-if-env-changed=CFLAGS
+cargo:rerun-if-env-changed=CXXFLAGS
+cargo:rerun-if-changed=sys/CMakeLists.txt
+cargo:rerun-if-changed=sys/soloud_new.cpp
+cargo:rerun-if-changed=sys/soloud_derives.h
+cargo:rerun-if-changed=sys/soloud_derives.cpp
+CMAKE_TOOLCHAIN_FILE_x86_64-unknown-linux-gnu = None
+CMAKE_TOOLCHAIN_FILE_x86_64_unknown_linux_gnu = None
+HOST_CMAKE_TOOLCHAIN_FILE = None
+CMAKE_TOOLCHAIN_FILE = None
+CMAKE_PREFIX_PATH_x86_64-unknown-linux-gnu = None
+CMAKE_PREFIX_PATH_x86_64_unknown_linux_gnu = None
+HOST_CMAKE_PREFIX_PATH = None
+CMAKE_PREFIX_PATH = None
+CMAKE_x86_64-unknown-linux-gnu = None
+CMAKE_x86_64_unknown_linux_gnu = None
+HOST_CMAKE = None
+CMAKE = None
+running: cd "/home/dread/Documents/Projects/DTunes/target/debug/build/soloud-sys-e585e31da77f8a41/out/build" && CMAKE_PREFIX_PATH="" "cmake" "/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys" "-G" "Ninja" "-DWITH_MINIAUDIO=ON" "-DCMAKE_EXPORT_COMPILE_COMMANDS=ON" "-DCMAKE_INSTALL_PREFIX=/home/dread/Documents/Projects/DTunes/target/debug/build/soloud-sys-e585e31da77f8a41/out" "-DCMAKE_C_FLAGS= -ffunction-sections -fdata-sections -fPIC -m64" "-DCMAKE_C_COMPILER=/usr/bin/cc" "-DCMAKE_CXX_FLAGS= -ffunction-sections -fdata-sections -fPIC -m64" "-DCMAKE_CXX_COMPILER=/usr/bin/c++" "-DCMAKE_ASM_FLAGS= -ffunction-sections -fdata-sections -fPIC -m64" "-DCMAKE_ASM_COMPILER=/usr/bin/cc" "-DCMAKE_BUILD_TYPE=Release"
+-- The C compiler identification is GNU 9.4.0
+-- The CXX compiler identification is GNU 9.4.0
+-- Check for working C compiler: /usr/bin/cc
+-- Check for working C compiler: /usr/bin/cc -- works
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Check for working CXX compiler: /usr/bin/c++
+-- Check for working CXX compiler: /usr/bin/c++ -- works
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /home/dread/Documents/Projects/DTunes/target/debug/build/soloud-sys-e585e31da77f8a41/out/build
+running: cd "/home/dread/Documents/Projects/DTunes/target/debug/build/soloud-sys-e585e31da77f8a41/out/build" && "cmake" "--build" "." "--target" "install" "--config" "Release" "--parallel" "16"
+[1/61] Building CXX object CMakeFiles/soloud.dir/soloud_new.cpp.o
+[2/61] Building CXX object CMakeFiles/soloud.dir/soloud/src/audiosource/ay/sndrender.cpp.o
+[3/61] Building CXX object CMakeFiles/soloud.dir/soloud_derives.cpp.o
+[4/61] Building CXX object CMakeFiles/soloud.dir/soloud/src/audiosource/ay/sndbuffer.cpp.o
+[5/61] Building CXX object CMakeFiles/soloud.dir/soloud/src/audiosource/speech/darray.cpp.o
+[6/61] Building CXX object CMakeFiles/soloud.dir/soloud/src/audiosource/ay/sndchip.cpp.o
+[7/61] Building C object CMakeFiles/soloud.dir/soloud/src/audiosource/openmpt/soloud_openmpt_dll.c.o
+[8/61] Building CXX object CMakeFiles/soloud.dir/soloud/src/audiosource/ay/chipplayer.cpp.o
+[9/61] Building CXX object CMakeFiles/soloud.dir/soloud/src/audiosource/openmpt/soloud_openmpt.cpp.o
+[10/61] Building CXX object CMakeFiles/soloud.dir/soloud/src/audiosource/noise/soloud_noise.cpp.o
+[11/61] Building CXX object CMakeFiles/soloud.dir/soloud/src/audiosource/speech/resonator.cpp.o
+[12/61] Building CXX object CMakeFiles/soloud.dir/soloud/src/audiosource/ay/soloud_ay.cpp.o
+/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/src/audiosource/ay/soloud_ay.cpp:137:26: warning: multi-character character constant [-Wmultichar]
+  137 |   if (aFile->read32() != 'PIHC') return FILE_LOAD_FAILED; // CHIP
+      |                          ^~~~~~
+/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/src/audiosource/ay/soloud_ay.cpp:138:26: warning: multi-character character constant [-Wmultichar]
+  138 |   if (aFile->read32() != 'ENUT') return FILE_LOAD_FAILED; // TUNE
+      |                          ^~~~~~
+[13/61] Building CXX object CMakeFiles/soloud.dir/soloud/src/audiosource/tedsid/ted.cpp.o
+[14/61] Building CXX object CMakeFiles/soloud.dir/soloud/src/audiosource/speech/soloud_speech.cpp.o
+[15/61] Building CXX object CMakeFiles/soloud.dir/soloud/src/audiosource/monotone/soloud_monotone.cpp.o
+[16/61] Building CXX object CMakeFiles/soloud.dir/soloud/src/audiosource/speech/tts.cpp.o
+[17/61] Building CXX object CMakeFiles/soloud.dir/soloud/src/audiosource/sfxr/soloud_sfxr.cpp.o
+[18/61] Building CXX object CMakeFiles/soloud.dir/soloud/src/audiosource/vic/soloud_vic.cpp.o
+[19/61] Building CXX object CMakeFiles/soloud.dir/soloud/src/audiosource/tedsid/sid.cpp.o
+[20/61] Building CXX object CMakeFiles/soloud.dir/soloud/src/audiosource/tedsid/soloud_tedsid.cpp.o
+/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/src/audiosource/tedsid/soloud_tedsid.cpp:176:26: warning: multi-character character constant [-Wmultichar]
+  176 |   if (aFile->read32() != 'PIHC') return FILE_LOAD_FAILED; // CHIP
+      |                          ^~~~~~
+/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/src/audiosource/tedsid/soloud_tedsid.cpp:177:26: warning: multi-character character constant [-Wmultichar]
+  177 |   if (aFile->read32() != 'ENUT') return FILE_LOAD_FAILED; // TUNE
+      |                          ^~~~~~
+[21/61] Building CXX object CMakeFiles/soloud.dir/soloud/src/core/soloud_audiosource.cpp.o
+[22/61] Building CXX object CMakeFiles/soloud.dir/soloud/src/audiosource/vizsn/soloud_vizsn.cpp.o
+[23/61] Building CXX object CMakeFiles/soloud.dir/soloud/src/audiosource/speech/klatt.cpp.o
+[24/61] Building CXX object CMakeFiles/soloud.dir/soloud/src/audiosource/wav/soloud_wav.cpp.o
+[25/61] Building CXX object CMakeFiles/soloud.dir/soloud/src/core/soloud_core_basicops.cpp.o
+[26/61] Building CXX object CMakeFiles/soloud.dir/soloud/src/core/soloud_core_faderops.cpp.o
+[27/61] Building CXX object CMakeFiles/soloud.dir/soloud/src/core/soloud_core_filterops.cpp.o
+[28/61] Building CXX object CMakeFiles/soloud.dir/soloud/src/core/soloud_bus.cpp.o
+[29/61] Building CXX object CMakeFiles/soloud.dir/soloud/src/audiosource/wav/soloud_wavstream.cpp.o
+[30/61] Building CXX object CMakeFiles/soloud.dir/soloud/src/core/soloud_fft_lut.cpp.o
+[31/61] Building CXX object CMakeFiles/soloud.dir/soloud/src/core/soloud_core_getters.cpp.o
+[32/61] Building CXX object CMakeFiles/soloud.dir/soloud/src/core/soloud_core_setters.cpp.o
+[33/61] Building CXX object CMakeFiles/soloud.dir/soloud/src/core/soloud_core_3d.cpp.o
+[34/61] Building CXX object CMakeFiles/soloud.dir/soloud/src/core/soloud_core_voiceops.cpp.o
+[35/61] Building CXX object CMakeFiles/soloud.dir/soloud/src/core/soloud_fader.cpp.o
+[36/61] Building CXX object CMakeFiles/soloud.dir/soloud/src/core/soloud_core_voicegroup.cpp.o
+[37/61] Building CXX object CMakeFiles/soloud.dir/soloud/src/core/soloud_misc.cpp.o
+[38/61] Building CXX object CMakeFiles/soloud.dir/soloud/src/core/soloud_file.cpp.o
+[39/61] Building CXX object CMakeFiles/soloud.dir/soloud/src/core/soloud_filter.cpp.o
+[40/61] Building CXX object CMakeFiles/soloud.dir/soloud/src/filter/soloud_bassboostfilter.cpp.o
+[41/61] Building CXX object CMakeFiles/soloud.dir/soloud/src/core/soloud_thread.cpp.o
+[42/61] Building CXX object CMakeFiles/soloud.dir/soloud/src/filter/soloud_biquadresonantfilter.cpp.o
+[43/61] Building CXX object CMakeFiles/soloud.dir/soloud/src/filter/soloud_duckfilter.cpp.o
+[44/61] Building CXX object CMakeFiles/soloud.dir/soloud/src/core/soloud_queue.cpp.o
+[45/61] Building CXX object CMakeFiles/soloud.dir/soloud/src/filter/soloud_dcremovalfilter.cpp.o
+[46/61] Building CXX object CMakeFiles/soloud.dir/soloud/src/filter/soloud_echofilter.cpp.o
+[47/61] Building CXX object CMakeFiles/soloud.dir/soloud/src/filter/soloud_eqfilter.cpp.o
+[48/61] Building CXX object CMakeFiles/soloud.dir/soloud/src/c_api/soloud_c.cpp.o
+[49/61] Building CXX object CMakeFiles/soloud.dir/soloud/src/filter/soloud_fftfilter.cpp.o
+[50/61] Building CXX object CMakeFiles/soloud.dir/soloud/src/filter/soloud_flangerfilter.cpp.o
+[51/61] Building CXX object CMakeFiles/soloud.dir/soloud/src/filter/soloud_robotizefilter.cpp.o
+[52/61] Building CXX object CMakeFiles/soloud.dir/soloud/src/filter/soloud_lofifilter.cpp.o
+[53/61] Building CXX object CMakeFiles/soloud.dir/soloud/src/filter/soloud_waveshaperfilter.cpp.o
+[54/61] Building CXX object CMakeFiles/soloud.dir/soloud/src/filter/soloud_freeverbfilter.cpp.o
+[55/61] Building CXX object CMakeFiles/soloud.dir/soloud/src/core/soloud.cpp.o
+[56/61] Building CXX object CMakeFiles/soloud.dir/soloud/src/core/soloud_fft.cpp.o
+[57/61] Building C object CMakeFiles/soloud.dir/soloud/src/audiosource/wav/stb_vorbis.c.o
+[58/61] Building CXX object CMakeFiles/soloud.dir/soloud/src/backend/miniaudio/soloud_miniaudio.cpp.o
+In file included from /home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/src/backend/miniaudio/soloud_miniaudio.cpp:46:
+/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/src/backend/miniaudio/miniaudio.h: In function ‘ma_result ma_device_data_loop_wakeup__alsa(ma_device*)’:
+/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/src/backend/miniaudio/miniaudio.h:21338:14: warning: ignoring return value of ‘ssize_t write(int, const void*, size_t)’, declared with attribute warn_unused_result [-Wunused-result]
+21338 |         write(pDevice->alsa.wakeupfdCapture, &t, sizeof(t));
+      |         ~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/src/backend/miniaudio/miniaudio.h:21341:14: warning: ignoring return value of ‘ssize_t write(int, const void*, size_t)’, declared with attribute warn_unused_result [-Wunused-result]
+21341 |         write(pDevice->alsa.wakeupfdPlayback, &t, sizeof(t));
+      |         ~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/src/backend/miniaudio/miniaudio.h: In function ‘ma_result ma_device_wait__alsa(ma_device*, ma_snd_pcm_t*, pollfd*, int, short int)’:
+/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/src/backend/miniaudio/miniaudio.h:21176:17: warning: ignoring return value of ‘ssize_t read(int, void*, size_t)’, declared with attribute warn_unused_result [-Wunused-result]
+21176 |             read(pPollDescriptors[0].fd, &t, sizeof(t));    /* <-- Important that we read here so that the next write() does not block. */
+      |             ~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+[59/61] Building CXX object CMakeFiles/soloud.dir/soloud/src/audiosource/wav/dr_impl.cpp.o
+[60/61] Linking CXX static library /home/dread/Documents/Projects/DTunes/target/debug/build/soloud-sys-e585e31da77f8a41/out/lib/libsoloud.a
+[60/61] Install the project...
+-- Install configuration: "Release"
+cargo:root=/home/dread/Documents/Projects/DTunes/target/debug/build/soloud-sys-e585e31da77f8a41/out
+cargo:rustc-link-search=native=/home/dread/Documents/Projects/DTunes/target/debug/build/soloud-sys-e585e31da77f8a41/out/build
+cargo:rustc-link-search=native=/home/dread/Documents/Projects/DTunes/target/debug/build/soloud-sys-e585e31da77f8a41/out/lib
+cargo:rustc-link-search=native=/home/dread/Documents/Projects/DTunes/target/debug/build/soloud-sys-e585e31da77f8a41/out/lib/Release
+cargo:rustc-link-lib=static=soloud

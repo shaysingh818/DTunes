@@ -46,7 +46,7 @@ impl AudioFile {
     }
 
     pub fn retrieve(conn: &Connection) -> Result<Vec<AudioFile>> {
-       let mut stmt = conn.prepare("SELECT * FROM AUDIO_FILE")?;
+       let mut stmt = conn.prepare("SELECT * FROM AUDIO_FILE ORDER BY date_modified")?;
        let rows = stmt.query_map([], |row| {
             Ok(AudioFile {
                 file_name: row.get(0)?,

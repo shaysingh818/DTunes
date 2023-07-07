@@ -7,10 +7,22 @@ on:
     branches: [ "master" ]
 
 jobs:
-  build:
-
+  linux-build:
     runs-on: ubuntu-latest
-
+    steps:
+    - uses: actions/checkout@v3
+    - name: Build and Test
+      run: cargo test
+ 
+  windows-build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Build and Test
+      run: cargo test
+ 
+  mac-os-build:
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
     - name: Build and Test
