@@ -1,0 +1,71 @@
+pub mod playlist;
+pub mod audio_file;
+pub mod pomodoro;
+pub mod source;
+
+
+use serde_yaml::{Value, Mapping};
+use serde::{Deserialize, Serialize};
+use std::fs::File; 
+use std::io::BufReader;
+
+use clap::{App, Arg, SubCommand};
+
+
+#[derive(Debug, Deserialize)]
+struct Command {
+    description: String,
+    long: String,
+    required: bool,
+    params: Vec<String>,
+}
+
+#[derive(Debug, Deserialize)]
+struct AppConfig {
+    app_name: String,
+    version: String,
+    author: String,
+    description: String,
+    commands: Vec<Command>,
+}
+
+
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+
+    
+    let file = File::open("config/config.yaml").expect("Failed to open file");
+    let reader = BufReader::new(file);
+
+    let config: AppConfig = serde_yaml::from_reader(reader).expect("Failed to parse YAML");
+
+    let mut app = App::new(config.app_name.as_str())
+        .version(config.version.as_str())
+        .author(config.author.as_str())
+        .about(config.description.as_str());
+
+    for item in &config.commands {
+        
+        let mut module_arg = Arg::new(item.long.as_str())
+            .long(item.long.as_str())
+            .required(item.required)
+            .help(item.description.as_str());
+
+        /* create sub args */ 
+
+        for sub_cmd in &item.params {
+
+            let mut sub_arg = SubCommand::with_name(sub_cmd.as_str());
+            let sub_cmd_arg = Arg::new(sub_cmd.as_str())
+                .long(sub_cmd.as_str());
+
+            sub_arg = sub_arg.arg(sub_cmd_arg);
+            app = app.subcommand(sub_arg);
+        }        
+
+        app = app.arg(module_arg);
+    }
+
+    let _matches = app.get_matches();
+
+    Ok(())
+}
