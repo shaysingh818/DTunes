@@ -83,18 +83,18 @@ impl Playlist {
         Ok(())
     }
 
-    pub fn delete(&mut self, conn: &Connection) -> Result<()> {
+    pub fn delete(conn: &Connection, name: &str) -> Result<()> {
         conn.execute(
             "DELETE FROM playlist WHERE name=?",
-            [&self.name],
+            [&name],
         )?;
         Ok(())
     }
 
 
-    pub fn view(&mut self, conn: &Connection) -> Result<Playlist> {
+    pub fn view(conn: &Connection, name: &str) -> Result<Playlist> {
         let query = "SELECT * FROM playlist WHERE name = ?";
-        conn.query_row(query, &[&self.name], |row| {
+        conn.query_row(query, &[&name], |row| {
             Ok(Playlist {
                 name: row.get(0)?,
                 date_created: row.get(1)?,
@@ -244,15 +244,15 @@ mod playlist_instance {
         let mut equality_status = true; 
 
         /* insert dummy playlist */ 
-        let mut my_playlist : Playlist = Playlist::new("test_playlist");
+        let mut my_playlist : Playlist = Playlist::new("test_view_playlist");
         my_playlist.insert(&conn)?;
 
-        let playlist = my_playlist.view(&conn)?; 
-        if playlist.name != my_playlist.name {
+        let playlist = Playlist::view(&conn, "test_view_playlist")?; 
+        if playlist.name != "test_view_playlist" {
             equality_status = false;
         }
 
-        conn.execute("DELETE FROM PLAYLIST where name =?", [&playlist.name])?; 
+        conn.execute("DELETE FROM PLAYLIST where name =?", [&"test_view_playlist"])?; 
         assert_eq!(equality_status, true); 
 
         Ok(())
@@ -266,11 +266,11 @@ mod playlist_instance {
         let conn = Connection::open(DB_PATH)?;
 
         /* insert dummy playlist */ 
-        let mut my_playlist : Playlist = Playlist::new("test_playlist");
+        let mut my_playlist : Playlist = Playlist::new("test_playlist_delete");
         my_playlist.insert(&conn)?;
 
         /* delete the playlist by name */ 
-        my_playlist.delete(&conn)?; 
+        Playlist::delete(&conn, "test_playlist_delete")?; 
 
         let result = conn.execute("SELECT * FROM PLAYLIST where name =?", [&my_playlist.name])?; 
         assert_eq!(result, 1); 

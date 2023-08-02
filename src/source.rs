@@ -1,5 +1,9 @@
 use chrono; 
 use rusqlite::{Connection, Result};
+use serde::{Deserialize};
+use std::fs::File; 
+use std::io::{Read};
+
 
 #[derive(Debug)]
 pub struct Source {
@@ -13,12 +17,29 @@ pub struct Source {
     pub date_modified: String
 }
 
-
 #[derive(Debug)]
 pub struct FileType {
     pub extension_name: String, 
     pub date_created: String,
     pub date_modified: String
+}
+
+#[derive(Debug, Deserialize)]
+struct DataSource {
+    pub name: String,
+    pub description: String,
+    pub base_path: String,
+    pub sources: Vec<ConfigSource>,
+}
+
+#[derive(Debug, Deserialize)]
+struct ConfigSource {
+    pub source_name: String,
+    pub url: String,
+    pub api_key: String,
+    pub description: String,
+    pub storage_location: String,
+    pub file_types: Vec<String>,
 }
 
 
@@ -118,9 +139,9 @@ impl Source {
         Ok(())
     }
 
-    pub fn view(&mut self, conn: &Connection) -> Result<Source> {
+    pub fn view(conn: &Connection, source_name: &str) -> Result<Source> {
         let query = "SELECT * FROM SOURCE WHERE source_name = ?";
-        conn.query_row(query, &[&self.source_name], |row| {
+        conn.query_row(query, &[&source_name], |row| {
             Ok(Source { 
                 source_name: row.get(0)?,
                 url: row.get(1)?,
@@ -132,6 +153,91 @@ impl Source {
                 date_modified: row.get(7)?
             })
         })
+    }
+
+    pub fn exists(conn: &Connection, source_name: &str) -> Result<bool> {  
+        let query = "SELECT * FROM SOURCE where source_name = ?"; 
+        let mut stmt = conn.prepare(query)?;
+        let rows = stmt.query_map([&source_name], |row| {
+            Ok(Source {
+                source_name: row.get(0)?,
+                url: row.get(1)?,
+                api_key: row.get(2)?,
+                storage_path: row.get(3)?,
+                description: row.get(4)?,
+                status: row.get(5)?,
+                date_created: row.get(6)?,
+                date_modified: row.get(7)?
+            })
+        })?;
+
+        if rows.count() > 0 {
+            return Ok(true)
+        }
+        Ok(false)
+    }
+
+
+    pub fn add_file_type(&mut self, conn: &Connection, extension_name: &str) -> Result<()> {
+        conn.execute(
+            "INSERT INTO SOURCE_FILE_TYPE
+                (source, file_type)
+            VALUES (?1, ?2)
+            ",
+            [&self.source_name, extension_name],
+        )?;
+
+        Ok(())
+    }
+
+
+    pub fn sync_config_file(conn: &Connection, config: &str) -> Result<()>  {
+
+        /* read config file */ 
+        let mut file = File::open(config).expect("Failed to open the file");
+        let mut contents = String::new();
+        file.read_to_string(&mut contents).expect("Failed to read the file");
+
+        /* read into data sources schema */ 
+        let data_sources: DataSource = serde_yaml::from_str(&contents).expect("Failed to deserialize");
+        let name_condition = data_sources.name.len() > 0; 
+        let description_condition = data_sources.description.len() > 0;
+        let base_path_condition = data_sources.base_path.len() > 0;  
+        
+        if !name_condition || !description_condition || !base_path_condition {
+            println!("Name and description missing from config file\n");    
+        }
+
+        /* Read sources from file line by line */ 
+        for source in data_sources.sources {
+
+            /* Insert unique sources */ 
+            if Source::exists(&conn, &source.source_name) == Ok(false) {
+                let mut db_source : Source = Source::new(
+                    &source.source_name,
+                    &source.url,
+                    &source.api_key,
+                    &source.storage_location,
+                    &source.description
+                );
+
+                db_source.insert(&conn)?;
+
+                /* Check for duplicate file types */ 
+                for file_type in source.file_types {
+                    if FileType::exists(&conn, &file_type) == Ok(false)  {
+                        let mut db_file_type : FileType = FileType::new(&file_type);
+                        db_file_type.insert(&conn)?;
+                    }
+
+                    let mut source_instance = Source::view(&conn, &db_source.source_name)?;
+                    source_instance.add_file_type(&conn, &file_type)?; 
+                }
+            }
+        }
+
+        Ok(())
+
     }
 
 }
@@ -216,6 +322,24 @@ impl FileType {
         })
     }
 
+    pub fn exists(conn: &Connection, extension_name: &str) -> Result<bool> {  
+        let query = "SELECT * FROM FILE_TYPE where extension_name = ?"; 
+        let mut stmt = conn.prepare(query)?;    
+        let rows = stmt.query_map([&extension_name], |row| {
+            Ok(FileType {
+                extension_name: row.get(0)?,
+                date_created: row.get(1)?,
+                date_modified: row.get(2)?
+            })
+        })?;
+
+        if rows.count() > 0 {
+            return Ok(true)
+        }
+        Ok(false)
+    }
+
+
 }
 
 
@@ -235,7 +359,6 @@ mod source_instance {
 
         /* Create connection and insert playlist into db  */ 
         let conn = Connection::open(DB_PATH)?;
-        let mut equality_status = true; 
 
         /* insert 5 dummy playlists */ 
         for i in 0..5 {
@@ -262,16 +385,12 @@ mod source_instance {
         let sources : Vec<Source> = Source::retrieve(&conn)?;
         let mut counter = 0;  
         for s in sources {    
-            if &s.source_name != &source_names[counter] {
-                equality_status = false;                 
-            }
+            assert_eq!(&s.source_name, &source_names[counter]); 
             counter += 1;  
         }
 
         /* delete playlists and validate */
         conn.execute("DELETE FROM SOURCE", [])?; 
-        assert_eq!(equality_status, true); 
-
         Ok(()) 
 
     }
@@ -286,7 +405,7 @@ mod source_instance {
 
         /* insert dummy source */ 
         let mut my_source : Source = Source::new(
-            &"youtube",
+            &"youtube-test",
             &"www.youtube.com",
             &"378429738294",
             &"dtunes/sources/youtube",
@@ -316,11 +435,10 @@ mod source_instance {
 
         /* Create connection and insert playlist into db  */ 
         let conn = Connection::open(DB_PATH)?;
-        let mut equality_status = true; 
 
         /* insert dummy source */ 
         let mut my_source : Source = Source::new(
-            &"spotify",
+            &"spotify-test-2",
             &"www.youtube.com",
             &"378429738294",
             &"dtunes/sources/spotify",
@@ -328,14 +446,10 @@ mod source_instance {
         );
         my_source.insert(&conn)?;
 
-        let source = my_source.view(&conn)?; 
-        if source.source_name != my_source.source_name {
-            equality_status = false;
-        }
+        let source = Source::view(&conn, "spotify-test-2")?; 
+        assert_eq!(source.source_name, my_source.source_name); 
 
         conn.execute("DELETE FROM SOURCE where source_name =?", [&source.source_name])?; 
-        assert_eq!(equality_status, true); 
-
         Ok(())
     }
 
@@ -348,7 +462,7 @@ mod source_instance {
 
         /* insert dummy playlist */ 
         let mut my_source : Source = Source::new(
-            &"spotify",
+            &"spotify-test",
             &"www.youtube.com",
             &"378429738294",
             &"dtunes/sources/spotify",
@@ -469,8 +583,33 @@ mod source_instance {
         /* delete the playlist by name */ 
         file_type.delete(&conn)?; 
 
-        let result = conn.execute("SELECT * FROM FILE_TYPE where extension_name =?", [&file_type.extension_name])?; 
+        let result = conn.execute("SELECT * FROM FILE_TYPE WHERE extension_name =?", [&file_type.extension_name])?; 
         assert_eq!(result, 1); 
+
+        Ok(())
+    }
+
+    #[test]
+    fn test_sync_config_file() -> Result<()> {
+
+        let conn = Connection::open(DB_PATH)?;
+        Source::sync_config_file(&conn, "config/data_sources.yaml")?;  
+        
+        let yt_source = Source::exists(&conn, &"YouTube")?;
+        let soundcloud_source = Source::exists(&conn, &"SoundCloud")?;
+
+        assert_eq!(yt_source, true); 
+        assert_eq!(soundcloud_source, true); 
+
+        let expcted_file_types = vec!["mp3", "mp4", "wav", "Flacc"]; 
+        for file_type in expcted_file_types {
+            let file_type_check = FileType::exists(&conn, &file_type)?;
+            assert_eq!(file_type_check, true);        
+        }
+        
+        conn.execute("DELETE FROM SOURCE_FILE_TYPE", [])?; 
+        conn.execute("DELETE FROM FILE_TYPE", [])?; 
+        conn.execute("DELETE FROM SOURCE", [])?; 
 
         Ok(())
     }

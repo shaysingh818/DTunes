@@ -99,9 +99,9 @@ impl AudioFile {
     }
 
 
-    fn view(&mut self, conn: &Connection) -> Result<AudioFile> {
+    pub fn view(conn: &Connection, file_name: &str) -> Result<AudioFile> {
         let query = "SELECT * FROM audio_file WHERE file_name = ?";
-        conn.query_row(query, &[&self.file_name], |row| {
+        conn.query_row(query, &[&file_name], |row| {
             Ok(AudioFile {
                 file_name: row.get(0)?,
                 file_type: row.get(1)?,
@@ -223,20 +223,15 @@ mod audio_file_instance {
 
         /* Create connection and insert playlist into db  */ 
         let conn = Connection::open(DB_PATH)?;
-        let mut equality_status = true; 
 
         /* insert dummy playlist */ 
         let mut my_file : AudioFile = AudioFile::new("test_file", "mp3", 1000, 2);
         my_file.insert(&conn)?;
 
-        let audio_file = my_file.view(&conn)?; 
-        if audio_file.file_name != my_file.file_name {
-            equality_status = false;
-        }
+        let audio_file = AudioFile::view(&conn, "test_file")?; 
+        assert_eq!(audio_file.file_name, my_file.file_name);
 
         conn.execute("DELETE FROM AUDIO_FILE where file_name =?", [&my_file.file_name])?; 
-        assert_eq!(equality_status, true); 
-
         Ok(())
     }
 
