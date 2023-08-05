@@ -1,3 +1,4 @@
+use std::fs;
 use rusqlite::{Connection, Result};
 use clap::{Args, Subcommand};
 use crate::audio_file::AudioFile;
@@ -17,7 +18,7 @@ pub struct AudioFileCommand {
 pub enum AudioFileSubcommand {
 
     /// Sync Audio sources from config file
-    AddFileFromSource(AddSourceConfig),
+    Sync(SyncProps),
 
     /// View sources in DTunes database
     View(ViewAudioFiles),
@@ -25,13 +26,14 @@ pub enum AudioFileSubcommand {
 }
 
 #[derive(Debug, Args)]
-pub struct AddSourceConfig {
+pub struct SyncProps {
 
-    /// Name of playlist
-    pub source_name: String,
+    // input path to sync files from
+    pub input_path: String,
 
-    // URL of audio file from source 
-    pub url: String
+    // output path to store audio files
+    pub output_path: String,
+
 }
 
 #[derive(Debug, Args)]
@@ -45,8 +47,8 @@ pub struct ViewAudioFiles {
 pub fn handle_audio_file_commands(audio_file: AudioFileCommand) {
     let command = audio_file.command;
     match command {
-        AudioFileSubcommand::AddFileFromSource(audio_file) => {
-            let _ = add_file_from_source(audio_file);
+        AudioFileSubcommand::Sync(audio_file) => {
+            let _ = sync_files(audio_file);
         }
         AudioFileSubcommand::View(audio_file) => {
             let _ = view_audio_files(audio_file);
@@ -55,9 +57,22 @@ pub fn handle_audio_file_commands(audio_file: AudioFileCommand) {
 }
 
 
-pub fn add_file_from_source(_audio_file: AddSourceConfig) -> Result<()> {
+pub fn sync_files(audio_file: SyncProps) -> Result<()> {
 
-    let _conn = Connection::open(DB_PATH)?;
+    let conn = Connection::open(DB_PATH)?;
+    let file_names = AudioFile::prepare_raw_file_names(&audio_file.input_path).unwrap();  
+
+    /* call raw file ingestion method */ 
+    AudioFile::raw_file_insertion(
+        &conn, 
+        file_names, 
+        &audio_file.input_path,
+        &audio_file.output_path
+    )?;
+
+    fs::remove_dir_all(&audio_file.input_path).unwrap(); 
+    fs::create_dir(&audio_file.input_path).unwrap(); 
+
     Ok(())
 }
 

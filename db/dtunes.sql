@@ -3,67 +3,79 @@ CREATE TABLE PLAYLIST (
 	date_created VARCHAR(255),
 	date_modified VARCHAR(255),
 	disk_space INT, 
-	file_count INT
+	file_count INT,
+	play_count INT
 );
 
-CREATE TABLE AUDIO_FILE (
-    file_name VARCHAR(255) UNIQUE PRIMARY KEY,
-	file_type VARCHAR(255),
+CREATE TABLE AUDIO_FILE (	
+    file_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    file_name VARCHAR(255) NOT NULL,
+	file_type VARCHAR(255) NOT NULL,
 	duration INT,
     sample_rate INT,
+    storage_path VARCHAR(1000), 
+	date_modified VARCHAR(255),
+    date_created VARCHAR(255)
+);
+
+CREATE TABLE POMODORO (
+	name VARCHAR(255) UNIQUE PRIMARY KEY,
+	duration INT NOT NULL,
+	duration_limit INT NOT NULL,
+	short_break INT NOT NULL,
+	long_break INT NOT NULL,
+	date_modified VARCHAR(255),
+    date_created VARCHAR(255)
+);
+
+CREATE TABLE ARTIST (
+    artist_id INTEGER PRIMARY KEY AUTOINCREMENT,
+	first_name VARCHAR(255),
+	last_name VARCHAR(255),
+	date_modified VARCHAR(255),
+    date_created VARCHAR(255)
+);
+
+CREATE TABLE GENRE (
+    genre_id INTEGER PRIMARY KEY AUTOINCREMENT,
+	genre_name VARCHAR(255) NOT NULL,
 	date_modified VARCHAR(255),
     date_created VARCHAR(255)
 );
 
 
+/* relationships */ 
 CREATE TABLE PLAYLIST_FILE (
     relation_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    playlist VARCHAR(255),
-    audio_file VARCHAR(255),
+    playlist VARCHAR(255) NOT NULL,
+    audio_file VARCHAR(255) NOT NULL,
     FOREIGN KEY(playlist) REFERENCES PLAYLIST(name),
     FOREIGN KEY(audio_file) REFERENCES AUDIO_FILE(file_name)
 );
 
-CREATE TABLE POMODORO (
-	name VARCHAR(100),
-	duration INT,
-	duration_limit INT,
-	short_break INT,
-	long_break INT,
-	date_modified VARCHAR(255),
-    date_created VARCHAR(255)
-);
 
 CREATE TABLE POMODORO_AUDIO_FILE (
     relation_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    pomodoro VARCHAR(100),
-    audio_file VARCHAR(255),
+    pomodoro VARCHAR(100) NOT NULL,
+    audio_file VARCHAR(255) NOT NULL,
     FOREIGN KEY(pomodoro) REFERENCES POMODORO(name),
     FOREIGN KEY(audio_file) REFERENCES AUDIO_FILE(file_name)
 );
 
-CREATE TABLE SOURCE (
-	source_name VARCHAR(100),
-	url VARCHAR(100), 
-	api_key VARCHAR(100),
-	storage_path VARCHAR(100),
-	description VARCHAR(1000),
-	status INT,
-	date_modified VARCHAR(255),
-    date_created VARCHAR(255)
-);
 
-CREATE TABLE FILE_TYPE (
-	extension_name VARCHAR(100) UNIQUE PRIMARY KEY,
-    date_created VARCHAR(255),
-	date_modified VARCHAR(255)
-);
-
-CREATE TABLE SOURCE_FILE_TYPE (
+CREATE TABLE AUDIO_FILE_ARTIST (
     relation_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    source VARCHAR(100),
-   	file_type VARCHAR(255),
-    FOREIGN KEY(source) REFERENCES SOURCE(source_name),
-    FOREIGN KEY(file_type) REFERENCES FILE_TYPE(extension_name)
+    audio_file_id INTEGER NOT NULL,
+    artist_id INTEGER NOT NULL,
+    FOREIGN KEY(audio_file_id) REFERENCES AUDIO_FILE(file_id),
+    FOREIGN KEY(artist_id) REFERENCES ARTIST(artist_id)
 );
 
+
+CREATE TABLE AUDIO_FILE_GENRE (
+    relation_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    audio_file_id INTEGER NOT NULL,
+    genre_id INTEGER NOT NULL,
+    FOREIGN KEY(audio_file_id) REFERENCES AUDIO_FILE(file_id),
+    FOREIGN KEY(genre_id) REFERENCES GENRE(genre_id)
+);

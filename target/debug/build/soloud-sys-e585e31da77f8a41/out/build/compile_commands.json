@@ -1,0 +1,355 @@
+[
+{
+  "directory": "/home/dread/Documents/Projects/DTunes/target/debug/build/soloud-sys-e585e31da77f8a41/out/build",
+  "command": "/usr/bin/c++  -DWITH_MINIAUDIO -I/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/include   -ffunction-sections -fdata-sections -fPIC -m64 -fno-rtti -fno-exceptions -O3 -DNDEBUG   -std=gnu++11 -o CMakeFiles/soloud.dir/soloud_new.cpp.o -c /home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud_new.cpp",
+  "file": "/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud_new.cpp"
+},
+
+{
+  "directory": "/home/dread/Documents/Projects/DTunes/target/debug/build/soloud-sys-e585e31da77f8a41/out/build",
+  "command": "/usr/bin/c++  -DWITH_MINIAUDIO -I/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/include   -ffunction-sections -fdata-sections -fPIC -m64 -fno-rtti -fno-exceptions -O3 -DNDEBUG   -std=gnu++11 -o CMakeFiles/soloud.dir/soloud_derives.cpp.o -c /home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud_derives.cpp",
+  "file": "/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud_derives.cpp"
+},
+
+{
+  "directory": "/home/dread/Documents/Projects/DTunes/target/debug/build/soloud-sys-e585e31da77f8a41/out/build",
+  "command": "/usr/bin/c++  -DWITH_MINIAUDIO -I/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/include   -ffunction-sections -fdata-sections -fPIC -m64 -fno-rtti -fno-exceptions -O3 -DNDEBUG   -std=gnu++11 -o CMakeFiles/soloud.dir/soloud/src/backend/miniaudio/soloud_miniaudio.cpp.o -c /home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/src/backend/miniaudio/soloud_miniaudio.cpp",
+  "file": "/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/src/backend/miniaudio/soloud_miniaudio.cpp"
+},
+
+{
+  "directory": "/home/dread/Documents/Projects/DTunes/target/debug/build/soloud-sys-e585e31da77f8a41/out/build",
+  "command": "/usr/bin/c++  -DWITH_MINIAUDIO -I/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/include   -ffunction-sections -fdata-sections -fPIC -m64 -fno-rtti -fno-exceptions -O3 -DNDEBUG   -std=gnu++11 -o CMakeFiles/soloud.dir/soloud/src/c_api/soloud_c.cpp.o -c /home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/src/c_api/soloud_c.cpp",
+  "file": "/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/src/c_api/soloud_c.cpp"
+},
+
+{
+  "directory": "/home/dread/Documents/Projects/DTunes/target/debug/build/soloud-sys-e585e31da77f8a41/out/build",
+  "command": "/usr/bin/c++  -DWITH_MINIAUDIO -I/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/include   -ffunction-sections -fdata-sections -fPIC -m64 -fno-rtti -fno-exceptions -O3 -DNDEBUG   -std=gnu++11 -o CMakeFiles/soloud.dir/soloud/src/audiosource/ay/chipplayer.cpp.o -c /home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/src/audiosource/ay/chipplayer.cpp",
+  "file": "/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/src/audiosource/ay/chipplayer.cpp"
+},
+
+{
+  "directory": "/home/dread/Documents/Projects/DTunes/target/debug/build/soloud-sys-e585e31da77f8a41/out/build",
+  "command": "/usr/bin/c++  -DWITH_MINIAUDIO -I/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/include   -ffunction-sections -fdata-sections -fPIC -m64 -fno-rtti -fno-exceptions -O3 -DNDEBUG   -std=gnu++11 -o CMakeFiles/soloud.dir/soloud/src/audiosource/ay/sndbuffer.cpp.o -c /home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/src/audiosource/ay/sndbuffer.cpp",
+  "file": "/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/src/audiosource/ay/sndbuffer.cpp"
+},
+
+{
+  "directory": "/home/dread/Documents/Projects/DTunes/target/debug/build/soloud-sys-e585e31da77f8a41/out/build",
+  "command": "/usr/bin/c++  -DWITH_MINIAUDIO -I/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/include   -ffunction-sections -fdata-sections -fPIC -m64 -fno-rtti -fno-exceptions -O3 -DNDEBUG   -std=gnu++11 -o CMakeFiles/soloud.dir/soloud/src/audiosource/ay/sndchip.cpp.o -c /home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/src/audiosource/ay/sndchip.cpp",
+  "file": "/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/src/audiosource/ay/sndchip.cpp"
+},
+
+{
+  "directory": "/home/dread/Documents/Projects/DTunes/target/debug/build/soloud-sys-e585e31da77f8a41/out/build",
+  "command": "/usr/bin/c++  -DWITH_MINIAUDIO -I/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/include   -ffunction-sections -fdata-sections -fPIC -m64 -fno-rtti -fno-exceptions -O3 -DNDEBUG   -std=gnu++11 -o CMakeFiles/soloud.dir/soloud/src/audiosource/ay/sndrender.cpp.o -c /home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/src/audiosource/ay/sndrender.cpp",
+  "file": "/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/src/audiosource/ay/sndrender.cpp"
+},
+
+{
+  "directory": "/home/dread/Documents/Projects/DTunes/target/debug/build/soloud-sys-e585e31da77f8a41/out/build",
+  "command": "/usr/bin/c++  -DWITH_MINIAUDIO -I/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/include   -ffunction-sections -fdata-sections -fPIC -m64 -fno-rtti -fno-exceptions -O3 -DNDEBUG   -std=gnu++11 -o CMakeFiles/soloud.dir/soloud/src/audiosource/ay/soloud_ay.cpp.o -c /home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/src/audiosource/ay/soloud_ay.cpp",
+  "file": "/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/src/audiosource/ay/soloud_ay.cpp"
+},
+
+{
+  "directory": "/home/dread/Documents/Projects/DTunes/target/debug/build/soloud-sys-e585e31da77f8a41/out/build",
+  "command": "/usr/bin/c++  -DWITH_MINIAUDIO -I/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/include   -ffunction-sections -fdata-sections -fPIC -m64 -fno-rtti -fno-exceptions -O3 -DNDEBUG   -std=gnu++11 -o CMakeFiles/soloud.dir/soloud/src/audiosource/monotone/soloud_monotone.cpp.o -c /home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/src/audiosource/monotone/soloud_monotone.cpp",
+  "file": "/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/src/audiosource/monotone/soloud_monotone.cpp"
+},
+
+{
+  "directory": "/home/dread/Documents/Projects/DTunes/target/debug/build/soloud-sys-e585e31da77f8a41/out/build",
+  "command": "/usr/bin/c++  -DWITH_MINIAUDIO -I/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/include   -ffunction-sections -fdata-sections -fPIC -m64 -fno-rtti -fno-exceptions -O3 -DNDEBUG   -std=gnu++11 -o CMakeFiles/soloud.dir/soloud/src/audiosource/noise/soloud_noise.cpp.o -c /home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/src/audiosource/noise/soloud_noise.cpp",
+  "file": "/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/src/audiosource/noise/soloud_noise.cpp"
+},
+
+{
+  "directory": "/home/dread/Documents/Projects/DTunes/target/debug/build/soloud-sys-e585e31da77f8a41/out/build",
+  "command": "/usr/bin/c++  -DWITH_MINIAUDIO -I/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/include   -ffunction-sections -fdata-sections -fPIC -m64 -fno-rtti -fno-exceptions -O3 -DNDEBUG   -std=gnu++11 -o CMakeFiles/soloud.dir/soloud/src/audiosource/openmpt/soloud_openmpt.cpp.o -c /home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/src/audiosource/openmpt/soloud_openmpt.cpp",
+  "file": "/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/src/audiosource/openmpt/soloud_openmpt.cpp"
+},
+
+{
+  "directory": "/home/dread/Documents/Projects/DTunes/target/debug/build/soloud-sys-e585e31da77f8a41/out/build",
+  "command": "/usr/bin/cc -DWITH_MINIAUDIO -I/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/include   -ffunction-sections -fdata-sections -fPIC -m64 -O3 -DNDEBUG   -o CMakeFiles/soloud.dir/soloud/src/audiosource/openmpt/soloud_openmpt_dll.c.o   -c /home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/src/audiosource/openmpt/soloud_openmpt_dll.c",
+  "file": "/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/src/audiosource/openmpt/soloud_openmpt_dll.c"
+},
+
+{
+  "directory": "/home/dread/Documents/Projects/DTunes/target/debug/build/soloud-sys-e585e31da77f8a41/out/build",
+  "command": "/usr/bin/c++  -DWITH_MINIAUDIO -I/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/include   -ffunction-sections -fdata-sections -fPIC -m64 -fno-rtti -fno-exceptions -O3 -DNDEBUG   -std=gnu++11 -o CMakeFiles/soloud.dir/soloud/src/audiosource/sfxr/soloud_sfxr.cpp.o -c /home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/src/audiosource/sfxr/soloud_sfxr.cpp",
+  "file": "/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/src/audiosource/sfxr/soloud_sfxr.cpp"
+},
+
+{
+  "directory": "/home/dread/Documents/Projects/DTunes/target/debug/build/soloud-sys-e585e31da77f8a41/out/build",
+  "command": "/usr/bin/c++  -DWITH_MINIAUDIO -I/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/include   -ffunction-sections -fdata-sections -fPIC -m64 -fno-rtti -fno-exceptions -O3 -DNDEBUG   -std=gnu++11 -o CMakeFiles/soloud.dir/soloud/src/audiosource/speech/darray.cpp.o -c /home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/src/audiosource/speech/darray.cpp",
+  "file": "/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/src/audiosource/speech/darray.cpp"
+},
+
+{
+  "directory": "/home/dread/Documents/Projects/DTunes/target/debug/build/soloud-sys-e585e31da77f8a41/out/build",
+  "command": "/usr/bin/c++  -DWITH_MINIAUDIO -I/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/include   -ffunction-sections -fdata-sections -fPIC -m64 -fno-rtti -fno-exceptions -O3 -DNDEBUG   -std=gnu++11 -o CMakeFiles/soloud.dir/soloud/src/audiosource/speech/klatt.cpp.o -c /home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/src/audiosource/speech/klatt.cpp",
+  "file": "/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/src/audiosource/speech/klatt.cpp"
+},
+
+{
+  "directory": "/home/dread/Documents/Projects/DTunes/target/debug/build/soloud-sys-e585e31da77f8a41/out/build",
+  "command": "/usr/bin/c++  -DWITH_MINIAUDIO -I/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/include   -ffunction-sections -fdata-sections -fPIC -m64 -fno-rtti -fno-exceptions -O3 -DNDEBUG   -std=gnu++11 -o CMakeFiles/soloud.dir/soloud/src/audiosource/speech/resonator.cpp.o -c /home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/src/audiosource/speech/resonator.cpp",
+  "file": "/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/src/audiosource/speech/resonator.cpp"
+},
+
+{
+  "directory": "/home/dread/Documents/Projects/DTunes/target/debug/build/soloud-sys-e585e31da77f8a41/out/build",
+  "command": "/usr/bin/c++  -DWITH_MINIAUDIO -I/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/include   -ffunction-sections -fdata-sections -fPIC -m64 -fno-rtti -fno-exceptions -O3 -DNDEBUG   -std=gnu++11 -o CMakeFiles/soloud.dir/soloud/src/audiosource/speech/soloud_speech.cpp.o -c /home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/src/audiosource/speech/soloud_speech.cpp",
+  "file": "/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/src/audiosource/speech/soloud_speech.cpp"
+},
+
+{
+  "directory": "/home/dread/Documents/Projects/DTunes/target/debug/build/soloud-sys-e585e31da77f8a41/out/build",
+  "command": "/usr/bin/c++  -DWITH_MINIAUDIO -I/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/include   -ffunction-sections -fdata-sections -fPIC -m64 -fno-rtti -fno-exceptions -O3 -DNDEBUG   -std=gnu++11 -o CMakeFiles/soloud.dir/soloud/src/audiosource/speech/tts.cpp.o -c /home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/src/audiosource/speech/tts.cpp",
+  "file": "/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/src/audiosource/speech/tts.cpp"
+},
+
+{
+  "directory": "/home/dread/Documents/Projects/DTunes/target/debug/build/soloud-sys-e585e31da77f8a41/out/build",
+  "command": "/usr/bin/c++  -DWITH_MINIAUDIO -I/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/include   -ffunction-sections -fdata-sections -fPIC -m64 -fno-rtti -fno-exceptions -O3 -DNDEBUG   -std=gnu++11 -o CMakeFiles/soloud.dir/soloud/src/audiosource/tedsid/sid.cpp.o -c /home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/src/audiosource/tedsid/sid.cpp",
+  "file": "/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/src/audiosource/tedsid/sid.cpp"
+},
+
+{
+  "directory": "/home/dread/Documents/Projects/DTunes/target/debug/build/soloud-sys-e585e31da77f8a41/out/build",
+  "command": "/usr/bin/c++  -DWITH_MINIAUDIO -I/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/include   -ffunction-sections -fdata-sections -fPIC -m64 -fno-rtti -fno-exceptions -O3 -DNDEBUG   -std=gnu++11 -o CMakeFiles/soloud.dir/soloud/src/audiosource/tedsid/soloud_tedsid.cpp.o -c /home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/src/audiosource/tedsid/soloud_tedsid.cpp",
+  "file": "/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/src/audiosource/tedsid/soloud_tedsid.cpp"
+},
+
+{
+  "directory": "/home/dread/Documents/Projects/DTunes/target/debug/build/soloud-sys-e585e31da77f8a41/out/build",
+  "command": "/usr/bin/c++  -DWITH_MINIAUDIO -I/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/include   -ffunction-sections -fdata-sections -fPIC -m64 -fno-rtti -fno-exceptions -O3 -DNDEBUG   -std=gnu++11 -o CMakeFiles/soloud.dir/soloud/src/audiosource/tedsid/ted.cpp.o -c /home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/src/audiosource/tedsid/ted.cpp",
+  "file": "/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/src/audiosource/tedsid/ted.cpp"
+},
+
+{
+  "directory": "/home/dread/Documents/Projects/DTunes/target/debug/build/soloud-sys-e585e31da77f8a41/out/build",
+  "command": "/usr/bin/c++  -DWITH_MINIAUDIO -I/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/include   -ffunction-sections -fdata-sections -fPIC -m64 -fno-rtti -fno-exceptions -O3 -DNDEBUG   -std=gnu++11 -o CMakeFiles/soloud.dir/soloud/src/audiosource/vic/soloud_vic.cpp.o -c /home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/src/audiosource/vic/soloud_vic.cpp",
+  "file": "/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/src/audiosource/vic/soloud_vic.cpp"
+},
+
+{
+  "directory": "/home/dread/Documents/Projects/DTunes/target/debug/build/soloud-sys-e585e31da77f8a41/out/build",
+  "command": "/usr/bin/c++  -DWITH_MINIAUDIO -I/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/include   -ffunction-sections -fdata-sections -fPIC -m64 -fno-rtti -fno-exceptions -O3 -DNDEBUG   -std=gnu++11 -o CMakeFiles/soloud.dir/soloud/src/audiosource/vizsn/soloud_vizsn.cpp.o -c /home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/src/audiosource/vizsn/soloud_vizsn.cpp",
+  "file": "/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/src/audiosource/vizsn/soloud_vizsn.cpp"
+},
+
+{
+  "directory": "/home/dread/Documents/Projects/DTunes/target/debug/build/soloud-sys-e585e31da77f8a41/out/build",
+  "command": "/usr/bin/c++  -DWITH_MINIAUDIO -I/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/include   -ffunction-sections -fdata-sections -fPIC -m64 -fno-rtti -fno-exceptions -O3 -DNDEBUG   -std=gnu++11 -o CMakeFiles/soloud.dir/soloud/src/audiosource/wav/dr_impl.cpp.o -c /home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/src/audiosource/wav/dr_impl.cpp",
+  "file": "/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/src/audiosource/wav/dr_impl.cpp"
+},
+
+{
+  "directory": "/home/dread/Documents/Projects/DTunes/target/debug/build/soloud-sys-e585e31da77f8a41/out/build",
+  "command": "/usr/bin/c++  -DWITH_MINIAUDIO -I/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/include   -ffunction-sections -fdata-sections -fPIC -m64 -fno-rtti -fno-exceptions -O3 -DNDEBUG   -std=gnu++11 -o CMakeFiles/soloud.dir/soloud/src/audiosource/wav/soloud_wav.cpp.o -c /home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/src/audiosource/wav/soloud_wav.cpp",
+  "file": "/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/src/audiosource/wav/soloud_wav.cpp"
+},
+
+{
+  "directory": "/home/dread/Documents/Projects/DTunes/target/debug/build/soloud-sys-e585e31da77f8a41/out/build",
+  "command": "/usr/bin/c++  -DWITH_MINIAUDIO -I/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/include   -ffunction-sections -fdata-sections -fPIC -m64 -fno-rtti -fno-exceptions -O3 -DNDEBUG   -std=gnu++11 -o CMakeFiles/soloud.dir/soloud/src/audiosource/wav/soloud_wavstream.cpp.o -c /home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/src/audiosource/wav/soloud_wavstream.cpp",
+  "file": "/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/src/audiosource/wav/soloud_wavstream.cpp"
+},
+
+{
+  "directory": "/home/dread/Documents/Projects/DTunes/target/debug/build/soloud-sys-e585e31da77f8a41/out/build",
+  "command": "/usr/bin/cc -DWITH_MINIAUDIO -I/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/include   -ffunction-sections -fdata-sections -fPIC -m64 -O3 -DNDEBUG   -o CMakeFiles/soloud.dir/soloud/src/audiosource/wav/stb_vorbis.c.o   -c /home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/src/audiosource/wav/stb_vorbis.c",
+  "file": "/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/src/audiosource/wav/stb_vorbis.c"
+},
+
+{
+  "directory": "/home/dread/Documents/Projects/DTunes/target/debug/build/soloud-sys-e585e31da77f8a41/out/build",
+  "command": "/usr/bin/c++  -DWITH_MINIAUDIO -I/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/include   -ffunction-sections -fdata-sections -fPIC -m64 -fno-rtti -fno-exceptions -O3 -DNDEBUG   -std=gnu++11 -o CMakeFiles/soloud.dir/soloud/src/core/soloud.cpp.o -c /home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/src/core/soloud.cpp",
+  "file": "/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/src/core/soloud.cpp"
+},
+
+{
+  "directory": "/home/dread/Documents/Projects/DTunes/target/debug/build/soloud-sys-e585e31da77f8a41/out/build",
+  "command": "/usr/bin/c++  -DWITH_MINIAUDIO -I/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/include   -ffunction-sections -fdata-sections -fPIC -m64 -fno-rtti -fno-exceptions -O3 -DNDEBUG   -std=gnu++11 -o CMakeFiles/soloud.dir/soloud/src/core/soloud_audiosource.cpp.o -c /home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/src/core/soloud_audiosource.cpp",
+  "file": "/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/src/core/soloud_audiosource.cpp"
+},
+
+{
+  "directory": "/home/dread/Documents/Projects/DTunes/target/debug/build/soloud-sys-e585e31da77f8a41/out/build",
+  "command": "/usr/bin/c++  -DWITH_MINIAUDIO -I/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/include   -ffunction-sections -fdata-sections -fPIC -m64 -fno-rtti -fno-exceptions -O3 -DNDEBUG   -std=gnu++11 -o CMakeFiles/soloud.dir/soloud/src/core/soloud_bus.cpp.o -c /home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/src/core/soloud_bus.cpp",
+  "file": "/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/src/core/soloud_bus.cpp"
+},
+
+{
+  "directory": "/home/dread/Documents/Projects/DTunes/target/debug/build/soloud-sys-e585e31da77f8a41/out/build",
+  "command": "/usr/bin/c++  -DWITH_MINIAUDIO -I/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/include   -ffunction-sections -fdata-sections -fPIC -m64 -fno-rtti -fno-exceptions -O3 -DNDEBUG   -std=gnu++11 -o CMakeFiles/soloud.dir/soloud/src/core/soloud_core_3d.cpp.o -c /home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/src/core/soloud_core_3d.cpp",
+  "file": "/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/src/core/soloud_core_3d.cpp"
+},
+
+{
+  "directory": "/home/dread/Documents/Projects/DTunes/target/debug/build/soloud-sys-e585e31da77f8a41/out/build",
+  "command": "/usr/bin/c++  -DWITH_MINIAUDIO -I/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/include   -ffunction-sections -fdata-sections -fPIC -m64 -fno-rtti -fno-exceptions -O3 -DNDEBUG   -std=gnu++11 -o CMakeFiles/soloud.dir/soloud/src/core/soloud_core_basicops.cpp.o -c /home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/src/core/soloud_core_basicops.cpp",
+  "file": "/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/src/core/soloud_core_basicops.cpp"
+},
+
+{
+  "directory": "/home/dread/Documents/Projects/DTunes/target/debug/build/soloud-sys-e585e31da77f8a41/out/build",
+  "command": "/usr/bin/c++  -DWITH_MINIAUDIO -I/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/include   -ffunction-sections -fdata-sections -fPIC -m64 -fno-rtti -fno-exceptions -O3 -DNDEBUG   -std=gnu++11 -o CMakeFiles/soloud.dir/soloud/src/core/soloud_core_faderops.cpp.o -c /home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/src/core/soloud_core_faderops.cpp",
+  "file": "/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/src/core/soloud_core_faderops.cpp"
+},
+
+{
+  "directory": "/home/dread/Documents/Projects/DTunes/target/debug/build/soloud-sys-e585e31da77f8a41/out/build",
+  "command": "/usr/bin/c++  -DWITH_MINIAUDIO -I/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/include   -ffunction-sections -fdata-sections -fPIC -m64 -fno-rtti -fno-exceptions -O3 -DNDEBUG   -std=gnu++11 -o CMakeFiles/soloud.dir/soloud/src/core/soloud_core_filterops.cpp.o -c /home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/src/core/soloud_core_filterops.cpp",
+  "file": "/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/src/core/soloud_core_filterops.cpp"
+},
+
+{
+  "directory": "/home/dread/Documents/Projects/DTunes/target/debug/build/soloud-sys-e585e31da77f8a41/out/build",
+  "command": "/usr/bin/c++  -DWITH_MINIAUDIO -I/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/include   -ffunction-sections -fdata-sections -fPIC -m64 -fno-rtti -fno-exceptions -O3 -DNDEBUG   -std=gnu++11 -o CMakeFiles/soloud.dir/soloud/src/core/soloud_core_getters.cpp.o -c /home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/src/core/soloud_core_getters.cpp",
+  "file": "/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/src/core/soloud_core_getters.cpp"
+},
+
+{
+  "directory": "/home/dread/Documents/Projects/DTunes/target/debug/build/soloud-sys-e585e31da77f8a41/out/build",
+  "command": "/usr/bin/c++  -DWITH_MINIAUDIO -I/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/include   -ffunction-sections -fdata-sections -fPIC -m64 -fno-rtti -fno-exceptions -O3 -DNDEBUG   -std=gnu++11 -o CMakeFiles/soloud.dir/soloud/src/core/soloud_core_setters.cpp.o -c /home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/src/core/soloud_core_setters.cpp",
+  "file": "/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/src/core/soloud_core_setters.cpp"
+},
+
+{
+  "directory": "/home/dread/Documents/Projects/DTunes/target/debug/build/soloud-sys-e585e31da77f8a41/out/build",
+  "command": "/usr/bin/c++  -DWITH_MINIAUDIO -I/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/include   -ffunction-sections -fdata-sections -fPIC -m64 -fno-rtti -fno-exceptions -O3 -DNDEBUG   -std=gnu++11 -o CMakeFiles/soloud.dir/soloud/src/core/soloud_core_voicegroup.cpp.o -c /home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/src/core/soloud_core_voicegroup.cpp",
+  "file": "/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/src/core/soloud_core_voicegroup.cpp"
+},
+
+{
+  "directory": "/home/dread/Documents/Projects/DTunes/target/debug/build/soloud-sys-e585e31da77f8a41/out/build",
+  "command": "/usr/bin/c++  -DWITH_MINIAUDIO -I/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/include   -ffunction-sections -fdata-sections -fPIC -m64 -fno-rtti -fno-exceptions -O3 -DNDEBUG   -std=gnu++11 -o CMakeFiles/soloud.dir/soloud/src/core/soloud_core_voiceops.cpp.o -c /home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/src/core/soloud_core_voiceops.cpp",
+  "file": "/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/src/core/soloud_core_voiceops.cpp"
+},
+
+{
+  "directory": "/home/dread/Documents/Projects/DTunes/target/debug/build/soloud-sys-e585e31da77f8a41/out/build",
+  "command": "/usr/bin/c++  -DWITH_MINIAUDIO -I/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/include   -ffunction-sections -fdata-sections -fPIC -m64 -fno-rtti -fno-exceptions -O3 -DNDEBUG   -std=gnu++11 -o CMakeFiles/soloud.dir/soloud/src/core/soloud_fader.cpp.o -c /home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/src/core/soloud_fader.cpp",
+  "file": "/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/src/core/soloud_fader.cpp"
+},
+
+{
+  "directory": "/home/dread/Documents/Projects/DTunes/target/debug/build/soloud-sys-e585e31da77f8a41/out/build",
+  "command": "/usr/bin/c++  -DWITH_MINIAUDIO -I/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/include   -ffunction-sections -fdata-sections -fPIC -m64 -fno-rtti -fno-exceptions -O3 -DNDEBUG   -std=gnu++11 -o CMakeFiles/soloud.dir/soloud/src/core/soloud_fft.cpp.o -c /home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/src/core/soloud_fft.cpp",
+  "file": "/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/src/core/soloud_fft.cpp"
+},
+
+{
+  "directory": "/home/dread/Documents/Projects/DTunes/target/debug/build/soloud-sys-e585e31da77f8a41/out/build",
+  "command": "/usr/bin/c++  -DWITH_MINIAUDIO -I/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/include   -ffunction-sections -fdata-sections -fPIC -m64 -fno-rtti -fno-exceptions -O3 -DNDEBUG   -std=gnu++11 -o CMakeFiles/soloud.dir/soloud/src/core/soloud_fft_lut.cpp.o -c /home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/src/core/soloud_fft_lut.cpp",
+  "file": "/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/src/core/soloud_fft_lut.cpp"
+},
+
+{
+  "directory": "/home/dread/Documents/Projects/DTunes/target/debug/build/soloud-sys-e585e31da77f8a41/out/build",
+  "command": "/usr/bin/c++  -DWITH_MINIAUDIO -I/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/include   -ffunction-sections -fdata-sections -fPIC -m64 -fno-rtti -fno-exceptions -O3 -DNDEBUG   -std=gnu++11 -o CMakeFiles/soloud.dir/soloud/src/core/soloud_file.cpp.o -c /home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/src/core/soloud_file.cpp",
+  "file": "/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/src/core/soloud_file.cpp"
+},
+
+{
+  "directory": "/home/dread/Documents/Projects/DTunes/target/debug/build/soloud-sys-e585e31da77f8a41/out/build",
+  "command": "/usr/bin/c++  -DWITH_MINIAUDIO -I/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/include   -ffunction-sections -fdata-sections -fPIC -m64 -fno-rtti -fno-exceptions -O3 -DNDEBUG   -std=gnu++11 -o CMakeFiles/soloud.dir/soloud/src/core/soloud_filter.cpp.o -c /home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/src/core/soloud_filter.cpp",
+  "file": "/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/src/core/soloud_filter.cpp"
+},
+
+{
+  "directory": "/home/dread/Documents/Projects/DTunes/target/debug/build/soloud-sys-e585e31da77f8a41/out/build",
+  "command": "/usr/bin/c++  -DWITH_MINIAUDIO -I/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/include   -ffunction-sections -fdata-sections -fPIC -m64 -fno-rtti -fno-exceptions -O3 -DNDEBUG   -std=gnu++11 -o CMakeFiles/soloud.dir/soloud/src/core/soloud_misc.cpp.o -c /home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/src/core/soloud_misc.cpp",
+  "file": "/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/src/core/soloud_misc.cpp"
+},
+
+{
+  "directory": "/home/dread/Documents/Projects/DTunes/target/debug/build/soloud-sys-e585e31da77f8a41/out/build",
+  "command": "/usr/bin/c++  -DWITH_MINIAUDIO -I/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/include   -ffunction-sections -fdata-sections -fPIC -m64 -fno-rtti -fno-exceptions -O3 -DNDEBUG   -std=gnu++11 -o CMakeFiles/soloud.dir/soloud/src/core/soloud_queue.cpp.o -c /home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/src/core/soloud_queue.cpp",
+  "file": "/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/src/core/soloud_queue.cpp"
+},
+
+{
+  "directory": "/home/dread/Documents/Projects/DTunes/target/debug/build/soloud-sys-e585e31da77f8a41/out/build",
+  "command": "/usr/bin/c++  -DWITH_MINIAUDIO -I/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/include   -ffunction-sections -fdata-sections -fPIC -m64 -fno-rtti -fno-exceptions -O3 -DNDEBUG   -std=gnu++11 -o CMakeFiles/soloud.dir/soloud/src/core/soloud_thread.cpp.o -c /home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/src/core/soloud_thread.cpp",
+  "file": "/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/src/core/soloud_thread.cpp"
+},
+
+{
+  "directory": "/home/dread/Documents/Projects/DTunes/target/debug/build/soloud-sys-e585e31da77f8a41/out/build",
+  "command": "/usr/bin/c++  -DWITH_MINIAUDIO -I/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/include   -ffunction-sections -fdata-sections -fPIC -m64 -fno-rtti -fno-exceptions -O3 -DNDEBUG   -std=gnu++11 -o CMakeFiles/soloud.dir/soloud/src/filter/soloud_bassboostfilter.cpp.o -c /home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/src/filter/soloud_bassboostfilter.cpp",
+  "file": "/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/src/filter/soloud_bassboostfilter.cpp"
+},
+
+{
+  "directory": "/home/dread/Documents/Projects/DTunes/target/debug/build/soloud-sys-e585e31da77f8a41/out/build",
+  "command": "/usr/bin/c++  -DWITH_MINIAUDIO -I/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/include   -ffunction-sections -fdata-sections -fPIC -m64 -fno-rtti -fno-exceptions -O3 -DNDEBUG   -std=gnu++11 -o CMakeFiles/soloud.dir/soloud/src/filter/soloud_biquadresonantfilter.cpp.o -c /home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/src/filter/soloud_biquadresonantfilter.cpp",
+  "file": "/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/src/filter/soloud_biquadresonantfilter.cpp"
+},
+
+{
+  "directory": "/home/dread/Documents/Projects/DTunes/target/debug/build/soloud-sys-e585e31da77f8a41/out/build",
+  "command": "/usr/bin/c++  -DWITH_MINIAUDIO -I/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/include   -ffunction-sections -fdata-sections -fPIC -m64 -fno-rtti -fno-exceptions -O3 -DNDEBUG   -std=gnu++11 -o CMakeFiles/soloud.dir/soloud/src/filter/soloud_dcremovalfilter.cpp.o -c /home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/src/filter/soloud_dcremovalfilter.cpp",
+  "file": "/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/src/filter/soloud_dcremovalfilter.cpp"
+},
+
+{
+  "directory": "/home/dread/Documents/Projects/DTunes/target/debug/build/soloud-sys-e585e31da77f8a41/out/build",
+  "command": "/usr/bin/c++  -DWITH_MINIAUDIO -I/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/include   -ffunction-sections -fdata-sections -fPIC -m64 -fno-rtti -fno-exceptions -O3 -DNDEBUG   -std=gnu++11 -o CMakeFiles/soloud.dir/soloud/src/filter/soloud_duckfilter.cpp.o -c /home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/src/filter/soloud_duckfilter.cpp",
+  "file": "/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/src/filter/soloud_duckfilter.cpp"
+},
+
+{
+  "directory": "/home/dread/Documents/Projects/DTunes/target/debug/build/soloud-sys-e585e31da77f8a41/out/build",
+  "command": "/usr/bin/c++  -DWITH_MINIAUDIO -I/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/include   -ffunction-sections -fdata-sections -fPIC -m64 -fno-rtti -fno-exceptions -O3 -DNDEBUG   -std=gnu++11 -o CMakeFiles/soloud.dir/soloud/src/filter/soloud_echofilter.cpp.o -c /home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/src/filter/soloud_echofilter.cpp",
+  "file": "/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/src/filter/soloud_echofilter.cpp"
+},
+
+{
+  "directory": "/home/dread/Documents/Projects/DTunes/target/debug/build/soloud-sys-e585e31da77f8a41/out/build",
+  "command": "/usr/bin/c++  -DWITH_MINIAUDIO -I/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/include   -ffunction-sections -fdata-sections -fPIC -m64 -fno-rtti -fno-exceptions -O3 -DNDEBUG   -std=gnu++11 -o CMakeFiles/soloud.dir/soloud/src/filter/soloud_eqfilter.cpp.o -c /home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/src/filter/soloud_eqfilter.cpp",
+  "file": "/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/src/filter/soloud_eqfilter.cpp"
+},
+
+{
+  "directory": "/home/dread/Documents/Projects/DTunes/target/debug/build/soloud-sys-e585e31da77f8a41/out/build",
+  "command": "/usr/bin/c++  -DWITH_MINIAUDIO -I/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/include   -ffunction-sections -fdata-sections -fPIC -m64 -fno-rtti -fno-exceptions -O3 -DNDEBUG   -std=gnu++11 -o CMakeFiles/soloud.dir/soloud/src/filter/soloud_fftfilter.cpp.o -c /home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/src/filter/soloud_fftfilter.cpp",
+  "file": "/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/src/filter/soloud_fftfilter.cpp"
+},
+
+{
+  "directory": "/home/dread/Documents/Projects/DTunes/target/debug/build/soloud-sys-e585e31da77f8a41/out/build",
+  "command": "/usr/bin/c++  -DWITH_MINIAUDIO -I/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/include   -ffunction-sections -fdata-sections -fPIC -m64 -fno-rtti -fno-exceptions -O3 -DNDEBUG   -std=gnu++11 -o CMakeFiles/soloud.dir/soloud/src/filter/soloud_flangerfilter.cpp.o -c /home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/src/filter/soloud_flangerfilter.cpp",
+  "file": "/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/src/filter/soloud_flangerfilter.cpp"
+},
+
+{
+  "directory": "/home/dread/Documents/Projects/DTunes/target/debug/build/soloud-sys-e585e31da77f8a41/out/build",
+  "command": "/usr/bin/c++  -DWITH_MINIAUDIO -I/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/include   -ffunction-sections -fdata-sections -fPIC -m64 -fno-rtti -fno-exceptions -O3 -DNDEBUG   -std=gnu++11 -o CMakeFiles/soloud.dir/soloud/src/filter/soloud_freeverbfilter.cpp.o -c /home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/src/filter/soloud_freeverbfilter.cpp",
+  "file": "/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/src/filter/soloud_freeverbfilter.cpp"
+},
+
+{
+  "directory": "/home/dread/Documents/Projects/DTunes/target/debug/build/soloud-sys-e585e31da77f8a41/out/build",
+  "command": "/usr/bin/c++  -DWITH_MINIAUDIO -I/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/include   -ffunction-sections -fdata-sections -fPIC -m64 -fno-rtti -fno-exceptions -O3 -DNDEBUG   -std=gnu++11 -o CMakeFiles/soloud.dir/soloud/src/filter/soloud_lofifilter.cpp.o -c /home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/src/filter/soloud_lofifilter.cpp",
+  "file": "/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/src/filter/soloud_lofifilter.cpp"
+},
+
+{
+  "directory": "/home/dread/Documents/Projects/DTunes/target/debug/build/soloud-sys-e585e31da77f8a41/out/build",
+  "command": "/usr/bin/c++  -DWITH_MINIAUDIO -I/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/include   -ffunction-sections -fdata-sections -fPIC -m64 -fno-rtti -fno-exceptions -O3 -DNDEBUG   -std=gnu++11 -o CMakeFiles/soloud.dir/soloud/src/filter/soloud_robotizefilter.cpp.o -c /home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/src/filter/soloud_robotizefilter.cpp",
+  "file": "/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/src/filter/soloud_robotizefilter.cpp"
+},
+
+{
+  "directory": "/home/dread/Documents/Projects/DTunes/target/debug/build/soloud-sys-e585e31da77f8a41/out/build",
+  "command": "/usr/bin/c++  -DWITH_MINIAUDIO -I/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/include   -ffunction-sections -fdata-sections -fPIC -m64 -fno-rtti -fno-exceptions -O3 -DNDEBUG   -std=gnu++11 -o CMakeFiles/soloud.dir/soloud/src/filter/soloud_waveshaperfilter.cpp.o -c /home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/src/filter/soloud_waveshaperfilter.cpp",
+  "file": "/home/dread/.cargo/registry/src/index.crates.io-6f17d22bba15001f/soloud-sys-1.0.2/sys/soloud/src/filter/soloud_waveshaperfilter.cpp"
+}
+]

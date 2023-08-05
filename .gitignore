@@ -1,6 +1,3 @@
-adms/collections/*
-kupdf.net_audio-programming.pdf
-*.o
-*.wav
-*.mp3 
 target/
+data/raw/
+data/audio_files/

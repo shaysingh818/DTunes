@@ -144,12 +144,13 @@ impl Pomodoro {
         /* return audio files */
         let rows = stmt.query_map([&self.name], |row| {
             Ok(AudioFile {
-                file_name: row.get(0)?,
-                file_type: row.get(1)?,
-                duration: row.get(2)?,
-                sample_rate: row.get(3)?,
-                date_created: row.get(4)?,
-                date_modified: row.get(5)?
+                file_name: row.get(1)?,
+                file_type: row.get(2)?,
+                duration: row.get(3)?,
+                sample_rate: row.get(4)?,
+                storage_path: row.get(5)?,
+                date_created: row.get(6)?,
+                date_modified: row.get(7)?
             })
         })?;
 
@@ -298,7 +299,6 @@ mod pomodoro_instance {
 
         /* Create connection and insert playlist into db  */ 
         let conn = Connection::open(DB_PATH)?;
-        let mut equality_status = true;   
 
         /* insert dummy session */ 
         let mut my_session : Pomodoro = Pomodoro::new(
@@ -313,7 +313,7 @@ mod pomodoro_instance {
         /* insert 5 dummy audio files */ 
         for i in 0..5 {
             let file_value = format!("test_audio_session_file_{}", i);
-            let mut my_file : AudioFile = AudioFile::new(&file_value, "mp3", 1000, 2);
+            let mut my_file : AudioFile = AudioFile::new(&file_value, "mp3", "storage_path", 1000, 2);
             my_file.insert(&conn)?;
             my_session.add_audio_file(&conn, &my_file)?; 
         }
@@ -330,18 +330,14 @@ mod pomodoro_instance {
         let mut idx_counter = 0; 
         let audio_files : Vec<AudioFile> = my_session.retrieve_audio_files(&conn)?;
         for item in audio_files {
-            if file_names[idx_counter] != &item.file_name {
-                equality_status = false;
-            }
+            assert_eq!(file_names[idx_counter], &item.file_name); 
             idx_counter += 1;
         }
-
 
         /* delete entries */
         conn.execute("DELETE FROM POMODORO_AUDIO_FILE", [])?;
         conn.execute("DELETE FROM AUDIO_FILE", [])?;
         conn.execute("DELETE FROM POMODORO", [])?;
-        assert_eq!(equality_status, true); 
         Ok(())
     }
 
@@ -366,7 +362,7 @@ mod pomodoro_instance {
         /* insert 5 dummy audio files */ 
         for i in 0..5 {
             let file_value = format!("test_remove_audio_file_session_{}", i);
-            let mut my_file : AudioFile = AudioFile::new(&file_value, "mp3", 1000, 2);
+            let mut my_file : AudioFile = AudioFile::new(&file_value, "mp3", "storage_path", 1000, 2);
             my_file.insert(&conn)?;
             my_session.add_audio_file(&conn, &my_file)?; 
         }
