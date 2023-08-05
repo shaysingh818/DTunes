@@ -202,7 +202,7 @@ mod audio_file_instance {
     use crate::audio_file::AudioFile;
     use rusqlite::{Connection, Result};
     use std::path::Path;
-    use std::io;
+    use std::{io, fs};
 
     /* test database instance */ 
     static DB_PATH: &str = "db/unit/audio_file_instance.db";
@@ -397,6 +397,9 @@ mod audio_file_instance {
         }
   
         conn.execute("DELETE FROM AUDIO_FILE", [])?;
+
+        fs::remove_dir_all(&output_path).unwrap(); 
+        fs::create_dir(&output_path).unwrap(); 
 
         Ok(())
     }
