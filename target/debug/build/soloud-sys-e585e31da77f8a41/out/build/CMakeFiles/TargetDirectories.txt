@@ -1,7 +1,0 @@
-/home/dread/Documents/Projects/DTunes/target/debug/build/soloud-sys-e585e31da77f8a41/out/build/CMakeFiles/install/strip.dir
-/home/dread/Documents/Projects/DTunes/target/debug/build/soloud-sys-e585e31da77f8a41/out/build/CMakeFiles/install/local.dir
-/home/dread/Documents/Projects/DTunes/target/debug/build/soloud-sys-e585e31da77f8a41/out/build/CMakeFiles/install.dir
-/home/dread/Documents/Projects/DTunes/target/debug/build/soloud-sys-e585e31da77f8a41/out/build/CMakeFiles/list_install_components.dir
-/home/dread/Documents/Projects/DTunes/target/debug/build/soloud-sys-e585e31da77f8a41/out/build/CMakeFiles/rebuild_cache.dir
-/home/dread/Documents/Projects/DTunes/target/debug/build/soloud-sys-e585e31da77f8a41/out/build/CMakeFiles/edit_cache.dir
-/home/dread/Documents/Projects/DTunes/target/debug/build/soloud-sys-e585e31da77f8a41/out/build/CMakeFiles/soloud.dir
