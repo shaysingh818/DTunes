@@ -363,7 +363,7 @@ mod audio_file_instance {
         assert_eq!(file_names.len(), 4); 
 
         let input_path = "data/unit/raw/";
-        let output_path = "data/audio_files/"; 
+        let output_path = "data/unit/audio_files/"; 
        
         /* call raw file ingestion method */ 
         AudioFile::raw_file_insertion(
@@ -397,11 +397,6 @@ mod audio_file_instance {
         }
   
         conn.execute("DELETE FROM AUDIO_FILE", [])?;
-
-
-        /* delete all files under old path */ 
-        //fs::remove_dir_all(input_path).unwrap(); 
-        //fs::create_dir(input_path).unwrap(); 
 
         Ok(())
     }
