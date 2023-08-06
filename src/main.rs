@@ -1,6 +1,7 @@
 pub mod playlist;
 pub mod audio_file;
 pub mod pomodoro;
+pub mod queue; 
 pub mod args; 
 pub mod interface;
 pub mod constants;  

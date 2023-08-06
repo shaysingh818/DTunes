@@ -23,6 +23,9 @@ pub enum AudioFileSubcommand {
     /// View sources in DTunes database
     View(ViewAudioFiles),
 
+    // Queue up all audio files in datbase
+    Queue(QueueAudioFiles),
+
 }
 
 #[derive(Debug, Args)]
@@ -44,6 +47,14 @@ pub struct ViewAudioFiles {
 }
 
 
+#[derive(Debug, Args)]
+pub struct QueueAudioFiles {
+
+    /// Name of playlist
+    pub option: Option<String>,
+}
+
+
 pub fn handle_audio_file_commands(audio_file: AudioFileCommand) {
     let command = audio_file.command;
     match command {
@@ -52,6 +63,9 @@ pub fn handle_audio_file_commands(audio_file: AudioFileCommand) {
         }
         AudioFileSubcommand::View(audio_file) => {
             let _ = view_audio_files(audio_file);
+        }
+        AudioFileSubcommand::Queue(audio_file) => {
+            let _ = queue_audio_files(audio_file);
         }
     }
 }
@@ -70,8 +84,8 @@ pub fn sync_files(audio_file: SyncProps) -> Result<()> {
         &audio_file.output_path
     )?;
 
-    fs::remove_dir_all(&audio_file.input_path).unwrap(); 
-    fs::create_dir(&audio_file.input_path).unwrap(); 
+    //fs::remove_dir_all(&audio_file.input_path).unwrap(); 
+    //fs::create_dir(&audio_file.input_path).unwrap(); 
 
     Ok(())
 }
@@ -91,5 +105,14 @@ pub fn view_audio_files(audio_file: ViewAudioFiles) -> Result<()> {
         let my_file = AudioFile::view(&conn, &audio_file.name)?; 
         println!("ℹ️ {:?} : {:?}", my_file.file_name, my_file.date_created); 
     }    
+    Ok(())
+}
+
+
+pub fn queue_audio_files(_audio_file: QueueAudioFiles) -> Result<()> {
+
+    let conn = Connection::open(DB_PATH)?;
+    AudioFile::queue_audio_files(&conn)?;
+
     Ok(())
 }

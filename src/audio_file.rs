@@ -3,8 +3,10 @@ use chrono;
 use std::io; 
 use std::fs;
 use rusqlite::{Connection, Result};
+use crate::queue::CircularQueue; 
 
-#[derive(Debug)]
+
+#[derive(Debug, Clone)]
 pub struct AudioFile {
     pub file_name: String, 
     pub file_type: String, 
@@ -127,7 +129,9 @@ impl AudioFile {
         for entry in fs::read_dir(dir)? {
             let entry = entry?;
             let path = entry.path();
-            let path_str = path.display().to_string(); 
+            let path_str = path.display().to_string();
+            
+            println!("Path: {:?}", path_str); 
 
             /* remove data/raw prefix */ 
             let removed_path = path_str.replace(dir, "");
@@ -163,9 +167,11 @@ impl AudioFile {
                 2, 0
             );
 
+            println!("{:?}", item.0); 
+
             /* move files from raw to storage path */ 
+            my_file.insert(&conn)?;
             fs::copy(old_path, storage_path).unwrap(); 
-            my_file.insert(&conn)?; 
         }
 
         Ok(())
@@ -182,16 +188,35 @@ impl AudioFile {
         while sl.voice_count() > 0 {
             std::thread::sleep(std::time::Duration::from_millis(100));
 
-            let duration = std::time::Duration::from_millis(100); 
-            println!("Duration: {:?}", duration); 
+            /* leave this here for future work */ 
+            let _duration = std::time::Duration::from_millis(100); 
         }
-        
-        println!("{:?} Done playing ", filepath);
-
         Ok(())
-    } 
+    }
+    
+    pub fn queue_audio_files(conn: &Connection) -> Result<()> {
 
+        let audio_files : Vec<AudioFile> = AudioFile::retrieve(&conn).unwrap(); 
+        let queue_size = audio_files.len(); 
+        let mut queue : CircularQueue = CircularQueue::new(queue_size);
 
+        /* load items to queue */ 
+        for file in audio_files {
+            queue.enqueue(file); 
+        }
+
+        println!("Loading {:} files on queue 🔥🔥", queue.items.len()); 
+
+        /* play each song in the queue */ 
+        for item in queue.items {
+            println!("🎵 Now playing: {:?}", item.file_name); 
+            println!("📁 File type: {:?}", item.file_type); 
+            println!("📅 Date Created: {:?}", item.date_created);
+            println!("✏️ Last Modified: {:?}", item.date_modified);  
+            AudioFile::play_wav(&item.storage_path).unwrap();  
+        }
+        Ok(())
+    }
 
 }
 
