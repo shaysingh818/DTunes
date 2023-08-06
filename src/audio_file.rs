@@ -328,7 +328,6 @@ mod audio_file_instance {
     }
 
 
-
     fn test_process_raw_file_names() -> io::Result<()>  {
 
         let expected_file_names = vec![
@@ -353,8 +352,7 @@ mod audio_file_instance {
         Ok(())
     }
 
-
-    
+ 
     fn test_raw_file_ingestion() -> Result<()>  {
 
         /* Create connection and insert playlist into db  */ 
