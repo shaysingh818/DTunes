@@ -131,8 +131,6 @@ impl AudioFile {
             let path = entry.path();
             let path_str = path.display().to_string();
             
-            println!("Path: {:?}", path_str); 
-
             /* remove data/raw prefix */ 
             let removed_path = path_str.replace(dir, "");
             let extension_extract = removed_path.split(".");
@@ -143,6 +141,8 @@ impl AudioFile {
             file_names.push((file_name.to_string(), extension.to_string()));
         }
 
+        /* need to understand what this is doing - GPT */ 
+        file_names.sort_by(|(a, _), (b, _)| a.cmp(b));
         Ok(file_names)
     }
 
@@ -166,8 +166,6 @@ impl AudioFile {
                 &storage_path, 
                 2, 0
             );
-
-            println!("{:?}", item.0); 
 
             /* move files from raw to storage path */ 
             my_file.insert(&conn)?;
@@ -357,12 +355,12 @@ mod audio_file_instance {
     fn test_process_raw_file_names() -> io::Result<()>  {
 
         let expected_file_names = vec![
-            "Test 2 -file", 
+            "2CELLOS - Pirates Of The Caribbean [OFFICIAL VIDEO]",
             "2CELLOS - Whole Lotta Love vs Beethoven 5th Symphony [OFFICIAL VIDEO](720p)",
-            "2CELLOS - Pirates Of The Caribbean [OFFICIAL VIDEO]", 
-            "Test 1 file"
+            "Test 1 file",
+            "Test 2 -file" 
         ];
-        let expected_exts = vec!["txt", "mp3", "wav", "txt"];
+        let expected_exts = vec!["wav", "mp3", "txt", "txt"];
 
         /* test raw file ingestion */ 
         let file_names = AudioFile::prepare_raw_file_names("data/unit/raw/")?;
