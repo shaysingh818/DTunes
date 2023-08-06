@@ -73,7 +73,7 @@ mod queue_library {
         /* insert 5 dummy audio files */ 
         for i in 0..9 {
             let file_value = format!("audio_file_{}", i);
-            let mut my_file : AudioFile = AudioFile::new(&file_value, "mp3", "storage_path", 1000, 2);
+            let my_file : AudioFile = AudioFile::new(&file_value, "mp3", "storage_path", 1000, 2);
             queue.enqueue(my_file); 
         }
 
@@ -114,7 +114,7 @@ mod queue_library {
         /* insert 5 dummy audio files */
         for i in 0..9 {
             let file_value = format!("audio_file_{}", i);
-            let mut my_file : AudioFile = AudioFile::new(&file_value, "mp3", "storage_path", 1000, 2);
+            let my_file : AudioFile = AudioFile::new(&file_value, "mp3", "storage_path", 1000, 2);
             queue.enqueue(my_file);
         }
 
