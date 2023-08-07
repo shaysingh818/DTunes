@@ -17,13 +17,13 @@ pub struct AudioFileCommand {
 #[derive(Debug, Subcommand)]
 pub enum AudioFileSubcommand {
 
-    /// Sync Audio sources from config file
+    /// Sync Audio files from raw data directory to database
     Sync(SyncProps),
 
-    /// View sources in DTunes database
+    /// View audio files in DTunes database
     View(ViewAudioFiles),
 
-    // Queue up all audio files in datbase
+    /// Queue up all audio files in datbase
     Queue(QueueAudioFiles),
 
 }

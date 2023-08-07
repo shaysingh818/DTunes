@@ -30,10 +30,12 @@
 flowchart LR
 
 A[Raw Data] --> B[Audio Files]
-B[Audio Files] --> D[Queue Service]
+B[Audio Files] --> D[Queue]
 B[Audio Files] --> C[Playlists]
+B[Audio Files] --> F[Artist]
+B[Audio Files] --> G[Genre]
 B[Audio Files] --> E[Pomodoro Timer]
-C[Playlists] --> D[Queue Service]
+C[Playlists] --> D[Queue]
 ```
 ## Design Consensus
 
@@ -145,3 +147,44 @@ SUBCOMMANDS:
     sync     Sync Audio sources from config file
     view     View sources in DTunes database
 ```
+
+* `queue` - queue's up every song on the DTunes database instance
+* `sync` - Inserts files located into `data/raw/` into the database
+* `view` - Views audio files in the database
+
+## Playlists
+
+* Playlist module allows users to store audio files in a collection
+* Model contains these attributes
+	* `name` - name of the playlist
+	* `file_count` - number of files in the playlist
+	* `disk_space` - total disk space the playlist accumulates 
+* To use the playlist module try the following command
+
+```
+./dtunes playlist --help
+```
+
+* expected output
+
+```
+dtunes-playlist 
+Work with playlists on DTunes
+
+USAGE:
+    dtunes playlist <SUBCOMMAND>
+
+OPTIONS:
+    -h, --help    Print help information
+
+SUBCOMMANDS:
+    add-file      Add File to Playlist
+    create        Create playlist on DTunes
+    delete        Delete playlist
+    help          Print this message or the help of the given subcommand(s)
+    queue         Queue files from playlist
+    update        Update playlist name
+    view          View playlist by name
+    view-files    View Audio Files in playlist
+```
+

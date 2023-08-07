@@ -19,25 +19,25 @@ pub struct PlaylistCommand {
 #[derive(Debug, Subcommand)]
 pub enum PlaylistSubcommand {
 
-    // Create playlist on DTunes
+    /// Create playlist on DTunes
     Create(CreatePlaylist),
 
-    // View playlist by name
+    /// View playlist by name
     View(ViewPlaylist),
 
-    // Update playlist name
+    /// Update playlist name
     Update(UpdatePlaylist),
 
-    // Delete playlist
+    /// Delete playlist
     Delete(DeletePlaylist),
 
-    // Add File to Playlist
+    /// Add File to Playlist
     AddFile(AddFilePlaylist),
 
-    // View Audio Files in playlist
+    /// View Audio Files in playlist
     ViewFiles(ViewFilesPlaylist),
 
-    // Queue files from playlist
+    /// Queue files from playlist
     Queue(ViewFilesPlaylist),
 
 }
