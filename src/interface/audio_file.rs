@@ -79,13 +79,15 @@ pub fn sync_files(audio_file: SyncProps) -> Result<()> {
     /* call raw file ingestion method */ 
     AudioFile::raw_file_insertion(
         &conn, 
-        file_names, 
+        file_names.clone(), 
         &audio_file.input_path,
         &audio_file.output_path
     )?;
 
-    //fs::remove_dir_all(&audio_file.input_path).unwrap(); 
-    //fs::create_dir(&audio_file.input_path).unwrap(); 
+    println!("ℹ️ - Synced {:} files to database", file_names.len()); 
+
+    fs::remove_dir_all(&audio_file.input_path).unwrap(); 
+    fs::create_dir(&audio_file.input_path).unwrap(); 
 
     Ok(())
 }
