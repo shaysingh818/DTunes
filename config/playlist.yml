@@ -1,0 +1,20 @@
+name: "DTunes Playlist Configuration"
+description: "Create playlists using yaml"
+default_path: "data/raw"
+default_output_path: "data/audio_files"
+playlists:
+  - name: "classical_piano"
+    description: "Classical piano playlist for cocentration"
+    max_disk_space: 256
+    songs:
+      - "song2"
+      - "song2"
+      - "song3"
+ 
+  - name: "classical_rock"
+    description: "Classical rock playlist for fun"
+    max_disk_space: 256
+    songs:
+      - "song2"
+      - "song2"
+      - "song3"
