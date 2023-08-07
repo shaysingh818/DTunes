@@ -1,4 +1,4 @@
-name: DTunee CI
+name: DTunes CI
 
 on:
   push:
@@ -7,13 +7,23 @@ on:
     branches: [ "master" ]
 
 jobs:
-  build:
-
+  linux-build:
+    runs-on: ubuntu-20.04
+    steps:
+    - uses: actions/checkout@v2
+    - name: Build and Test
+      run: cargo test
+ 
+  windows-build:
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v3
-    - name: install portaudio
-      run: sudo apt-get install libasound-dev
-    - name: make
-      run: make
+    - name: Build and Test
+      run: cargo test
+ 
+  mac-os-build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Build and Test
+      run: cargo test

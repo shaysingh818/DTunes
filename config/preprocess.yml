@@ -1,0 +1,16 @@
+name: "Preprocessing audio files"
+description: "Process how audio files are named for database storage"
+default_path: "data/raw"
+default_output_path: "data/audio_files"
+steps:
+  - name: "Format file name"
+    field_name: "file_name"
+    regex: "Expression goes here"
+
+  - name: "Format file extension"
+    field_name: "file_type"
+    regex: "Expression goes here"
+
+  - name: "Validate storage path"
+    field_name: "storage_path"
+    regex: "Expression goes here"
