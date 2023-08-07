@@ -1,6 +1,7 @@
 use rusqlite::{Connection, Result};
 use clap::{Args, Subcommand};
 use crate::playlist::Playlist;
+use crate::audio_file::AudioFile; 
 use crate::constants::*; 
 
 
@@ -18,41 +19,47 @@ pub struct PlaylistCommand {
 #[derive(Debug, Subcommand)]
 pub enum PlaylistSubcommand {
 
-    /// Create playlist on DTunes
+    // Create playlist on DTunes
     Create(CreatePlaylist),
 
-    /// View playlist by name
+    // View playlist by name
     View(ViewPlaylist),
 
-    /// Update playlist name
+    // Update playlist name
     Update(UpdatePlaylist),
 
-    /// Delete playlist
+    // Delete playlist
     Delete(DeletePlaylist),
 
-    /// Add File to Playlist
+    // Add File to Playlist
     AddFile(AddFilePlaylist),
+
+    // View Audio Files in playlist
+    ViewFiles(ViewFilesPlaylist),
+
+    // Queue files from playlist
+    Queue(ViewFilesPlaylist),
 
 }
 
 #[derive(Debug, Args)]
 pub struct CreatePlaylist {
 
-    /// Name of playlist
+    // Name of playlist
     pub name: String,
 }
 
 #[derive(Debug, Args)]
 pub struct ViewPlaylist {
 
-    /// Name of playlist
+    // Name of playlist
     pub name: String,
 }
 
 #[derive(Debug, Args)]
 pub struct UpdatePlaylist {
 
-    /// name of playlist
+    // name of playlist
     pub name: String,
 }
 
@@ -60,18 +67,27 @@ pub struct UpdatePlaylist {
 #[derive(Debug, Args)]
 pub struct DeletePlaylist {
 
-    /// name of playlist
+    // name of playlist
     pub name: String,
 }
 
 #[derive(Debug, Args)]
 pub struct AddFilePlaylist {
 
-    /// name of playlist
+    // name of playlist
     pub playlist_name: String,
 
     // name of audio file
     pub file_name: String,
+}
+
+
+#[derive(Debug, Args)]
+pub struct ViewFilesPlaylist {
+
+    // name of playlist
+    pub playlist_name: String,
+
 }
 
 
@@ -92,6 +108,12 @@ pub fn handle_playlist_command(playlist: PlaylistCommand) {
         }
         PlaylistSubcommand::AddFile(playlist) => {
             let _ = add_file_playlist(playlist);
+        }
+        PlaylistSubcommand::ViewFiles(playlist) => {
+            let _ = view_files_playlist(playlist);
+        }
+        PlaylistSubcommand::Queue(playlist) => {
+            let _ = queue_files_playlist(playlist);
         }
     }
 }
@@ -167,11 +189,34 @@ pub fn view_playlist(playlist : ViewPlaylist) -> Result<()> {
 
 pub fn add_file_playlist(playlist : AddFilePlaylist) -> Result<()> {
 
-    println!(
-        "Add {:?} to playlist {:?}", 
-        playlist.file_name, playlist.playlist_name
-    ); 
-
+    let conn = Connection::open(DB_PATH)?;
+    let mut my_playlist = Playlist::view(&conn, &playlist.playlist_name)?;
+    let audio_file = AudioFile::view(&conn, &playlist.file_name)?; 
+    my_playlist.add_audio_file(&conn, &audio_file)?; 
     Ok(())
 
 }
+
+
+
+pub fn view_files_playlist(playlist : ViewFilesPlaylist) -> Result<()> {
+
+    let conn = Connection::open(DB_PATH)?;
+    let mut my_playlist = Playlist::view(&conn, &playlist.playlist_name)?;
+    let playlist_files : Vec<AudioFile> = my_playlist.retrieve_audio_files(&conn)?;
+    println!("Viewing files for: {:?} \n", playlist.playlist_name); 
+    for item in playlist_files {
+        println!("🎵  {:?}", item.file_name); 
+    }
+    Ok(())
+
+}
+
+pub fn queue_files_playlist(playlist: ViewFilesPlaylist) -> Result<()> {
+
+    let conn = Connection::open(DB_PATH)?;
+    let mut my_playlist = Playlist::view(&conn, &playlist.playlist_name)?;
+    my_playlist.queue_playlist_files(&conn)?;
+    Ok(())
+}
+

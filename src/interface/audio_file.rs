@@ -98,12 +98,12 @@ pub fn view_audio_files(audio_file: ViewAudioFiles) -> Result<()> {
     if audio_file.name == "all" {
         let files : Vec<AudioFile> = AudioFile::retrieve(&conn)?;
         for f in files {
-            println!(" ℹ️   {:?} : {:?}", f.file_name, f.date_created); 
+            println!(" ℹ️  {:?}", f.file_name); 
         }
     } else {
 
         let my_file = AudioFile::view(&conn, &audio_file.name)?; 
-        println!("ℹ️ {:?} : {:?}", my_file.file_name, my_file.date_created); 
+        println!("ℹ️ {:?}", my_file.file_name); 
     }    
     Ok(())
 }

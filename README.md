@@ -1,86 +1,58 @@
-# DTunes: 
-DTunes is simple audio wav player written in C. It allows you to create collections(playlists) and store multiple audio files within the collection. Songs can be played via autoplay or by manually specifying a wav file from a collection file path. 
+# DTunes
 
-## Setup
+* Process centered around storing, migrating and transforming raw audio file data
+* Apply music theory concepts to audio data
+* Categorizing audio data with playlists, genres and artists
+* Real time background audio player
+* A simple and intuitive terminal command line interface for interacting with audio database
+* Eventually develop a native user interface using project Fluorite
 
-1. Run the install.sh file. 
-```
-bash install.sh
-```
+# Table of Contents
 
-2. Run the make file
-```
-make
-```
-
-3. Execute the CLI tool and use the help command.
-```
-./dtunes help
-```
-
-```
- (                      )       (     
- )\ )   *   )        ( /(       )\ )  
-(()/( ` )  /(    (   )\()) (   (()/(  
- /(_)) ( )(_))   )\ ((_)\  )\   /(_)) 
-(_))_ (_(_()) _ ((_) _((_)((_) (_))   
- |   \|_   _|| | | || \| || __|/ __|  
- | |) | | |  | |_| || .` || _| \__ \  
- |___/  |_|   \___/ |_|\_||___||___/  
+* [Database Design](Projects/DTunes/Design/Database%20Schema.md)
+* [Audio Files](Projects/DTunes/Design/Audio%20File.md)
+* [Playlist](Projects/DTunes/Design/Playlist.md)
+* [Queue](Projects/DTunes/Design/Queue.md)
+* [Pomodoro Timer](Projects/DTunes/Design/Pomodoro.md)
 
 
-                              
+# Design
 
-============================================================
-collections               Collections to store audio files in DTunes
-phaedra                   Audio player module for DTunes
+* Abstractions around external data sources that provide audio files
+* Utilities needed for working with audio files and playlist collections
+* Use queues for temporarily storing songs with continuous playback
+* Integrated pomodoro timer for aiding deep work/focus
 
+```mermaid
+flowchart LR
+
+A[Data Source] --> B[Audio Files]
+B[Audio Files] --> D[Queue Service]
+B[Audio Files] --> C[Playlists]
+B[Audio Files] --> E[Pomodoro Timer]
+C[Playlists] --> D[Queue Service]
 ```
 
-4. You should see two modules, collections and phaedra. To get help on how to use the modules, type “help” after the module name.
+# Architecture
 
-```
-./dtunes collections help
-./dtunes phaedra help
-```
+* Data source produces audio files
+* Audio files can be used to configure a pomodoro timer or create playlists
+* Files can be queued from a collection of audio files or existing playlists
 
+# Tech Stack
 
-## Bulk Syncing Audio Files to DTunes
+* Rust - Programming Language
+	* Database Storage
+	* File ingestion and processing
+	* Audio data pipelines
+	* Command line application utilities
+* Native UI Library
+	* Will be build on a custom native UI library
+	* This is a long term goal
 
-1. Create a collection with a name of your choice. 
-```
-./dtunes collections create testing
-```
+# Design Thinking Questions
 
-
-2. Change directory to ```adms/scripts```. Go into to the data.json file and paste in the following. 
-```json
-{
-    "collections": {
-        "collection_testing": {
-            "path": "../../collections/collection-testing",
-            "videos": [
-                "https://www.youtube.com/watch?v=tLJH_NtkWBw",
-                "https://www.youtube.com/watch?v=5wrKDFIJZuA",
-                "https://www.youtube.com/watch?v=-heXdwWVr3I",
-                "https://www.youtube.com/watch?v=oj8_wufhE28"
-            ]
-        }
-    }
-}
-```
-
-3. Change directory to the dtunes binary, check if there are files in the testing collection. 
-```
-./dtunes collections vcf testing
-```
-
-4. If files show up in that collection, queue the files with phaedra
-```
-./dtunes collections queue testing
-```
-
-
-
-
-
+* What types of processing can you do on audio file?
+* How do we generate audio based on other samples?
+* Can we make the process of ingesting audio from any source as SMOOTH as possible?
+* Is there a niche in learning about algorithms 

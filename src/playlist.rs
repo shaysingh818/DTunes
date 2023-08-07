@@ -1,6 +1,7 @@
 use chrono; 
 use rusqlite::{Connection, Result};
 use crate::audio_file::AudioFile;
+use crate::queue::CircularQueue; 
 
 #[derive(Debug)]
 pub struct Playlist {
@@ -152,6 +153,31 @@ impl Playlist {
             ",
             [&self.name, file_name],
         )?;
+        Ok(())
+    }
+
+    pub fn queue_playlist_files(&mut self, conn: &Connection) -> Result<()> {
+
+        
+        let audio_files : Vec<AudioFile> = self.retrieve_audio_files(&conn).unwrap();  
+        let queue_size = audio_files.len(); 
+        let mut queue : CircularQueue = CircularQueue::new(queue_size);
+
+        /* load items to queue */ 
+        for file in audio_files {
+            queue.enqueue(file); 
+        }
+
+        println!("Loading {:} files on queue 🔥🔥", queue.items.len()); 
+
+        /* play each song in the queue */ 
+        for item in queue.items {
+            println!("🎵 Now playing: {:?}", item.file_name); 
+            println!("📁 File type: {:?}", item.file_type); 
+            println!("📅 Date Created: {:?}", item.date_created);
+            println!("✏️ Last Modified: {:?}", item.date_modified);  
+            AudioFile::play_wav(&item.storage_path).unwrap();  
+        }
         Ok(())
     }
 
