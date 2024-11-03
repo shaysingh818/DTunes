@@ -1,3 +1,10 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
+html, body {
+  height: 100%;
+  margin: 0;
+  background-color: rgb(41 37 36); /* Replace with your desired color */
+}
