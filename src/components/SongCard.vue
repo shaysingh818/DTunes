@@ -2,9 +2,20 @@
 <template>
     <div class="hover:bg-stone-900">
         <div class="card-container">
-            <div class="image-container">
-                <img :src="thumbnail" :alt="alt" class="image" />
-            </div> 
+          <div class="card-container-content">
+            <div class="text-content">
+              <h1>{{ title }}</h1>
+              <p>{{ datePosted }}</p>
+            </div>
+            <div class="icon-content">
+              <div class="grid grid-flow-col auto-cols-max space-x-4">
+                <div class="hover:bg-stone-400"><i :class="['fas', 'fa-list-ul', 'text-white']"></i></div>
+                <div class="hover:bg-stone-400"><i :class="['fas', 'fa-play', 'text-white']"></i></div>
+                <div><p>{{ duration }}</p></div>
+              </div>
+
+            </div>
+          </div>
         </div>
     </div>
 </template>
@@ -38,24 +49,40 @@ export default {
 <style scoped>
 
 .card-container {
+    border-radius: 3%;
     display: flex;
-    align-items: center;
-    justify-content: center; 
     height: 200px;
     width: 200px;
-    /* border: 1px solid #ccc; */  
+    background-image: url("https://www.w3schools.com/html/pic_trulli.jpg");
+    align-items: flex-end;
 }
 
-.image-container {
-    height: 100%;
-    width: 100%; /* Ensure the container is also set to 100% width */
-}
-
-.image {
+.card-container-content {
     border-radius: 3%;
-    height: 100%;
-    width: 100%; /* Fill the width of the container */
-    object-fit: cover; /* Maintain aspect ratio, fill the container */
+    width: 100%;
+    height: 100px;
+    background: rgb(0, 0, 0); /* Fallback color */
+    background: rgba(0, 0, 0, 0.5); /* Black background with 0.5 opacity */
+}
+
+.text-content {
+    /* border: 1px solid #ccc;   */
+    width: 100%;
+    position: relative;
+}
+
+.icon-content {
+    padding: 8px; 
+}
+
+h1 {
+  color: white;
+  font-weight: bold; 
+}
+
+p {
+  font-size: 12px;
+  color: rgb(209 213 219);
 }
 
 </style>
