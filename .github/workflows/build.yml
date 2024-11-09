@@ -1,0 +1,22 @@
+name: DTunes
+
+on:
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: NPM Install
+        run: |
+          npm install
+
+      - name: Run Tauri
+        run: |
+          npm run tauri dev

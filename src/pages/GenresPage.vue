@@ -1,0 +1,63 @@
+<script>
+import GenreCreate from '../components/genre/GenreCreate.vue';
+import GenreGrid from '../components/genre/GenreGrid.vue';
+import SearchComponent from '../components/shared/SearchComponent.vue';
+
+export default {
+  components: { GenreGrid, SearchComponent, GenreCreate},
+  methods: {
+    goToAbout() {
+      this.$router.push('/about')
+    },
+    genreSearch(){
+      alert("Genre Search Button Clicked");
+    }
+  },
+}
+</script>
+
+<script setup>
+import { ref } from 'vue'
+
+const open = ref(false)
+</script>
+
+<template>
+  <div class="artist-page-container">
+    <div class="flex flex-col gap-2">
+      <div class="search-box-container">
+        <SearchComponent 
+          text="Search Genres Across DTunes" 
+          :onClick="genreSearch"
+        />
+      </div>
+      <div class="grid-container">
+        <GenreGrid /> 
+      </div>
+    </div>
+  </div>
+  <GenreCreate />
+</template>
+
+
+<style scoped>
+
+.artist-page-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.grid-container {
+    max-width: 100%; 
+    height: 100%;
+    margin: 0 auto;
+}
+
+.search-box-container {
+    max-width: 100%; 
+    height: 75px;
+    margin: 0 auto; 
+}
+
+</style>
