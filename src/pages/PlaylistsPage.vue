@@ -1,23 +1,45 @@
-<script setup>
-import { computed } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+<script>
+import SearchComponent from '../components/shared/SearchComponent.vue';
+import PlaylistCreate from '../components/playlist/PlaylistCreate.vue';
+import PlaylistListView from '../components/playlist/PlaylistListView.vue';
 
-const router = useRouter()
-const route = useRoute()
-
-const search = computed({
-  get() {
-    return route.query.search ?? ''
+export default {
+  components: { SearchComponent, PlaylistCreate, PlaylistListView},
+  methods: {
+    goToAbout() {
+      this.$router.push('/about')
+    },
   },
-  set(search) {
-    router.replace({ query: { search } })
-  }
-})
+}
 </script>
 
 <template>
-  <h2>PlaylistView</h2>
-  <!-- <label>
-    Search: <input v-model.trim="search" maxlength="20">
-  </label> -->
+
+  <div class="playlist-page-container">
+    <div class="flex flex-col gap-2">
+      <div class="search-box-container">
+        <SearchComponent />
+      </div>
+      <div>
+         <PlaylistListView />
+      </div>
+    </div>
+  </div>
+   <PlaylistCreate /> 
 </template>
+
+<style scoped>
+
+.playlist-page-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+
+.search-box-container {
+    max-width: 100%; 
+    height: 75px;
+    margin: 0 auto; 
+}
+</style>

@@ -1,19 +1,23 @@
 
+
 <template>
-    <div class="hover:bg-stone-900">
+    <div class="card-component">
         <div class="card-container">
           <div class="card-container-content">
             <div class="text-content">
-              <h1>{{ title }}</h1>
-              <p>{{ datePosted }}</p>
-            </div>
-            <div class="icon-content">
-              <div class="grid grid-flow-col auto-cols-max space-x-4">
-                <div class="hover:bg-stone-400"><i :class="['fas', 'fa-list-ul', 'text-white']"></i></div>
-                <div class="hover:bg-stone-400"><i :class="['fas', 'fa-play', 'text-white']"></i></div>
-                <div><p>{{ duration }}</p></div>
+              <div class="flex flex-col gap-2">
+                <div>
+                  <h1>{{ name }}</h1>
+                </div>              
+                <div class="flex flex-row gap-2" style="display: flex; align-items: center; justify-content: center;">
+                  <div>
+                    <i :class="['fas', 'fa-music', 'text-white']"></i> 
+                  </div>
+                  <div>
+                    <p style="font-weight: bold;">{{ songCount }}</p>
+                  </div>
+                </div>
               </div>
-
             </div>
           </div>
         </div>
@@ -23,9 +27,9 @@
 
 <script>
 export default {
-  name: 'SongCard',
+  name: 'ArtistCard',
   props: {
-    title: {
+    name: {
       type: String,
       required: true,
     },
@@ -33,11 +37,11 @@ export default {
       type: String,
       required: true,
     },
-    duration: {
+    thumbnail: {
       type: String,
       required: true,
-    }, 
-    thumbnail: {
+    },
+    songCount: {
       type: String,
       required: true,
     },
@@ -48,27 +52,31 @@ export default {
 
 <style scoped>
 
+.card-component {
+  width: 185px;
+}
+
 .card-container {
     border-radius: 3%;
     display: flex;
-    height: 200px;
-    width: 200px;
+    height: 185px;
+    width: 185px;
     background-image: url("https://www.w3schools.com/html/pic_trulli.jpg");
-    align-items: flex-end;
 }
 
 .card-container-content {
     border-radius: 3%;
     width: 100%;
-    height: 100px;
+    height: 100%;
     background: rgb(0, 0, 0); /* Fallback color */
     background: rgba(0, 0, 0, 0.5); /* Black background with 0.5 opacity */
 }
 
 .text-content {
-    /* border: 1px solid #ccc;   */
-    width: 100%;
-    position: relative;
+    display: flex;
+    height: 100%;
+    justify-content: center;
+    align-items: center; 
 }
 
 .icon-content {

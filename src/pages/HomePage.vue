@@ -1,9 +1,10 @@
 <script>
-import SongList from '../components/SongList.vue';
-import SongCard from '../components/SongCard.vue';
+import SongList from '../components/audio_file/SongList.vue';
+import SongCard from '../components/audio_file/SongCard.vue';
+import ArtistCard from '../components/artist/ArtistCard.vue';
 
 export default {
-  components: { SongList, SongCard},
+  components: { SongList, SongCard, ArtistCard},
   methods: {
     goToAbout() {
       this.$router.push('/about')
@@ -55,9 +56,6 @@ export default {
           />
         </div>
 
-
- 
-
       </div>
 
 
@@ -83,8 +81,45 @@ export default {
       />
 
 
+      <div class="grid grid-flow-col auto-cols-max gap-4 p-4">
 
+        <div>
+          <ArtistCard 
+            name="Post Malone" 
+            datePosted="Monday, November 4, 2024" 
+            thumbnail="https://www.w3schools.com/html/pic_trulli.jpg"
+            songCount="100"
+          />
+        </div>
 
+        <div>
+          <ArtistCard 
+            name="Billie Eillish" 
+            datePosted="Monday, November 4, 2024" 
+            thumbnail="https://www.w3schools.com/html/pic_trulli.jpg"
+            songCount="100"
+          />
+        </div>
+
+        <div>
+          <ArtistCard 
+            name="Polo G" 
+            datePosted="Monday, November 4, 2024" 
+            thumbnail="https://www.w3schools.com/html/pic_trulli.jpg"
+            songCount="100"
+          />
+        </div>
+
+        <div>
+          <ArtistCard 
+            name="NLE Choppa" 
+            datePosted="Monday, November 4, 2024" 
+            thumbnail="https://www.w3schools.com/html/pic_trulli.jpg"
+            songCount="100"
+          />
+        </div>
+
+      </div>
 
 
 </template>

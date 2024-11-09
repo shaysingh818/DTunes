@@ -6,6 +6,7 @@ import AudioFilesPage from './pages/AudioFilesPage.vue'
 import GenresPage from './pages/GenresPage.vue'
 import ArtistsPage from './pages/ArtistsPage.vue'
 import PomodoroPage from './pages/PomodoroPage.vue'
+import ArtistCreate from './components/artist/ArtistCreate.vue'
 
 const routes: Array<RouteRecordRaw> =  [
   { path: '/', component: HomePage },
@@ -14,6 +15,7 @@ const routes: Array<RouteRecordRaw> =  [
   { path: '/genres', component: GenresPage },
   { path: '/artists', component: ArtistsPage },
   { path: '/pomodoro', component: PomodoroPage },
+  { path: '/create-artist', component: ArtistCreate },
 ]
 
 const router = createRouter({

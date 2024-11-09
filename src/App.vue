@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import { ref } from "vue";
-import NavigationBar from "./components/NavigationBar.vue";
+import NavigationBar from "./components/shared/NavigationBar.vue";
 // import { invoke } from "@tauri-apps/api/core";
 
 // const greetMsg = ref("");
