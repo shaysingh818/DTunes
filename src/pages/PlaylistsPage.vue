@@ -9,6 +9,9 @@ export default {
     goToAbout() {
       this.$router.push('/about')
     },
+    playlistSearch(){
+      alert("Playlist Search Button Clicked");
+    }
   },
 }
 </script>
@@ -18,7 +21,10 @@ export default {
   <div class="playlist-page-container">
     <div class="flex flex-col gap-2">
       <div class="search-box-container">
-        <SearchComponent />
+        <SearchComponent 
+          text="Search Playlists Across DTunes" 
+          :onClick="playlistSearch"
+        />
       </div>
       <div>
          <PlaylistListView />

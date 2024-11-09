@@ -9,6 +9,9 @@ export default {
     goToAbout() {
       this.$router.push('/about')
     },
+    artistSearch(){
+      alert("Artist Search Button Clicked");
+    }
   },
 }
 </script>
@@ -23,7 +26,10 @@ const open = ref(false)
   <div class="artist-page-container">
     <div class="flex flex-col gap-2">
       <div class="search-box-container">
-        <SearchComponent />
+        <SearchComponent 
+          text="Search Artists Across DTunes" 
+          :onClick="artistSearch"
+        />
       </div>
       <div class="grid-container">
         <ArtistGrid /> 

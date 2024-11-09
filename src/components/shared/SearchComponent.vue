@@ -2,14 +2,37 @@
     <div class="search-container">
         <div class="flex flex-row gap-2">
             <div>
-                <input type="text" id="search-artist" name="search-artist" value="Search Artists Across DTunes"><br>
+                <input type="text" id="search-term" name="search-item" :placeholder=" text "><br>
             </div>
             <div>
-                 <button type="button">Search</button> 
+                 <button @click="handleClick" type="button">Search</button> 
             </div>
         </div>
     </div>
 </template>
+
+<script>
+
+export default {
+  name: 'SearchComponent',
+  props: {
+    text: {
+      type: String,
+      required: true,
+    },
+    onClick: {
+      type: Function,
+      required: true,
+    },
+  },
+  methods: {
+    handleClick() {
+      this.onClick();
+    }
+  }
+}
+
+</script>
 
 
 <style scoped>

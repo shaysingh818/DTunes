@@ -9,6 +9,9 @@ export default {
     goToAbout() {
       this.$router.push('/about')
     },
+    audioFileSearch(){
+      alert("Audio File Search Button Clicked");
+    }
   },
 }
 </script>
@@ -17,7 +20,10 @@ export default {
   <div class="artist-page-container">
     <div class="flex flex-col gap-2">
       <div class="search-box-container">
-        <SearchComponent />
+        <SearchComponent 
+          text="Search Audio Files Across DTunes" 
+          :onClick="audioFileSearch"
+        />
       </div>
       <div class="grid-container">
          <AudioFileListView />
