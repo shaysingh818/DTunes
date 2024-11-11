@@ -75,6 +75,11 @@ export default {
 }
 
 
+h1 {
+  font-weight: bold;
+  color: white;
+}
+
 p {
   font-size: 12px;
   color: rgb(209 213 219);

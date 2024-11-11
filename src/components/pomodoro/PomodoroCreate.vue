@@ -12,7 +12,7 @@
                     <div class="flex flex-row gap-10">
                         <div>
                             <div class="form-title">
-                                <h1>Add Artist</h1>
+                                <h1>Create Pomodoro Session</h1>
                             </div>
                         </div>
                     </div>
@@ -23,15 +23,16 @@
               <div class="form-field-container">
                 <div class="flex flex-col gap-6">
                     <div>
-                        <!-- <label for="lname">Artist Name</label> -->
-                        <input type="text" id="search-artist" name="search-artist" placeholder="Enter Artist Name"><br>
+                        <input type="text" id="duration" name="duration" placeholder="Enter Focus Duration"><br>
                     </div>
-                    <div style="justify-content: center; display:flex ; align-items: center;">
-                        <form action="/action_page.php">
-                            <!-- <button id="upload-btn" class="upload-btn">Upload Artist Image</button> -->
-                            <input type="file" id="file-upload" name="filename">
-                            <label for="file-upload">Choose Artist Image</label>
-                        </form>
+                    <div>
+                        <input type="text" id="duration_limit" name="duration_limit" placeholder="Enter Focus Duration Limit"><br>
+                    </div>
+                    <div>
+                        <input type="text" id="short_break" name="short_break" placeholder="Enter Duration For Short Breaks"><br>
+                    </div>
+                    <div>
+                        <input type="text" id="long_break" name="long_break" placeholder="Enter Duration For Long Breaks"><br>
                     </div>
                 </div>
               </div>
@@ -42,7 +43,7 @@
                         <button @click="open = false" class="close-button" type="button">Close</button> 
                     </div>
                     <div>
-                        <button class="add-button" type="button">Add Artist</button> 
+                        <button class="add-button" type="button">Create</button> 
                     </div>
                 </div>
               </div>
@@ -62,7 +63,7 @@ const open = ref(false)
 <script>
 
 export default {
-    name: 'ArtistCreate'
+    name: 'PlaylistCreate'
 }
 </script>
 
@@ -117,6 +118,10 @@ export default {
   align-items: center;
 }
 
+.form-title {
+  /* border: 1px solid #ccc; */
+  padding: 6px; 
+}
 
 .form-field-container {
   display: flex;
