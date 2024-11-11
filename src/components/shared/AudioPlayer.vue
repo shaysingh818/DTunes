@@ -5,7 +5,7 @@
 <template>
     <div class="audio-bar-container">
 
-        <div class="flex flex-row gap-2">
+        <div class="flex flex-row gap-6">
 
             <div class="song-info">
                 <div class="flex flex-row gap-2"> 
@@ -100,8 +100,8 @@ export default {
 
 .player-controls {
     display: flex;
-    justify-content: center;
-    align-items: center;
+    justify-content: left;
+    align-items: left;
     height: 50px;
     width: 70%;  
 }
@@ -152,6 +152,10 @@ export default {
 
 hr {
   border: 1px solid gray 
+}
+
+h1 {
+    font-size: 15px;
 }
 
 p {
