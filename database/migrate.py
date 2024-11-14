@@ -1,6 +1,6 @@
 import os
 import time
-import duckdb
+import sqlite3
 
 
 # Function to read SQL from a file
@@ -16,9 +16,11 @@ def commit(directory):
         if os.path.isfile(file_path):
             if os.path.getsize(file_path) != 0:
                 sql_query = read_sql_file(file_path)
-                conn = duckdb.connect('storage/dtunes.duckdb')
-                conn.execute(sql_query)
-                print(f'[duckdb]: Executing {file_path} on dtunes.duckdb')
+                conn = sqlite3.connect('storage/dtunes.sqlite3')
+                cursor = conn.cursor()
+                cursor.executescript(sql_query)
+                print(f'[sqlite3]: Executing {file_path} on dtunes.sqlite3')
+                conn.close()
 
 
 # Config
@@ -29,15 +31,16 @@ def main():
 
     # Create database if storage path is empty
     if len(os.listdir(METADATA_STORAGE_PATH)) == 0:
-        conn = duckdb.connect('storage/dtunes.duckdb')
+        conn = sqlite3.connect('storage/dtunes.sqlite3')
         conn.close()
-        print("[duckdb]: Creating database file dtunes.duckdb")
+        print("[sqlite3]: Creating database file dtunes.sqlite3")
     else:
-        print("[duckdb]: Database file found, running scripts..")
+        print("[sqlite3]: Database file found, running scripts..")
 
-    print(f'[duckdb] committing scripts in {SCRIPTS_FOLDER}')
+    print(f'[sqlite3] committing scripts in {SCRIPTS_FOLDER}')
     commit(SCRIPTS_FOLDER)
 
 
+main()
 
 
