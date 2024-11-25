@@ -1,84 +1,37 @@
 <template>
     <div class="carousel-container">
-        <div class="flex flex-row gap-2" v-for="(item, index) in audioFiles" :key="index">
+        <div class="flex flex-row gap-2" v-for="(item, index) in audioStore.audioFiles" :key="index">
             <div>
                 <SongCard 
-                    :title="item.title" 
-                    :datePosted="item.datePosted" 
+                    :audioFileId="item.audio_file_id" 
+                    :title="item.file_name" 
+                    :datePosted="item.date_created" 
                     :duration="item.duration"
                     :thumbnail="item.thumbnail"
+                    :filePath="item.file_path"
                 />
             </div>
         </div>
     </div>
 </template>
 
+<script setup>
+import { audioStore } from '../../api/AudioFIle';
+</script>
 
 <script>
 import SongCard from './SongCard.vue';
+import { BaseDirectory, dataDir, appDataDir } from '@tauri-apps/api/path';
+import { invoke } from "@tauri-apps/api/core";
+import { audioStore } from '../../api/AudioFIle';
 
 export default {
     components: {SongCard},
     name: 'AudioFileCarousel',
-    data() {
-        return {
-            audioFiles: [
-                {
-                    title: "Pirates of the Carribean",
-                    datePosted: "Monday, November 4, 2024", 
-                    duration: "3:01",
-                    thumbnail: "https://www.w3schools.com/html/pic_trulli.jpg"
-                },
-                {
-                    title: "Pirates of the Carribean",
-                    datePosted: "Monday, November 4, 2024", 
-                    duration: "3:01",
-                    thumbnail: "https://www.w3schools.com/html/pic_trulli.jpg"
-                },
-                {
-                    title: "Pirates of the Carribean",
-                    datePosted: "Monday, November 4, 2024", 
-                    duration: "3:01",
-                    thumbnail: "https://www.w3schools.com/html/pic_trulli.jpg"
-                },
-                {
-                    title: "Pirates of the Carribean",
-                    datePosted: "Monday, November 4, 2024", 
-                    duration: "3:01",
-                    thumbnail: "https://www.w3schools.com/html/pic_trulli.jpg"
-                },
-                {
-                    title: "Pirates of the Carribean",
-                    datePosted: "Monday, November 4, 2024", 
-                    duration: "3:01",
-                    thumbnail: "https://www.w3schools.com/html/pic_trulli.jpg"
-                },
-                {
-                    title: "Pirates of the Carribean",
-                    datePosted: "Monday, November 4, 2024", 
-                    duration: "3:01",
-                    thumbnail: "https://www.w3schools.com/html/pic_trulli.jpg"
-                },
-                {
-                    title: "Pirates of the Carribean",
-                    datePosted: "Monday, November 4, 2024", 
-                    duration: "3:01",
-                    thumbnail: "https://www.w3schools.com/html/pic_trulli.jpg"
-                },
-                {
-                    title: "Pirates of the Carribean",
-                    datePosted: "Monday, November 4, 2024", 
-                    duration: "3:01",
-                    thumbnail: "https://www.w3schools.com/html/pic_trulli.jpg"
-                },
-                {
-                    title: "Pirates of the Carribean",
-                    datePosted: "Monday, November 4, 2024", 
-                    duration: "3:01",
-                    thumbnail: "https://www.w3schools.com/html/pic_trulli.jpg"
-                }
-            ]
-        }
+    async mounted() {
+        console.log("Loading audio files from store"); 
+        await audioStore.loadAudioFiles();
+        console.log("AUDIO FILE STORE LOADED: ", audioStore.audioFiles);
     }
 }
 

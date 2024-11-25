@@ -1,7 +1,7 @@
 
 <template>
     <div class="hover:bg-stone-900">
-        <div class="card-container">
+        <div class="card-container" :id="audioFileId.toString()">
           <div class="card-container-content">
             <div class="text-content">
               <h1>{{ title }}</h1>
@@ -21,9 +21,15 @@
 
 
 <script>
+import { invoke } from "@tauri-apps/api/core";
+
 export default {
   name: 'SongCard',
   props: {
+    audioFileId: {
+      type: Number,
+      required: true,
+    },
     title: {
       type: String,
       required: true,
@@ -40,6 +46,21 @@ export default {
       type: String,
       required: true,
     },
+    filePath: {
+      type: String,
+      required: true,
+    },
+  },
+  async mounted() {
+
+    const base64Image = await invoke('read_image_from_data_dir', {imageName:  this.thumbnail});
+    let imageElem = document.getElementById(this.audioFileId.toString());
+    if(imageElem) {
+      imageElem.style.backgroundImage = `url(data:image/jpeg;base64,${base64Image})`; 
+    } else {
+      console.log(`${this.audioFileId} not found`)
+    }
+
   },
 }
 </script>
@@ -52,8 +73,9 @@ export default {
     display: flex;
     height: 200px;
     width: 200px;
-    background-image: url("https://www.w3schools.com/html/pic_trulli.jpg");
     align-items: flex-end;
+    background-size: cover;
+    background-position: center; 
 }
 
 .card-container-content {
@@ -68,6 +90,9 @@ export default {
     /* border: 1px solid #ccc;   */
     width: 100%;
     position: relative;
+    overflow: hidden;
+    white-space: nowrap;
+    padding: 4px; 
 }
 
 .icon-content {
@@ -78,11 +103,13 @@ export default {
 h1 {
   font-weight: bold;
   color: white;
+
 }
 
 p {
   font-size: 12px;
   color: rgb(209 213 219);
+  overflow: hidden;
 }
 
 </style>

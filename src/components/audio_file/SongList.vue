@@ -3,7 +3,7 @@
     <div class="flex hover:bg-stone-900">
         <div class="flex-none w-24 pr-2">
             <div class="image-container">
-                <img :src="thumbnail" :alt="alt" class="image p-1" />
+                <img :src="thumbnail" :alt="thumbnail" :id="audioFileId.toString()" class="image p-1" />
             </div>
         </div>
         <div class="flex-auto w-64">
@@ -17,7 +17,9 @@
             <div class="grid grid-flow-col auto-cols-max space-x-4">
               <div><p1>{{ duration }}</p1></div>
               <div class="hover:bg-stone-400"><i :class="['fas', 'fa-list-ul', 'text-red-800']"></i></div>
-              <div class="hover:bg-stone-400"><i :class="['fas', 'fa-play', 'text-red-800']"></i></div>
+              <div class="hover:bg-stone-400">
+                <i @click="playFile()" :class="['fas', 'fa-play', 'text-red-800']"></i>
+              </div>
             </div>
           </div>
         </div>
@@ -25,10 +27,21 @@
 </template>
 
 
+<script setup>
+import { audioStore } from "../../api/AudioFIle";
+</script>
+
 <script>
+import { invoke } from "@tauri-apps/api/core";
+import { audioStore, AudioFile } from "../../api/AudioFIle";
+
 export default {
   name: 'SongList',
   props: {
+    audioFileId: {
+      type: Number,
+      required: true,
+    },
     title: {
       type: String,
       required: true,
@@ -41,12 +54,66 @@ export default {
       type: String,
       required: true,
     }, 
-    thumbnail: {
+    filePath: {
       type: String,
       required: true,
     },
+    lastModified: {
+      type: String,
+      required: true,
+    },
+    plays: {
+      type: Number,
+      required: true,
+    },
+    sampleRate: {
+      type: String,
+      required: true,
+    },
+    thumbnail: {
+      type: String,
+      required: true,
+    }, 
   },
+  methods: {
+
+    async playFile() {
+
+      const audioFile = new AudioFile({
+          audioFileId: this.audioFileId,
+          dateCreated: this.datePosted,
+          duration: this.duration,
+          fileName: this.title,
+          filePath: this.filePath,
+          lastModified: this.lastModified,
+          plays: this.plays,
+          sampleRate: this.sampleRate,
+          thumbnail: this.thumbnail
+        });
+
+        audioStore.playAudio(audioFile);
+    }
+    
+  },
+  async mounted() {
+
+    console.log("AUDIO FILE ID: ", this.audioFileId.toString()); 
+    const base64Image = await invoke('read_image_from_data_dir', {imageName:  this.thumbnail});
+    let imageElem = document.getElementById(this.audioFileId.toString());
+    if(imageElem) {
+      imageElem.src = `data:image/jpeg;base64,${base64Image}`;
+    } else {
+      console.log(`${this.audioFileId} not found`)
+    }
+
+  }
 }
+
+async function readImage(imageName) {
+    const base64Image = await invoke('read_image_from_data_dir', {imageName:  imageName});
+    return `data:image/jpeg;base64,${base64Image}`;
+}
+
 </script>
 
 <style scoped>

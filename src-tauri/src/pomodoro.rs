@@ -1,38 +1,36 @@
-use chrono; 
-use rusqlite::{Connection, Result};
 use crate::audio_file::AudioFile;
+use chrono;
+use rusqlite::{Connection, Result};
 
 #[derive(Debug)]
 pub struct Pomodoro {
     pub session_id: usize,
-    pub session_name: String, 
+    pub session_name: String,
     pub duration: usize,
     pub duration_limit: usize,
     pub short_break: usize,
     pub long_break: usize,
     pub date_created: String,
-    pub last_modified: String
+    pub last_modified: String,
 }
 
-
 impl Pomodoro {
-
     pub fn new(
-        name: &str, 
-        duration: usize, 
+        name: &str,
+        duration: usize,
         duration_limit: usize,
         short_break: usize,
-        long_break: usize) -> Pomodoro {
-
+        long_break: usize,
+    ) -> Pomodoro {
         Pomodoro {
             session_id: 0,
             session_name: String::from(name),
             duration: duration,
             duration_limit: duration_limit,
-            short_break: short_break, 
+            short_break: short_break,
             long_break: long_break,
             date_created: chrono::offset::Local::now().to_string(),
-            last_modified: chrono::offset::Local::now().to_string()
+            last_modified: chrono::offset::Local::now().to_string(),
         }
     }
 
@@ -55,8 +53,8 @@ impl Pomodoro {
     }
 
     pub fn retrieve(conn: &Connection) -> Result<Vec<Pomodoro>> {
-       let mut stmt = conn.prepare("SELECT * FROM POMODORO_SESSION ORDER BY LAST_MODIFIED")?;
-       let rows = stmt.query_map([], |row| {
+        let mut stmt = conn.prepare("SELECT * FROM POMODORO_SESSION ORDER BY LAST_MODIFIED")?;
+        let rows = stmt.query_map([], |row| {
             Ok(Pomodoro {
                 session_id: row.get(0)?,
                 session_name: row.get(1)?,
@@ -65,22 +63,21 @@ impl Pomodoro {
                 short_break: row.get(4)?,
                 long_break: row.get(5)?,
                 date_created: row.get(6)?,
-                last_modified: row.get(7)?
+                last_modified: row.get(7)?,
             })
-       })?;
+        })?;
 
-       let mut pomo_sessions = Vec::new(); 
-       for pomo in rows {
+        let mut pomo_sessions = Vec::new();
+        for pomo in rows {
             pomo_sessions.push(pomo?);
-       }
-       Ok(pomo_sessions)
+        }
+        Ok(pomo_sessions)
     }
 
     pub fn update(&mut self, conn: &Connection, id: &str) -> Result<()> {
+        /* change date modified */
+        self.last_modified = chrono::offset::Local::now().to_string();
 
-        /* change date modified */ 
-        self.last_modified = chrono::offset::Local::now().to_string(); 
-        
         conn.execute(
             "UPDATE POMODORO_SESSION
                 SET SESSION_NAME=?, DURATION=?, DURATION_LIMIT=?,
@@ -89,22 +86,19 @@ impl Pomodoro {
             [
                 &self.session_name,
                 &self.duration.to_string(),
-                &self.duration_limit.to_string(), 
+                &self.duration_limit.to_string(),
                 &self.short_break.to_string(),
                 &self.long_break.to_string(),
                 &self.date_created,
                 &self.last_modified,
-                id
+                id,
             ],
         )?;
         Ok(())
     }
 
     pub fn delete(conn: &Connection, id: &str) -> Result<()> {
-        conn.execute(
-            "DELETE FROM POMODORO_SESSION WHERE SESSION_ID=?",
-            [id],
-        )?;
+        conn.execute("DELETE FROM POMODORO_SESSION WHERE SESSION_ID=?", [id])?;
         Ok(())
     }
 
@@ -119,7 +113,7 @@ impl Pomodoro {
                 short_break: row.get(4)?,
                 long_break: row.get(5)?,
                 date_created: row.get(6)?,
-                last_modified: row.get(7)?
+                last_modified: row.get(7)?,
             })
         })
     }
@@ -136,14 +130,12 @@ impl Pomodoro {
         Ok(())
     }
 
-
     pub fn retrieve_audio_files(conn: &Connection, id: &str) -> Result<Vec<AudioFile>> {
-
-        /* many to many query */ 
+        /* many to many query */
         let query = "SELECT * FROM AUDIO_FILE WHERE AUDIO_FILE_ID IN ( 
             SELECT AUDIO_FILE_ID FROM POMODORO_AUDIO_FILE WHERE SESSION_ID=?);";
-        let mut stmt = conn.prepare(query)?; 
-            
+        let mut stmt = conn.prepare(query)?;
+
         /* return audio files */
         let rows = stmt.query_map([&id], |row| {
             Ok(AudioFile {
@@ -155,16 +147,16 @@ impl Pomodoro {
                 plays: row.get(5)?,
                 sample_rate: row.get(6)?,
                 date_created: row.get(7)?,
-                last_modified: row.get(8)?
+                last_modified: row.get(8)?,
             })
         })?;
 
-        /*  store files here */ 
-       let mut audio_files = Vec::new();
-       for audio_file in rows {
-            audio_files.push(audio_file?); 
+        /*  store files here */
+        let mut audio_files = Vec::new();
+        for audio_file in rows {
+            audio_files.push(audio_file?);
         }
-       Ok(audio_files)
+        Ok(audio_files)
     }
 
     pub fn remove_audio_file(&self, conn: &Connection, audio_file_id: usize) -> Result<()> {
@@ -176,5 +168,4 @@ impl Pomodoro {
         )?;
         Ok(())
     }
-
 }

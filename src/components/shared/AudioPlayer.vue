@@ -10,7 +10,7 @@
             <div class="song-info">
                 <div class="flex flex-row gap-2"> 
                     <div class="image-container">
-                        <img :src="thumbnail" :alt="alt" class="image p-1" />
+                        <img :src="thumbnail" :alt="thumbnail" class="image p-1" :id="`${audioFileId.toString()}-player`" />
                     </div>
 
                     <div class="flex flex-col">
@@ -32,7 +32,10 @@
                         <div>
                             <i :class="['fas', 'fa-backward', 'text-white']"></i>
                         </div>
-                        <div class="play-button">
+                        <div v-if="audioStore.playing == true" class="play-button" @click="pauseFile()">
+                            <i :class="['fas', 'fa-pause', 'text-white']"></i>
+                        </div>
+                        <div v-if="audioStore.resume == true && audioStore.playing == false" class="play-button" @click="resumeFile()">
                             <i :class="['fas', 'fa-play', 'text-white']"></i>
                         </div>
                         <div>
@@ -41,7 +44,7 @@
                     </div>
                     <div class="audio-duration">
                         <div class="w-full bg-gray-200 rounded-full h-1 dark:bg-gray-700">
-                            <div class="bg-red-600 h-1 rounded-full" style="width: 45%"></div>
+                            <div class="bg-red-600 h-1 rounded-full" id="duration-tracker"></div>
                         </div>
                     </div>
                 </div>
@@ -51,10 +54,21 @@
 </template>
 
 
+<script setup>
+import { audioStore, AudioFile } from '../../api/AudioFIle';
+</script>
+
 <script>
+import { audioStore, AudioFile } from '../../api/AudioFIle';
+import { invoke } from "@tauri-apps/api/core";
+
 export default {
-  name: 'SongList',
+  name: 'AudioPlayer',
   props: {
+    audioFileId: {
+      type: Number,
+      required: true,
+    },
     title: {
       type: String,
       required: true,
@@ -67,12 +81,75 @@ export default {
       type: String,
       required: true,
     }, 
-    thumbnail: {
+    filePath: {
       type: String,
       required: true,
     },
+    lastModified: {
+      type: String,
+      required: true,
+    },
+    plays: {
+      type: Number,
+      required: true,
+    },
+    sampleRate: {
+      type: String,
+      required: true,
+    },
+    thumbnail: {
+      type: String,
+      required: true,
+    }, 
+  },
+  methods: {
+    async playFile() {
+
+        const audioFile = new AudioFile({
+            audioFileId: this.audioFileId,
+            dateCreated: this.datePosted,
+            duration: this.duration,
+            fileName: this.title,
+            filePath: this.filePath,
+            lastModified: this.lastModified,
+            plays: this.plays,
+            sampleRate: this.sampleRate,
+            thumbnail: this.thumbnail
+        });
+
+        audioStore.playAudio(audioFile);
+    },
+    async pauseFile() {
+        audioStore.pauseAudio();
+    },
+    async resumeFile() {
+        audioStore.resumeAudio();
+    },
+  },
+  async mounted() { 
+    const base64Image = await invoke('read_image_from_data_dir', {imageName:  this.thumbnail});
+    let imageElem = document.getElementById(`${this.audioFileId.toString()}-player`);
+    if(imageElem) {
+      imageElem.src = `data:image/jpeg;base64,${base64Image}`;
+    } else {
+      console.log(`${this.audioFileId} not found`)
+    }
   },
 }
+
+const updateTime = () => {
+  const durationElement = document.getElementById("duration-tracker");
+  const currentTime = audioStore.currentTime; 
+  const duration = audioStore.duration;  
+  if(durationElement && currentTime > 0 && !isNaN(duration) ) {
+    const value = (currentTime/duration) * 100;
+    console.log("VALUE: ", value);  
+    durationElement.style.width = `${currentTime}%`;
+  }
+};
+
+setInterval(updateTime, 1000); // Update the value if we're playing
+
 </script>
 
 

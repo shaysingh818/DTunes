@@ -1,19 +1,17 @@
-use chrono; 
-use rusqlite::{Connection, Result};
 use crate::audio_file::AudioFile;
+use chrono;
+use rusqlite::{Connection, Result};
 
 #[derive(Debug)]
 pub struct Playlist {
     pub playlist_id: usize,
-    pub playlist_name: String, 
+    pub playlist_name: String,
     pub playlist_thumbnail: String,
     pub date_created: String,
-    pub last_modified: String
+    pub last_modified: String,
 }
 
-
 impl Playlist {
-
     pub fn new(name: &str, thumbnail: &str) -> Playlist {
         Playlist {
             playlist_id: 0,
@@ -33,37 +31,36 @@ impl Playlist {
                 &self.playlist_name,
                 &self.playlist_thumbnail,
                 &self.date_created,
-                &self.last_modified 
+                &self.last_modified,
             ],
         )?;
         Ok(())
     }
 
     pub fn retrieve(conn: &Connection) -> Result<Vec<Playlist>> {
-       let mut stmt = conn.prepare("SELECT * FROM PLAYLIST ORDER BY LAST_MODIFIED")?;
-       let rows = stmt.query_map([], |row| {
+        let mut stmt = conn.prepare("SELECT * FROM PLAYLIST ORDER BY LAST_MODIFIED")?;
+        let rows = stmt.query_map([], |row| {
             Ok(Playlist {
                 playlist_id: row.get(0)?,
                 playlist_name: row.get(1)?,
                 playlist_thumbnail: row.get(2)?,
                 date_created: row.get(3)?,
-                last_modified: row.get(4)?
+                last_modified: row.get(4)?,
             })
-       })?;
+        })?;
 
-       let mut playlists = Vec::new(); 
-       for playlist in rows {
+        let mut playlists = Vec::new();
+        for playlist in rows {
             playlists.push(playlist?);
-       }
+        }
 
-       Ok(playlists)
+        Ok(playlists)
     }
 
     pub fn update(&mut self, conn: &Connection, id: &str) -> Result<()> {
+        /* change date modified */
+        self.last_modified = chrono::offset::Local::now().to_string();
 
-        /* change date modified */ 
-        self.last_modified = chrono::offset::Local::now().to_string(); 
-        
         conn.execute(
             "UPDATE PLAYLIST
                 SET PLAYLIST_NAME?, PLAYLIST_THUMBNAIL=?, DATE_CREATED=?, LAST_MODIFIED=?,
@@ -72,21 +69,17 @@ impl Playlist {
                 &self.playlist_name,
                 &self.playlist_thumbnail,
                 &self.date_created,
-                &self.last_modified, 
-                id
+                &self.last_modified,
+                id,
             ],
         )?;
         Ok(())
     }
 
     pub fn delete(conn: &Connection, id: &str) -> Result<()> {
-        conn.execute(
-            "DELETE FROM PLAYLIST WHERE PLAYLIST_ID=?",
-            [id],
-        )?;
+        conn.execute("DELETE FROM PLAYLIST WHERE PLAYLIST_ID=?", [id])?;
         Ok(())
     }
-
 
     pub fn view(conn: &Connection, id: &str) -> Result<Playlist> {
         let query = "SELECT * FROM PLAYLIST WHERE PLAYLIST_ID = ?";
@@ -96,7 +89,7 @@ impl Playlist {
                 playlist_name: row.get(1)?,
                 playlist_thumbnail: row.get(2)?,
                 date_created: row.get(3)?,
-                last_modified: row.get(4)?
+                last_modified: row.get(4)?,
             })
         })
     }
@@ -114,12 +107,11 @@ impl Playlist {
     }
 
     pub fn retrieve_audio_files(conn: &Connection, id: &str) -> Result<Vec<AudioFile>> {
-
-        /* many to many query */ 
+        /* many to many query */
         let query = "SELECT * FROM AUDIO_FILE WHERE AUDIO_FILE_ID IN ( 
             SELECT AUDIO_FILE_ID FROM PLAYLIST_AUDIO_FILE WHERE PLAYLIST_ID=?);";
-        let mut stmt = conn.prepare(query)?; 
-            
+        let mut stmt = conn.prepare(query)?;
+
         /* return audio files */
         let rows = stmt.query_map([id], |row| {
             Ok(AudioFile {
@@ -131,16 +123,16 @@ impl Playlist {
                 plays: row.get(5)?,
                 sample_rate: row.get(6)?,
                 date_created: row.get(7)?,
-                last_modified: row.get(8)?
+                last_modified: row.get(8)?,
             })
         })?;
 
-        /*  store files here */ 
-       let mut audio_files = Vec::new();
-       for audio_file in rows {
-            audio_files.push(audio_file?); 
+        /*  store files here */
+        let mut audio_files = Vec::new();
+        for audio_file in rows {
+            audio_files.push(audio_file?);
         }
-       Ok(audio_files)
+        Ok(audio_files)
     }
 
     pub fn remove_audio_file(&self, conn: &Connection, audio_file_id: usize) -> Result<()> {
@@ -152,5 +144,4 @@ impl Playlist {
         )?;
         Ok(())
     }
-
 }

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import NavigationBar from "./components/shared/NavigationBar.vue";
 import AudioPlayer from "./components/shared/AudioPlayer.vue";
+import { audioStore } from "./api/AudioFIle";
 // import { invoke } from "@tauri-apps/api/core";
 
 // const greetMsg = ref("");
@@ -12,15 +13,22 @@ import AudioPlayer from "./components/shared/AudioPlayer.vue";
 // }
 </script>
 
+
 <template>
 
    <div class="flex">
     <NavigationBar />
     <AudioPlayer
-      title="Pirates of the Carribean" 
-      datePosted="Monday, November 4, 2024" 
-      duration="3:01"
-      thumbnail="https://www.w3schools.com/html/pic_trulli.jpg"
+      v-if="(audioStore.audioFilePlaying && audioStore.audioFilePlaying.audioFileId) || audioStore.playing == true"
+      :audioFileId="audioStore.audioFilePlaying.audioFileId"
+      :title="audioStore.audioFilePlaying.fileName"
+      :datePosted="audioStore.audioFilePlaying.dateCreated"
+      :duration="audioStore.audioFilePlaying.duration"
+      :filePath="audioStore.audioFilePlaying.filePath"
+      :lastModified="audioStore.audioFilePlaying.lastModified"
+      :plays="audioStore.audioFilePlaying.plays"
+      :sampleRate="audioStore.audioFilePlaying.sampleRate"
+      :thumbnail="audioStore.audioFilePlaying.thumbnail"
     /> 
   </div>
 
