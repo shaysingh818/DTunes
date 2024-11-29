@@ -4,7 +4,12 @@ pub mod genre;
 pub mod playlist;
 pub mod pomodoro;
 
-use crate::audio_file::{create_audio_file, view_audio_files, read_image_from_data_dir};
+use crate::audio_file::{
+    create_audio_file, 
+    view_audio_files, 
+    read_image_from_data_dir,
+    delete_audio_file
+};
 
 // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
 #[tauri::command]
@@ -23,6 +28,7 @@ pub fn run() {
             greet,
             create_audio_file,
             view_audio_files,
+            delete_audio_file,
             read_image_from_data_dir
         ])
         .run(tauri::generate_context!())

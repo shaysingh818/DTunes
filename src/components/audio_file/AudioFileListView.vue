@@ -38,7 +38,7 @@ export default {
     console.log("Loading audio files from store"); 
     await audioStore.loadAudioFiles();
     console.log("AUDIO FILE STORE LOADED: ", audioStore.audioFiles); 
-  }
+  },    
 }
 </script>
 

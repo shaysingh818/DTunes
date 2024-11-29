@@ -249,6 +249,29 @@ pub fn view_audio_files(user_db_path: &str) -> Vec<AudioFile> {
 
 
 #[tauri::command]
+pub fn delete_audio_file(user_db_path: &str, audio_file_id: &str) -> String {
+
+    let conn = match Connection::open(user_db_path) {
+        Ok(connection) => connection,
+        Err(e) => {
+            println!("{:?}", e);
+            return format!("Database connection error: {:?}", e);
+        }
+    };
+    
+    match AudioFile::view(&conn, audio_file_id) {
+        Ok(mut audio_file) => {
+            audio_file.delete(&conn, audio_file_id); 
+            return format!("Success"); 
+        },
+        Err(e) => {
+            return format!("Error retrieving audio file with id: {:?}", audio_file_id);
+        }
+    }
+}
+
+
+#[tauri::command]
 pub async fn read_image_from_data_dir(image_name: String) -> Result<String, String> {
     // Define the path to your image file
     let image_path = format!("/home/dsm001-primary/.local/share/dtunes-audio-app/images/{}", image_name);

@@ -29,7 +29,7 @@
 
                 <div class="flex flex-col gap-2">
                     <div class="player-buttons">
-                        <div>
+                        <div @click="audioStore.rewind()">
                             <i :class="['fas', 'fa-backward', 'text-white']"></i>
                         </div>
                         <div v-if="audioStore.playing == true" class="play-button" @click="pauseFile()">
@@ -38,7 +38,7 @@
                         <div v-if="audioStore.resume == true && audioStore.playing == false" class="play-button" @click="resumeFile()">
                             <i :class="['fas', 'fa-play', 'text-white']"></i>
                         </div>
-                        <div>
+                        <div @click="audioStore.forward()">
                             <i :class="['fas', 'fa-forward', 'text-white']"></i>
                         </div>
                     </div>
@@ -61,6 +61,7 @@ import { audioStore, AudioFile } from '../../api/AudioFIle';
 <script>
 import { audioStore, AudioFile } from '../../api/AudioFIle';
 import { invoke } from "@tauri-apps/api/core";
+import { BaseDirectory, readFile } from '@tauri-apps/plugin-fs';
 
 export default {
   name: 'AudioPlayer',
@@ -117,6 +118,19 @@ export default {
             thumbnail: this.thumbnail
         });
 
+
+        const fileBuffer = await readFile(`dtunes-audio-app/images/${this.thumbnail}`, {
+            baseDir: BaseDirectory.Data,
+        });
+
+        const imageUrl = URL.createObjectURL(new Blob([fileBuffer]));
+        let imageElem = document.getElementById(`${this.audioFileId.toString()}-player`);
+        if(imageElem) {
+          imageElem.src = imageUrl;
+        } else {
+          console.log(`${this.audioFileId} not found`)
+        }
+
         audioStore.playAudio(audioFile);
     },
     async pauseFile() {
@@ -127,28 +141,33 @@ export default {
     },
   },
   async mounted() { 
-    const base64Image = await invoke('read_image_from_data_dir', {imageName:  this.thumbnail});
+
+    const fileBuffer = await readFile(`dtunes-audio-app/images/${this.thumbnail}`, {
+        baseDir: BaseDirectory.Data,
+    });
+
+    const imageUrl = URL.createObjectURL(new Blob([fileBuffer]));
+    console.log("IMAGE URL: ", imageUrl)
     let imageElem = document.getElementById(`${this.audioFileId.toString()}-player`);
     if(imageElem) {
-      imageElem.src = `data:image/jpeg;base64,${base64Image}`;
+      imageElem.src = imageUrl;
     } else {
       console.log(`${this.audioFileId} not found`)
     }
   },
 }
 
-const updateTime = () => {
+const updateDuration = () => {
   const durationElement = document.getElementById("duration-tracker");
   const currentTime = audioStore.currentTime; 
-  const duration = audioStore.duration;  
-  if(durationElement && currentTime > 0 && !isNaN(duration) ) {
-    const value = (currentTime/duration) * 100;
-    console.log("VALUE: ", value);  
-    durationElement.style.width = `${currentTime}%`;
+  if(durationElement && currentTime > 0 && audioStore.playing)  {
+    const value = (currentTime/audioStore.duration) * 100;
+    console.log("CURRENT DURATION: ", value);  
+    durationElement.style.width = `${value}%`;
   }
 };
 
-setInterval(updateTime, 1000); // Update the value if we're playing
+setInterval(updateDuration, 1000);
 
 </script>
 

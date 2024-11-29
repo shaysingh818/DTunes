@@ -76,6 +76,14 @@ export const audioStore = reactive({
     this.audioFilePlaying = audioFile;
     this.resume = false;
     this.currentTime = 0;
+
+    const fileBuffer = await readFile(`dtunes-audio-app/audio_files/${audioFile.filePath}`, {
+        baseDir: BaseDirectory.Data,
+    });
+
+    const audioUrl = URL.createObjectURL(new Blob([fileBuffer]));
+    this.player = new Audio(audioUrl);
+    this.duration = this.player.duration; 
   },
 
   async loadAudioFiles() {
@@ -112,10 +120,17 @@ export const audioStore = reactive({
     });
   },
 
+  async deleteAudioFile(audioFileId: string): Promise<string> {
+    const dataDirPath = await dataDir(); 
+    const userDbPath = `${dataDirPath}/dtunes-audio-app/metadata/dtunes-audio-app.sqlite3`; 
+    return await invoke("delete_audio_file", { userDbPath, audioFileId});
+  },
+
   async playAudio(audioFile: AudioFile) {
 
     this.audioFilePlaying = audioFile;
     this.playing = true;
+    this.duration = parseFloat(audioFile.duration);
 
     const fileBuffer = await readFile(`dtunes-audio-app/audio_files/${audioFile.filePath}`, {
         baseDir: BaseDirectory.Data,
@@ -134,24 +149,19 @@ export const audioStore = reactive({
           this.paused = true;
         }
 
+        this.player.ontimeupdate = () => {
+          if(this.player) {
+            this.currentTime  = this.player.currentTime;
+          }
+        }
+
     } catch (error) {
         console.error("Could not play audio file: ", error); 
     }
     
   },
 
-  async streamDuration() {
-    if(this.player) {
-      this.player.ontimeupdate = () => {
-        if(this.player) {
-          this.currentTime  = this.player.currentTime;
-        }
-      }
-    }
-  },
-
   async pauseAudio() {
-
     this.playing = false;
     if(this.player) {
         this.player.pause();
@@ -168,6 +178,36 @@ export const audioStore = reactive({
       this.paused = false; 
       this.resume = false;
     }
+  },
+
+  async forward() {
+    if(this.player) {
+      const newDuration = this.player.currentTime - 30;
+      if(newDuration <= this.duration) {
+        this.player.currentTime += 30;
+        this.currentTime = this.player.currentTime; 
+      }
+    }
+  },
+
+  async rewind() {
+    if(this.player) {
+      const newDuration = this.player.currentTime - 30;
+      if(newDuration > 0) {
+        this.player.currentTime -= 30;
+        this.currentTime = this.player.currentTime; 
+      }
+    }
+  },
+
+  async convertSecondsToMinutes(seconds: number) {
+    const hours = Math.floor(seconds / 3600); // Get full hours
+    const minutes = Math.floor(seconds/60) // Get full minutes
+    const remainingSeconds = Math.floor(seconds % 60); // Get the remaining seconds 
+    const formattedMinutes = minutes < 10 ? '0' + minutes : minutes;
+    const formattedSeconds = remainingSeconds < 10 ? '0' + remainingSeconds : remainingSeconds;
+    return `${hours}:${formattedMinutes}:${formattedSeconds}`;
   }
+
 })
 
