@@ -11,6 +11,10 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+      
+      - name: Install GTK
+        run: apt-get install libwebkit2gtk-4.1-dev
+        working-directory: src-tauri/
 
       - name: Build
         run: cargo build --color always
