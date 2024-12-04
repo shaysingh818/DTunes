@@ -90,37 +90,12 @@ export default {
 
 <style scoped>
 
-.page-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.grid-container {
-    max-width: 100%; 
-    height: 100%;
-    margin: 0 auto;
-}
-
-.search-box-container {
-    max-width: 100%; 
-    height: 75px;
-    margin: 0 auto; 
-}
-
-.carousel-header {
-  color: white;
-  margin-left: 7%; 
-  margin-right: 5%;
-  /* border: 1px solid white; */
-  font-size: 30px;
-  font-weight: bold;
-}
 
 .playlist-section {
   margin-top: 1%; 
   margin-left: 5%;
-  margin-right: 5%; 
+  margin-right: 5%;
+  /* border: 1px solid white; */
 }
 
 </style>

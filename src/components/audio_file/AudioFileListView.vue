@@ -20,17 +20,13 @@
 </template>
 
 <script setup>
-import { audioStore } from '../../api/AudioFIle';
+import { audioStore } from '../../api/AudioFile';
 </script>
 
 <script>
 
 import SongList from './SongList.vue';
-import { BaseDirectory, dataDir, appDataDir } from '@tauri-apps/api/path';
-import { invoke } from "@tauri-apps/api/core";
-import { open, exists } from '@tauri-apps/plugin-fs';
-import { convertFileSrc } from '@tauri-apps/api/core';
-import { audioStore } from '../../api/AudioFIle';
+import { audioStore } from '../../api/AudioFile';
 
 export default {
   components: { SongList},
@@ -41,10 +37,3 @@ export default {
   },    
 }
 </script>
-
-<style scoped>
-
-.audio-files-container {
-  margin-bottom: 75px;
-}
-</style>

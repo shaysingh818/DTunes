@@ -1,6 +1,5 @@
 
 <template>
-    <div class="audio-files-container">
         <div class="flex flex-col">
             <div>
                 <PlaylistList 
@@ -50,7 +49,6 @@
                     thumbnail="https://www.w3schools.com/html/pic_trulli.jpg"
                 />
             </div>
-        </div>
     </div>
 </template>
 

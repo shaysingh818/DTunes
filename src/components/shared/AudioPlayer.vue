@@ -55,12 +55,11 @@
 
 
 <script setup>
-import { audioStore, AudioFile } from '../../api/AudioFIle';
+import { audioStore, AudioFile } from '../../api/AudioFile';
 </script>
 
 <script>
-import { audioStore, AudioFile } from '../../api/AudioFIle';
-import { invoke } from "@tauri-apps/api/core";
+import { audioStore, AudioFile } from '../../api/AudioFile';
 import { BaseDirectory, readFile } from '@tauri-apps/plugin-fs';
 
 export default {

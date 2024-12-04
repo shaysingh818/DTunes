@@ -17,7 +17,7 @@ export default {
 </script>
 
 <template>
-  <div class="artist-page-container">
+  <div class="page-container">
     <div class="flex flex-col gap-2">
       <div class="search-box-container">
         <SearchComponent 
@@ -25,19 +25,10 @@ export default {
           :onClick="audioFileSearch"
         />
       </div>
-      <div class="grid-container">
+      <div>
          <AudioFileListView />
       </div>
     </div>
   </div>
    <AudioFileCreate /> 
 </template>
-
-<style scoped>
-
-.artist-page-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-</style>

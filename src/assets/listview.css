@@ -1,0 +1,27 @@
+.list-view-image-container {
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.list-view-image {
+  display: flex;
+  border: 1px; 
+  border-radius: 15%; /* Optional: Rounded corners */
+  height: 60px;
+  width: 60px;  
+}
+
+.list-view-text-container {
+  padding: 4px; 
+  height: 100%;
+  justify-content: left;
+}
+
+.list-view-trailing-container {
+  display: flex; 
+  height: 100%;
+  align-items: center;
+  justify-content: center; 
+}

@@ -16,14 +16,14 @@
 </template>
 
 <script setup>
-import { audioStore } from '../../api/AudioFIle';
+import { audioStore } from '../../api/AudioFile';
 </script>
 
 <script>
 import SongCard from './SongCard.vue';
 import { BaseDirectory, dataDir, appDataDir } from '@tauri-apps/api/path';
 import { invoke } from "@tauri-apps/api/core";
-import { audioStore } from '../../api/AudioFIle';
+import { audioStore } from '../../api/AudioFile';
 
 export default {
     components: {SongCard},
@@ -36,19 +36,3 @@ export default {
 }
 
 </script>
-
-
-<style scoped>
-
-.carousel-container {
-    /* border: 1px solid #ccc; */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: auto;
-    gap: 1rem;
-    margin-right: 5%;
-    margin-left: 5%;
-}
-
-</style>

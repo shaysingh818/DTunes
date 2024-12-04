@@ -1,0 +1,88 @@
+.form-button-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 4px; 
+}
+
+.form-header {
+  width: 500px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.form-title {
+  padding: 6px; 
+}
+
+.form-field-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.form-button {
+  border-radius: 5%;
+  width: 50px; 
+  color: white;
+  padding: 8px;
+  border: 1px solid #ccc;
+  align-items: center;
+  justify-content: center;
+}
+
+.form-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2.0rem; /* This is equivalent to gap-2 in Tailwind (usually 0.5rem or 8px depending on your config) */
+  width: 100%;
+  padding: 20px;
+}
+
+.file-form-section {
+  display: flex;
+  flex-direction: row;
+  gap: 0.5rem; /* This is equivalent to gap-2 in Tailwind (usually 0.5rem or 8px depending on your config) */
+  width: 100%;
+  padding: 20px;
+  align-items: center;
+}
+
+.form-submit {
+  display: flex;
+  flex-direction: row;
+  gap: 1.0rem; /* This is equivalent to gap-2 in Tailwind (usually 0.5rem or 8px depending on your config) */
+  justify-content: center;
+  align-items: center;
+}
+
+input {
+  border-radius: 3%;
+  height: 50px;
+  width: 300px;
+  padding: 8px;
+  background-color: rgb(41 37 36);
+  color: rgb(153 27 27);
+  outline: rgb(153 27 27);
+}
+
+input[type="file"] {
+  border-radius: 3%;
+  height: 50px;
+  width: 300px;
+  padding: 8px;
+  background-color: rgb(41 37 36);
+  color: rgb(153 27 27);
+  outline: rgb(153 27 27);
+}
+
+label {
+  background-color: rgb(41 37 36);
+  color: rgb(153 27 27);
+  padding: 12px 24px;
+  border-radius: 5px;
+  font-size: 14px;
+  cursor: pointer;
+  font-weight: bold;
+}

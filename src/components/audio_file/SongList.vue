@@ -2,18 +2,18 @@
 <template>
     <div @click="playFile()" class="flex hover:bg-stone-900">
         <div class="flex-none w-24 pr-2">
-            <div class="image-container">
-                <img :src="thumbnail" :alt="thumbnail" :id="audioFileId.toString()" class="image p-1" />
+            <div class="list-view-image-container">
+                <img :src="thumbnail" :alt="thumbnail" :id="audioFileId.toString()" class="list-view-image p-1" />
             </div>
         </div>
         <div class="flex-auto w-64">
-            <div class="text-container">
+            <div class="list-view-text-container">
               <h2>{{ title }}</h2>
               <p>{{ datePosted }}</p>
             </div>
         </div>
         <div class="flex-auto w-32">
-          <div class="trailing-container">
+          <div class="list-view-trailing-container">
             <div class="grid grid-flow-col auto-cols-max space-x-4">
               <div><p1 :id="`${audioFileId.toString()}-duration`" >{{ duration }}</p1></div>
               <div @click="editFile()" class="hover:bg-stone-400">
@@ -32,13 +32,13 @@
 
 
 <script setup>
-import { audioStore } from "../../api/AudioFIle";
+import { audioStore } from "../../api/AudioFile";
 import AudioFileCreate from "./AudioFileCreate.vue";
 </script>
 
 <script>
 import { invoke } from "@tauri-apps/api/core";
-import { audioStore, AudioFile } from "../../api/AudioFIle";
+import { audioStore, AudioFile } from "../../api/AudioFile";
 import { BaseDirectory, readFile } from '@tauri-apps/plugin-fs';
 
 export default {
@@ -152,33 +152,6 @@ export default {
 
 <style scoped>
 
-.image-container {
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.image {
-  display: flex;
-  border: 1px; 
-  border-radius: 15%; /* Optional: Rounded corners */
-  height: 60px;
-  width: 60px;  
-}
-
-.text-container {
-  padding: 4px; 
-  height: 100%;
-  justify-content: left;
-}
-
-.trailing-container {
-  display: flex; 
-  height: 100%;
-  align-items: center;
-  justify-content: center; 
-}
 
 h2 {
     color: white;
@@ -193,58 +166,6 @@ p {
 p1 {
     font-size: 14px;
     color: rgb(209 213 219);
-}
-
-
-hr {
-  border: 1px solid gray 
-}
-
-
-.modal {
-  border-radius: 3%;
-  position: fixed;
-  z-index: 999;
-  top: 10%;
-  left: 50%;
-  width: 500px;
-  height: 600px;
-  margin-left: -160px;
-  background-color: rgb(28 25 23); 
-}
-
-.modal-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-
-.form-button-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 4px; 
-}
-
-.form-header {
-  /* border: 1px solid #ccc; */
-  width: 500px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.form-title {
-  /* border: 1px solid #ccc; */
-  padding: 6px; 
-}
-
-.form-field-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  /* border: 1px solid #ccc; */
 }
 
 </style>

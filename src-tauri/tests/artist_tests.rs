@@ -1,8 +1,10 @@
+use dtunes_audio_app_lib::dtunes_api; 
+
 #[cfg(test)]
 mod artist_instance {
 
-    use dtunes_audio_app_lib::artist::Artist;
-    use dtunes_audio_app_lib::audio_file::AudioFile;
+    use crate::dtunes_api::artist::Artist;
+    use crate::dtunes_api::audio_file::AudioFile;
     use rusqlite::{Connection, Result};
 
     /* test database instance */

@@ -1,7 +1,7 @@
 #[cfg(test)]
 mod audio_file_instance {
 
-    use dtunes_audio_app_lib::audio_file::{AudioFile};
+    use dtunes_audio_app_lib::dtunes_api::audio_file::{AudioFile};
     use rusqlite::{Connection, Result};
 
     /* test database instance */

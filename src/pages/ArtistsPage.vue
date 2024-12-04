@@ -23,7 +23,7 @@ const open = ref(false)
 </script>
 
 <template>
-  <div class="artist-page-container">
+  <div class="page-container">
     <div class="flex flex-col gap-2">
       <div class="search-box-container">
         <SearchComponent 
@@ -38,27 +38,3 @@ const open = ref(false)
   </div>
   <ArtistCreate />
 </template>
-
-
-
-<style scoped>
-
-.artist-page-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.grid-container {
-    max-width: 100%; 
-    height: 100%;
-    margin: 0 auto;
-}
-
-.search-box-container {
-    max-width: 100%; 
-    height: 75px;
-    margin: 0 auto; 
-}
-
-</style>

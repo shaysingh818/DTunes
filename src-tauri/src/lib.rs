@@ -1,14 +1,12 @@
-pub mod artist;
-pub mod audio_file;
-pub mod genre;
-pub mod playlist;
-pub mod pomodoro;
+pub mod dtunes_api; 
+pub mod handlers; 
 
-use crate::audio_file::{
+use crate::handlers::audio_file::{
     create_audio_file, 
     view_audio_files, 
-    read_image_from_data_dir,
-    delete_audio_file
+    delete_audio_file,
+    view_audio_file,
+    edit_audio_file
 };
 
 // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
@@ -29,7 +27,8 @@ pub fn run() {
             create_audio_file,
             view_audio_files,
             delete_audio_file,
-            read_image_from_data_dir
+            view_audio_file,
+            edit_audio_file
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

@@ -62,18 +62,3 @@ export default {
     </div>
 </template>
 
-
-<style scoped>
-
-.carousel-container {
-    /* border: 1px solid #ccc; */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: auto;
-    gap: 1rem;
-    margin-right: 5%;
-    margin-left: 5%;
-}
-
-</style>

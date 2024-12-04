@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import NavigationBar from "./components/shared/NavigationBar.vue";
 import AudioPlayer from "./components/shared/AudioPlayer.vue";
-import { audioStore } from "./api/AudioFIle";
+import { audioStore } from "./api/AudioFile";
 // import { invoke } from "@tauri-apps/api/core";
 
 // const greetMsg = ref("");

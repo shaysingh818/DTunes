@@ -68,9 +68,6 @@ def commit_local_storage_paths(app_name: str, scripts_folder: str):
 
     commit(scripts_folder, f"{db_path}/{app_name}.sqlite3")
 
-
-
-
 # Config
 SCRIPTS_FOLDER = "sql"
 TESTING_DB_PATH = "tests"

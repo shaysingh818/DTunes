@@ -1,8 +1,10 @@
+use dtunes_audio_app_lib::dtunes_api; 
+
 #[cfg(test)]
 mod genre_instance {
 
-    use dtunes_audio_app_lib::audio_file::AudioFile;
-    use dtunes_audio_app_lib::genre::Genre;
+    use crate::dtunes_api::audio_file::AudioFile;
+    use crate::dtunes_api::genre::Genre;
     use rusqlite::{Connection, Result};
 
     /* test database instance */
