@@ -1,8 +1,10 @@
+use dtunes_audio_app_lib::dtunes_api; 
+
 #[cfg(test)]
 mod pomodoro_instance {
 
-    use dtunes_audio_app_lib::dtunes_api::audio_file::AudioFile;
-    use dtunes_audio_app_lib::dtunes_api::pomodoro::Pomodoro;
+    use crate::dtunes_api::audio_file::AudioFile;
+    use crate::dtunes_api::pomodoro::Pomodoro;
     use rusqlite::{Connection, Result};
 
     /* test database instance */

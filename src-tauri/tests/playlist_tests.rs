@@ -1,8 +1,10 @@
+use dtunes_audio_app_lib::dtunes_api; 
+
 #[cfg(test)]
 mod playlist_instance {
 
-    use dtunes_audio_app_lib::dtunes_api::audio_file::AudioFile;
-    use dtunes_audio_app_lib::dtunes_api::playlist::Playlist;
+    use crate::dtunes_api::audio_file::AudioFile;
+    use crate::dtunes_api::playlist::Playlist;
     use rusqlite::{Connection, Result};
 
     /* test database instance */

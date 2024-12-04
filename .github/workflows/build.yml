@@ -6,17 +6,15 @@ on:
 
 jobs:
 
-
-  build:
+  dtunes_api:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: NPM Install
-        run: |
-          npm install
+      - name: Build
+        run: cargo build --color always
+        working-directory: src-tauri/
 
-      - name: Run Tauri
-        run: |
-          npm run tauri dev
+      - name: Test
+        run: cargo test -- color always --test-threads=1
