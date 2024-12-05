@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import NavigationBar from "./components/shared/NavigationBar.vue";
+import AudioPlayer from "./components/shared/AudioPlayer.vue";
+import { audioStore } from "./api/AudioFile";
 // import { invoke } from "@tauri-apps/api/core";
 
 // const greetMsg = ref("");
@@ -11,10 +13,23 @@ import NavigationBar from "./components/shared/NavigationBar.vue";
 // }
 </script>
 
+
 <template>
 
    <div class="flex">
     <NavigationBar />
+    <AudioPlayer
+      v-if="(audioStore.audioFilePlaying && audioStore.audioFilePlaying.audioFileId) || audioStore.playing == true"
+      :audioFileId="audioStore.audioFilePlaying.audioFileId"
+      :title="audioStore.audioFilePlaying.fileName"
+      :datePosted="audioStore.audioFilePlaying.dateCreated"
+      :duration="audioStore.audioFilePlaying.duration"
+      :filePath="audioStore.audioFilePlaying.filePath"
+      :lastModified="audioStore.audioFilePlaying.lastModified"
+      :plays="audioStore.audioFilePlaying.plays"
+      :sampleRate="audioStore.audioFilePlaying.sampleRate"
+      :thumbnail="audioStore.audioFilePlaying.thumbnail"
+    /> 
   </div>
 
   <main class = "ml-32 p-2">

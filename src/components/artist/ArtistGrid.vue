@@ -13,7 +13,7 @@ export default {
 </script>
 
 <template>
-    <div class="cards">
+    <div class="grid-cards">
       <div>
         <ArtistCard 
           name="NLE Choppa" 
@@ -152,39 +152,3 @@ export default {
       </div>
     </div>
 </template>
-
-
-<style scoped>
-
-.cards {
-    display: grid;
-    gap: 1rem;
-    margin: 0 auto; 
-    overflow: auto; 
-}
-
-@media (min-width: 600px) {
-  .cards { grid-template-columns: repeat(2, 1fr); }
-}
-
-@media (min-width: 800px) {
-  .cards { grid-template-columns: repeat(3, 1fr); }
-}
-
-@media (min-width: 1000px) {
-  .cards { grid-template-columns: repeat(4, 1fr); }
-}
-
-@media (min-width: 1200px) {
-  .cards { grid-template-columns: repeat(5, 1fr); }
-}
-
-@media (min-width: 1500px) {
-  .cards { grid-template-columns: repeat(6, 1fr); }
-}
-
-@media (min-width: 1900px) {
-  .cards { grid-template-columns: repeat(8, 1fr); max-width: 1800px; }
-}
-
-</style>

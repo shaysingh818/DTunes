@@ -1,13 +1,13 @@
 
 <template>
     <div class="hover:bg-stone-900">
-        <div class="card-container">
-          <div class="card-container-content">
-            <div class="text-content">
+        <div class="audio-file-card-container" :id="audioFileId.toString()">
+          <div class="audio-file-card-container-content">
+            <div class="audio-file-text-content">
               <h1>{{ title }}</h1>
               <p>{{ datePosted }}</p>
             </div>
-            <div class="icon-content">
+            <div class="audio-file-card-icon-content">
               <div class="grid grid-flow-col auto-cols-max space-x-4">
                 <div class="hover:bg-stone-400"><i :class="['fas', 'fa-list-ul', 'text-white']"></i></div>
                 <div class="hover:bg-stone-400"><i :class="['fas', 'fa-play', 'text-white']"></i></div>
@@ -21,9 +21,17 @@
 
 
 <script>
+import { invoke } from "@tauri-apps/api/core";
+import { audioStore, AudioFile } from "../../api/AudioFile";
+import { BaseDirectory, readFile } from '@tauri-apps/plugin-fs';
+
 export default {
   name: 'SongCard',
   props: {
+    audioFileId: {
+      type: Number,
+      required: true,
+    },
     title: {
       type: String,
       required: true,
@@ -40,6 +48,26 @@ export default {
       type: String,
       required: true,
     },
+    filePath: {
+      type: String,
+      required: true,
+    },
+  },
+  async mounted() {
+
+
+    const fileBuffer = await readFile(`dtunes-audio-app/images/${this.thumbnail}`, {
+        baseDir: BaseDirectory.Data,
+    });
+    const imageUrl = URL.createObjectURL(new Blob([fileBuffer]));
+
+    let imageElem = document.getElementById(this.audioFileId.toString());
+    if(imageElem) {
+      imageElem.style.backgroundImage = `url(${imageUrl})`; 
+    } else {
+      console.log(`${this.audioFileId} not found`)
+    }
+
   },
 }
 </script>
@@ -47,37 +75,17 @@ export default {
 
 <style scoped>
 
-.card-container {
-    border-radius: 3%;
-    display: flex;
-    height: 200px;
-    width: 200px;
-    background-image: url("https://www.w3schools.com/html/pic_trulli.jpg");
-    align-items: flex-end;
-}
 
-.card-container-content {
-    border-radius: 3%;
-    width: 100%;
-    height: 100px;
-    background: rgb(0, 0, 0); /* Fallback color */
-    background: rgba(0, 0, 0, 0.5); /* Black background with 0.5 opacity */
-}
+h1 {
+  font-weight: bold;
+  color: white;
 
-.text-content {
-    /* border: 1px solid #ccc;   */
-    width: 100%;
-    position: relative;
 }
-
-.icon-content {
-    padding: 8px; 
-}
-
 
 p {
   font-size: 12px;
   color: rgb(209 213 219);
+  overflow: hidden;
 }
 
 </style>

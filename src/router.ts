@@ -7,11 +7,13 @@ import GenresPage from './pages/GenresPage.vue'
 import ArtistsPage from './pages/ArtistsPage.vue'
 import PomodoroPage from './pages/PomodoroPage.vue'
 import ArtistCreate from './components/artist/ArtistCreate.vue'
+import EditAudioFilePage from './pages/EditAudioFilePage.vue'
 
 const routes: Array<RouteRecordRaw> =  [
   { path: '/', component: HomePage },
   { path: '/playlists', component: PlaylistsPage },
   { path: '/audio-files', component: AudioFilesPage },
+  { path: '/audio-files/edit/:id', component: EditAudioFilePage},
   { path: '/genres', component: GenresPage },
   { path: '/artists', component: ArtistsPage },
   { path: '/pomodoro', component: PomodoroPage },
