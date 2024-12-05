@@ -1,123 +1,3 @@
-
-<script>
-import { ref } from 'vue'
-import { useRoute } from 'vue-router';
-import { audioStore, AudioFile } from '../api/AudioFile';
-import { appLocalDataDir, dataDir } from '@tauri-apps/api/path';
-import { open, save } from "@tauri-apps/plugin-dialog"
-import SearchComponent from '../components/shared/SearchComponent.vue';
-import AudioFileListView from '../components/audio_file/AudioFileListView.vue';
-import AudioFileCreate from '../components/audio_file/AudioFileCreate.vue';
-
-
-export default {
-  components: { SearchComponent, AudioFileListView, AudioFileCreate},
-  methods: {
-    goToAbout() {
-      this.$router.push('/about')
-    },
-    audioFileSearch(){
-      alert("Audio File Search Button Clicked");
-    },
-    goBack() {
-      this.$router.go(-1); 
-    },
-    async submitForm() {
-
-      const audioFileName = document.getElementById('audio-file-name');
-      const audioFileThumbnailPath = document.getElementById('audio-thumbnail-upload');
-      const audioFilePath = document.getElementById('audio-file-upload');
-
-      const fileNameValidation = audioFileName.value.length > 0;
-      const thumbnailValidation = audioFileThumbnailPath.value.length > 0;
-      const filePathValidation = audioFilePath.value.length > 0;
-
-      let fileName = '';
-      let thumbnailPath = '';
-      let filePath = '';
-
-      if(!fileNameValidation) { 
-        fileName = this.audioFile.file_name; 
-      } else {
-        fileName = audioFileName.value;
-      }
-
-      if(!thumbnailValidation) { 
-        thumbnailPath = this.audioFile.thumbnail 
-      } else {
-        thumbnailPath = audioFileThumbnailPath.value; 
-      }
-
-      if(!filePathValidation) { 
-        filePath = this.audioFile.file_path 
-      } else {
-        filePath = audioFilePath.value;
-      }
-
-      console.log("FILE NAME: ", fileName);
-      console.log("IMAGES PATH: ", thumbnailPath);
-      console.log("AUDIO PATH ", filePath);
-
-      const response = await audioStore.editAudioFile(
-        this.audioFile.audio_file_id.toString(),
-        fileName,
-        filePath,
-        thumbnailPath
-      );
-
-      if(response == "Success") {
-        console.log("Successfully Updated Audio File");
-        alert("Success");
-      } else {
-        console.log("SOMETHING WENT WRONG");
-        alert(response);
-      }
-
-    },
-    async selectThumbnailImage() {
-      const selectImagePath = await open({
-        multiple: false,
-        filters: [
-          {
-            name: 'Image Filter',
-            extensions: ['png', 'jpeg', 'jpg', 'webp']
-          }
-        ]
-      });
-      const audioFileThumbnailPath = document.getElementById('audio-thumbnail-upload');
-      audioFileThumbnailPath.value = selectImagePath; 
-    },
-    async selectAudioFileUpload() {
-      const selectAudioFilePath = await open({
-        multiple: false,
-        filters: [
-          {
-            name: 'Audio Format Filter',
-            extensions: ['mp3', 'wav', 'aac', 'ogg', 'wma', 'flac']
-          }
-        ]
-      });
-      const audioFilePath = document.getElementById('audio-file-upload');
-      audioFilePath.value = selectAudioFilePath; 
-    }
-  },
-  data() {
-    return {
-      audioFile: AudioFile
-    }
-  },
-  async mounted() {
-    const route  = useRoute();
-    const id = route.params.id; 
-    console.log("ID OF AUDIO FILE: ", id);
-    const audioFile = await audioStore.viewAudioFile(id); 
-    this.audioFile = audioFile; 
-    console.log(audioFile); 
-  }
-}
-</script>
-
-
 <template>
 
 <div class="back-bar">
@@ -135,7 +15,7 @@ export default {
     <div class="grow h-14">
       <div class="page-header">
         <div class="flex flex-row gap-4">
-          <div class="image-container">
+          <div class="image-container" :id="audioFile.audio_file_id">
           </div>
           <div class="text-content">
             <div class="flex flex-col">
@@ -228,6 +108,148 @@ export default {
     </div>
   </div>
 </template>
+
+<script>
+import { ref } from 'vue'
+import { useRoute } from 'vue-router';
+import { audioStore, AudioFile } from '../api/AudioFile';
+import { appLocalDataDir, dataDir } from '@tauri-apps/api/path';
+import { BaseDirectory, readFile } from '@tauri-apps/plugin-fs';
+import { open, save } from "@tauri-apps/plugin-dialog"
+import SearchComponent from '../components/shared/SearchComponent.vue';
+import AudioFileListView from '../components/audio_file/AudioFileListView.vue';
+import AudioFileCreate from '../components/audio_file/AudioFileCreate.vue';
+
+
+export default {
+  components: { SearchComponent, AudioFileListView, AudioFileCreate},
+  methods: {
+    goToAbout() {
+      this.$router.push('/about')
+    },
+    audioFileSearch(){
+      alert("Audio File Search Button Clicked");
+    },
+    goBack() {
+      this.$router.go(-1); 
+    },
+    async submitForm() {
+
+      const audioFileName = document.getElementById('audio-file-name');
+      const audioFileThumbnailPath = document.getElementById('audio-thumbnail-upload');
+      const audioFilePath = document.getElementById('audio-file-upload');
+
+      const fileNameValidation = audioFileName.value.length > 0;
+      const thumbnailValidation = audioFileThumbnailPath.value.length > 0;
+      const filePathValidation = audioFilePath.value.length > 0;
+
+      let fileName = '';
+      let thumbnailPath = '';
+      let filePath = '';
+
+      if(!fileNameValidation) { 
+        fileName = this.audioFile.file_name; 
+      } else {
+        fileName = audioFileName.value;
+      }
+
+      if(!thumbnailValidation) { 
+        thumbnailPath = this.audioFile.thumbnail 
+      } else {
+        thumbnailPath = audioFileThumbnailPath.value; 
+      }
+
+      if(!filePathValidation) { 
+        filePath = this.audioFile.file_path 
+      } else {
+        filePath = audioFilePath.value;
+      }
+
+      console.log("FILE NAME: ", fileName);
+      console.log("IMAGES PATH: ", thumbnailPath);
+      console.log("AUDIO PATH ", filePath);
+
+      const response = await audioStore.editAudioFile(
+        this.audioFile.audio_file_id.toString(),
+        fileName,
+        filePath,
+        thumbnailPath
+      );
+
+      if(response == "Success") {
+        console.log("Successfully Updated Audio File");
+        alert("Success");
+      } else {
+        console.log("SOMETHING WENT WRONG");
+        alert(response);
+      }
+
+    },
+    async selectThumbnailImage() {
+      const selectImagePath = await open({
+        multiple: false,
+        filters: [
+          {
+            name: 'Image Filter',
+            extensions: ['png', 'jpeg', 'jpg', 'webp']
+          }
+        ]
+      });
+      const audioFileThumbnailPath = document.getElementById('audio-thumbnail-upload');
+      audioFileThumbnailPath.value = selectImagePath; 
+    },
+    async selectAudioFileUpload() {
+      const selectAudioFilePath = await open({
+        multiple: false,
+        filters: [
+          {
+            name: 'Audio Format Filter',
+            extensions: ['mp3']
+          }
+        ]
+      });
+      const audioFilePath = document.getElementById('audio-file-upload');
+      audioFilePath.value = selectAudioFilePath; 
+    }
+  },
+  data() {
+    return {
+      audioFile: {
+        audioFileId: 0,
+        dateCreated: '',
+        duration: '',
+        fileName: '',
+        filePath: '',
+        lastModified: '',
+        plays: 0,
+        sampleRate: '',
+        thumbnail: ''
+      }
+    }
+  },
+  async mounted() {
+    const route  = useRoute();
+    const id = route.params.id; 
+    const audioFile = await audioStore.viewAudioFile(id); 
+    this.audioFile = audioFile; 
+    console.log(`My Object: ${this.audioFile}`);
+
+    const fileBuffer = await readFile(`dtunes-audio-app/images/${audioFile.thumbnail}`, {
+        baseDir: BaseDirectory.Data,
+    });
+    const imageUrl = URL.createObjectURL(new Blob([fileBuffer]));
+    console.log("ELEMENT ID ", this.audioFile.audioFileId); 
+
+    let imageElem = document.getElementById(`${audioFile.audioFileId}`);
+    if(imageElem) {
+      imageElem.style.backgroundImage = `url(${imageUrl})`; 
+    } else {
+      console.log(`${this.audioFileId} not found`)
+    }
+
+  }
+}
+</script>
 
 <style scoped>
 
