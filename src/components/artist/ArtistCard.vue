@@ -2,19 +2,22 @@
 
 <template>
     <div class="card-component">
-        <div class="card-container">
+        <div class="card-container" :id="`artist-card-${artistId}`">
           <div class="card-container-content">
             <div class="text-content">
               <div class="flex flex-col gap-2">
                 <div>
                   <h1>{{ name }}</h1>
                 </div>              
-                <div class="flex flex-row gap-2" style="display: flex; align-items: center; justify-content: center;">
-                  <div>
-                    <i :class="['fas', 'fa-music', 'text-white']"></i> 
+                <div class="flex flex-row gap-3" style="display: flex; align-items: center; justify-content: center;">
+                  <div class="hover:bg-stone-400">
+                    <i @click="addAudioFile" :class="['fas', 'fa-add', 'text-white']"></i> 
                   </div>
-                  <div>
-                    <p style="font-weight: bold;">{{ songCount }}</p>
+                  <div @click="editArtist" class="hover:bg-stone-400">
+                    <i :class="['fas', 'fa-edit', 'text-white']"></i> 
+                  </div>
+                  <div @click="removeArtist" class="hover:bg-stone-400">
+                    <i :class="['fas', 'fa-trash', 'text-white']"></i> 
                   </div>
                 </div>
               </div>
@@ -25,10 +28,22 @@
 </template>
 
 
+<script setup>
+import { artistStore } from '../../api/Artist';
+</script>
+
 <script>
+import { BaseDirectory, readFile } from '@tauri-apps/plugin-fs';
+import { invoke } from "@tauri-apps/api/core";
+import { artistStore } from '../../api/Artist';
+
 export default {
   name: 'ArtistCard',
   props: {
+    artistId: {
+      type: Number,
+      required: true,
+    },
     name: {
       type: String,
       required: true,
@@ -46,6 +61,45 @@ export default {
       required: true,
     },
   },
+  methods: {
+    async removeArtist() {
+      const userChoice = await window.confirm(`Are you sure you want to delete: ${this.title}`);
+      if(userChoice) {
+        const deleteResult = await artistStore.deleteArtist(this.artistId.toString()); 
+        if(deleteResult == "Success") {
+          alert("Successfully deleted: ", this.title);
+          this.$router.push('artists/');
+          await this.$nextTick(); 
+          await artistStore.loadArtists(); 
+        } 
+      } else {
+        alert("Could not delete artist: ", deleteResult);  
+      }
+    },
+    async editArtist() {
+      this.$router.push({ path: `/artist/edit/${this.artistId}`})
+    },
+    async addAudioFile() {
+      this.$router.push({ path: `/artist/add-audio-file/${this.artistId}`});
+    }
+  },
+  async mounted() {
+
+    const fileBuffer = await readFile(`dtunes-audio-app/images/${this.thumbnail}`, {
+        baseDir: BaseDirectory.Data,
+    });
+
+    const imageUrl = URL.createObjectURL(new Blob([fileBuffer]));
+    console.log("IMAGE URL ARTIST: ", imageUrl)
+
+    let imageElem = document.getElementById(`artist-card-${this.artistId}`);
+    if(imageElem) {
+      imageElem.style.backgroundImage = `url(${imageUrl})`;
+    } else {
+      console.log(`${this.artistId} not found ARTIST`)
+    }
+
+  }
 }
 </script>
 
@@ -61,7 +115,8 @@ export default {
     display: flex;
     height: 185px;
     width: 185px;
-    background-image: url("https://www.w3schools.com/html/pic_trulli.jpg");
+    background-size: cover;
+    background-position: center;
 }
 
 .card-container-content {
@@ -76,7 +131,10 @@ export default {
     display: flex;
     height: 100%;
     justify-content: center;
-    align-items: center; 
+    align-items: center;
+    white-space: nowrap; 
+    text-overflow: ellipsis;
+    overflow: hidden; 
 }
 
 .icon-content {

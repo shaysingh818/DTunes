@@ -112,13 +112,13 @@
 <script>
 import { ref } from 'vue'
 import { useRoute } from 'vue-router';
-import { audioStore, AudioFile } from '../api/AudioFile';
+import { audioStore, AudioFile } from '../../api/AudioFile';
 import { appLocalDataDir, dataDir } from '@tauri-apps/api/path';
 import { BaseDirectory, readFile } from '@tauri-apps/plugin-fs';
 import { open, save } from "@tauri-apps/plugin-dialog"
-import SearchComponent from '../components/shared/SearchComponent.vue';
-import AudioFileListView from '../components/audio_file/AudioFileListView.vue';
-import AudioFileCreate from '../components/audio_file/AudioFileCreate.vue';
+import SearchComponent from '../../components/shared/SearchComponent.vue';
+import AudioFileListView from '../../components/audio_file/AudioFileListView.vue';
+import AudioFileCreate from '../../components/audio_file/AudioFileCreate.vue';
 
 
 export default {

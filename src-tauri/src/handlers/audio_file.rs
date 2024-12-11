@@ -1,12 +1,8 @@
 use std::fs;
 use std::path::Path; 
-use std::io::Read; 
-use std::fs::File;
 use std::ffi::OsStr;
-use base64::encode; 
 use uuid::Uuid; 
 use rusqlite::{Connection, Result};
-
 use crate::dtunes_api::audio_file::*; 
 
 #[tauri::command]

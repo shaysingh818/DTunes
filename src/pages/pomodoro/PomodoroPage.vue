@@ -1,7 +1,7 @@
 <script>
-import SearchComponent from '../components/shared/SearchComponent.vue';
-import PomodoroGrid from '../components/pomodoro/PomodoroGrid.vue';
-import PomodoroCreate from '../components/pomodoro/PomodoroCreate.vue';
+import SearchComponent from '../../components/shared/SearchComponent.vue';
+import PomodoroGrid from '../../components/pomodoro/PomodoroGrid.vue';
+import PomodoroCreate from '../../components/pomodoro/PomodoroCreate.vue';
 
 export default {
   components: {SearchComponent, PomodoroGrid, PomodoroCreate},

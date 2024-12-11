@@ -1,7 +1,7 @@
 
 <template>
     <div class="hover:bg-stone-900">
-        <div class="audio-file-card-container" :id="audioFileId.toString()">
+        <div class="audio-file-card-container" :id="`audio-card-image-${audioFileId.toString()}`">
           <div class="audio-file-card-container-content">
             <div class="audio-file-text-content">
               <h1>{{ title }}</h1>
@@ -55,17 +55,16 @@ export default {
   },
   async mounted() {
 
-
     const fileBuffer = await readFile(`dtunes-audio-app/images/${this.thumbnail}`, {
         baseDir: BaseDirectory.Data,
     });
     const imageUrl = URL.createObjectURL(new Blob([fileBuffer]));
 
-    let imageElem = document.getElementById(this.audioFileId.toString());
+    let imageElem = document.getElementById(`audio-card-image-${this.audioFileId.toString()}`);
     if(imageElem) {
       imageElem.style.backgroundImage = `url(${imageUrl})`; 
     } else {
-      console.log(`${this.audioFileId} not found`)
+      console.log(`${this.audioFileId} not found AUDIO FILE`)
     }
 
   },

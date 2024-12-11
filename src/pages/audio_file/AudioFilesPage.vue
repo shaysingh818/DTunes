@@ -1,7 +1,7 @@
 <script>
-import SearchComponent from '../components/shared/SearchComponent.vue';
-import AudioFileListView from '../components/audio_file/AudioFileListView.vue';
-import AudioFileCreate from '../components/audio_file/AudioFileCreate.vue';
+import SearchComponent from '../../components/shared/SearchComponent.vue';
+import AudioFileListView from '../../components/audio_file/AudioFileListView.vue';
+import AudioFileCreate from '../../components/audio_file/AudioFileCreate.vue';
 
 export default {
   components: { SearchComponent, AudioFileListView, AudioFileCreate},

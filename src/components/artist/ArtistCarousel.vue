@@ -1,11 +1,12 @@
 <template>
     <div class="carousel-container">
-        <div class="flex flex-row gap-2" v-for="(item, index) in artists" :key="index">
+        <div class="flex flex-row gap-2" v-for="(item, index) in artistStore.artists" :key="index">
             <div>
-                <ArtistCard 
-                    :name="item.name" 
+                <ArtistCard
+                    :artistId="item.artist_id" 
+                    :name="item.artist_name" 
                     :datePosted="item.datePosted" 
-                    :thumbnail="item.thumbnail"
+                    :thumbnail="item.artist_thumbnail"
                     :songCount="item.songCount"
                 />
             </div>
@@ -14,59 +15,21 @@
 </template>
 
 
+<script setup>
+import { artistStore } from '../../api/Artist';
+</script>
+
 <script>
 import ArtistCard from './ArtistCard.vue';
+import { artistStore } from '../../api/Artist';
 
 export default {
     components: {ArtistCard},
     name: 'ArtistCarousel',
-    data() {
-        return {
-            artists: [
-                {
-                    name: "NLE Choppa",
-                    datePosted: "Monday, November 4, 2024", 
-                    thumbnail: "https://www.w3schools.com/html/pic_trulli.jpg",
-                    songCount: "100"
-                },
-                {
-                    name: "NLE Choppa",
-                    datePosted: "Monday, November 4, 2024", 
-                    thumbnail: "https://www.w3schools.com/html/pic_trulli.jpg",
-                    songCount: "100"
-                },
-                {
-                    name: "NLE Choppa",
-                    datePosted: "Monday, November 4, 2024", 
-                    thumbnail: "https://www.w3schools.com/html/pic_trulli.jpg",
-                    songCount: "100"
-                },
-                {
-                    name: "NLE Choppa",
-                    datePosted: "Monday, November 4, 2024", 
-                    thumbnail: "https://www.w3schools.com/html/pic_trulli.jpg",
-                    songCount: "100"
-                },
-                {
-                    name: "NLE Choppa",
-                    datePosted: "Monday, November 4, 2024", 
-                    thumbnail: "https://www.w3schools.com/html/pic_trulli.jpg",
-                    songCount: "100"
-                },
-                {
-                    name: "NLE Choppa",
-                    datePosted: "Monday, November 4, 2024", 
-                    thumbnail: "https://www.w3schools.com/html/pic_trulli.jpg",
-                    songCount: "100"
-                },
-                {
-                    name: "NLE Choppa",
-                    datePosted: "Monday, November 4, 2024", 
-                    thumbnail: "https://www.w3schools.com/html/pic_trulli.jpg",
-                    songCount: "100"
-                },
-            ]
-        }
+    async mounted() {
+      console.log("Loading artists from store");
+      await artistStore.loadArtists();
+      console.log("ARTIST STORE LOADED ", artistStore.artists)
     }
 }
 

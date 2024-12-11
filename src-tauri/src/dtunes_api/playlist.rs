@@ -1,8 +1,9 @@
 use chrono;
 use rusqlite::{Connection, Result};
 use crate::dtunes_api::audio_file::AudioFile;
+use serde::{Deserialize, Serialize};
 
-#[derive(Debug)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Playlist {
     pub playlist_id: usize,
     pub playlist_name: String,
@@ -63,7 +64,7 @@ impl Playlist {
 
         conn.execute(
             "UPDATE PLAYLIST
-                SET PLAYLIST_NAME?, PLAYLIST_THUMBNAIL=?, DATE_CREATED=?, LAST_MODIFIED=?,
+                SET PLAYLIST_NAME=?, PLAYLIST_THUMBNAIL=?, DATE_CREATED=?, LAST_MODIFIED=?
                 WHERE PLAYLIST_ID=?",
             [
                 &self.playlist_name,
@@ -78,6 +79,7 @@ impl Playlist {
 
     pub fn delete(conn: &Connection, id: &str) -> Result<()> {
         conn.execute("DELETE FROM PLAYLIST WHERE PLAYLIST_ID=?", [id])?;
+        conn.execute("DELETE FROM PLAYLIST_AUDIO_FILE WHERE PLAYLIST_ID=?", [id])?;
         Ok(())
     }
 

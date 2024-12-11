@@ -1,7 +1,7 @@
 <script>
-import SearchComponent from '../components/shared/SearchComponent.vue';
-import PlaylistCreate from '../components/playlist/PlaylistCreate.vue';
-import PlaylistListView from '../components/playlist/PlaylistListView.vue';
+import SearchComponent from '../../components/shared/SearchComponent.vue';
+import PlaylistCreate from '../../components/playlist/PlaylistCreate.vue';
+import PlaylistListView from '../../components/playlist/PlaylistListView.vue';
 
 export default {
   components: { SearchComponent, PlaylistCreate, PlaylistListView},
