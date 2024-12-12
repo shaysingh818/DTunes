@@ -1,8 +1,10 @@
 use chrono;
 use rusqlite::{Connection, Result};
+use serde::{Deserialize, Serialize};
 use crate::dtunes_api::audio_file::AudioFile;
 
-#[derive(Debug)]
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Genre {
     pub genre_id: usize,
     pub genre_name: String,

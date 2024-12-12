@@ -1,8 +1,9 @@
 use chrono;
 use rusqlite::{Connection, Result};
+use serde::{Deserialize, Serialize};
 use crate::dtunes_api::audio_file::AudioFile;
 
-#[derive(Debug)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Artist {
     pub artist_id: usize,
     pub artist_name: String,
@@ -77,6 +78,7 @@ impl Artist {
     }
 
     pub fn delete(conn: &Connection, id: &str) -> Result<()> {
+        conn.execute("DELETE FROM ARTIST_AUDIO_FILE WHERE ARTIST_ID=?", [id])?;
         conn.execute("DELETE FROM ARTIST WHERE ARTIST_ID=?", [id])?;
         Ok(())
     }

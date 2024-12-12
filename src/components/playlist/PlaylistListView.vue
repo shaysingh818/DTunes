@@ -1,56 +1,22 @@
 
 <template>
-        <div class="flex flex-col">
-            <div>
-                <PlaylistList 
-                    title="Through the fire and flames" 
-                    datePosted="Monday, November 4, 2024" 
-                    duration="2:52"
-                    thumbnail="https://www.w3schools.com/html/pic_trulli.jpg"
-                />
-            </div>
-            <div>
-                <PlaylistList 
-                    title="Pirates of the Carribean" 
-                    datePosted="Monday, November 4, 2024" 
-                    duration="3:01"
-                    thumbnail="https://www.w3schools.com/html/pic_trulli.jpg"
-                />
-            </div>
-            <div>
-                <PlaylistList 
-                    title="Super Mario Bros" 
-                    datePosted="Monday, November 4, 2024" 
-                    duration="1:25"
-                    thumbnail="https://www.w3schools.com/html/pic_trulli.jpg"
-                />
-            </div>
-            <div>
-                <PlaylistList 
-                    title="Through the fire and flames" 
-                    datePosted="Monday, November 4, 2024" 
-                    duration="2:52"
-                    thumbnail="https://www.w3schools.com/html/pic_trulli.jpg"
-                />
-            </div>
-            <div>
-                <PlaylistList 
-                    title="Pirates of the Carribean" 
-                    datePosted="Monday, November 4, 2024" 
-                    duration="3:01"
-                    thumbnail="https://www.w3schools.com/html/pic_trulli.jpg"
-                />
-            </div>
-            <div>
-                <PlaylistList 
-                    title="Super Mario Bros" 
-                    datePosted="Monday, November 4, 2024" 
-                    duration="1:25"
-                    thumbnail="https://www.w3schools.com/html/pic_trulli.jpg"
-                />
-            </div>
+    <div class="flex flex-col" v-for="(item, index) in playlistStore.playlists" :key="index">
+        <div>
+            <PlaylistList
+                :playlistId="item.playlist_id"
+                :title="item.playlist_name" 
+                :datePosted="item.date_created" 
+                :lastModified="item.last_modified" 
+                :thumbnail="item.playlist_thumbnail"
+            />
+        </div>
     </div>
 </template>
+
+
+<script setup>
+import { playlistStore } from '../../api/Playlist';
+</script>
 
 <script>
 
@@ -63,5 +29,10 @@ export default {
       this.$router.push('/about')
     },
   },
+  async mounted() {
+    console.log("Loading playlists from store"); 
+    await playlistStore.loadPlaylists();
+    console.log("PLAYLIST STORE LOADED: ", playlistStore.playlists); 
+  },    
 }
 </script>

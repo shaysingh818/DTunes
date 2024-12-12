@@ -1,7 +1,7 @@
 <script>
-import ArtistCreate from '../components/artist/ArtistCreate.vue';
-import ArtistGrid from '../components/artist/ArtistGrid.vue';
-import SearchComponent from '../components/shared/SearchComponent.vue';
+import ArtistCreate from '../../components/artist/ArtistCreate.vue';
+import ArtistGrid from '../../components/artist/ArtistGrid.vue';
+import SearchComponent from '../../components/shared/SearchComponent.vue';
 
 export default {
   components: { ArtistGrid, SearchComponent, ArtistCreate},

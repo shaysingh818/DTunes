@@ -1,7 +1,7 @@
 <script>
-import GenreCreate from '../components/genre/GenreCreate.vue';
-import GenreGrid from '../components/genre/GenreGrid.vue';
-import SearchComponent from '../components/shared/SearchComponent.vue';
+import GenreCreate from '../../components/genre/GenreCreate.vue';
+import GenreGrid from '../../components/genre/GenreGrid.vue';
+import SearchComponent from '../../components/shared/SearchComponent.vue';
 
 export default {
   components: { GenreGrid, SearchComponent, GenreCreate},

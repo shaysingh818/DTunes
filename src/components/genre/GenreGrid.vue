@@ -1,5 +1,10 @@
+<script setup>
+import { genreStore } from '../../api/Genre';
+</script>
+
 <script>
 import GenreCard from './GenreCard.vue';
+import { genreStore } from '../../api/Genre';
 
 export default {
     components: { GenreCard},
@@ -8,41 +13,10 @@ export default {
             this.$router.push('/about')
         },
     },
-    data() {
-        return {
-            genres: [
-                {
-                    name: "Hip Hop",
-                    datePosted: "Monday, November 4, 2024",
-                    thumbnail: "https://www.w3schools.com/html/pic_trulli.jpg"
-                },
-                {
-                    name: "Rap",
-                    datePosted: "Tuesday, November 5, 2024",
-                    thumbnail: "https://www.w3schools.com/html/pic_trulli.jpg"
-                },
-                {
-                    name: "Classical",
-                    datePosted: "Wednesday, November 6, 2024",
-                    thumbnail: "https://www.w3schools.com/html/pic_trulli.jpg"
-                },
-                {
-                    name: "Rock",
-                    datePosted: "Wednesday, November 6, 2024",
-                    thumbnail: "https://www.w3schools.com/html/pic_trulli.jpg"
-                },
-                {
-                    name: "Punk",
-                    datePosted: "Wednesday, November 6, 2024",
-                    thumbnail: "https://www.w3schools.com/html/pic_trulli.jpg"
-                },
-                {
-                    name: "Beatbox",
-                    datePosted: "Wednesday, November 6, 2024",
-                    thumbnail: "https://www.w3schools.com/html/pic_trulli.jpg"
-                }
-            ] 
-        }
+    async mounted() {
+        console.log("Loading genres from store");
+        await genreStore.loadGenres();
+        console.log("GENRE STORE LOADED ", genreStore.genres);
     }
 }
 </script>
@@ -50,11 +24,12 @@ export default {
 
 <template>
     <div class="grid-cards">
-      <div v-for="(item, index) in genres" :key="index">
+      <div v-for="(item, index) in genreStore.genres" :key="index">
         <GenreCard 
-            :name="item.name" 
-            :datePosted="item.datePosted" 
-            :thumbnail="item.thumbnail"
+            :genreId="item.genre_id"
+            :name="item.genre_name" 
+            :datePosted="item.date_posted" 
+            :thumbnail="item.genre_thumbnail"
         />
       </div>
     </div>
