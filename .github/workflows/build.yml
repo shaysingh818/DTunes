@@ -11,7 +11,10 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-      
+
+      - name: Update apt cache
+        run: sudo apt-get update
+
       - name: Install GTK
         run: sudo apt-get install libwebkit2gtk-4.1-dev
         working-directory: src-tauri/
