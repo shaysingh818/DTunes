@@ -75,7 +75,7 @@ import { artistStore } from '../../api/Artist';
 let openWindow = ref(false);
 
 export default {
-    name: 'EditPlaylistMetadata',
+    name: 'EditArtistMetadata',
     props: {
         id: {
             type: Number,

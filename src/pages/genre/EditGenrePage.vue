@@ -1,33 +1,33 @@
 <template>
 
   <BackBar 
-    v-if="artist && artist.artist_id"
-    :itemId="artist.artist_id" 
-    :title="artist.artist_name"
-    :thumbnail="artist.artist_thumbnail"
-    :dateCreated="artist.date_created"
+    v-if="genre && genre.genre_id"
+    :itemId="genre.genre_id" 
+    :title="genre.genre_name"
+    :thumbnail="genre.genre_thumbnail"
+    :dateCreated="genre.date_created"
   />
   <div class="page-container">
     <div class="flex flex-col gap-2">
       <div class="search-box-container">
         <SearchComponent 
-          text="Search Audio Files To Add To Artist" 
+          text="Search Audio Files To Add To Genre" 
           :onClick="audioFileSearch"
         />
       </div>
       <div>
-        <ArtistAudioFileListView 
-          v-if="artist && artist.artist_id"
-          :id="artist.artist_id"
+        <GenreAudioFileListView 
+          v-if="genre && genre.genre_id"
+          :id="genre.genre_id"
         />
       </div>
     </div>
   </div>
-<EditArtistMetadata
-  v-if="artist"
-  :id="artist.artist_id"
-  :name="artist.artist_name"
-  :thumbnail="artist.artist_thumbnail"
+<EditGenreMetadata
+  v-if="genre"
+  :id="genre.genre_id"
+  :name="genre.genre_name"
+  :thumbnail="genre.genre_thumbnail"
  /> 
 </template>
 
@@ -37,20 +37,20 @@ import { useRoute } from 'vue-router';
 import { appLocalDataDir, dataDir } from '@tauri-apps/api/path';
 import { BaseDirectory, readFile } from '@tauri-apps/plugin-fs';
 import { open, save } from "@tauri-apps/plugin-dialog"
-import { artistStore } from '../../api/Artist';
+import { genreStore } from '../../api/Genre';
 import SearchComponent from '../../components/shared/SearchComponent.vue';
-import ArtistCreate from '../../components/artist/ArtistCreate.vue';
-import ArtistAudioFileListView from '../../components/artist/ArtistAudioFileListView.vue';
-import EditArtistMetadata from './EditArtistMetadata.vue';
+import GenreCreate from '../../components/genre/GenreCreate.vue';
+import GenreAudioFileListView from '../../components/genre/GenreAudioFileListView.vue';
+import EditGenreMetadata from './EditGenreMetadata.vue';
 import BackBar from '../../components/shared/BackBar.vue';
 
 
 export default {
   components: { 
     SearchComponent, 
-    ArtistCreate, 
-    ArtistAudioFileListView,
-    EditArtistMetadata,
+    GenreCreate, 
+    GenreAudioFileListView,
+    EditGenreMetadata,
     BackBar
   },
   methods: {
@@ -66,10 +66,10 @@ export default {
   },
   data() {
     return {
-      artist: {
-        artistId: 0,
-        artistName: '',
-        artistThumbnail: '',
+      genre: {
+        genreId: 0,
+        genreName: '',
+        genreThumbnail: '',
         dateCreated: '',
         lastModified: ''
       }
@@ -78,8 +78,8 @@ export default {
   async mounted() {
     const route  = useRoute();
     const id = route.params.id; 
-    this.artist = await artistStore.viewArtist(id);
-    console.log(`MY ARTIST ${this.artist.artist_thumbnail}`);  
+    this.genre = await genreStore.viewGenre(id);
+    console.log(`MY GENRE ${this.genre.genre_thumbnail}`);  
   }
 }
 </script>
@@ -130,7 +130,7 @@ h1 {
 }
 
 
-#artist-thumbnail-upload {
+#genre-thumbnail-upload {
   display: none;
 }
 

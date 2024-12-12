@@ -124,7 +124,7 @@ export const genreStore = reactive({
   async addAudioFileGenre(genreId: string, audioFileId: Number): Promise<Genre> {
     const dataDirPath = await dataDir();
     const userDbPath = `${dataDirPath}/dtunes-audio-app/metadata/dtunes-audio-app.sqlite3`;
-    return await invoke("add_audio_file_artist", { 
+    return await invoke("add_audio_file_genre", { 
         userDbPath, 
         genreId, 
         audioFileId 

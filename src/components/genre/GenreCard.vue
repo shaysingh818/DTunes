@@ -80,7 +80,7 @@ export default {
     });
 
     const imageUrl = URL.createObjectURL(new Blob([fileBuffer]));
-    console.log("IMAGE URL ARTIST: ", imageUrl)
+    console.log("IMAGE URL GENRE: ", imageUrl)
 
     let imageElem = document.getElementById(`genre-card-${this.genreId}`);
     if(imageElem) {

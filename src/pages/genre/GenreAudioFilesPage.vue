@@ -1,12 +1,12 @@
 <script>
 import SearchComponent from '../../components/shared/SearchComponent.vue';
-import ArtistAddAudioFileListView from '../../components/artist/ArtistAddAudioFileListView.vue';
+import GenreAddAudioFileListView from '../../components/genre/GenreAddAudioFileListView.vue';
 import BackBar from '../../components/shared/BackBar.vue';
-import { artistStore } from '../../api/Artist';
+import { genreStore } from '../../api/Genre';
 import { useRoute } from 'vue-router';
 
 export default {
-  components: { SearchComponent, ArtistAddAudioFileListView, BackBar},
+  components: { SearchComponent, GenreAddAudioFileListView, BackBar},
   methods: {
     goToAbout() {
       this.$router.push('/about')
@@ -17,10 +17,10 @@ export default {
   },
   data() {
     return {
-      artist: {
-        artistId: 0,
-        artistName: '',
-        artistThumbnail: '',
+      genre: {
+        genreId: 0,
+        genreName: '',
+        genreThumbnail: '',
         dateCreated: '',
         lastModified: ''
       }
@@ -29,20 +29,20 @@ export default {
   async mounted() {
     const route  = useRoute();
     const id = route.params.id; 
-    const artist = await artistStore.viewArtist(id); 
-    console.log("MY ARTIST: ", artist); 
-    this.artist = artist; 
+    const genre = await genreStore.viewGenre(id); 
+    console.log("MY GENRE: ", genre); 
+    this.genre = genre; 
   }
 }
 </script>
 
 <template>
   <BackBar
-    v-if="artist && artist.artist_id"
-    :itemId="artist.artist_id" 
-    :title="artist.artist_name"
-    :thumbnail="artist.artist_thumbnail"
-    :dateCreated="artist.date_created"
+    v-if="genre && genre.genre_id"
+    :itemId="genre.genre_id" 
+    :title="genre.genre_name"
+    :thumbnail="genre.genre_thumbnail"
+    :dateCreated="genre.date_created"
   />
   <div class="page-container">
     <div class="flex flex-col gap-2">
@@ -53,9 +53,9 @@ export default {
         />
       </div>
       <div>
-         <ArtistAddAudioFileListView 
-          v-if="artist && artist.artist_id"
-          :artistId="artist.artist_id" 
+         <GenreAddAudioFileListView 
+          v-if="genre && genre.genre_id"
+          :genreId="genre.genre_id" 
          />
       </div>
     </div>

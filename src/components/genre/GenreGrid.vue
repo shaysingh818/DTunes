@@ -28,7 +28,7 @@ export default {
         <GenreCard 
             :genreId="item.genre_id"
             :name="item.genre_name" 
-            :datePosted="item.datePosted" 
+            :datePosted="item.date_posted" 
             :thumbnail="item.genre_thumbnail"
         />
       </div>

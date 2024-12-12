@@ -12,7 +12,7 @@
                     <div class="flex flex-row gap-10">
                         <div>
                             <div class="form-title">
-                                <h1>Edit Artist</h1>
+                                <h1>Edit Genre</h1>
                             </div>
                         </div>
                     </div>
@@ -24,14 +24,14 @@
                 <div class="flex flex-col gap-6 gap-y-8">
                     <div>
                         <!-- <label for="lname">Artist Name</label> -->
-                        <input type="text" id="artist-name" name="artist-name" :placeholder="name"><br>
+                        <input type="text" id="genre-name" name="genre-name" :placeholder="name"><br>
                     </div>
 
                     <div style="justify-content: center; display:flex ; align-items: center;">
                         <form action="/action_page.php">
                             <!-- <button id="upload-btn" class="upload-btn">Upload Artist Image</button> -->
-                            <input @click="selectThumbnailImage" type="button" id="artist-thumbnail-upload" name="playlist-thumbnail-upload">
-                            <label for="artist-thumbnail-upload">Choose Image (Optional)</label>
+                            <input @click="selectThumbnailImage" type="button" id="genre-thumbnail-upload" name="genre-thumbnail-upload">
+                            <label for="genre-thumbnail-upload">Choose Image (Optional)</label>
                         </form>
                     </div>
                 </div>
@@ -59,6 +59,7 @@ import { ref } from 'vue'
 import { appLocalDataDir, dataDir } from '@tauri-apps/api/path';
 import { open, save } from "@tauri-apps/plugin-dialog"
 import { audioStore } from '../../api/AudioFile';
+import { genreStore } from '../../api/Genre';
 
 let openWindow = ref(false);
 
@@ -69,13 +70,13 @@ import { ref } from 'vue'
 import { appLocalDataDir, dataDir } from '@tauri-apps/api/path';
 import { open, save } from "@tauri-apps/plugin-dialog"
 import { audioStore } from '../../api/AudioFile';
-import { artistStore } from '../../api/Artist';
+import { genreStore } from '../../api/Genre';
 
 
 let openWindow = ref(false);
 
 export default {
-    name: 'EditPlaylistMetadata',
+    name: 'EditGenreMetadata',
     props: {
         id: {
             type: Number,
@@ -96,41 +97,41 @@ export default {
         },
         async submitForm() {
 
-            const artistName = document.getElementById('artist-name');
-            const artistThumbnailPath = document.getElementById('artist-thumbnail-upload');
+            const genreName = document.getElementById('genre-name');
+            const genreThumbnailPath = document.getElementById('genre-thumbnail-upload');
 
-            console.log("ARTIST NAME: ", this.name);
+            console.log("GENRE NAME: ", this.name);
             console.log("IMAGES PATH: ", this.thumbnail);
 
-            const artistNameValidation = artistName.value.length > 0;
-            const thumbnailValidation = artistThumbnailPath.value.length > 0;
+            const genreNameValidation = genreName.value.length > 0;
+            const thumbnailValidation = genreThumbnailPath.value.length > 0;
 
-            let artistNameSet = '';
+            let genreNameSet = '';
             let thumbnailPath = '';
 
-            if(!artistNameValidation) { 
-                artistNameSet = this.name; 
+            if(!genreNameValidation) { 
+                genreNameSet = this.name; 
             } else {
-                artistNameSet = artistName.value;
+                genreNameSet = genreName.value;
             }
 
             if(!thumbnailValidation) { 
                 thumbnailPath = this.thumbnail 
             } else {
-                thumbnailPath = artistThumbnailPath.value; 
+                thumbnailPath = genreThumbnailPath.value; 
             }
 
-            console.log("ARTIST NAME: ", artistNameSet);
+            console.log("GENRE NAME: ", genreNameSet);
             console.log("IMAGES PATH: ", thumbnailPath);
 
-            const response = await artistStore.editArtist(
+            const response = await genreStore.editGenre(
                 this.id.toString(),
-                artistNameSet,
+                genreNameSet,
                 thumbnailPath
             );
 
             if(response == "Success") {
-                console.log("Successfully Updated Audio File");
+                console.log("Successfully Updated Genre");
                 alert("Success");
             } else {
                 console.log("SOMETHING WENT WRONG");
@@ -147,8 +148,8 @@ export default {
                 }
                 ]
             });
-            const artistThumbnailPath = document.getElementById('artist-thumbnail-upload');
-            artistThumbnailPath.value = selectImagePath; 
+            const genreThumbnailPath = document.getElementById('genre-thumbnail-upload');
+            genreThumbnailPath.value = selectImagePath; 
         },
     }
 }
@@ -168,8 +169,7 @@ h1 {
   background-color: #0056b3;
 }
 
-
-#artist-thumbnail-upload {
+#genre-thumbnail-upload {
   display: none;
 }
 

@@ -33,16 +33,18 @@
 
 <script setup>
 import { audioStore } from "../../api/AudioFile";
+import { genreStore } from "../../api/Genre";
 </script>
 
 <script>
 import { invoke } from "@tauri-apps/api/core";
 import { audioStore, AudioFile } from "../../api/AudioFile";
+import { genreStore } from "../../api/Genre";
 import { BaseDirectory, readFile } from '@tauri-apps/plugin-fs';
 import { artistStore } from "../../api/Artist";
 
 export default {
-  name: 'ArtistAudioFile',
+  name: 'GenreAudioFile',
   props: {
     genreId: {
       type: Number,

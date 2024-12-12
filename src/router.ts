@@ -12,6 +12,8 @@ import EditPlaylistPage from './pages/playlist/EditPlaylistPage.vue'
 import PlaylistAudioFilesPage from './pages/playlist/PlaylistAudioFilesPage.vue'
 import EditArtistPage from './pages/artist/EditArtistPage.vue';
 import ArtistAudioFilesPage from './pages/artist/ArtistAudioFilesPage.vue'
+import GenreAudioFilesPage from './pages/genre/GenreAudioFilesPage.vue'
+import EditGenrePage from './pages/genre/EditGenrePage.vue'
 
 const routes: Array<RouteRecordRaw> =  [
   { path: '/', component: HomePage },
@@ -24,6 +26,8 @@ const routes: Array<RouteRecordRaw> =  [
   { path: '/audio-files/edit/:id', component: EditAudioFilePage},
 
   { path: '/genres', component: GenresPage },
+  { path: '/genre/edit/:id', component: EditGenrePage},
+  { path: '/genre/add-audio-file/:id', component: GenreAudioFilesPage},
 
   { path: '/artists', component: ArtistsPage },
   { path: '/create-artist', component: ArtistCreate },
