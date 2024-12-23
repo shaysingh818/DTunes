@@ -273,3 +273,46 @@ pub fn remove_audio_file_artist(user_db_path: &str, artist_id: &str, audio_file_
         }
     }    
 }
+
+
+#[tauri::command]
+pub fn search_artists(user_db_path: &str, search_term: &str) -> Vec<Artist> {
+    let conn = match Connection::open(user_db_path) {
+        Ok(connection) => connection,
+        Err(e) => {
+            println!("{:?}", e);
+            return Vec::new();
+        }
+    };
+
+    match Artist::search(&conn, search_term) {
+        Ok(artists) => artists,
+        Err(e) => {
+            println!("Error searching artists: {:?}", e);
+            Vec::new()
+        }
+    }
+}
+
+#[tauri::command]
+pub fn search_artist_audio_files(
+    user_db_path: &str, 
+    artist_id: &str, 
+    search_term: &str) -> Vec<AudioFile> {
+
+    let conn = match Connection::open(user_db_path) {
+        Ok(connection) => connection,
+        Err(e) => {
+            println!("{:?}", e);
+            return Vec::new();
+        }
+    };
+
+    match Artist::search_audio_files(&conn, artist_id, search_term) {
+        Ok(audio_files) => audio_files,
+        Err(e) => {
+            println!("Error searching artists: {:?}", e);
+            Vec::new()
+        }
+    }
+}

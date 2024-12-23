@@ -1,6 +1,6 @@
 
 <template>
-    <div @click="playFile()" class="flex hover:bg-stone-900">
+    <div @click="queueAudio()" class="flex hover:bg-stone-900">
         <div class="flex-none w-24 pr-2">
             <div class="list-view-image-container">
                 <img :src="thumbnail" :alt="thumbnail" :id="audioFileId.toString()" class="list-view-image p-1" />
@@ -40,6 +40,7 @@ import AudioFileCreate from "./AudioFileCreate.vue";
 import { invoke } from "@tauri-apps/api/core";
 import { audioStore, AudioFile } from "../../api/AudioFile";
 import { BaseDirectory, readFile } from '@tauri-apps/plugin-fs';
+import { updateAudioPlayerInformation } from "../../api/AudioFile";
 
 export default {
   name: 'SongList',
@@ -84,17 +85,32 @@ export default {
   components: {AudioFileCreate},
   methods: {
 
+    async queueAudio() {
+        
+        const audioFile =  await audioStore.viewAudioFile(this.audioFileId.toString());
+        if(audioStore.queuedAudioFiles.length == 0) {
+          audioStore.queueAudioFiles(audioFile.audio_file_id.toString());
+        } 
+
+        if(audioStore.playing) {
+          audioStore.pauseAudio();
+          audioStore.playAudio(audioFile); 
+        } else {
+          audioStore.playAudio(audioFile);
+        }
+    },
+
     async playFile() {
 
       const audioFile = new AudioFile({
-          audioFileId: this.audioFileId,
-          dateCreated: this.datePosted,
+          audio_file_id: this.audioFileId,
+          date_created: this.datePosted,
           duration: this.duration,
-          fileName: this.title,
-          filePath: this.filePath,
-          lastModified: this.lastModified,
+          file_name: this.title,
+          file_path: this.filePath,
+          last_modified: this.lastModified,
           plays: this.plays,
-          sampleRate: this.sampleRate,
+          sample_rate: this.sampleRate,
           thumbnail: this.thumbnail
         });
 
@@ -104,6 +120,12 @@ export default {
         } else {
           audioStore.playAudio(audioFile);
         }
+
+        await updateAudioPlayerInformation(
+          this.audioFileId.toString(), 
+          this.thumbnail,
+          parseInt(this.duration)
+        );
     },
     
     async deleteFile() {

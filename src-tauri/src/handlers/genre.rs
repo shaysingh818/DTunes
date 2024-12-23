@@ -273,3 +273,46 @@ pub fn remove_audio_file_genre(user_db_path: &str, genre_id: &str, audio_file_id
         }
     }    
 }
+
+#[tauri::command]
+pub fn search_genres(user_db_path: &str, search_term: &str) -> Vec<Genre> {
+    let conn = match Connection::open(user_db_path) {
+        Ok(connection) => connection,
+        Err(e) => {
+            println!("{:?}", e);
+            return Vec::new();
+        }
+    };
+
+    match Genre::search(&conn, search_term) {
+        Ok(genres) => genres,
+        Err(e) => {
+            println!("Error searching genres: {:?}", e);
+            Vec::new()
+        }
+    }
+}
+
+
+#[tauri::command]
+pub fn search_genre_audio_files(
+    user_db_path: &str, 
+    genre_id: &str, 
+    search_term: &str) -> Vec<AudioFile> {
+
+    let conn = match Connection::open(user_db_path) {
+        Ok(connection) => connection,
+        Err(e) => {
+            println!("{:?}", e);
+            return Vec::new();
+        }
+    };
+
+    match Genre::search_audio_files(&conn, genre_id, search_term) {
+        Ok(audio_files) => audio_files,
+        Err(e) => {
+            println!("Error searching audio files for genre: {:?}", e);
+            Vec::new()
+        }
+    }
+}

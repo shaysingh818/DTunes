@@ -141,4 +141,31 @@ export const playlistStore = reactive({
     });
   },
 
+  async searchPlaylists(searchTerm: string) {
+    try {
+        const dataDirPath = await dataDir(); 
+        const userDbPath = `${dataDirPath}/dtunes-audio-app/metadata/dtunes-audio-app.sqlite3`;
+        const playlists = await invoke<Playlist[]>('search_playlists', { userDbPath, searchTerm});
+        this.playlists = playlists;
+
+    } catch(error) {
+        console.error("Error loading audio files from search term: ", error); 
+    }
+  },
+
+  async searchPlaylistAudioFiles(playlistId: string, searchTerm: string) {
+    try {
+        const dataDirPath = await dataDir(); 
+        const userDbPath = `${dataDirPath}/dtunes-audio-app/metadata/dtunes-audio-app.sqlite3`;
+        const audioFiles = await invoke<AudioFile[]>(
+          'search_playlist_audio_files', 
+          { userDbPath, playlistId, searchTerm}
+        );
+        this.audioFiles = audioFiles;
+
+    } catch(error) {
+        console.error("Error loading audio files from search term: ", error); 
+    }
+  },
+
 }); 

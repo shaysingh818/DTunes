@@ -141,4 +141,31 @@ export const genreStore = reactive({
     });
   },
 
+  async searchGenres(searchTerm: string) {
+    try {
+        const dataDirPath = await dataDir(); 
+        const userDbPath = `${dataDirPath}/dtunes-audio-app/metadata/dtunes-audio-app.sqlite3`;
+        const genres = await invoke<Genre[]>('search_genres', { userDbPath, searchTerm});
+        this.genres = genres;
+
+    } catch(error) {
+        console.error("Error loading audio files from search term: ", error); 
+    }
+  },
+
+  async searchGenreAudioFiles(genreId: string, searchTerm: string) {
+    try {
+        const dataDirPath = await dataDir(); 
+        const userDbPath = `${dataDirPath}/dtunes-audio-app/metadata/dtunes-audio-app.sqlite3`;
+        const audioFiles = await invoke<AudioFile[]>(
+          'search_genre_audio_files', 
+          { userDbPath, genreId, searchTerm}
+        );
+        this.audioFiles = audioFiles;
+
+    } catch(error) {
+        console.error("Error loading audio files from search term: ", error); 
+    }
+  },
+
 }); 

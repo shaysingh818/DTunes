@@ -14,32 +14,32 @@
                       <p>Duration: {{ duration }}</p>
                   </div>
                   <div>
-                      <p>Duration Limit: {{ duration }}</p>
+                      <p>Duration Limit: {{ durationLimit }}</p>
                   </div>
                   <div>
-                      <p>Short Break: {{ duration }}</p>
+                      <p>Short Break: {{ shortBreak }}</p>
                   </div>
                   <div>
-                      <p>Long Break: {{ duration }}</p>
+                      <p>Long Break: {{ longBreak }}</p>
                   </div>
                   <div>
                       <p>Created: {{ datePosted }}</p>
                   </div>
                   <div>
-                      <p>Last Modified: {{ datePosted }}</p>
+                      <p>Last Modified: {{ lastModified }}</p>
                   </div>
                 </div>
               </div>
 
               <div class="actions-bar">
                   <div class="flex flex-row gap-4">
-                    <div>
-                      <i :class="['fas', 'fa-bars', 'text-red-800']"></i>
+                    <div @click="addAudioFile">
+                      <i :class="['fas', 'fa-add', 'text-red-800']"></i>
                     </div>
-                    <div>
+                    <div @click="detailPage">
                       <i :class="['fas', 'fa-play', 'text-red-800']"></i>
                     </div>
-                    <div>
+                    <div @click="removeSession">
                       <i :class="['fas', 'fa-trash', 'text-red-800']"></i>
                     </div>
                   </div>
@@ -52,9 +52,15 @@
 
 
 <script>
+import { pomodoroStore } from '../../api/Pomodoro';
+
 export default {
   name: 'PomodoroCard',
   props: {
+    sessionId: {
+      type: Number,
+      required: true,
+    },
     name: {
       type: String,
       required: true,
@@ -84,6 +90,33 @@ export default {
       required: true,
     },
   },
+  methods: {
+    async removeSession() {
+      const userChoice = await window.confirm(`Are you sure you want to delete: ${this.title}`);
+      if(userChoice) {
+        const deleteResult = await pomodoroStore.deleteSession(this.sessionId.toString());
+        if(deleteResult == "Success") {
+          alert("Successfully deleted: ", this.name);
+          this.$router.push('pomodoro/');
+          await this.$nextTick(); 
+          await pomodoroStore.loadSessions();
+        } 
+      } else {
+        alert("Could not delete genre: ", deleteResult);  
+      }
+    },
+    async detailPage() {
+      this.$router.push({ path: `/pomodoro/edit/${this.sessionId}`})
+    },
+    async addAudioFile() {
+      this.$router.push({ path: `/pomodoro/add-audio-file/${this.sessionId}`});
+    }
+  },
+  async mounted() {
+
+    console.log(new Date(this.lastModified).toString()); 
+
+  }
 }
 </script>
 
@@ -108,7 +141,10 @@ export default {
   align-items: center;
   justify-content: center;
   width: 185px;
-  padding: 6px;  
+  padding: 6px; 
+  white-space: nowrap; 
+  overflow: hidden; 
+  text-overflow: ellipsis; 
 }
 
 .actions-bar {

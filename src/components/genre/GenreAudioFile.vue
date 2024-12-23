@@ -16,6 +16,9 @@
           <div class="list-view-trailing-container">
             <div class="grid grid-flow-col auto-cols-max space-x-4">
               <div><p1 :id="`${audioFileId.toString()}-duration`" >{{ duration }}</p1></div>
+              <div @click="playFile()" class="hover:bg-stone-400">
+                <i :class="['fas', 'fa-play', 'text-red-800']"></i>
+              </div>
               <div v-if="genreRemove == false" @click="addFile()" class="hover:bg-stone-400">
                 <i :class="['fas', 'fa-add', 'text-red-800']"></i>
               </div>
@@ -42,6 +45,7 @@ import { audioStore, AudioFile } from "../../api/AudioFile";
 import { genreStore } from "../../api/Genre";
 import { BaseDirectory, readFile } from '@tauri-apps/plugin-fs';
 import { artistStore } from "../../api/Artist";
+import { updateAudioPlayerInformation } from "../../api/AudioFile";
 
 export default {
   name: 'GenreAudioFile',
@@ -92,6 +96,34 @@ export default {
     }, 
   },
   methods: {
+
+    async playFile() {
+
+      const audioFile = new AudioFile({
+          audioFileId: this.audioFileId,
+          dateCreated: this.datePosted,
+          duration: this.duration,
+          fileName: this.title,
+          filePath: this.filePath,
+          lastModified: this.lastModified,
+          plays: this.plays,
+          sampleRate: this.sampleRate,
+          thumbnail: this.thumbnail
+        });
+
+        if(audioStore.playing) {
+          audioStore.pauseAudio();
+          audioStore.playAudio(audioFile); 
+        } else {
+          audioStore.playAudio(audioFile);
+        }
+
+        await updateAudioPlayerInformation(
+          this.audioFileId.toString(), 
+          this.thumbnail,
+          parseInt(this.duration)
+        );
+    },
  
     async removeFile() {
       console.log(`GENRE ID: ${this.genreId}`);

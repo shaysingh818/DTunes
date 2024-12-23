@@ -1,13 +1,14 @@
 <script>
 import SearchComponent from '../../components/shared/SearchComponent.vue';
-import PlaylistAddAudioFileListView from '../../components/playlist/PlaylistAddAudioFileListView.vue';
+import PomodoroAddAudioFileListView from '../../components/pomodoro/PomodoroAddAudioFileListView.vue';
 import BackBar from '../../components/shared/BackBar.vue';
-import { playlistStore } from '../../api/Playlist';
 import { audioStore } from '../../api/AudioFile';
+import { pomodoroStore } from '../../api/Pomodoro';
 import { useRoute } from 'vue-router';
 
+
 export default {
-  components: { SearchComponent, PlaylistAddAudioFileListView, BackBar},
+  components: { SearchComponent, PomodoroAddAudioFileListView, BackBar},
   methods: {
     goToAbout() {
       this.$router.push('/about')
@@ -20,10 +21,10 @@ export default {
   },
   data() {
     return {
-      playlist: {
-        playlistId: 0,
-        playlistName: '',
-        playlistThumbnail: '',
+      session: {
+        genreId: 0,
+        genreName: '',
+        genreThumbnail: '',
         dateCreated: '',
         lastModified: ''
       }
@@ -32,33 +33,33 @@ export default {
   async mounted() {
     const route  = useRoute();
     const id = route.params.id; 
-    const playlist = await playlistStore.viewPlaylist(id); 
-    console.log("MY PLAYLIST: ", playlist); 
-    this.playlist = playlist; 
+    const session = await pomodoroStore.viewSession(id); 
+    console.log("MY SESSION: ", session); 
+    this.session = session; 
   }
 }
 </script>
 
 <template>
   <BackBar
-    v-if="playlist && playlist.playlist_id"
-    :itemId="playlist.playlist_id" 
-    :title="playlist.playlist_name"
-    :thumbnail="playlist.playlist_thumbnail"
-    :dateCreated="playlist.date_created"
+    v-if="session && session.session_id"
+    :itemId="session.session_id" 
+    :title="session.session_name"
+    thumbnail="default_dtunes_thumbnail.webp"
+    :dateCreated="session.date_created"
   />
   <div class="page-container">
     <div class="flex flex-col gap-2">
       <div class="search-box-container">
         <SearchComponent 
-          text="Search Audio Files To Add To Playlist" 
+          text="Search Audio Files To Add To Pomodoro session" 
           :onClick="audioFileSearch"
         />
       </div>
       <div>
-         <PlaylistAddAudioFileListView 
-          v-if="playlist && playlist.playlist_id"
-          :playlistId="playlist.playlist_id" 
+         <PomodoroAddAudioFileListView 
+          v-if="session && session.session_id"
+          :sessionId="session.session_id" 
          />
       </div>
     </div>

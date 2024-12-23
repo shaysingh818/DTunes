@@ -31,7 +31,7 @@
 
             <div class="flex-none w-32">
                 <div class="trailing-icons">
-                    <i :class="['fas', 'fa-question', 'text-red-800']" style="font-size: 20px;"></i>
+                    <i @click="openWindow = true" :class="['fas', 'fa-edit', 'text-red-800']" style="font-size: 20px;"></i>
                 </div>
             </div>
         </div>
@@ -60,6 +60,10 @@ export default {
     dateCreated: {
       type: String,
       required: true,
+    },
+    openWindow: {
+      type: Boolean,
+      required: false,
     },
   },
   methods: {

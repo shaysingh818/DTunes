@@ -2,6 +2,7 @@
 import ArtistCreate from '../../components/artist/ArtistCreate.vue';
 import ArtistGrid from '../../components/artist/ArtistGrid.vue';
 import SearchComponent from '../../components/shared/SearchComponent.vue';
+import { artistStore } from '../../api/Artist';
 
 export default {
   components: { ArtistGrid, SearchComponent, ArtistCreate},
@@ -9,8 +10,10 @@ export default {
     goToAbout() {
       this.$router.push('/about')
     },
-    artistSearch(){
-      alert("Artist Search Button Clicked");
+    async artistSearch(){
+      const searchTerm = document.getElementById('search-term').value;
+      console.log("ARTIST SEARCH TERM ", searchTerm); 
+      await artistStore.searchArtist(searchTerm)
     }
   },
 }

@@ -3,7 +3,9 @@ import SearchComponent from '../../components/shared/SearchComponent.vue';
 import GenreAddAudioFileListView from '../../components/genre/GenreAddAudioFileListView.vue';
 import BackBar from '../../components/shared/BackBar.vue';
 import { genreStore } from '../../api/Genre';
+import { audioStore } from '../../api/AudioFile';
 import { useRoute } from 'vue-router';
+
 
 export default {
   components: { SearchComponent, GenreAddAudioFileListView, BackBar},
@@ -11,8 +13,10 @@ export default {
     goToAbout() {
       this.$router.push('/about')
     },
-    audioFileSearch(){
-      alert("Audio File Search Button Clicked");
+    async audioFileSearch(){
+      const searchTerm = document.getElementById('search-term').value;
+      console.log("SEARCH TERM ", searchTerm); 
+      await audioStore.searchAudioFiles(searchTerm)
     }
   },
   data() {

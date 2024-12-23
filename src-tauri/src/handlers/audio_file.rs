@@ -279,3 +279,22 @@ pub fn view_audio_file(user_db_path: &str, audio_file_id: &str) -> Result<AudioF
         }
     }
 }
+
+#[tauri::command]
+pub fn search_audio_files(user_db_path: &str, search_term: &str) -> Vec<AudioFile> {
+    let conn = match Connection::open(user_db_path) {
+        Ok(connection) => connection,
+        Err(e) => {
+            println!("{:?}", e);
+            return Vec::new();
+        }
+    };
+
+    match AudioFile::search(&conn, search_term) {
+        Ok(audio_files) => audio_files,
+        Err(e) => {
+            println!("Error searching audio file: {:?}", e);
+            Vec::new()
+        }
+    }
+}

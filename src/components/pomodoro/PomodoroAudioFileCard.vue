@@ -6,7 +6,6 @@
             <div class="audio-file-card-text-content">
               <h1>{{ title }}</h1>
             </div>
-
             <div class="audio-file-card-icon-content">
                 <div @click="editFile()" class="hover:bg-stone-400">
                   <i :class="['fas', 'fa-edit', 'text-white']"></i>
@@ -14,12 +13,10 @@
                 <div @click="playFile()" class="hover:bg-stone-400">
                   <i :class="['fas', 'fa-play', 'text-white']"></i>
                 </div> 
-                <div @click="deleteFile()" class="hover:bg-stone-400">
-                    <i :class="['fas', 'fa-trash', 'text-white']"></i>
+                <div v-if="pomodoroRemove == true" @click="removeFile()" class="hover:bg-stone-400">
+                    <i :class="['fas', 'fa-remove', 'text-white']"></i>
                 </div>
             </div>
-
-
           </div>
         </div>
     </div>
@@ -29,11 +26,16 @@
 <script>
 import { invoke } from "@tauri-apps/api/core";
 import { audioStore, AudioFile, updateAudioPlayerInformation } from "../../api/AudioFile";
+import { pomodoroStore } from "../../api/Pomodoro";
 import { BaseDirectory, readFile } from '@tauri-apps/plugin-fs';
 
 export default {
-  name: 'SongCard',
+  name: 'PomodoroAudioFileCard',
   props: {
+    sessionId: {
+      type: Number,
+      required: true,
+    },
     audioFileId: {
       type: Number,
       required: true,
@@ -58,21 +60,25 @@ export default {
       type: String,
       required: true,
     },
+    pomodoroRemove: {
+      type: Boolean,
+      required: true,
+    },
   },
   methods: {
 
     async playFile() {
 
-        const audioFile = new AudioFile({
-            audioFileId: this.audioFileId,
-            dateCreated: this.datePosted,
-            duration: this.duration,
-            fileName: this.title,
-            filePath: this.filePath,
-            lastModified: this.lastModified,
-            plays: this.plays,
-            sampleRate: this.sampleRate,
-            thumbnail: this.thumbnail
+      const audioFile = new AudioFile({
+          audioFileId: this.audioFileId,
+          dateCreated: this.datePosted,
+          duration: this.duration,
+          fileName: this.title,
+          filePath: this.filePath,
+          lastModified: this.lastModified,
+          plays: this.plays,
+          sampleRate: this.sampleRate,
+          thumbnail: this.thumbnail
         });
 
         if(audioStore.playing) {
@@ -87,20 +93,18 @@ export default {
           this.thumbnail,
           parseInt(this.duration)
         );
-
-
     },
-    async deleteFile() {
-      const userChoice = await window.confirm(`Are you sure you want to delete: ${this.title}`);
-      if(userChoice) {
-        const deleteResult = await audioStore.deleteAudioFile(this.audioFileId.toString()); 
-        if(deleteResult == "Success") {
-          alert("Successfully deleted: ", this.title);
-          await this.$nextTick(); 
-          await audioStore.loadAudioFiles(); 
-        } 
+
+    async removeFile() {
+      console.log(`SESSION ID: ${this.sessionId}`);
+      console.log(`AUDIO FILE ID ${this.audioFileId}`); 
+      const removeResult = await pomodoroStore.removeAudioFilePomodoro(this.sessionId.toString(), this.audioFileId);
+      if(removeResult == "Success") {
+        alert("Removed Song From Pomodoro Session");
+        await this.$nextTick();
+        await pomodoroStore.viewPomodoroAudioFiles(this.sessionId.toString());
       } else {
-        alert("Could not delete audio file: ", deleteResult);  
+        alert("Could not remove song from genre", removeResult); 
       }
     },
     async editFile() {

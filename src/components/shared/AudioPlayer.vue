@@ -5,23 +5,38 @@
 <template>
     <div class="audio-bar-container">
 
-        <div class="flex flex-row gap-6">
+        <div class="flex flex-row">
 
             <div class="song-info">
-                <div class="flex flex-row gap-2"> 
-                    <div class="image-container">
-                        <img :src="thumbnail" :alt="thumbnail" class="image p-1" :id="`${audioFileId.toString()}-player`" />
-                    </div>
+                <div class="player-image-container">
+                    <img :src="thumbnail" :alt="thumbnail" class="image p-1" :id="`${audioFileId.toString()}-player`" />
+                </div>
 
-                    <div class="flex flex-col">
+                <div class="player-audio-file-info">
+                    <div class="audio-title">
+                        <h1>{{ title  }}</h1>
+                    </div>
+                    <div class="player-icons">
+
+                      <div class="player-icon-item">
                         <div>
-                            <h1>{{ title  }}</h1>
+                          <i :class="['fas', 'fa-play', 'text-red-800']"></i>
                         </div>
                         <div>
-                            <p>{{ datePosted }}</p>
+                          <p>{{ plays }}</p>
                         </div>
-                    </div>
+                      </div>
 
+                      <div class="player-icon-item">
+                        <div>
+                          <i :class="['fas', 'fa-clock', 'text-red-800']"></i>
+                        </div>
+                        <div>
+                          <p :id="`${audioFileId}-player-duration`">{{ duration }}</p>
+                        </div>
+                      </div>
+
+                    </div>
                 </div>
             </div>
 
@@ -29,8 +44,11 @@
 
                 <div class="flex flex-col gap-2">
                     <div class="player-buttons">
-                        <div @click="audioStore.rewind()">
+                        <div @click="audioStore.previousAudioFile()">
                             <i :class="['fas', 'fa-backward', 'text-white']"></i>
+                        </div>
+                        <div @click="audioStore.rewind()">
+                            <i :class="['fas', 'fa-rotate-left', 'text-white']"></i>
                         </div>
                         <div v-if="audioStore.playing == true" class="play-button" @click="pauseFile()">
                             <i :class="['fas', 'fa-pause', 'text-white']"></i>
@@ -39,6 +57,9 @@
                             <i :class="['fas', 'fa-play', 'text-white']"></i>
                         </div>
                         <div @click="audioStore.forward()">
+                            <i :class="['fas', 'fa-rotate-right', 'text-white']"></i>
+                        </div>
+                        <div @click="audioStore.nextAudioFile()">
                             <i :class="['fas', 'fa-forward', 'text-white']"></i>
                         </div>
                     </div>
@@ -106,14 +127,14 @@ export default {
     async playFile() {
 
         const audioFile = new AudioFile({
-            audioFileId: this.audioFileId,
-            dateCreated: this.datePosted,
+            audio_file_id: this.audioFileId,
+            date_created: this.datePosted,
             duration: this.duration,
-            fileName: this.title,
-            filePath: this.filePath,
-            lastModified: this.lastModified,
+            file_name: this.title,
+            file_path: this.filePath,
+            last_modified: this.lastModified,
             plays: this.plays,
-            sampleRate: this.sampleRate,
+            sample_rate: this.sampleRate,
             thumbnail: this.thumbnail
         });
 
@@ -153,10 +174,17 @@ export default {
     } else {
       console.log(`${this.audioFileId} not found`)
     }
+
+    let durationElem = document.getElementById(`${this.audioFileId.toString()}-player-duration`);
+    if(durationElem) {
+      durationElem.innerHTML = await audioStore.convertSecondsToMinutes(parseInt(this.duration)); 
+    }
   },
 }
 
-const updateDuration = () => {
+
+
+const updatePlayer = () => {
   const durationElement = document.getElementById("duration-tracker");
   const currentTime = audioStore.currentTime; 
   if(durationElement && currentTime > 0 && audioStore.playing)  {
@@ -164,9 +192,29 @@ const updateDuration = () => {
     console.log("CURRENT DURATION: ", value);  
     durationElement.style.width = `${value}%`;
   }
+
+  if(audioStore.resume == false && audioStore.playing == false) {
+    audioStore.queueIndex += 1; 
+    const audioFile = audioStore.queuedAudioFiles[audioStore.queueIndex];
+    console.log("NEXT AUDIO FILE"); 
+    console.log(audioFile);
+    audioStore.pauseAudio(); 
+    audioStore.playAudio(audioFile); 
+  }
+
+  if(audioStore.queueIndex == audioStore.queuedAudioFiles.length) {
+    console.log("All tracks played, stopping interval")
+    audioStore.queuedAudioFiles = [];
+    audioStore.playing = false; 
+    clearInterval(intervalId);
+  }
+
+
 };
 
-setInterval(updateDuration, 1000);
+let intervalId = setInterval(updatePlayer, 1000);
+
+
 
 </script>
 
@@ -174,47 +222,48 @@ setInterval(updateDuration, 1000);
 <style scoped>
 
 .audio-bar-container {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 75px; 
-    background-color: #333;
-    color: white;
-    padding: 10px;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 75px; 
+  background-color: #333;
+  color: white;
+  padding: 10px;
+}
+
+
+.player-image-container {
+  border-radius: 10%;
+  height: 55px;
+  width: 55px;
+  background-size: cover;
+  background-position: center;
 }
 
 .song-info {
-    display: flex;
-    justify-content: left;
-    align-items: left;
-    height: 50px; 
-    width: 30%; 
-    /* border: 1px solid white  */
+  display: flex;
+  flex-direction: row;
+  gap: 0.5rem; 
+  justify-content: left;
+  align-items: left;
+  height: 15%; 
+  width: 35%;
 }
 
 .player-controls {
-    display: flex;
-    justify-content: left;
-    align-items: left;
-    height: 50px;
-    width: 70%;  
-}
-
-
-.image-container {
-  overflow: hidden;
   display: flex;
-  align-items: center;
-  justify-content: center;
+  justify-content: left;
+  align-items: left;
+  height: 20%;
+  width: 55%;  
 }
 
 .image {
-  display: flex;
   border: 1px; 
-  border-radius: 15%; /* Optional: Rounded corners */
-  height: 60px;
-  width: 60px;  
+  border-radius: 15%; 
+  height: 100%;
+  width: 100%;   
 }
 
 .text-container {
@@ -224,13 +273,39 @@ setInterval(updateDuration, 1000);
 }
 
 .play-button {
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    background-color: red;
-    width: 30px;
-    height: 30px;
-    justify-content: center; 
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  background-color: red;
+  width: 30px;
+  height: 30px;
+  justify-content: center; 
+}
+
+.player-icons {
+  display: flex;
+  flex-direction: row;
+  gap: 1.0rem; 
+}
+
+.player-icon-item {
+  display: flex;
+  flex-direction: row;
+  gap: 0.5rem;
+  justify-content: center; 
+  align-items: center;
+}
+
+.player-audio-file-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.audio-title {
+  max-width: 175px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .audio-duration {
@@ -238,11 +313,11 @@ setInterval(updateDuration, 1000);
 }
 
 .player-buttons {
-    display: flex;
-    flex-direction: row;
-    gap: 1rem; 
-    justify-content: center;
-    align-items: center;
+  display: flex;
+  flex-direction: row;
+  gap: 1rem; 
+  justify-content: center;
+  align-items: center;
 }
 
 hr {

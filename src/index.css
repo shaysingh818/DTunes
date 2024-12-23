@@ -100,13 +100,13 @@ html, body {
 }
 
 .form-button {
-    border-radius: 5%;
-    width: 50px; 
-    color: white;
-    padding: 8px;
-    border: 1px solid #ccc;
-    align-items: center;
-    justify-content: center;
+  border-radius: 5%;
+  width: 50px; 
+  color: white;
+  padding: 8px;
+  border: 1px solid #ccc;
+  align-items: center;
+  justify-content: center;
 }
 
 .form-container {
@@ -135,19 +135,19 @@ html, body {
 }
 
 .upload-button {
-    border-radius: 5%;
-    width: 100px; 
-    height:40px;
-    background-color: rgb(153 27 27);
-    color: white;
+  border-radius: 5%;
+  width: 100px; 
+  height:40px;
+  background-color: rgb(153 27 27);
+  color: white;
 }
 
 .close-button {
-    border-radius: 5%;
-    width: 100px; 
-    height:40px;
-    background-color: rgb(41 37 36);
-    color: rgb(153 27 27);
+  border-radius: 5%;
+  width: 100px; 
+  height:40px;
+  background-color: rgb(41 37 36);
+  color: rgb(153 27 27);
 }
 
 
@@ -212,15 +212,24 @@ label {
 
 
 .audio-file-card-text-content {
+  display: flex; 
   width: 100%;
   position: relative;
   overflow: hidden;
   white-space: nowrap;
-  padding: 4px; 
+  padding: 4px;
+  justify-content: center;
+  align-items: center;
 }
 
 .audio-file-card-icon-content {
-  padding: 8px; 
+  display: flex;
+  flex-direction: row;
+  gap: 2.0rem; 
+  padding: 8px;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
 }
 
 .list-view-image-container {
@@ -338,5 +347,61 @@ label {
   height: 50px;
   width: 50px;
   background-size: cover;
-  background-position: center; 
+  background-position: center;
 }
+
+.pomodoro-gradient-background {
+  height: 400px;
+  width: 100%;
+  background-image: linear-gradient(#CC3939, #322727);
+  display: flex;
+  justify-content: center;
+  align-items: center; 
+}
+
+.pomodoro-clock-container {
+  height: 300px;
+  width: 60%;
+  background-color: rgb(28 25 23);
+  border-radius: 1%;
+}
+
+
+.pomodoro-break-options {
+  display: flex;
+  flex-direction: row;
+  gap: 2.0rem; /* This is equivalent to gap-2 in Tailwind (usually 0.5rem or 8px depending on your config) */
+  width: 100%;
+  padding: 20px;
+  align-items: center;
+  justify-content: center;
+}
+
+.pomodoro-duration-display {
+  justify-content: center;
+  align-items: center; 
+  display: flex;
+  height: 100px;
+  color: white;
+  font-size: 60px;
+  font-weight: bold;
+}
+
+.pomodoro-button-container {
+  justify-content: center;
+  align-items: center; 
+  display: flex;
+  height: 140px;
+}
+
+.pomodoro-button {
+    border-radius: 3%;
+    width: 200px; 
+    height:60px;
+    background-color: rgb(153 27 27);
+    color: white;
+    font-size: 30px;
+    font-weight: bold;
+}
+
+

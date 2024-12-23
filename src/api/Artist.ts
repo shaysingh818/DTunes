@@ -141,4 +141,32 @@ export const artistStore = reactive({
     });
   },
 
+  async searchArtist(searchTerm: string) {
+    try {
+        const dataDirPath = await dataDir(); 
+        const userDbPath = `${dataDirPath}/dtunes-audio-app/metadata/dtunes-audio-app.sqlite3`;
+        const artists = await invoke<Artist[]>('search_artists', { userDbPath, searchTerm});
+        this.artists = artists;
+
+    } catch(error) {
+        console.error("Error loading audio files from search term: ", error); 
+    }
+  },
+
+
+  async searchArtistAudioFiles(artistId: string, searchTerm: string) {
+    try {
+        const dataDirPath = await dataDir(); 
+        const userDbPath = `${dataDirPath}/dtunes-audio-app/metadata/dtunes-audio-app.sqlite3`;
+        const audioFiles = await invoke<AudioFile[]>(
+          'search_artist_audio_files', 
+          { userDbPath, artistId, searchTerm}
+        );
+        this.audioFiles = audioFiles;
+
+    } catch(error) {
+        console.error("Error loading audio files from search term: ", error); 
+    }
+  },
+
 }); 

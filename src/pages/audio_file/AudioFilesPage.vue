@@ -2,6 +2,7 @@
 import SearchComponent from '../../components/shared/SearchComponent.vue';
 import AudioFileListView from '../../components/audio_file/AudioFileListView.vue';
 import AudioFileCreate from '../../components/audio_file/AudioFileCreate.vue';
+import { audioStore } from '../../api/AudioFile';
 
 export default {
   components: { SearchComponent, AudioFileListView, AudioFileCreate},
@@ -9,8 +10,10 @@ export default {
     goToAbout() {
       this.$router.push('/about')
     },
-    audioFileSearch(){
-      alert("Audio File Search Button Clicked");
+    async audioFileSearch(){
+      const searchTerm = document.getElementById('search-term').value;
+      console.log("SEARCH TERM ", searchTerm); 
+      await audioStore.searchAudioFiles(searchTerm)
     }
   },
 }

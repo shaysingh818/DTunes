@@ -137,6 +137,32 @@ impl Playlist {
         Ok(audio_files)
     }
 
+
+    pub fn search_audio_files(
+        conn: &Connection, 
+        id: &str,
+        search_term: &str) -> Result<Vec<AudioFile>> {
+
+        /* many to many query */
+        let query = format!("SELECT * FROM AUDIO_FILE WHERE AUDIO_FILE_ID IN ( 
+            SELECT AUDIO_FILE_ID FROM PLAYLIST_AUDIO_FILE WHERE PLAYLIST_ID=? AND AUDIO_FILE.FILE_NAME LIKE '%{}%');", search_term);
+        let mut stmt = conn.prepare(&query)?;
+        let audio_files: Result<Vec<AudioFile>> = stmt.query_map([id], |row| {
+            Ok(AudioFile {
+                audio_file_id: row.get(0)?,
+                file_name: row.get(1)?,
+                file_path: row.get(2)?,
+                thumbnail: row.get(3)?,
+                duration: row.get(4)?,
+                plays: row.get(5)?,
+                sample_rate: row.get(6)?,
+                date_created: row.get(7)?,
+                last_modified: row.get(8)?,
+            })
+        })?.collect(); 
+        audio_files
+    }
+
     pub fn remove_audio_file(&self, conn: &Connection, audio_file_id: usize) -> Result<()> {
         conn.execute(
             "DELETE FROM PLAYLIST_AUDIO_FILE
@@ -145,5 +171,20 @@ impl Playlist {
             [&self.playlist_id, &audio_file_id],
         )?;
         Ok(())
+    }
+
+    pub fn search(conn: &Connection, search_term: &str) -> Result<Vec<Playlist>> {
+        let query = format!("SELECT * FROM PLAYLIST WHERE PLAYLIST_NAME LIKE '%{}%'", search_term);
+        let mut stmt = conn.prepare(&query)?;
+        let playlists: Result<Vec<Playlist>> = stmt.query_map([], |row| {
+            Ok(Playlist {
+                playlist_id: row.get(0)?,
+                playlist_name: row.get(1)?,
+                playlist_thumbnail: row.get(2)?,
+                date_created: row.get(3)?,
+                last_modified: row.get(4)?,
+            })
+        })?.collect(); 
+        playlists
     }
 }
