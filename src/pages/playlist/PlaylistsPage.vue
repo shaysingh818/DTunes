@@ -2,6 +2,7 @@
 import SearchComponent from '../../components/shared/SearchComponent.vue';
 import PlaylistCreate from '../../components/playlist/PlaylistCreate.vue';
 import PlaylistListView from '../../components/playlist/PlaylistListView.vue';
+import { playlistStore } from '../../api/Playlist';
 
 export default {
   components: { SearchComponent, PlaylistCreate, PlaylistListView},
@@ -9,8 +10,10 @@ export default {
     goToAbout() {
       this.$router.push('/about')
     },
-    playlistSearch(){
-      alert("Playlist Search Button Clicked");
+    async playlistSearch(){
+      const searchTerm = document.getElementById('search-term').value;
+      console.log("PLAYLIST SEARCH TERM ", searchTerm); 
+      await playlistStore.searchPlaylists(searchTerm);
     }
   },
 }

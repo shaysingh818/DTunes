@@ -59,12 +59,6 @@ import { ref } from 'vue'
 import { appLocalDataDir, dataDir } from '@tauri-apps/api/path';
 import { open, save } from "@tauri-apps/plugin-dialog"
 import { audioStore } from '../../api/AudioFile';
-
-let openWindow = ref(false);
-
-
-
-
 </script>
 
 <script>

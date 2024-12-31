@@ -23,9 +23,6 @@ pub fn create_genre(
     let thumbnail_uuid_format = format!("{}.{}", thumbnail_uuid, thumbnail_ext.unwrap());
     let usr_thumbnail_path = format!("{}/{}", user_thumbnail_path, thumbnail_uuid_format);
 
-    println!("USR THUMBNAIL PATH: {:?}", usr_thumbnail_path);
-    println!("USR LOCAL THUMBNAIL: {:?}", user_local_thumbnail_path);
-
     // Try to copy the thumbnail file and log any errors
     match fs::copy(user_local_thumbnail_path, usr_thumbnail_path) {
         Ok(bytes) => println!("Successfully copied thumbnail with {} bytes", bytes),
@@ -272,4 +269,47 @@ pub fn remove_audio_file_genre(user_db_path: &str, genre_id: &str, audio_file_id
             return Err(err_msg.to_string());
         }
     }    
+}
+
+#[tauri::command]
+pub fn search_genres(user_db_path: &str, search_term: &str) -> Vec<Genre> {
+    let conn = match Connection::open(user_db_path) {
+        Ok(connection) => connection,
+        Err(e) => {
+            println!("{:?}", e);
+            return Vec::new();
+        }
+    };
+
+    match Genre::search(&conn, search_term) {
+        Ok(genres) => genres,
+        Err(e) => {
+            println!("Error searching genres: {:?}", e);
+            Vec::new()
+        }
+    }
+}
+
+
+#[tauri::command]
+pub fn search_genre_audio_files(
+    user_db_path: &str, 
+    genre_id: &str, 
+    search_term: &str) -> Vec<AudioFile> {
+
+    let conn = match Connection::open(user_db_path) {
+        Ok(connection) => connection,
+        Err(e) => {
+            println!("{:?}", e);
+            return Vec::new();
+        }
+    };
+
+    match Genre::search_audio_files(&conn, genre_id, search_term) {
+        Ok(audio_files) => audio_files,
+        Err(e) => {
+            println!("Error searching audio files for genre: {:?}", e);
+            Vec::new()
+        }
+    }
 }

@@ -1,6 +1,10 @@
+<script setup>
+import { pomodoroStore } from '../../api/Pomodoro';
+</script>
 
 <script>
 import PomodoroCard from './PomodoroCard.vue';
+import { pomodoroStore } from '../../api/Pomodoro';
 
 export default {
     components: { PomodoroCard},
@@ -9,38 +13,10 @@ export default {
             this.$router.push('/about')
         },
     },
-    data() {
-        return {
-            sessions: [
-                {
-                    name: "Deep Work Classical",
-                    duration: "50",
-                    durationLimit: "50",
-                    shortBreak: "3",
-                    longBreak: "15",
-                    datePosted: "11/09/2024",
-                    lastModified: "11/09/2024"
-                },
-                {
-                    name: "Deep Work Rain",
-                    duration: "50",
-                    durationLimit: "50",
-                    shortBreak: "3",
-                    longBreak: "15",
-                    datePosted: "11/09/2024",
-                    lastModified: "11/09/2024"
-                },
-                {
-                    name: "Hip Hop",
-                    duration: "50",
-                    durationLimit: "50",
-                    shortBreak: "3",
-                    longBreak: "15",
-                    datePosted: "11/09/2024",
-                    lastModified: "11/09/2024"
-                }
-            ]
-        }
+    async mounted() {
+      console.log("Loading sessions from store");
+      await pomodoroStore.loadSessions();
+      console.log("SESSIONS STORE LOADED ", pomodoroStore.sessions);
     }
 }
 </script>
@@ -48,15 +24,16 @@ export default {
 
 <template>
     <div class="cards">
-      <div v-for="(item, index) in sessions" :key="index">
+      <div v-for="(item, index) in pomodoroStore.sessions" :key="index">
         <PomodoroCard 
-            :name="item.name"
+            :sessionId="item.session_id"
+            :name="item.session_name"
             :duration="item.duration"
-            :durationLimit="item.durationLimit"
-            :shortBreak="item.shortBreak"
-            :longBreak="item.longBreak"
-            :datePosted="item.datePosted"
-            :lastModified="item.lastModified"
+            :durationLimit="item.duration_limit"
+            :shortBreak="item.short_break"
+            :longBreak="item.long_break"
+            :datePosted="item.date_created"
+            :lastModified="item.last_modified"
         />
       </div>
     </div>

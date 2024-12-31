@@ -2,6 +2,7 @@
 import GenreCreate from '../../components/genre/GenreCreate.vue';
 import GenreGrid from '../../components/genre/GenreGrid.vue';
 import SearchComponent from '../../components/shared/SearchComponent.vue';
+import { genreStore } from '../../api/Genre';
 
 export default {
   components: { GenreGrid, SearchComponent, GenreCreate},
@@ -9,8 +10,10 @@ export default {
     goToAbout() {
       this.$router.push('/about')
     },
-    genreSearch(){
-      alert("Genre Search Button Clicked");
+    async genreSearch(){
+      const searchTerm = document.getElementById('search-term').value;
+      console.log("GENRE SEARCH TERM ", searchTerm); 
+      await genreStore.searchGenres(searchTerm);
     }
   },
 }

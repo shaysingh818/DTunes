@@ -34,12 +34,6 @@ pub fn create_audio_file(
     let usr_thumbnail_path = format!("{}/{}", user_thumbnail_path, thumbnail_uuid_format);
     let usr_file_path = format!("{}/{}", user_audio_file_path, file_uuid_format);
 
-    println!("USR THUMBNAIL PATH: {:?}", usr_thumbnail_path);
-    println!("USR LOCAL THUMBNAIL: {:?}", user_local_thumbnail_path);
-
-    println!("USR FILE PATH: {:?}", usr_file_path);
-    println!("USR LOCAL FILE: {:?}", user_local_file_path);
-
     // Try to copy the thumbnail file and log any errors
     match fs::copy(user_local_thumbnail_path, usr_thumbnail_path) {
         Ok(bytes) => println!("Successfully copied thumbnail with {} bytes", bytes),
@@ -276,6 +270,46 @@ pub fn view_audio_file(user_db_path: &str, audio_file_id: &str) -> Result<AudioF
         Err(e) => {
             let err_msg = format!("Error retrieving audio file with id: {:?}", audio_file_id);
             return Err(err_msg.to_string());
+        }
+    }
+}
+
+#[tauri::command]
+pub fn search_audio_files(user_db_path: &str, search_term: &str) -> Vec<AudioFile> {
+    let conn = match Connection::open(user_db_path) {
+        Ok(connection) => connection,
+        Err(e) => {
+            println!("{:?}", e);
+            return Vec::new();
+        }
+    };
+
+    match AudioFile::search(&conn, search_term) {
+        Ok(audio_files) => audio_files,
+        Err(e) => {
+            println!("Error searching audio file: {:?}", e);
+            Vec::new()
+        }
+    }
+}
+
+
+#[tauri::command]
+pub fn play_audio_file(user_db_path: &str, audio_file_id: &str) -> String {
+
+    let conn = match Connection::open(user_db_path) {
+        Ok(connection) => connection,
+        Err(e) => return format!("Failed to open database: {}", e),
+    };
+
+    match AudioFile::view(&conn, audio_file_id) {
+        Ok(mut audio_file) => {
+            audio_file.play(&conn);
+            return "Added play".to_string(); 
+        },
+        Err(e) => {
+            let err_msg = format!("Error retrieving audio file with id: {:?}", audio_file_id);
+            return err_msg.to_string(); 
         }
     }
 }

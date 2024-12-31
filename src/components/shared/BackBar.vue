@@ -31,7 +31,7 @@
 
             <div class="flex-none w-32">
                 <div class="trailing-icons">
-                    <i :class="['fas', 'fa-question', 'text-red-800']" style="font-size: 20px;"></i>
+                    <i @click="openWindow = true" :class="['fas', 'fa-edit', 'text-red-800']" style="font-size: 20px;"></i>
                 </div>
             </div>
         </div>
@@ -61,6 +61,10 @@ export default {
       type: String,
       required: true,
     },
+    openWindow: {
+      type: Boolean,
+      required: false,
+    },
   },
   methods: {
     goBack() {
@@ -69,7 +73,7 @@ export default {
   },
   async mounted() {
 
-    console.log("MY THUMBNAIL", this.thumbnail); 
+    console.log("THUMBNAIL", this.thumbnail); 
     const fileBuffer = await readFile(`dtunes-audio-app/images/${this.thumbnail}`, {
         baseDir: BaseDirectory.Data,
     });

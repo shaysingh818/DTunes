@@ -1,7 +1,7 @@
 import { invoke } from "@tauri-apps/api/core";
 import { dataDir} from '@tauri-apps/api/path';
 import { reactive } from 'vue';
-import { AudioFile } from "./AudioFile";
+import { audioStore, AudioFile } from "./AudioFile";
 
 // Define the type for the AudioFile object
 export interface Playlist {
@@ -139,6 +139,46 @@ export const playlistStore = reactive({
         playlistId, 
         audioFileId 
     });
+  },
+
+  async searchPlaylists(searchTerm: string) {
+    try {
+        const dataDirPath = await dataDir(); 
+        const userDbPath = `${dataDirPath}/dtunes-audio-app/metadata/dtunes-audio-app.sqlite3`;
+        const playlists = await invoke<Playlist[]>('search_playlists', { userDbPath, searchTerm});
+        this.playlists = playlists;
+
+    } catch(error) {
+        console.error("Error loading audio files from search term: ", error); 
+    }
+  },
+
+  async searchPlaylistAudioFiles(playlistId: string, searchTerm: string) {
+    try {
+        const dataDirPath = await dataDir(); 
+        const userDbPath = `${dataDirPath}/dtunes-audio-app/metadata/dtunes-audio-app.sqlite3`;
+        const audioFiles = await invoke<AudioFile[]>(
+          'search_playlist_audio_files', 
+          { userDbPath, playlistId, searchTerm}
+        );
+        this.audioFiles = audioFiles;
+
+    } catch(error) {
+        console.error("Error loading audio files from search term: ", error); 
+    }
+  },
+
+  async queuePlaylistAudioFiles(playlistId: string, audioFileId: string) {
+
+    let audioFile = await audioStore.viewAudioFile(audioFileId);
+    audioStore.queuedAudioFiles.push(audioFile);
+
+    await this.viewPlaylistAudioFiles(playlistId);
+    this.audioFiles.forEach( (audioFile) => {
+      audioStore.queuedAudioFiles.push(audioFile);
+    });
+
+    audioStore.queueIndex = 0; 
   },
 
 }); 

@@ -1,10 +1,10 @@
 
 <template>
-    <button class="bottom-right-button" @click="open = true">
+    <button class="bottom-right-button" @click="openWindow = true">
       <i :class="['fas', 'fa-add', 'text-white-800']"></i>
     </button>
     <Teleport to="body">
-      <div v-if="open" class="modal">
+      <div v-if="openWindow" class="modal">
         <div class="modal-container">
           <div class="flex flex-col gap-2">
               <div>
@@ -23,6 +23,9 @@
               <div class="form-field-container">
                 <div class="flex flex-col gap-6">
                     <div>
+                        <input type="text" id="session_name" name="session_name" placeholder="Enter Session Name"><br>
+                    </div>
+                    <div>
                         <input type="text" id="duration" name="duration" placeholder="Enter Focus Duration"><br>
                     </div>
                     <div>
@@ -40,10 +43,10 @@
               <div class="form-button-container">
                 <div class="flex flex-row gap-2">
                     <div>
-                        <button @click="open = false" class="close-button" type="button">Close</button> 
+                        <button @click="openWindow = false" class="close-button" type="button">Close</button> 
                     </div>
                     <div>
-                        <button class="add-button" type="button">Create</button> 
+                        <button @click="submitForm" class="upload-button" type="button">Create</button> 
                     </div>
                 </div>
               </div>
@@ -56,8 +59,75 @@
 
 <script setup>
 import { ref } from 'vue'
+import { pomodoroStore } from '../../api/Pomodoro';
 
-const open = ref(false)
+const openWindow = ref(false);
+
+async function submitForm() {
+
+  const sessionName = document.getElementById('session_name');
+  const duration = document.getElementById('duration');
+  const durationLimit = document.getElementById('duration_limit');
+  const shortBreak = document.getElementById('short_break');
+  const longBreak = document.getElementById('long_break');
+
+  console.log("SESSION NAME: ", sessionName.value);
+  console.log("DURATION: ", duration.value);
+  console.log("DURATION LIMIT: ", durationLimit.value);
+  console.log("SHORT BREAK: ", shortBreak.value);
+  console.log("LONG BREAK: ", longBreak.value);
+
+  try {
+
+    const shortInt = parseInt(shortBreak.value);
+    const longInt = parseInt(longBreak.value); 
+    const durationInt = parseInt(duration.value); 
+    const durationLimitInt = parseInt(durationLimit.value);
+    
+    const durationLengthRequirement = durationInt < 60;
+    const shortBreakLengthRequirement = shortInt < 15;
+    const longBreakLengthRequirement = longInt < 30;
+
+
+    const sessionNameValidation = sessionName.value.length > 0;
+    const durationValidation = durationInt > 0 && durationLengthRequirement;
+    const durationLimitValidation = durationLimitInt > 0;
+    const shortBreakValidation = shortInt > 0 && shortBreakLengthRequirement;
+    const longBreakValidation = longInt > 0 && longBreakLengthRequirement;
+
+    if(sessionNameValidation && durationValidation && durationLimitValidation && shortBreakValidation && longBreakValidation) {
+
+      const response = await pomodoroStore.createSession(
+        sessionName.value,
+        durationInt,
+        durationLimitInt,
+        shortInt,
+        longInt
+      );
+
+      if(response == "Success") {
+        console.log("INSERT SUCCESSFUL");
+        alert("Success");
+      } else {
+        console.log("SOMETHING WENT WRONG");
+      }
+    } else if(!sessionNameValidation) {
+      alert("Must provide name for pomodoro session");
+    } else if(!durationValidation) {
+      alert("Duration must be less than 60 minutes");
+    } else if(!shortBreakLengthRequirement) {
+      alert("Short breaks must be less than 15 minutes");
+    } else if(!longBreakLengthRequirement) {
+      alert("Long breaks must be less than 30 minutes"); 
+    }
+
+  } catch (error) {
+    alert("Unable to parse integer information");    
+  }
+
+
+}
+
 </script>
 
 <script>
@@ -101,7 +171,6 @@ export default {
   justify-content: center;
   align-items: center;
 }
-
 
 .form-button-container {
   display: flex;
@@ -167,8 +236,6 @@ input[type="file"] {
     align-items: center;
     justify-content: center;
 }
-
-
 
 .add-button {
     border-radius: 5%;

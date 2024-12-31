@@ -165,4 +165,35 @@ impl AudioFile {
 
         Ok(())
     }
+
+    pub fn play(&mut self, conn: &Connection) -> Result<()> {
+        self.plays += 1;
+        conn.execute(
+            "UPDATE AUDIO_FILE SET PLAYS=? WHERE AUDIO_FILE_ID=?",
+            [ 
+                &self.plays.to_string(),
+                &self.audio_file_id.to_string(),
+            ],
+        )?;
+        Ok(())
+    }
+
+    pub fn search(conn: &Connection, search_term: &str) -> Result<Vec<AudioFile>> {
+        let query = format!("SELECT * FROM AUDIO_FILE WHERE FILE_NAME LIKE '%{}%'", search_term);
+        let mut stmt = conn.prepare(&query)?;
+        let audio_files: Result<Vec<AudioFile>> = stmt.query_map([], |row| {
+            Ok(AudioFile {
+                audio_file_id: row.get(0)?,
+                file_name: row.get(1)?,
+                file_path: row.get(2)?,
+                thumbnail: row.get(3)?,
+                duration: row.get(4)?,
+                plays: row.get(5)?,
+                sample_rate: row.get(6)?,
+                date_created: row.get(7)?,
+                last_modified: row.get(8)?,
+            })
+        })?.collect(); 
+        audio_files
+    }
 }

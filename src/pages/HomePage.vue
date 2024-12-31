@@ -23,14 +23,17 @@ export default {
     goToAbout() {
       this.$router.push('/about')
     },
+    async search() {
+      const searchTerm = document.getElementById('search-term').value;
+      if(searchTerm) {
+        this.$router.push(`/search/${searchTerm}`);
+      }
+    }
   },
 }
 </script>
 
-<!-- Testing list view component here -->
 <template>
-    <!-- Instance of song list component -->
-
     <div class="page-container">
       <div class="grid-container">
 
@@ -39,7 +42,7 @@ export default {
           <div class="search-box-container">
             <SearchComponent 
               text="Explore DTunes" 
-              :onClick="genreSearch"
+              :onClick="search"
             />
           </div>
 

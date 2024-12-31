@@ -58,8 +58,13 @@ export default {
     goToAbout() {
       this.$router.push('/about')
     },
-    audioFileSearch(){
-      alert("Audio File Search Button Clicked");
+    async audioFileSearch(){
+      const searchTerm = document.getElementById('search-term').value;
+      console.log("PLAYLIST SEARCH TERM ", searchTerm); 
+      await playlistStore.searchPlaylistAudioFiles(
+        this.playlist.playlist_id.toString(), 
+        searchTerm
+      );
     },
     goBack() {
       this.$router.go(-1); 

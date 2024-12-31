@@ -6,7 +6,9 @@ use crate::handlers::audio_file::{
     view_audio_files, 
     delete_audio_file,
     view_audio_file,
-    edit_audio_file
+    edit_audio_file,
+    search_audio_files,
+    play_audio_file
 };
 
 use crate::handlers::playlist::{
@@ -17,7 +19,9 @@ use crate::handlers::playlist::{
     view_playlist,
     view_playlist_audio_files, 
     add_audio_file_playlist,
-    remove_audio_file_playlist
+    remove_audio_file_playlist,
+    search_playlists,
+    search_playlist_audio_files
 };
 
 use crate::handlers::artist::{
@@ -28,7 +32,9 @@ use crate::handlers::artist::{
     view_artist,
     view_artist_audio_files, 
     add_audio_file_artist,
-    remove_audio_file_artist
+    remove_audio_file_artist,
+    search_artists,
+    search_artist_audio_files
 };
 
 use crate::handlers::genre::{
@@ -39,7 +45,22 @@ use crate::handlers::genre::{
     view_genre,
     view_genre_audio_files, 
     add_audio_file_genre,
-    remove_audio_file_genre
+    remove_audio_file_genre,
+    search_genres,
+    search_genre_audio_files
+};
+
+use crate::handlers::pomodoro::{
+    create_pomodoro, 
+    edit_pomodoro, 
+    view_pomodoro_sessions,
+    delete_pomodoro_session,
+    view_pomodoro_session,
+    view_pomodoro_audio_files, 
+    add_audio_file_pomodoro,
+    remove_audio_file_pomodoro,
+    search_pomodoro_sessions,
+    search_pomodoro_audio_files
 };
 
 
@@ -57,6 +78,8 @@ pub fn run() {
             delete_audio_file,
             view_audio_file,
             edit_audio_file,
+            search_audio_files,
+            play_audio_file,
 
             /* Endpoints for playlist module  */
             create_playlist, 
@@ -67,6 +90,8 @@ pub fn run() {
             view_playlist_audio_files, 
             add_audio_file_playlist,
             remove_audio_file_playlist,
+            search_playlists,
+            search_playlist_audio_files,
 
             /* Endpoints for artist module  */
             create_artist, 
@@ -77,6 +102,8 @@ pub fn run() {
             view_artist_audio_files, 
             add_audio_file_artist,
             remove_audio_file_artist,
+            search_artists,
+            search_artist_audio_files,
 
             /* Endpoints for genre module  */
             create_genre, 
@@ -86,7 +113,21 @@ pub fn run() {
             edit_genre,
             view_genre_audio_files, 
             add_audio_file_genre,
-            remove_audio_file_genre
+            remove_audio_file_genre,
+            search_genres,
+            search_genre_audio_files,
+
+            /* Pomodoro Endpoints */ 
+            create_pomodoro,
+            edit_pomodoro,
+            view_pomodoro_sessions,
+            delete_pomodoro_session,
+            view_pomodoro_session,
+            view_pomodoro_audio_files, 
+            add_audio_file_pomodoro,
+            remove_audio_file_pomodoro,
+            search_pomodoro_sessions,
+            search_pomodoro_audio_files
             
         ])
         .run(tauri::generate_context!())

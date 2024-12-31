@@ -112,10 +112,9 @@ impl Artist {
         /* many to many query */
         let query = "SELECT * FROM AUDIO_FILE WHERE AUDIO_FILE_ID IN ( 
             SELECT AUDIO_FILE_ID FROM ARTIST_AUDIO_FILE WHERE ARTIST_ID=?);";
-        let mut stmt = conn.prepare(query)?;
+        let mut stmt = conn.prepare(&query)?;
 
-        /* return audio files */
-        let rows = stmt.query_map([id], |row| {
+        let audio_files: Result<Vec<AudioFile>> = stmt.query_map([id], |row| {
             Ok(AudioFile {
                 audio_file_id: row.get(0)?,
                 file_name: row.get(1)?,
@@ -127,14 +126,31 @@ impl Artist {
                 date_created: row.get(7)?,
                 last_modified: row.get(8)?,
             })
-        })?;
+        })?.collect(); 
+        audio_files
+    }
 
-        /*  store files here */
-        let mut audio_files = Vec::new();
-        for audio_file in rows {
-            audio_files.push(audio_file?);
-        }
-        Ok(audio_files)
+    pub fn search_audio_files(
+        conn: &Connection, 
+        id: &str,
+        search_term: &str) -> Result<Vec<AudioFile>> {
+        let query = format!("SELECT * FROM AUDIO_FILE WHERE AUDIO_FILE_ID IN ( 
+            SELECT AUDIO_FILE_ID FROM ARTIST_AUDIO_FILE WHERE ARTIST_ID=? AND AUDIO_FILE.FILE_NAME LIKE '%{}%');", search_term);
+        let mut stmt = conn.prepare(&query)?;
+        let audio_files: Result<Vec<AudioFile>> = stmt.query_map([id], |row| {
+            Ok(AudioFile {
+                audio_file_id: row.get(0)?,
+                file_name: row.get(1)?,
+                file_path: row.get(2)?,
+                thumbnail: row.get(3)?,
+                duration: row.get(4)?,
+                plays: row.get(5)?,
+                sample_rate: row.get(6)?,
+                date_created: row.get(7)?,
+                last_modified: row.get(8)?,
+            })
+        })?.collect(); 
+        audio_files
     }
 
     pub fn remove_audio_file(&self, conn: &Connection, audio_file_id: usize) -> Result<()> {
@@ -146,4 +162,20 @@ impl Artist {
         )?;
         Ok(())
     }
+
+    pub fn search(conn: &Connection, search_term: &str) -> Result<Vec<Artist>> {
+        let query = format!("SELECT * FROM ARTIST WHERE ARTIST_NAME LIKE '%{}%'", search_term);
+        let mut stmt = conn.prepare(&query)?;
+        let artists: Result<Vec<Artist>> = stmt.query_map([], |row| {
+            Ok(Artist {
+                artist_id: row.get(0)?,
+                artist_name: row.get(1)?,
+                artist_thumbnail: row.get(2)?,
+                date_created: row.get(3)?,
+                last_modified: row.get(4)?,
+            })
+        })?.collect(); 
+        artists
+    }
+
 }

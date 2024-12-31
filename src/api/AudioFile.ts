@@ -5,57 +5,57 @@ import { reactive } from 'vue';
 
 // Define the type for the AudioFile object
 export interface AudioFile {
-  audioFileId: number;
-  dateCreated: string;
+  audio_file_id: number;
+  date_created: string;
   duration: string;
-  fileName: string;
-  filePath: string;
-  lastModified: string;
+  file_name: string;
+  file_path: string;
+  last_modified: string;
   plays: number;
-  sampleRate: string;
+  sample_rate: string;
   thumbnail: string;
 }
 
 export class AudioFile {
-  audioFileId: number;
-  dateCreated: string;
+  audio_file_id: number;
+  date_created: string;
   duration: string;
-  fileName: string;
-  filePath: string;
-  lastModified: string;
+  file_name: string;
+  file_path: string;
+  last_modified: string;
   plays: number;
-  sampleRate: string;
+  sample_rate: string;
   thumbnail: string;
 
   constructor({
-    audioFileId,
-    dateCreated,
+    audio_file_id,
+    date_created,
     duration,
-    fileName,
-    filePath,
-    lastModified,
+    file_name,
+    file_path,
+    last_modified,
     plays,
-    sampleRate,
+    sample_rate,
     thumbnail,
   }: {
-    audioFileId: number;
-    dateCreated: string;
+    audio_file_id: number;
+    date_created: string;
     duration: string;
-    fileName: string;
-    filePath: string;
-    lastModified: string;
+    file_name: string;
+    file_path: string;
+    last_modified: string;
     plays: number;
-    sampleRate: string;
+    sample_rate: string;
     thumbnail: string;
   }) {
-    this.audioFileId = audioFileId;
-    this.dateCreated = dateCreated;
+    this.audio_file_id = audio_file_id;
+    this.date_created = date_created;
     this.duration = duration;
-    this.fileName = fileName;
-    this.filePath = filePath;
-    this.lastModified = lastModified;
+    this.file_name = file_name;
+    this.file_path = file_path;
+    this.last_modified = last_modified;
     this.plays = plays;
-    this.sampleRate = sampleRate;
+    this.sample_rate = sample_rate;
     this.thumbnail = thumbnail;
   }
 }
@@ -63,6 +63,7 @@ export class AudioFile {
 export const audioStore = reactive({
 
   audioFiles: [] as AudioFile[],
+  queuedAudioFiles: [] as AudioFile[],
   audioFilePlaying: {} as AudioFile,
   player: null as HTMLAudioElement | null,
   playing: false as boolean,
@@ -70,6 +71,8 @@ export const audioStore = reactive({
   resume: false as boolean, 
   currentTime: 0 as number,
   duration: 0 as number,
+  queueIndex: 0 as number,
+  audioPlayerInterval: null as NodeJS.Timeout | null,
 
 
   async setCurrentPlaying(audioFile: AudioFile) {
@@ -77,7 +80,7 @@ export const audioStore = reactive({
     this.resume = false;
     this.currentTime = 0;
 
-    const fileBuffer = await readFile(`dtunes-audio-app/audio_files/${audioFile.filePath}`, {
+    const fileBuffer = await readFile(`dtunes-audio-app/audio_files/${audioFile.file_path}`, {
         baseDir: BaseDirectory.Data,
     });
 
@@ -164,22 +167,66 @@ export const audioStore = reactive({
     });
   },
 
+  async searchAudioFiles(searchTerm: string) {
+    try {
+        const dataDirPath = await dataDir(); 
+        const userDbPath = `${dataDirPath}/dtunes-audio-app/metadata/dtunes-audio-app.sqlite3`;
+        const audioFiles = await invoke<AudioFile[]>('search_audio_files', { userDbPath, searchTerm});
+        this.audioFiles = audioFiles;
+
+    } catch(error) {
+        console.error("Error loading audio files from search term: ", error); 
+    }
+  },
+
+  async addPlay(audioFileId: string) {
+    const dataDirPath = await dataDir();
+    const userDbPath = `${dataDirPath}/dtunes-audio-app/metadata/dtunes-audio-app.sqlite3`; 
+
+    return await invoke("play_audio_file", {
+      userDbPath,
+      audioFileId
+    });
+  },
+
   async playAudio(audioFile: AudioFile) {
+
+    console.log("PLAYING AUDIO FILE"); 
+    console.log(audioFile); 
 
     this.audioFilePlaying = audioFile;
     this.playing = true;
     this.duration = parseFloat(audioFile.duration);
 
-    const fileBuffer = await readFile(`dtunes-audio-app/audio_files/${audioFile.filePath}`, {
+    const fileBuffer = await readFile(`dtunes-audio-app/audio_files/${audioFile.file_path}`, {
         baseDir: BaseDirectory.Data,
     });
 
     const audioUrl = URL.createObjectURL(new Blob([fileBuffer]));
     console.log("Attempting to play:", audioUrl);
 
+    await updateAudioPlayerInformation(
+      audioFile.audio_file_id.toString(), 
+      audioFile.thumbnail,
+      parseInt(audioFile.duration)
+    );
+
+    if(this.audioPlayerInterval == null) {
+      this.audioPlayerInterval = setInterval(updateRealtimePlayerInformation, 1000); 
+    }
+
+    console.log("QUEUE LENGTH", this.queuedAudioFiles.length); 
+
     try {
         this.player = new Audio(audioUrl);
         this.player.play();
+
+        this.player.onended = () => {
+          this.addPlay(audioFile.audio_file_id.toString()); 
+          this.resume = false;  
+          this.playing = false;         
+        }
+
         this.player.onpause = () => {
           if(this.player) {
             this.currentTime = this.player.currentTime;
@@ -238,6 +285,38 @@ export const audioStore = reactive({
     }
   },
 
+  async nextAudioFile() {
+    this.queueIndex += 1; 
+    const audioFile = this.queuedAudioFiles[this.queueIndex];
+    const queueIndexCondition = this.queueIndex < this.queuedAudioFiles.length;
+    const playCondition = this.playing == true && this.queuedAudioFiles.length > 0;
+
+    if(this.queueIndex == this.queueAudioFiles.length) {
+      console.log("NO MORE TRACKS TO GO TO NEXT");
+      this.pauseAudio(); 
+      this.playing = false;
+    }
+
+    if(queueIndexCondition && playCondition) {
+      this.pauseAudio();
+      this.playAudio(audioFile)
+    } 
+
+  },
+
+  async previousAudioFile() {
+    if(this.queueIndex > 0) {
+      this.queueIndex -= 1; 
+      const audioFile = this.queuedAudioFiles[this.queueIndex];
+      const queueIndexCondition = this.queueIndex < this.queuedAudioFiles.length;
+      const playCondition = this.playing == true && this.queuedAudioFiles.length > 0;
+      if(queueIndexCondition && playCondition) {
+        this.pauseAudio();
+        this.playAudio(audioFile)
+      }
+    }
+  },
+
   async convertSecondsToMinutes(seconds: number) {
     const hours = Math.floor(seconds / 3600); // Get full hours
     const minutes = Math.floor(seconds/60) // Get full minutes
@@ -245,8 +324,71 @@ export const audioStore = reactive({
     const formattedMinutes = minutes < 10 ? '0' + minutes : minutes;
     const formattedSeconds = remainingSeconds < 10 ? '0' + remainingSeconds : remainingSeconds;
     return `${hours}:${formattedMinutes}:${formattedSeconds}`;
-  }
+  },
+
+  async queueAudioFiles(audioFileId: string) {
+
+    let audioFile = await this.viewAudioFile(audioFileId);
+    this.queuedAudioFiles.push(audioFile);
+
+    await this.loadAudioFiles();
+    this.audioFiles.forEach( (audioFile) => {
+      this.queuedAudioFiles.push(audioFile);
+    });
+
+    this.queueIndex = 0; 
+  },
 
 })
+
+export async function updateAudioPlayerInformation(audioFileId: string, thumbnail: string, duration: number) {
+
+    const fileBuffer = await readFile(`dtunes-audio-app/images/${thumbnail}`, {
+        baseDir: BaseDirectory.Data,
+    });
+
+    const imageUrl = URL.createObjectURL(new Blob([fileBuffer]));
+    let imageElem = document.getElementById(`${audioFileId}-player`);
+    if(imageElem) {
+      imageElem.src = imageUrl;
+    } else {
+      console.log(`${audioFileId} not found`)
+    }
+
+    let durationElem = document.getElementById(`${audioFileId}-player-duration`);
+    if(durationElem) {
+      durationElem.innerHTML = await audioStore.convertSecondsToMinutes(duration); 
+    }
+}
+
+export async function updateRealtimePlayerInformation() {
+
+  const durationElement = document.getElementById("duration-tracker");
+  const currentTime = audioStore.currentTime; 
+  if(durationElement && currentTime > 0 && audioStore.playing)  {
+    const value = (currentTime/audioStore.duration) * 100;
+    console.log("CURRENT DURATION: ", value);  
+    durationElement.style.width = `${value}%`;
+  }
+
+  if(audioStore.resume == false && audioStore.playing == false) {
+    audioStore.queueIndex += 1; 
+    const audioFile = audioStore.queuedAudioFiles[audioStore.queueIndex];
+    console.log("NEXT AUDIO FILE"); 
+    console.log(audioFile);
+    audioStore.pauseAudio(); 
+    audioStore.playAudio(audioFile); 
+  }
+
+  if(audioStore.queueIndex == audioStore.queuedAudioFiles.length) {
+    console.log("All tracks played, stopping interval")
+    audioStore.queuedAudioFiles = [];
+    audioStore.playing = false; 
+    if(audioStore.audioPlayerInterval != null) {
+      clearInterval(audioStore.audioPlayerInterval); 
+    }
+  }
+
+}
 
 

@@ -19,15 +19,15 @@ import { audioStore } from "./api/AudioFile";
    <div class="flex">
     <NavigationBar />
     <AudioPlayer
-      v-if="(audioStore.audioFilePlaying && audioStore.audioFilePlaying.audioFileId) || audioStore.playing == true"
-      :audioFileId="audioStore.audioFilePlaying.audioFileId"
-      :title="audioStore.audioFilePlaying.fileName"
-      :datePosted="audioStore.audioFilePlaying.dateCreated"
+      v-if="(audioStore.audioFilePlaying && audioStore.audioFilePlaying.audio_file_id) || audioStore.playing == true"
+      :audioFileId="audioStore.audioFilePlaying.audio_file_id"
+      :title="audioStore.audioFilePlaying.file_name"
+      :datePosted="audioStore.audioFilePlaying.date_created"
       :duration="audioStore.audioFilePlaying.duration"
-      :filePath="audioStore.audioFilePlaying.filePath"
-      :lastModified="audioStore.audioFilePlaying.lastModified"
+      :filePath="audioStore.audioFilePlaying.file_path"
+      :lastModified="audioStore.audioFilePlaying.last_modified"
       :plays="audioStore.audioFilePlaying.plays"
-      :sampleRate="audioStore.audioFilePlaying.sampleRate"
+      :sampleRate="audioStore.audioFilePlaying.sample_rate"
       :thumbnail="audioStore.audioFilePlaying.thumbnail"
     /> 
   </div>

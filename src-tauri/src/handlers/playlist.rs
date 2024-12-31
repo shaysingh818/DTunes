@@ -24,9 +24,6 @@ pub fn create_playlist(
     let thumbnail_uuid_format = format!("{}.{}", thumbnail_uuid, thumbnail_ext.unwrap());
     let usr_thumbnail_path = format!("{}/{}", user_thumbnail_path, thumbnail_uuid_format);
 
-    println!("USR THUMBNAIL PATH: {:?}", usr_thumbnail_path);
-    println!("USR LOCAL THUMBNAIL: {:?}", user_local_thumbnail_path);
-
     // Try to copy the thumbnail file and log any errors
     match fs::copy(user_local_thumbnail_path, usr_thumbnail_path) {
         Ok(bytes) => println!("Successfully copied thumbnail with {} bytes", bytes),
@@ -277,4 +274,45 @@ pub fn remove_audio_file_playlist(user_db_path: &str, playlist_id: &str, audio_f
 }
 
 
+#[tauri::command]
+pub fn search_playlists(user_db_path: &str, search_term: &str) -> Vec<Playlist> {
+    let conn = match Connection::open(user_db_path) {
+        Ok(connection) => connection,
+        Err(e) => {
+            println!("{:?}", e);
+            return Vec::new();
+        }
+    };
 
+    match Playlist::search(&conn, search_term) {
+        Ok(playlists) => playlists,
+        Err(e) => {
+            println!("Error searching playlists: {:?}", e);
+            Vec::new()
+        }
+    }
+}
+
+
+#[tauri::command]
+pub fn search_playlist_audio_files(
+    user_db_path: &str, 
+    playlist_id: &str, 
+    search_term: &str) -> Vec<AudioFile> {
+
+    let conn = match Connection::open(user_db_path) {
+        Ok(connection) => connection,
+        Err(e) => {
+            println!("{:?}", e);
+            return Vec::new();
+        }
+    };
+
+    match Playlist::search_audio_files(&conn, playlist_id, search_term) {
+        Ok(audio_files) => audio_files,
+        Err(e) => {
+            println!("Error searching audio files for playlist: {:?}", e);
+            Vec::new()
+        }
+    }
+}
