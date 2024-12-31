@@ -206,13 +206,15 @@ const updatePlayer = () => {
     console.log("All tracks played, stopping interval")
     audioStore.queuedAudioFiles = [];
     audioStore.playing = false; 
-    clearInterval(intervalId);
+    //clearInterval(intervalId);
   }
 
 
 };
 
-let intervalId = setInterval(updatePlayer, 1000);
+if(audioStore.audioPlayerInterval == null) {
+  audioStore.audioPlayerInterval = setInterval(updatePlayer, 1000);
+}
 
 
 

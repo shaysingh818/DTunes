@@ -77,33 +77,55 @@ async function submitForm() {
   console.log("SHORT BREAK: ", shortBreak.value);
   console.log("LONG BREAK: ", longBreak.value);
 
-  const sessionNameValidation = sessionName.value.length > 0;
-  const durationValidation = duration.value.length > 0;
-  const durationLimitValidation = durationLimit.value.length > 0;
-  const shortBreakValidation = shortBreak.value.length > 0;
-  const longBreakValidation = longBreak.value.length > 0;
+  try {
 
-  if(sessionNameValidation && durationValidation && durationLimitValidation && shortBreak && longBreak) {
+    const shortInt = parseInt(shortBreak.value);
+    const longInt = parseInt(longBreak.value); 
+    const durationInt = parseInt(duration.value); 
+    const durationLimitInt = parseInt(durationLimit.value);
+    
+    const durationLengthRequirement = durationInt < 60;
+    const shortBreakLengthRequirement = shortInt < 15;
+    const longBreakLengthRequirement = longInt < 30;
 
-    const response = await pomodoroStore.createSession(
-      sessionName.value,
-      parseInt(duration.value),
-      parseInt(durationLimit.value),
-      parseInt(shortBreak.value),
-      parseInt(longBreak.value)
-    );
 
-    if(response == "Success") {
-      console.log("INSERT SUCCESSFUL");
-      alert("Success");
-    } else {
-      console.log("SOMETHING WENT WRONG");
+    const sessionNameValidation = sessionName.value.length > 0;
+    const durationValidation = durationInt > 0 && durationLengthRequirement;
+    const durationLimitValidation = durationLimitInt > 0;
+    const shortBreakValidation = shortInt > 0 && shortBreakLengthRequirement;
+    const longBreakValidation = longInt > 0 && longBreakLengthRequirement;
+
+    if(sessionNameValidation && durationValidation && durationLimitValidation && shortBreakValidation && longBreakValidation) {
+
+      const response = await pomodoroStore.createSession(
+        sessionName.value,
+        durationInt,
+        durationLimitInt,
+        shortInt,
+        longInt
+      );
+
+      if(response == "Success") {
+        console.log("INSERT SUCCESSFUL");
+        alert("Success");
+      } else {
+        console.log("SOMETHING WENT WRONG");
+      }
+    } else if(!sessionNameValidation) {
+      alert("Must provide name for pomodoro session");
+    } else if(!durationValidation) {
+      alert("Duration must be less than 60 minutes");
+    } else if(!shortBreakLengthRequirement) {
+      alert("Short breaks must be less than 15 minutes");
+    } else if(!longBreakLengthRequirement) {
+      alert("Long breaks must be less than 30 minutes"); 
     }
-  } else if(!sessionNameValidation) {
-    alert("Must provide name for pomodoro session");
-  } else if(!durationValidation) {
-    alert("Duration value cannot be empty");
-  } 
+
+  } catch (error) {
+    alert("Unable to parse integer information");    
+  }
+
+
 }
 
 </script>

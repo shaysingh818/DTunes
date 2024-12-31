@@ -72,6 +72,7 @@ export const audioStore = reactive({
   currentTime: 0 as number,
   duration: 0 as number,
   queueIndex: 0 as number,
+  audioPlayerInterval: null as NodeJS.Timeout | null,
 
 
   async setCurrentPlaying(audioFile: AudioFile) {
@@ -178,6 +179,16 @@ export const audioStore = reactive({
     }
   },
 
+  async addPlay(audioFileId: string) {
+    const dataDirPath = await dataDir();
+    const userDbPath = `${dataDirPath}/dtunes-audio-app/metadata/dtunes-audio-app.sqlite3`; 
+
+    return await invoke("play_audio_file", {
+      userDbPath,
+      audioFileId
+    });
+  },
+
   async playAudio(audioFile: AudioFile) {
 
     console.log("PLAYING AUDIO FILE"); 
@@ -200,6 +211,10 @@ export const audioStore = reactive({
       parseInt(audioFile.duration)
     );
 
+    if(this.audioPlayerInterval == null) {
+      this.audioPlayerInterval = setInterval(updateRealtimePlayerInformation, 1000); 
+    }
+
     console.log("QUEUE LENGTH", this.queuedAudioFiles.length); 
 
     try {
@@ -207,6 +222,7 @@ export const audioStore = reactive({
         this.player.play();
 
         this.player.onended = () => {
+          this.addPlay(audioFile.audio_file_id.toString()); 
           this.resume = false;  
           this.playing = false;         
         }
@@ -272,17 +288,29 @@ export const audioStore = reactive({
   async nextAudioFile() {
     this.queueIndex += 1; 
     const audioFile = this.queuedAudioFiles[this.queueIndex];
-    if(this.playing == true && this.queueAudioFiles.length > 0) {
+    const queueIndexCondition = this.queueIndex < this.queuedAudioFiles.length;
+    const playCondition = this.playing == true && this.queuedAudioFiles.length > 0;
+
+    if(this.queueIndex == this.queueAudioFiles.length) {
+      console.log("NO MORE TRACKS TO GO TO NEXT");
+      this.pauseAudio(); 
+      this.playing = false;
+    }
+
+    if(queueIndexCondition && playCondition) {
       this.pauseAudio();
       this.playAudio(audioFile)
     } 
+
   },
 
   async previousAudioFile() {
     if(this.queueIndex > 0) {
       this.queueIndex -= 1; 
       const audioFile = this.queuedAudioFiles[this.queueIndex];
-      if(this.playing && this.queuedAudioFiles.length > 0) {
+      const queueIndexCondition = this.queueIndex < this.queuedAudioFiles.length;
+      const playCondition = this.playing == true && this.queuedAudioFiles.length > 0;
+      if(queueIndexCondition && playCondition) {
         this.pauseAudio();
         this.playAudio(audioFile)
       }
@@ -311,11 +339,6 @@ export const audioStore = reactive({
     this.queueIndex = 0; 
   },
 
-  async playQueuedAudio() {
-    let audioFile = this.queuedAudioFiles[this.queueIndex]; 
-    await this.playAudio(audioFile); 
-  }
-
 })
 
 export async function updateAudioPlayerInformation(audioFileId: string, thumbnail: string, duration: number) {
@@ -336,6 +359,36 @@ export async function updateAudioPlayerInformation(audioFileId: string, thumbnai
     if(durationElem) {
       durationElem.innerHTML = await audioStore.convertSecondsToMinutes(duration); 
     }
+}
+
+export async function updateRealtimePlayerInformation() {
+
+  const durationElement = document.getElementById("duration-tracker");
+  const currentTime = audioStore.currentTime; 
+  if(durationElement && currentTime > 0 && audioStore.playing)  {
+    const value = (currentTime/audioStore.duration) * 100;
+    console.log("CURRENT DURATION: ", value);  
+    durationElement.style.width = `${value}%`;
+  }
+
+  if(audioStore.resume == false && audioStore.playing == false) {
+    audioStore.queueIndex += 1; 
+    const audioFile = audioStore.queuedAudioFiles[audioStore.queueIndex];
+    console.log("NEXT AUDIO FILE"); 
+    console.log(audioFile);
+    audioStore.pauseAudio(); 
+    audioStore.playAudio(audioFile); 
+  }
+
+  if(audioStore.queueIndex == audioStore.queuedAudioFiles.length) {
+    console.log("All tracks played, stopping interval")
+    audioStore.queuedAudioFiles = [];
+    audioStore.playing = false; 
+    if(audioStore.audioPlayerInterval != null) {
+      clearInterval(audioStore.audioPlayerInterval); 
+    }
+  }
+
 }
 
 

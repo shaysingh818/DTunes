@@ -16,7 +16,7 @@
           <div class="list-view-trailing-container">
             <div class="grid grid-flow-col auto-cols-max space-x-4">
               <div><p1 :id="`${audioFileId.toString()}-duration`" >{{ duration }}</p1></div>
-              <div @click="playFile()" class="hover:bg-stone-400">
+              <div @click="queueAudio" class="hover:bg-stone-400">
                 <i :class="['fas', 'fa-play', 'text-red-800']"></i>
               </div>
               <div v-if="playlistRemove == false" @click="addFile()" class="hover:bg-stone-400">
@@ -93,6 +93,23 @@ export default {
   },
   methods: {
 
+    async queueAudio() {
+        
+        const audioFile =  await audioStore.viewAudioFile(this.audioFileId.toString());
+        if(audioStore.queuedAudioFiles.length == 0) {
+          playlistStore.queuePlaylistAudioFiles(
+            this.playlistId, 
+            audioFile.audio_file_id.toString()
+          ); 
+        } 
+
+        if(audioStore.playing) {
+          audioStore.pauseAudio();
+          audioStore.playAudio(audioFile); 
+        } else {
+          audioStore.playAudio(audioFile);
+        }
+    },
 
     async playFile() {
 

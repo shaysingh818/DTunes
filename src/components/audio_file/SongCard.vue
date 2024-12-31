@@ -11,7 +11,7 @@
                 <div @click="editFile()" class="hover:bg-stone-400">
                   <i :class="['fas', 'fa-edit', 'text-white']"></i>
                 </div>
-                <div @click="playFile()" class="hover:bg-stone-400">
+                <div @click="queueAudio()" class="hover:bg-stone-400">
                   <i :class="['fas', 'fa-play', 'text-white']"></i>
                 </div> 
                 <div @click="deleteFile()" class="hover:bg-stone-400">
@@ -60,6 +60,21 @@ export default {
     },
   },
   methods: {
+
+    async queueAudio() {
+        
+        const audioFile =  await audioStore.viewAudioFile(this.audioFileId.toString());
+        if(audioStore.queuedAudioFiles.length == 0) {
+          audioStore.queueAudioFiles(audioFile.audio_file_id.toString());
+        } 
+
+        if(audioStore.playing) {
+          audioStore.pauseAudio();
+          audioStore.playAudio(audioFile); 
+        } else {
+          audioStore.playAudio(audioFile);
+        }
+    },
 
     async playFile() {
 

@@ -7,7 +7,8 @@ use crate::handlers::audio_file::{
     delete_audio_file,
     view_audio_file,
     edit_audio_file,
-    search_audio_files
+    search_audio_files,
+    play_audio_file
 };
 
 use crate::handlers::playlist::{
@@ -78,6 +79,7 @@ pub fn run() {
             view_audio_file,
             edit_audio_file,
             search_audio_files,
+            play_audio_file,
 
             /* Endpoints for playlist module  */
             create_playlist, 

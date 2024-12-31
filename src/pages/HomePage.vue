@@ -23,6 +23,12 @@ export default {
     goToAbout() {
       this.$router.push('/about')
     },
+    async search() {
+      const searchTerm = document.getElementById('search-term').value;
+      if(searchTerm) {
+        this.$router.push(`/search/${searchTerm}`);
+      }
+    }
   },
 }
 </script>
@@ -39,7 +45,7 @@ export default {
           <div class="search-box-container">
             <SearchComponent 
               text="Explore DTunes" 
-              :onClick="genreSearch"
+              :onClick="search"
             />
           </div>
 

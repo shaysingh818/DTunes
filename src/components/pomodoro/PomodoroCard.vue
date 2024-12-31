@@ -11,24 +11,27 @@
               <div class="pomodoro-information">
                 <div class="flex flex-col">
                   <div>
-                      <p>Duration: {{ duration }}</p>
+                      <p>Duration: {{ duration }} minutes</p>
                   </div>
                   <div>
-                      <p>Duration Limit: {{ durationLimit }}</p>
+                      <p>Max Sessions: {{ durationLimit }}</p>
                   </div>
                   <div>
-                      <p>Short Break: {{ shortBreak }}</p>
+                      <p>Short Break: {{ shortBreak }} minutes</p>
                   </div>
                   <div>
-                      <p>Long Break: {{ longBreak }}</p>
-                  </div>
-                  <div>
-                      <p>Created: {{ datePosted }}</p>
-                  </div>
-                  <div>
-                      <p>Last Modified: {{ lastModified }}</p>
+                      <p>Long Break: {{ longBreak }} minutes</p>
                   </div>
                 </div>
+              </div>
+
+
+              <div class="date-information" :id="`${lastModified}-date-info`">
+                {{ lastModified }}
+              </div>
+
+              <div class="date-information" :id="`${datePosted}-date-created`">
+                {{ datePosted }}
               </div>
 
               <div class="actions-bar">
@@ -114,7 +117,17 @@ export default {
   },
   async mounted() {
 
-    console.log(new Date(this.lastModified).toString()); 
+    const dateString = this.lastModified;
+    const normalize = dateString.slice(0, -17);
+    const dateElement = document.getElementById(`${this.lastModified}-date-info`);
+    if(dateElement) {
+      dateElement.textContent = `Updated On: ${normalize}`; 
+    }
+    
+    const dateCreatedElement = document.getElementById(`${this.datePosted}-date-created`);
+    if(dateCreatedElement) {
+      dateCreatedElement.textContent = `Created On: ${this.datePosted.slice(0, -17)}`; 
+    } 
 
   }
 }
@@ -124,17 +137,16 @@ export default {
 <style scoped>
 
 .card-component {
-  width: 185px;
+  width: 200px;
 }
 
 .card-container {
-    border-radius: 3%;
-    display: flex;
-    height: 230px;
-    width: 185px;
-    background-color: rgb(28 25 23);
+  border-radius: 3%;
+  display: flex;
+  height: 230px;
+  width: 200px;
+  background-color: rgb(28 25 23);
 }
-
 
 .pomodoro-header {
   display: flex;
@@ -151,7 +163,6 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  /* border: 1px solid red; */
   height: 40px; 
   width: 185px;
   margin-top: auto;  
@@ -159,12 +170,19 @@ export default {
 
 .pomodoro-information {
   display: flex; 
-  justify-content: left;
-  align-items: left;
-  /* border: 1px solid red; */
-  padding: 10px; 
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
 }
 
+
+.date-information {
+  font-size: 10px;
+  color: rgb(153 27 27);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
 h1 {
   color: rgb(153 27 27);
@@ -176,6 +194,5 @@ p {
   font-size: 12px;
   font-weight: bold; 
 }
-
 
 </style>

@@ -32,7 +32,7 @@ export default {
             :durationLimit="item.duration_limit"
             :shortBreak="item.short_break"
             :longBreak="item.long_break"
-            :datePosted="item.date_posted"
+            :datePosted="item.date_created"
             :lastModified="item.last_modified"
         />
       </div>

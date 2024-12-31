@@ -298,3 +298,24 @@ pub fn search_audio_files(user_db_path: &str, search_term: &str) -> Vec<AudioFil
         }
     }
 }
+
+
+#[tauri::command]
+pub fn play_audio_file(user_db_path: &str, audio_file_id: &str) -> String {
+
+    let conn = match Connection::open(user_db_path) {
+        Ok(connection) => connection,
+        Err(e) => return format!("Failed to open database: {}", e),
+    };
+
+    match AudioFile::view(&conn, audio_file_id) {
+        Ok(mut audio_file) => {
+            audio_file.play(&conn);
+            return "Added play".to_string(); 
+        },
+        Err(e) => {
+            let err_msg = format!("Error retrieving audio file with id: {:?}", audio_file_id);
+            return err_msg.to_string(); 
+        }
+    }
+}

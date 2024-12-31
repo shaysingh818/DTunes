@@ -15,9 +15,11 @@ import GenreAudioFilesPage from './pages/genre/GenreAudioFilesPage.vue'
 import EditGenrePage from './pages/genre/EditGenrePage.vue'
 import PomodoroDetailPage from './pages/pomodoro/PomodoroDetailPage.vue'
 import PomodoroAudioFilesPage from './pages/pomodoro/PomodoroAudioFilesPage.vue'
+import DTunesSearchPage from './pages/DTunesSearchPage.vue'
 
 const routes: Array<RouteRecordRaw> =  [
   { path: '/', component: HomePage },
+  { path: '/search/:searchTerm', component: DTunesSearchPage},
 
   { path: '/playlists', component: PlaylistsPage },
   { path: '/playlists/edit/:id', component: EditPlaylistPage},

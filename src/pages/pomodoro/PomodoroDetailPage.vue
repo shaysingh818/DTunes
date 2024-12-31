@@ -1,21 +1,21 @@
 <template>
 
   <BackBar 
-    itemId="3" 
-    title="My Pomodoro Session"
+    :itemId="session.session_id" 
+    :title="session.session_name"
     thumbnail="default_dtunes_thumbnail.webp"
-    dateCreated="December 15th 2025"
+    :dateCreated="session.date_created"
   />
   <div class="page-container">
 
     <div class="flex flex-col" style="width: 100%;">
 
       <div>
-        <PomodoroClock 
-          duration="50:00"
-          durationLimit="4"
-          shortBreak="5:00"
-          longBreak="15:00"
+        <PomodoroClock
+          :duration="session.duration"
+          :durationLimit="session.duration_limit"
+          :shortBreak="session.short_break"
+          :longBreak="session.long_break"
         />
       </div>
 
@@ -36,6 +36,7 @@
     </div>
 
     <EditPomodoroMetadata
+      v-if="session && session.session_id"
       :sessionId="session.session_id"
       :sessionName="session.session_name"
       :duration="session.duration"
@@ -103,6 +104,6 @@ export default {
     const route  = useRoute();
     const id = route.params.id; 
     this.session = await pomodoroStore.viewSession(id);
-  }
+  },
 }
 </script>

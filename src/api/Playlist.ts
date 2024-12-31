@@ -1,7 +1,7 @@
 import { invoke } from "@tauri-apps/api/core";
 import { dataDir} from '@tauri-apps/api/path';
 import { reactive } from 'vue';
-import { AudioFile } from "./AudioFile";
+import { audioStore, AudioFile } from "./AudioFile";
 
 // Define the type for the AudioFile object
 export interface Playlist {
@@ -166,6 +166,19 @@ export const playlistStore = reactive({
     } catch(error) {
         console.error("Error loading audio files from search term: ", error); 
     }
+  },
+
+  async queuePlaylistAudioFiles(playlistId: string, audioFileId: string) {
+
+    let audioFile = await audioStore.viewAudioFile(audioFileId);
+    audioStore.queuedAudioFiles.push(audioFile);
+
+    await this.viewPlaylistAudioFiles(playlistId);
+    this.audioFiles.forEach( (audioFile) => {
+      audioStore.queuedAudioFiles.push(audioFile);
+    });
+
+    audioStore.queueIndex = 0; 
   },
 
 }); 

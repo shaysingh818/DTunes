@@ -10,7 +10,7 @@
                 <div @click="editFile()" class="hover:bg-stone-400">
                   <i :class="['fas', 'fa-edit', 'text-white']"></i>
                 </div>
-                <div @click="playFile()" class="hover:bg-stone-400">
+                <div @click="queueAudio()" class="hover:bg-stone-400">
                   <i :class="['fas', 'fa-play', 'text-white']"></i>
                 </div> 
                 <div v-if="pomodoroRemove == true" @click="removeFile()" class="hover:bg-stone-400">
@@ -66,6 +66,24 @@ export default {
     },
   },
   methods: {
+
+    async queueAudio() {
+        
+        const audioFile =  await audioStore.viewAudioFile(this.audioFileId.toString());
+        if(audioStore.queuedAudioFiles.length == 0) {
+          pomodoroStore.queuePomodoroAudioFiles(
+            this.sessionId, 
+            audioFile.audio_file_id.toString()
+          ); 
+        } 
+
+        if(audioStore.playing) {
+          audioStore.pauseAudio();
+          audioStore.playAudio(audioFile); 
+        } else {
+          audioStore.playAudio(audioFile);
+        }
+    },
 
     async playFile() {
 
