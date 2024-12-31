@@ -24,9 +24,6 @@ pub fn create_playlist(
     let thumbnail_uuid_format = format!("{}.{}", thumbnail_uuid, thumbnail_ext.unwrap());
     let usr_thumbnail_path = format!("{}/{}", user_thumbnail_path, thumbnail_uuid_format);
 
-    println!("USR THUMBNAIL PATH: {:?}", usr_thumbnail_path);
-    println!("USR LOCAL THUMBNAIL: {:?}", user_local_thumbnail_path);
-
     // Try to copy the thumbnail file and log any errors
     match fs::copy(user_local_thumbnail_path, usr_thumbnail_path) {
         Ok(bytes) => println!("Successfully copied thumbnail with {} bytes", bytes),

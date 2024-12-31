@@ -136,9 +136,7 @@ impl Pomodoro {
         let query = "SELECT * FROM AUDIO_FILE WHERE AUDIO_FILE_ID IN ( 
             SELECT AUDIO_FILE_ID FROM POMODORO_AUDIO_FILE WHERE SESSION_ID=?);";
         let mut stmt = conn.prepare(query)?;
-
-        /* return audio files */
-        let rows = stmt.query_map([&id], |row| {
+        let audio_files: Result<Vec<AudioFile>> = stmt.query_map([id], |row| {
             Ok(AudioFile {
                 audio_file_id: row.get(0)?,
                 file_name: row.get(1)?,
@@ -150,14 +148,8 @@ impl Pomodoro {
                 date_created: row.get(7)?,
                 last_modified: row.get(8)?,
             })
-        })?;
-
-        /*  store files here */
-        let mut audio_files = Vec::new();
-        for audio_file in rows {
-            audio_files.push(audio_file?);
-        }
-        Ok(audio_files)
+        })?.collect(); 
+        audio_files
     }
 
     pub fn search_audio_files(

@@ -73,7 +73,7 @@ export default {
   },
   async mounted() {
 
-    console.log("MY THUMBNAIL", this.thumbnail); 
+    console.log("THUMBNAIL", this.thumbnail); 
     const fileBuffer = await readFile(`dtunes-audio-app/images/${this.thumbnail}`, {
         baseDir: BaseDirectory.Data,
     });

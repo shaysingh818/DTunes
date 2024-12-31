@@ -145,7 +145,6 @@ export default {
       const removeResult = await artistStore.removeAudioFileArtist(this.artistId.toString(), this.audioFileId);
       if(removeResult == "Success") {
         alert("Removed Song From Artist");
-        // this.$router.push(`/playlists/edit/${this.playlistId}`);
         this.$forceUpdate(); 
       } else {
         alert("Could not remove song from artist", removeResult); 

@@ -33,10 +33,7 @@ export default {
 }
 </script>
 
-<!-- Testing list view component here -->
 <template>
-    <!-- Instance of song list component -->
-
     <div class="page-container">
       <div class="grid-container">
 

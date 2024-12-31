@@ -10,17 +10,13 @@ export default {
   async mounted() {
     const route  = useRoute();
     const searchTerm = route.params.searchTerm;
-    console.log("SEARCH TERM: ", searchTerm);  
     await audioStore.searchAudioFiles(searchTerm);
   },
   setup() {
     const route = useRoute();
     const searchTerm = route.params.searchTerm;
 
-    
     const currentDate = new Date();
-
-    // Format: YYYY-MM-DD
     const formattedDate = currentDate.getFullYear() + "-" +
     String(currentDate.getMonth() + 1).padStart(2, '0') + "-" +
     String(currentDate.getDate()).padStart(2, '0');

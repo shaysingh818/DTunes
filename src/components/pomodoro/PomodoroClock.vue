@@ -78,7 +78,6 @@ export default {
       console.log(`Setting duration ${duration}`); 
       pomodoroStore.pomodoroTimer = new PomodoroTimer(
         duration, 
-        'dtunes-alarm-sound.mp3',
         this.updateTimerValue
       ); 
     }, 
@@ -87,7 +86,6 @@ export default {
       console.log(`Setting duration ${duration}`); 
       pomodoroStore.pomodoroTimer = new PomodoroTimer(
         duration, 
-        'dtunes-alarm-sound.mp3',
         this.updateTimerValue
       ); 
     },
@@ -96,7 +94,6 @@ export default {
       console.log(`Setting duration ${duration}`); 
       pomodoroStore.pomodoroTimer = new PomodoroTimer(
         duration, 
-        'dtunes-alarm-sound.mp3',
         this.updateTimerValue
       ); 
     },

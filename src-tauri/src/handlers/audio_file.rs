@@ -34,12 +34,6 @@ pub fn create_audio_file(
     let usr_thumbnail_path = format!("{}/{}", user_thumbnail_path, thumbnail_uuid_format);
     let usr_file_path = format!("{}/{}", user_audio_file_path, file_uuid_format);
 
-    println!("USR THUMBNAIL PATH: {:?}", usr_thumbnail_path);
-    println!("USR LOCAL THUMBNAIL: {:?}", user_local_thumbnail_path);
-
-    println!("USR FILE PATH: {:?}", usr_file_path);
-    println!("USR LOCAL FILE: {:?}", user_local_file_path);
-
     // Try to copy the thumbnail file and log any errors
     match fs::copy(user_local_thumbnail_path, usr_thumbnail_path) {
         Ok(bytes) => println!("Successfully copied thumbnail with {} bytes", bytes),

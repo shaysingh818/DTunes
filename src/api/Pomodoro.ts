@@ -14,7 +14,7 @@ export class PomodoroTimer {
     private resumed: boolean = false;
     private updateCallback: (time: string) => void; 
 
-    constructor(duration: number, alarmSoundPath: string, updateCallback: (time: string) => void) {
+    constructor(duration: number, updateCallback: (time: string) => void) {
 
       let minutes = Math.floor(duration / 60); 
       let seconds = duration % 60; 
