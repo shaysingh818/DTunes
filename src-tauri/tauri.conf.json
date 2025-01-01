@@ -45,8 +45,8 @@
       "icons/icon.icns",
       "icons/icon.ico"
     ],
-    "resources": {
+    "resources": [
       "src-tauri/assets/sqlite3.dll"
-    }
+    ]
   }
 }
