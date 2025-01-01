@@ -24,7 +24,7 @@ export async function downloadSQLiteFile() {
       { baseDir: BaseDirectory.Data }
     );
 
-    console.log(`SQLite file downloaded and saved to: ${localFilePath}`);
+    console.log(`SQLite file downloaded and saved`);
   } catch (error) {
     console.error("Error downloading the SQLite file:", error);
   }
