@@ -34,7 +34,7 @@ jobs:
         working-directory: src-tauri/
 
       - name: Build Tauri App
-        run: tauri build -- --release
+        run: tauri build --release
 
       - name: Upload Binaries to Repository
         run: |
@@ -65,7 +65,7 @@ jobs:
         run: npm install -g @tauri-apps/cli
 
       - name: Build Tauri App
-        run: tauri build -- --release
+        run: tauri build --release
 
       - name: Upload Binaries to Repository
         run: |
@@ -96,7 +96,7 @@ jobs:
         run: npm install -g @tauri-apps/cli
 
       - name: Build Tauri App
-        run: tauri build -- --release
+        run: tauri build --release
 
       - name: Upload Binaries to Repository
         run: |
