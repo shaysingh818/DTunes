@@ -34,13 +34,19 @@ jobs:
         working-directory: src-tauri/
 
       - name: Build Tauri App
-        run: tauri build
+        run: tauri build --release
 
       - name: Upload Binaries to Repository
         run: |
-          mkdir -p releases # Creates the 'releases' folder (if not already there)
-          mv src-tauri/target/release/bundle/appimage/dtunes-audio-app-x86_64.AppImage releases/
+          mkdir -p releases/linux # Creates the 'releases' folder (if not already there)
+          cp -r src-tauri/target/release/bundle/appimage/ releases/linux
           
+      - name: Commit To Version Control
+        run: |
+          git checkout -b dev
+          git add releases/*
+          git commit -m "add app image files"
+          git push origin dev
           
   mac-os:
     runs-on: macos-latest
@@ -59,12 +65,12 @@ jobs:
         run: npm install -g @tauri-apps/cli
 
       - name: Build Tauri App
-        run: tauri build
+        run: tauri build --release
 
       - name: Upload Binaries to Repository
         run: |
-          mkdir -p releases # Creates the 'releases' folder (if not already there)
-          cp -r src-tauri/target/release/bundle/dmg/ releases/
+          mkdir -p releases/macos # Creates the 'releases' folder (if not already there)
+          cp -r src-tauri/target/release/bundle/dmg/ releases/macos
 
       - name: Commit To Version Control
         run: |
@@ -90,4 +96,18 @@ jobs:
         run: npm install -g @tauri-apps/cli
 
       - name: Build Tauri App
-        run: tauri build
+        run: tauri build --release
+
+      - name: Upload Binaries to Repository
+        run: |
+          mkdir -p releases/windows/msi
+          mkdir -p releases/windows/nsis 
+          cp -r src-tauri/target/release/bundle/msi releases/windows/msi
+          cp -r src-tauri/target/release/bundle/nsis releases/windows/nsis
+          
+      - name: Commit To Version Control
+        run: |
+          git checkout -b dev
+          git add releases/*
+          git commit -m "add app image files"
+          git push origin dev
