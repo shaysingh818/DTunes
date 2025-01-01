@@ -33,11 +33,12 @@ jobs:
       - name: Build Tauri App
         run: tauri build
 
-      - name: Upload Linux AppImage to GitHub Releases
-        uses: softprops/action-gh-release@v1
-        with:
-          files: |
-            src-tauri/target/release/bundle/appimage/dtunes-audio-app-x86_64.AppImage
+      - name: Upload Binaries to Repository
+        run: |
+          mkdir -p releases # Creates the 'releases' folder (if not already there)
+          mv src-tauri/target/release/bundle/appimage/dtunes-audio-app-x86_64.AppImage releases/
+          
+
 
   mac-os:
     runs-on: macos-latest
@@ -58,12 +59,11 @@ jobs:
       - name: Build Tauri App
         run: tauri build
 
-      - name: Upload macOS DMG to GitHub Releases
-        uses: softprops/action-gh-release@v1
-        with:
-          files: |
-            src-tauri/target/release/bundle/dmg/dtunes-audio-app.dmg
-
+      - name: Upload Binaries to Repository
+        run: |
+          mkdir -p releases # Creates the 'releases' folder (if not already there)
+          mv src-tauri/target/release/bundle/dmg/dtunes-audio-app.dmg releases/
+          
 
   windows:
     runs-on: windows-latest
