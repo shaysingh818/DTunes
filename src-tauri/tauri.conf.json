@@ -17,20 +17,6 @@
         "height": 600
       }
     ],
-    "linux": [
-      {
-        "title": "dtunes-audio-app",
-        "width": 800,
-        "height": 600
-      }
-    ],
-    "macOS": [
-      {
-        "title": "dtunes-audio-app",
-        "width": 800,
-        "height": 600
-      }
-    ],
     "security": {
       "csp": null
     }
