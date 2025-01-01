@@ -2,7 +2,7 @@
 import NavigationBar from "./components/shared/NavigationBar.vue";
 import AudioPlayer from "./components/shared/AudioPlayer.vue";
 import { audioStore } from "./api/AudioFile";
-import { checkAppDataFolders, createAppDataFolders } from "./api/Utiltiies";
+import { checkAppDataFolders, createAppDataFolders } from "./api/Utilities";
 
 if(await checkAppDataFolders() == false) {
   console.log("No metadata folders found, creating now... ")
