@@ -62,7 +62,7 @@ jobs:
       - name: Upload Binaries to Repository
         run: |
           mkdir -p releases # Creates the 'releases' folder (if not already there)
-          cp src-tauri/target/release/bundle/dmg/ releases/
+          cp -r src-tauri/target/release/bundle/dmg/ releases/
           
 
   windows:
