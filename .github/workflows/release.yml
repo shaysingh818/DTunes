@@ -67,7 +67,7 @@ jobs:
         run: |
           git add releases/*
           git commit -m "add dmg files"
-          git push
+          git push origin dev
 
   windows:
     runs-on: windows-latest
