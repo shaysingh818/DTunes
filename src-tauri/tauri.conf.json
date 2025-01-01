@@ -32,7 +32,8 @@
       "icons/icon.ico"
     ],
     "resources": [
-      "src-tauri/assets/sqlite3.dll"
+      "src-tauri/assets/sqlite3.dll",
+      "src-tauri/assets/libsqlite3.dylib" 
     ]
   }
 }
