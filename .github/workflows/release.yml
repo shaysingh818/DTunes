@@ -1,0 +1,93 @@
+name: Build App
+
+
+on:
+  pull_request:
+    branches: [ "main" ]
+
+permissions:
+  contents: write  
+
+jobs:
+
+  linux:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Update
+        run: sudo apt-get update
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+      
+      - run: npm install
+
+      - name: Install Tauri CLI
+        run: npm install -g @tauri-apps/cli
+
+      - name: Install GTK
+        run: sudo apt-get install libwebkit2gtk-4.1-dev
+        working-directory: src-tauri/
+
+      - name: Build Tauri App
+        run: tauri build
+
+      - name: Upload Binaries to Repository
+        run: |
+          mkdir -p releases # Creates the 'releases' folder (if not already there)
+          mv src-tauri/target/release/bundle/appimage/dtunes-audio-app-x86_64.AppImage releases/
+          
+          
+  mac-os:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+      
+      - run: npm install
+
+      - name: Install Tauri CLI
+        run: npm install -g @tauri-apps/cli
+
+      - name: Build Tauri App
+        run: tauri build
+
+      - name: Upload Binaries to Repository
+        run: |
+          mkdir -p releases # Creates the 'releases' folder (if not already there)
+          cp -r src-tauri/target/release/bundle/dmg/ releases/
+
+      - name: Commit To Version Control
+        run: |
+          git checkout -b dev
+          git add releases/*
+          git commit -m "add dmg files"
+          git push origin dev
+
+  windows:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+      
+      - run: npm install
+
+      - name: Install Tauri CLI
+        run: npm install -g @tauri-apps/cli
+
+      - name: Build Tauri App
+        run: tauri build
