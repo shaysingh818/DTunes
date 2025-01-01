@@ -65,9 +65,10 @@ jobs:
 
       - name: Commit To Version Control
         run: |
+          git checkout -b dev
           git add releases/*
           git commit -m "add dmg files"
-          git push origin release
+          git push origin dev
 
   windows:
     runs-on: windows-latest
