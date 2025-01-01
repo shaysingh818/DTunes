@@ -39,7 +39,6 @@ jobs:
           mv src-tauri/target/release/bundle/appimage/dtunes-audio-app-x86_64.AppImage releases/
           
 
-
   mac-os:
     runs-on: macos-latest
     steps:
