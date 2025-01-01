@@ -1,0 +1,43 @@
+name: Build Tauri App
+
+# on:
+#   push:
+#     branches:
+#       - main
+#   pull_request:
+#     branches:
+#       - main
+
+
+on:
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+
+    steps:
+    - uses: actions/checkout@v2
+
+    # Setup Node.js and install dependencies
+    - name: Setup Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '16'
+    
+    - run: npm install
+
+    # Install Tauri CLI
+    - name: Install Tauri CLI
+      run: npm install -g @tauri-apps/cli
+
+    # Build the Tauri app
+    - name: Build Tauri App
+      run: tauri build
+
+    
