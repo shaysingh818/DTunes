@@ -7,31 +7,71 @@ on:
 
 jobs:
 
-  build:
+
+  linux:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
-
     steps:
-    - uses: actions/checkout@v2
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-    - name: Setup Node.js
-      uses: actions/setup-node@v2
-      with:
-        node-version: '16'
-    
-    - run: npm install
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+      
+      - run: npm install
 
-    - name: Install Tauri CLI
-      run: npm install -g @tauri-apps/cli
+      - name: Install Tauri CLI
+        run: npm install -g @tauri-apps/cli
 
-    - name: Install GTK
-      run: sudo apt-get install libwebkit2gtk-4.1-dev
-      working-directory: src-tauri/
+      - name: Install GTK
+        run: sudo apt-get install libwebkit2gtk-4.1-dev
+        working-directory: src-tauri/
 
-    # Build the Tauri app
-    - name: Build Tauri App
-      run: tauri build
+      # Build the Tauri app
+      - name: Build Tauri App
+        run: tauri build
 
-    
+  mac-os:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+      
+      - run: npm install
+
+      - name: Install Tauri CLI
+        run: npm install -g @tauri-apps/cli
+
+      - name: Install GTK
+        run: brew install gtk+3
+        working-directory: src-tauri/
+
+      # Build the Tauri app
+      - name: Build Tauri App
+        run: tauri build
+
+  windows:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+      
+      - run: npm install
+
+      - name: Install Tauri CLI
+        run: npm install -g @tauri-apps/cli
+
+      # Build the Tauri app
+      - name: Build Tauri App
+        run: tauri build
