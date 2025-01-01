@@ -40,7 +40,6 @@ jobs:
 
 
   publish-tauri:
-    needs: [migrate, dtunes_api]
     permissions:
       contents: write
     strategy:
