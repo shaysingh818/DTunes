@@ -1,4 +1,4 @@
-import { create, exists, mkdir } from '@tauri-apps/plugin-fs';
+import { exists, mkdir } from '@tauri-apps/plugin-fs';
 import { dataDir } from '@tauri-apps/api/path';
 
 
