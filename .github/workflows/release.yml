@@ -6,7 +6,41 @@ on:
       - release
 
 jobs:
+
+  dtunes_api:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Update apt cache
+        run: sudo apt-get update
+
+      - name: Install GTK
+        run: sudo apt-get install libwebkit2gtk-4.1-dev
+        working-directory: src-tauri/
+
+      - name: Build
+        run: cargo build --color always --release
+        working-directory: src-tauri/
+
+      - name: Test
+        run: cargo test -- color always --test-threads=1
+        working-directory: src-tauri/
+
+  migrate: 
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Update apt cache
+        run: python migrate.py
+        working-directory: database 
+
+
   publish-tauri:
+    needs: [migrate, dtunes_api]
     permissions:
       contents: write
     strategy:
