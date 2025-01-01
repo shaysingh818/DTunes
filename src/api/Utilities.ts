@@ -1,4 +1,4 @@
-import { create, exists } from '@tauri-apps/plugin-fs';
+import { create, exists, mkdir } from '@tauri-apps/plugin-fs';
 import { dataDir } from '@tauri-apps/api/path';
 
 
@@ -39,7 +39,7 @@ export async function createAppDataFolders() {
     // Loop through and create each directory if it doesn't exist
     for (const dir of directoriesToCreate) {
         const fullDirPath = `${appDataDir}/${dir}`;
-        await create(fullDirPath);
+        await mkdir(fullDirPath);
     }
   } catch (error) {
     console.error("Error creating app data folders:", error);
