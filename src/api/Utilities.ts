@@ -1,5 +1,35 @@
-import { exists, mkdir } from '@tauri-apps/plugin-fs';
-import { dataDir } from '@tauri-apps/api/path';
+import { exists, mkdir, writeFile } from '@tauri-apps/plugin-fs';
+import { dataDir, BaseDirectory } from '@tauri-apps/api/path';
+
+// Function to download the SQLite file from GitHub and save it locally
+export async function downloadSQLiteFile() {
+  try {
+    // Fetch the SQLite file from the raw GitHub URL
+    const RAW_FILE_URL = "https://raw.githubusercontent.com/shaysingh818/dtunes-studio/release/database/build/dtunes-audio-app.sqlite3"
+    const response = await fetch(RAW_FILE_URL);
+    if (!response.ok) {
+      throw new Error(`Failed to fetch the file: ${response.statusText}`);
+    }
+
+    // Read the file as a Blob (binary data)
+    const fileBlob = await response.blob();
+    const arrayBuffer = await fileBlob.arrayBuffer();
+    const uint8Array = new Uint8Array(arrayBuffer);
+
+
+    // Write the file to the local data directory
+    await writeFile(
+      'dtunes-audio-app/metadata/dtunes-audio-app.sqlite3', 
+      uint8Array, 
+      { baseDir: BaseDirectory.Data }
+    );
+
+    console.log(`SQLite file downloaded and saved to: ${localFilePath}`);
+  } catch (error) {
+    console.error("Error downloading the SQLite file:", error);
+  }
+}
+
 
 
 export async function checkAppDataFolders(): Promise<boolean> {

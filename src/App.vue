@@ -8,14 +8,15 @@ import { audioStore } from "./api/AudioFile";
 
 
 <script lang="ts">
-import { checkAppDataFolders, createAppDataFolders } from "./api/Utilities";
+import { checkAppDataFolders, createAppDataFolders, downloadSQLiteFile  } from "./api/Utilities";
 
 export default {
     async mounted() {
       if(await checkAppDataFolders() == false) {
         console.log("No metadata folders found, creating now... ")
         await createAppDataFolders();
-        console.log("Created metadata folders");  
+        console.log("Created metadata folders"); 
+        await downloadSQLiteFile(); 
       }
     }
 }
