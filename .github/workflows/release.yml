@@ -7,7 +7,6 @@ on:
 
 jobs:
 
-
   linux:
     runs-on: ubuntu-latest
     steps:
@@ -25,10 +24,9 @@ jobs:
         run: npm install -g @tauri-apps/cli
 
       - name: Install GTK
-        run: sudo apt-get install libwebkit2gtk-4.1-dev
+        run: sudo apt-get install libwebkit2gtk-4.0-dev
         working-directory: src-tauri/
 
-      # Build the Tauri app
       - name: Build Tauri App
         run: tauri build
 
@@ -72,6 +70,5 @@ jobs:
       - name: Install Tauri CLI
         run: npm install -g @tauri-apps/cli
 
-      # Build the Tauri app
       - name: Build Tauri App
         run: tauri build

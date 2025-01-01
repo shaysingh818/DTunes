@@ -17,6 +17,20 @@
         "height": 600
       }
     ],
+    "linux": [
+      {
+        "title": "dtunes-audio-app",
+        "width": 800,
+        "height": 600
+      }
+    ],
+    "macOS": [
+      {
+        "title": "dtunes-audio-app",
+        "width": 800,
+        "height": 600
+      }
+    ],
     "security": {
       "csp": null
     }
@@ -30,6 +44,9 @@
       "icons/128x128@2x.png",
       "icons/icon.icns",
       "icons/icon.ico"
-    ]
+    ],
+    "resources": {
+      "src-tauri/assets/sqlite3.dll"
+    }
   }
 }
