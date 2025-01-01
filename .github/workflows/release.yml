@@ -33,6 +33,12 @@ jobs:
       - name: Build Tauri App
         run: tauri build
 
+      - name: Upload Linux AppImage to GitHub Releases
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            src-tauri/target/release/bundle/appimage/dtunes-audio-app-x86_64.AppImage
+
   mac-os:
     runs-on: macos-latest
     steps:
@@ -49,13 +55,15 @@ jobs:
       - name: Install Tauri CLI
         run: npm install -g @tauri-apps/cli
 
-      # - name: Install GTK
-      #   run: brew install gtk+3
-      #   working-directory: src-tauri/
-
-      # Build the Tauri app
       - name: Build Tauri App
         run: tauri build
+
+      - name: Upload macOS DMG to GitHub Releases
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            src-tauri/target/release/bundle/dmg/dtunes-audio-app.dmg
+
 
   windows:
     runs-on: windows-latest
