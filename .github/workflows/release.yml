@@ -1,12 +1,4 @@
-name: Build Tauri App
-
-# on:
-#   push:
-#     branches:
-#       - main
-#   pull_request:
-#     branches:
-#       - main
+name: Build App
 
 
 on:
@@ -24,7 +16,6 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    # Setup Node.js and install dependencies
     - name: Setup Node.js
       uses: actions/setup-node@v2
       with:
@@ -32,9 +23,12 @@ jobs:
     
     - run: npm install
 
-    # Install Tauri CLI
     - name: Install Tauri CLI
       run: npm install -g @tauri-apps/cli
+
+    - name: Install GTK
+      run: sudo apt-get install libwebkit2gtk-4.1-dev
+      working-directory: src-tauri/
 
     # Build the Tauri app
     - name: Build Tauri App
