@@ -196,7 +196,7 @@ export const audioStore = reactive({
 
     this.audioFilePlaying = audioFile;
     this.playing = true;
-    this.duration = parseFloat(audioFile.duration);
+    this.duration = parseInt(audioFile.duration);
 
     const fileBuffer = await readFile(`dtunes-audio-app/audio_files/${audioFile.file_path}`, {
         baseDir: BaseDirectory.Data,

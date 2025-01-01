@@ -19,7 +19,7 @@ import { audioStore } from "./api/AudioFile";
    <div class="flex">
     <NavigationBar />
     <AudioPlayer
-      v-if="(audioStore.audioFilePlaying && audioStore.audioFilePlaying.audio_file_id) || audioStore.playing == true"
+      v-if="audioStore.audioFilePlaying && audioStore.audioFilePlaying.audio_file_id"
       :audioFileId="audioStore.audioFilePlaying.audio_file_id"
       :title="audioStore.audioFilePlaying.file_name"
       :datePosted="audioStore.audioFilePlaying.date_created"
