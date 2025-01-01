@@ -14,7 +14,7 @@ export async function checkAppDataFolders(): Promise<boolean> {
     ];
 
     for (const dir of directoriesToCheck) {
-      const fullDirPath = `${appDataDir}${dir}`;
+      const fullDirPath = `${appDataDir}/${dir}`;
       const dirExists = await exists(fullDirPath);
       if(dirExists) {
         check = true; 
@@ -38,7 +38,7 @@ export async function createAppDataFolders() {
 
     // Loop through and create each directory if it doesn't exist
     for (const dir of directoriesToCreate) {
-        const fullDirPath = `${appDataDir}${dir}`;
+        const fullDirPath = `${appDataDir}/${dir}`;
         await create(fullDirPath);
     }
   } catch (error) {
