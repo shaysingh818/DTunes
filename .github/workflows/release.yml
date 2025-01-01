@@ -63,6 +63,12 @@ jobs:
         run: |
           mkdir -p releases # Creates the 'releases' folder (if not already there)
           cp -r src-tauri/target/release/bundle/dmg/ releases/
+
+      -name: Commit To Version Control
+       run: |
+          git add releases/*
+          git commit -m "add dmg files"
+          git push
           
 
   windows:
