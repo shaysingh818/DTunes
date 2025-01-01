@@ -2,15 +2,14 @@
 import NavigationBar from "./components/shared/NavigationBar.vue";
 import AudioPlayer from "./components/shared/AudioPlayer.vue";
 import { audioStore } from "./api/AudioFile";
-// import { invoke } from "@tauri-apps/api/core";
+import { checkAppDataFolders, createAppDataFolders } from "./api/Utiltiies";
 
-// const greetMsg = ref("");
-// const name = ref("");
+if(await checkAppDataFolders() == false) {
+  console.log("No metadata folders found, creating now... ")
+  await createAppDataFolders();
+  console.log("Created metadata folders");  
+}
 
-// async function greet() {
-//   // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
-//   greetMsg.value = await invoke("greet", { name: name.value });
-// }
 </script>
 
 
