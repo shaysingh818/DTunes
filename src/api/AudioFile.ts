@@ -349,7 +349,7 @@ export async function updateAudioPlayerInformation(audioFileId: string, thumbnai
 
     const imageUrl = URL.createObjectURL(new Blob([fileBuffer]));
     let imageElem = document.getElementById(`${audioFileId}-player`);
-    if(imageElem) {
+    if(imageElem && imageElem instanceof HTMLImageElement) {
       imageElem.src = imageUrl;
     } else {
       console.log(`${audioFileId} not found`)
