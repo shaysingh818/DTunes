@@ -1,9 +1,9 @@
-use std::fs;
-use std::path::Path; 
-use std::ffi::OsStr;
-use uuid::Uuid; 
+use crate::dtunes_api::audio_file::*;
 use rusqlite::{Connection, Result};
-use crate::dtunes_api::audio_file::*; 
+use std::ffi::OsStr;
+use std::fs;
+use std::path::Path;
+use uuid::Uuid;
 
 #[tauri::command]
 pub fn create_audio_file(
@@ -16,7 +16,6 @@ pub fn create_audio_file(
     user_audio_file_path: &str,
     user_db_path: &str,
 ) -> String {
-
     let file_uuid = Uuid::new_v4();
     let thumbnail_uuid = Uuid::new_v4();
 
@@ -69,10 +68,9 @@ pub fn create_audio_file(
     }
 }
 
-
 #[tauri::command]
 pub fn edit_audio_file(
-    audio_file_id: &str, 
+    audio_file_id: &str,
     alias_file_name: &str,
     audio_file_name: &str,
     thumbnail_file_name: &str,
@@ -82,8 +80,6 @@ pub fn edit_audio_file(
     user_audio_file_path: &str,
     user_db_path: &str,
 ) -> String {
-
-
     let usr_file_path = format!("{}/{}", user_audio_file_path, audio_file_name);
 
     let conn = match Connection::open(user_db_path) {
@@ -95,7 +91,6 @@ pub fn edit_audio_file(
     };
 
     match AudioFile::view(&conn, audio_file_id) {
-
         Ok(mut audio_file) => {
             /* update audio file name */
             audio_file.file_name = alias_file_name.to_string();
@@ -109,8 +104,10 @@ pub fn edit_audio_file(
                     .extension()
                     .and_then(OsStr::to_str);
 
-                let thumbnail_uuid_format = format!("{}.{}", thumbnail_uuid, thumbnail_ext.unwrap());
-                let usr_thumbnail_path = format!("{}/{}", user_thumbnail_path, thumbnail_uuid_format);
+                let thumbnail_uuid_format =
+                    format!("{}.{}", thumbnail_uuid, thumbnail_ext.unwrap());
+                let usr_thumbnail_path =
+                    format!("{}/{}", user_thumbnail_path, thumbnail_uuid_format);
 
                 match fs::copy(user_local_thumbnail_path, usr_thumbnail_path) {
                     Ok(bytes) => println!("Successfully copied thumbnail with {} bytes", bytes),
@@ -118,23 +115,24 @@ pub fn edit_audio_file(
                 }
 
                 /* remove previous thumbnail */
-                let thumbnail_delete_path = format!("{}/{}", user_thumbnail_path, audio_file.thumbnail);
+                let thumbnail_delete_path =
+                    format!("{}/{}", user_thumbnail_path, audio_file.thumbnail);
                 match fs::remove_file(thumbnail_delete_path.clone()) {
                     Ok(result) => {
-                        println!("Successfully removed audio file thumbnail {:?}", thumbnail_delete_path.clone());
-                    },
+                        println!(
+                            "Successfully removed audio file thumbnail {:?}",
+                            thumbnail_delete_path.clone()
+                        );
+                    }
                     Err(e) => {
                         println!("Error removing audio file thumbnail {:?}", e);
                     }
                 }
                 audio_file.thumbnail = thumbnail_uuid_format.to_string();
-
-
             }
 
             /* copy new audio file if one is detected */
             if audio_file.file_path != audio_file_name {
-
                 let file_uuid = Uuid::new_v4();
                 let file_ext = Path::new(audio_file_name)
                     .extension()
@@ -153,8 +151,11 @@ pub fn edit_audio_file(
                 let file_delete_path = format!("{}/{}", user_audio_file_path, audio_file.file_path);
                 match fs::remove_file(file_delete_path.clone()) {
                     Ok(result) => {
-                        println!("Successfully removed audio file storage location {:?}", file_delete_path.clone());
-                    },
+                        println!(
+                            "Successfully removed audio file storage location {:?}",
+                            file_delete_path.clone()
+                        );
+                    }
                     Err(e) => {
                         println!("Error removing audio file storage location {:?}", e);
                     }
@@ -171,15 +172,12 @@ pub fn edit_audio_file(
                 }
                 Err(e) => format!("Failed to update audio file metadata: {}", e),
             }
-        },
+        }
         Err(e) => {
             return "failure".to_string();
         }
-
     }
-
 }
-
 
 #[tauri::command]
 pub fn view_audio_files(user_db_path: &str) -> Vec<AudioFile> {
@@ -200,14 +198,13 @@ pub fn view_audio_files(user_db_path: &str) -> Vec<AudioFile> {
     }
 }
 
-
 #[tauri::command]
 pub fn delete_audio_file(
-    user_db_path: &str, 
+    user_db_path: &str,
     audio_file_id: &str,
     user_thumbnail_path: &str,
-    user_audio_file_path: &str) -> String {
-
+    user_audio_file_path: &str,
+) -> String {
     let conn = match Connection::open(user_db_path) {
         Ok(connection) => connection,
         Err(e) => {
@@ -215,17 +212,19 @@ pub fn delete_audio_file(
             return format!("Database connection error: {:?}", e);
         }
     };
-    
+
     match AudioFile::view(&conn, audio_file_id) {
         Ok(mut audio_file) => {
-
             let usr_thumbnail_path = format!("{}/{}", user_thumbnail_path, audio_file.thumbnail);
             let usr_file_path = format!("{}/{}", user_audio_file_path, audio_file.file_path);
 
             match fs::remove_file(usr_thumbnail_path.clone()) {
                 Ok(result) => {
-                    println!("Successfully removed audio file thumbnail {:?}", usr_thumbnail_path.clone());
-                },
+                    println!(
+                        "Successfully removed audio file thumbnail {:?}",
+                        usr_thumbnail_path.clone()
+                    );
+                }
                 Err(e) => {
                     println!("Error removing audio file thumbnail {:?}", e);
                 }
@@ -233,8 +232,11 @@ pub fn delete_audio_file(
 
             match fs::remove_file(usr_file_path.clone()) {
                 Ok(result) => {
-                    println!("Successfully removed audio file storage location {:?} ", usr_file_path.clone());
-                },
+                    println!(
+                        "Successfully removed audio file storage location {:?} ",
+                        usr_file_path.clone()
+                    );
+                }
                 Err(e) => {
                     println!("Error removing audio file storage location {:?}", e);
                 }
@@ -242,31 +244,29 @@ pub fn delete_audio_file(
 
             audio_file.delete(&conn, audio_file_id);
 
-            return format!("Success"); 
-        },
+            return format!("Success");
+        }
         Err(e) => {
             return format!("Error retrieving audio file with id: {:?}", audio_file_id);
         }
     }
 }
 
-
 #[tauri::command]
 pub fn view_audio_file(user_db_path: &str, audio_file_id: &str) -> Result<AudioFile, String> {
-
     let conn = match Connection::open(user_db_path) {
         Ok(connection) => connection,
         Err(e) => {
             println!("{:?}", e);
             let err_msg = format!("Database connection error: {:?}", e);
-            return Err(err_msg.to_string()); 
+            return Err(err_msg.to_string());
         }
     };
-    
+
     match AudioFile::view(&conn, audio_file_id) {
         Ok(mut audio_file) => {
             return Ok(audio_file);
-        },
+        }
         Err(e) => {
             let err_msg = format!("Error retrieving audio file with id: {:?}", audio_file_id);
             return Err(err_msg.to_string());
@@ -293,10 +293,8 @@ pub fn search_audio_files(user_db_path: &str, search_term: &str) -> Vec<AudioFil
     }
 }
 
-
 #[tauri::command]
 pub fn play_audio_file(user_db_path: &str, audio_file_id: &str) -> String {
-
     let conn = match Connection::open(user_db_path) {
         Ok(connection) => connection,
         Err(e) => return format!("Failed to open database: {}", e),
@@ -305,11 +303,11 @@ pub fn play_audio_file(user_db_path: &str, audio_file_id: &str) -> String {
     match AudioFile::view(&conn, audio_file_id) {
         Ok(mut audio_file) => {
             audio_file.play(&conn);
-            return "Added play".to_string(); 
-        },
+            return "Added play".to_string();
+        }
         Err(e) => {
             let err_msg = format!("Error retrieving audio file with id: {:?}", audio_file_id);
-            return err_msg.to_string(); 
+            return err_msg.to_string();
         }
     }
 }

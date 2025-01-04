@@ -6,8 +6,15 @@
     "main"
   ],
   "remote": {
-		"urls": ["http://127.0.0.1:*/","http://*","https://*","ipc://*","socks5://*","*://*"]
-	},
+    "urls": [
+      "http://127.0.0.1:*/",
+      "http://*",
+      "https://*",
+      "ipc://*",
+      "socks5://*",
+      "*://*"
+    ]
+  },
   "permissions": [
     "core:default",
     "shell:allow-open",
@@ -25,6 +32,7 @@
     "fs:allow-data-write",
     "fs:allow-data-meta-recursive",
     "fs:allow-data-meta",
-    "fs:scope-data-recursive" 
+    "fs:scope-data-recursive",
+    "os:default"
   ]
 }

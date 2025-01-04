@@ -3,25 +3,9 @@ import NavigationBar from "./components/shared/NavigationBar.vue";
 import AudioPlayer from "./components/shared/AudioPlayer.vue";
 import { audioStore } from "./api/AudioFile";
 
-
 </script>
 
 
-<script lang="ts">
-import { checkAppDataFolders, createAppDataFolders, downloadSQLiteFile  } from "./api/Utilities";
-
-export default {
-    async mounted() {
-      if(await checkAppDataFolders() == false) {
-        console.log("No metadata folders found, creating now... ")
-        await createAppDataFolders();
-        console.log("Created metadata folders"); 
-        await downloadSQLiteFile(); 
-      }
-    }
-}
-
-</script>
 
 <template>
 

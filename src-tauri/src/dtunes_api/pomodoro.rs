@@ -1,7 +1,7 @@
+use crate::dtunes_api::audio_file::AudioFile;
 use chrono;
 use rusqlite::{Connection, Result};
 use serde::{Deserialize, Serialize};
-use crate::dtunes_api::audio_file::AudioFile;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Pomodoro {
@@ -136,44 +136,48 @@ impl Pomodoro {
         let query = "SELECT * FROM AUDIO_FILE WHERE AUDIO_FILE_ID IN ( 
             SELECT AUDIO_FILE_ID FROM POMODORO_AUDIO_FILE WHERE SESSION_ID=?);";
         let mut stmt = conn.prepare(query)?;
-        let audio_files: Result<Vec<AudioFile>> = stmt.query_map([id], |row| {
-            Ok(AudioFile {
-                audio_file_id: row.get(0)?,
-                file_name: row.get(1)?,
-                file_path: row.get(2)?,
-                thumbnail: row.get(3)?,
-                duration: row.get(4)?,
-                plays: row.get(5)?,
-                sample_rate: row.get(6)?,
-                date_created: row.get(7)?,
-                last_modified: row.get(8)?,
-            })
-        })?.collect(); 
+        let audio_files: Result<Vec<AudioFile>> = stmt
+            .query_map([id], |row| {
+                Ok(AudioFile {
+                    audio_file_id: row.get(0)?,
+                    file_name: row.get(1)?,
+                    file_path: row.get(2)?,
+                    thumbnail: row.get(3)?,
+                    duration: row.get(4)?,
+                    plays: row.get(5)?,
+                    sample_rate: row.get(6)?,
+                    date_created: row.get(7)?,
+                    last_modified: row.get(8)?,
+                })
+            })?
+            .collect();
         audio_files
     }
 
     pub fn search_audio_files(
-        conn: &Connection, 
+        conn: &Connection,
         id: &str,
-        search_term: &str) -> Result<Vec<AudioFile>> {
-
+        search_term: &str,
+    ) -> Result<Vec<AudioFile>> {
         /* many to many query */
         let query = format!("SELECT * FROM AUDIO_FILE WHERE AUDIO_FILE_ID IN ( 
             SELECT AUDIO_FILE_ID FROM POMODORO_AUDIO_FILE WHERE SESSION_ID=? AND AUDIO_FILE.FILE_NAME LIKE '%{}%');", search_term);
         let mut stmt = conn.prepare(&query)?;
-        let audio_files: Result<Vec<AudioFile>> = stmt.query_map([id], |row| {
-            Ok(AudioFile {
-                audio_file_id: row.get(0)?,
-                file_name: row.get(1)?,
-                file_path: row.get(2)?,
-                thumbnail: row.get(3)?,
-                duration: row.get(4)?,
-                plays: row.get(5)?,
-                sample_rate: row.get(6)?,
-                date_created: row.get(7)?,
-                last_modified: row.get(8)?,
-            })
-        })?.collect(); 
+        let audio_files: Result<Vec<AudioFile>> = stmt
+            .query_map([id], |row| {
+                Ok(AudioFile {
+                    audio_file_id: row.get(0)?,
+                    file_name: row.get(1)?,
+                    file_path: row.get(2)?,
+                    thumbnail: row.get(3)?,
+                    duration: row.get(4)?,
+                    plays: row.get(5)?,
+                    sample_rate: row.get(6)?,
+                    date_created: row.get(7)?,
+                    last_modified: row.get(8)?,
+                })
+            })?
+            .collect();
         audio_files
     }
 
@@ -188,20 +192,25 @@ impl Pomodoro {
     }
 
     pub fn search(conn: &Connection, search_term: &str) -> Result<Vec<Pomodoro>> {
-        let query = format!("SELECT * FROM POMODORO_SESSION WHERE SESSION_NAME LIKE '%{}%'", search_term);
+        let query = format!(
+            "SELECT * FROM POMODORO_SESSION WHERE SESSION_NAME LIKE '%{}%'",
+            search_term
+        );
         let mut stmt = conn.prepare(&query)?;
-        let sessions: Result<Vec<Pomodoro>> = stmt.query_map([], |row| {
-            Ok(Pomodoro {
-                session_id: row.get(0)?,
-                session_name: row.get(1)?,
-                duration: row.get(2)?,
-                duration_limit: row.get(3)?,
-                short_break: row.get(4)?,
-                long_break: row.get(5)?,
-                date_created: row.get(6)?,
-                last_modified: row.get(7)?,
-            })
-        })?.collect(); 
+        let sessions: Result<Vec<Pomodoro>> = stmt
+            .query_map([], |row| {
+                Ok(Pomodoro {
+                    session_id: row.get(0)?,
+                    session_name: row.get(1)?,
+                    duration: row.get(2)?,
+                    duration_limit: row.get(3)?,
+                    short_break: row.get(4)?,
+                    long_break: row.get(5)?,
+                    date_created: row.get(6)?,
+                    last_modified: row.get(7)?,
+                })
+            })?
+            .collect();
         sessions
     }
 }

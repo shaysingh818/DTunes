@@ -1,9 +1,9 @@
-use dtunes_audio_app_lib::dtunes_api; 
+use dtunes_audio_app_lib::dtunes_api;
 
 #[cfg(test)]
 mod audio_file_instance {
 
-    use crate::dtunes_api::audio_file::{AudioFile};
+    use crate::dtunes_api::audio_file::AudioFile;
     use rusqlite::{Connection, Result};
 
     /* test database instance */
@@ -112,34 +112,18 @@ mod audio_file_instance {
 
     #[test]
     fn get_audio_file_duration() {
+        let mut my_file_mp3: AudioFile =
+            AudioFile::new("bigswag.mp3", "bigswag.mp3", "thumbnail", 10, "2");
 
-        let mut my_file_mp3: AudioFile = AudioFile::new(
-            "bigswag.mp3", 
-            "bigswag.mp3", 
-            "thumbnail", 
-            10, 
-            "2"
-        );
+        let mut my_file_mp4: AudioFile =
+            AudioFile::new("battlecry.mp4", "battlecry.mp4", "thumbnail", 10, "2");
 
-        let mut my_file_mp4: AudioFile = AudioFile::new(
-            "battlecry.mp4", 
-            "battlecry.mp4", 
-            "thumbnail", 
-            10, 
-            "2"
-        );
-
-        let mut bad_file: AudioFile = AudioFile::new(
-            "file_update", 
-            "storage_path", 
-            "thumbnail", 
-            10, 
-            "2"
-        );
+        let mut bad_file: AudioFile =
+            AudioFile::new("file_update", "storage_path", "thumbnail", 10, "2");
 
         let downloads_path = "../database/tests/audio_files";
-        my_file_mp3.set_duration(downloads_path).unwrap(); 
-        my_file_mp4.set_duration(downloads_path).unwrap(); 
+        my_file_mp3.set_duration(downloads_path).unwrap();
+        my_file_mp4.set_duration(downloads_path).unwrap();
 
         assert_eq!(my_file_mp3.duration, "660.14");
         assert_eq!(my_file_mp4.duration, "180.651");
@@ -147,6 +131,5 @@ mod audio_file_instance {
             bad_file.set_duration(downloads_path).unwrap_err(),
             "Could not parse extension"
         );
-
     }
 }

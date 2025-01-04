@@ -1,4 +1,4 @@
-use dtunes_audio_app_lib::dtunes_api; 
+use dtunes_audio_app_lib::dtunes_api;
 
 #[cfg(test)]
 mod artist_instance {

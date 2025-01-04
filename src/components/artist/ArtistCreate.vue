@@ -29,7 +29,7 @@
                     <div style="justify-content: center; display:flex ; align-items: center;">
                         <form action="/action_page.php">
                             <!-- <button id="upload-btn" class="upload-btn">Upload Artist Image</button> -->
-                            <input @click="selectThumbnailImage" type="button" id="artist-thumbnail-upload" name="artist-thumbnail-upload">
+                            <input @click="selectThumbnailImage()" type="button" id="artist-thumbnail-upload" name="artist-thumbnail-upload">
                             <label for="artist-thumbnail-upload">Choose Artist Image</label>
                         </form>
                     </div>
@@ -42,7 +42,7 @@
                         <button @click="openWindow = false" class="close-button" type="button">Close</button> 
                     </div>
                     <div>
-                        <button @click="submitForm" class="upload-button" type="button">Add Artist</button> 
+                        <button @click="submitForm()" class="upload-button" type="button">Add Artist</button> 
                     </div>
                 </div>
               </div>

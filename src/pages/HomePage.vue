@@ -7,6 +7,7 @@ import AudioFileCarousel from '../components/audio_file/AudioFileCarousel.vue';
 import ArtistCarousel from '../components/artist/ArtistCarousel.vue';
 import GenreCarousel from '../components/genre/GenreCarousel.vue';
 import PlaylistListView from '../components/playlist/PlaylistListView.vue';
+import { syncMetadata } from '../api/Utilities';
 
 export default {
   components: { 
@@ -33,8 +34,17 @@ export default {
 }
 </script>
 
+<script setup>
+import { syncMetadata } from '../api/Utilities';
+</script>
+
 <template>
     <div class="page-container">
+
+      <button class="add-button" @click="syncMetadata()">
+        <i :class="['fas', 'fa-download', 'text-white-800']"></i>
+      </button>
+
       <div class="grid-container">
 
         <div class="flex flex-col gap-4">

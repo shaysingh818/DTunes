@@ -2,13 +2,13 @@
     <div class="pomodoro-gradient-background">
       <div class="pomodoro-clock-container">
         <div class="pomodoro-break-options">
-          <div @click="selectFocusDuration" class="flex hover:bg-stone-700">
+          <div @click="selectFocusDuration()" class="flex hover:bg-stone-700">
             <p style="color: white;">Pomodoro</p>
           </div>
-          <div @click="shortBreak" class="flex hover:bg-stone-700">
+          <div @click="shortBreak()" class="flex hover:bg-stone-700">
             <p style="color: white">Short Break</p>
           </div>
-          <div @click="longBreak" class="flex hover:bg-stone-700">
+          <div @click="longBreak()" class="flex hover:bg-stone-700">
             <p style="color: white">Long Break</p>
           </div>
         </div>
