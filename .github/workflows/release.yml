@@ -36,10 +36,11 @@ jobs:
         working-directory: src-tauri/
 
       - name: Test
-        run: cargo test -- color always
+        run: cargo test -- --nocapture --verbose
         working-directory: src-tauri/
 
   publish-tauri:
+    needs: [dtunes_api]
     permissions:
       contents: write
     strategy:
