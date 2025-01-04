@@ -4,11 +4,4 @@ DTunes studio is an audio storage application for creating good user audio exper
 
 ## Getting Started
 
-``bash
-sudo apt install libwebkit2gtk-4.1-dev
-```
 
-```bash
-cd src-tauri
-cargo install tauri-cli
-```
