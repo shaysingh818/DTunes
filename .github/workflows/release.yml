@@ -32,7 +32,7 @@ jobs:
         working-directory: src-tauri/
 
       - name: Test
-        run: cargo test -- --nocapture --verbose
+        run: cargo test -- --nocapture
         working-directory: src-tauri/
 
   publish-tauri:
