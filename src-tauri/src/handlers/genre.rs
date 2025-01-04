@@ -87,7 +87,7 @@ pub fn edit_genre(
                 let thumbnail_delete_path =
                     format!("{}/{}", user_thumbnail_path, genre.genre_thumbnail);
                 match fs::remove_file(thumbnail_delete_path.clone()) {
-                    Ok(result) => {
+                    Ok(_result) => {
                         println!(
                             "Successfully removed genre thumbnail {:?}",
                             thumbnail_delete_path.clone()
@@ -109,7 +109,8 @@ pub fn edit_genre(
             }
         }
         Err(e) => {
-            return "failure".to_string();
+            let msg = format!("Error editing genre: {:?}", e); 
+            return msg.to_string();
         }
     }
 }
@@ -144,11 +145,11 @@ pub fn delete_genre(user_db_path: &str, genre_id: &str, user_thumbnail_path: &st
     };
 
     match Genre::view(&conn, genre_id) {
-        Ok(mut genre) => {
+        Ok(genre) => {
             let usr_thumbnail_path = format!("{}/{}", user_thumbnail_path, genre.genre_thumbnail);
 
             match fs::remove_file(usr_thumbnail_path.clone()) {
-                Ok(result) => {
+                Ok(_result) => {
                     println!(
                         "Successfully removed genre thumbnail {:?}",
                         usr_thumbnail_path.clone()
@@ -158,12 +159,11 @@ pub fn delete_genre(user_db_path: &str, genre_id: &str, user_thumbnail_path: &st
                     println!("Error removing genre thumbnail {:?}", e);
                 }
             }
-            Genre::delete(&conn, genre_id);
-
+            let _ = Genre::delete(&conn, genre_id);
             return format!("Success");
         }
         Err(e) => {
-            return format!("Error retrieving genre with id: {:?}", genre_id);
+            return format!("Error retrieving genre with id: {:?} Cause: {:?}", genre_id, e);
         }
     }
 }
@@ -180,11 +180,11 @@ pub fn view_genre(user_db_path: &str, genre_id: &str) -> Result<Genre, String> {
     };
 
     match Genre::view(&conn, genre_id) {
-        Ok(mut genre) => {
+        Ok(genre) => {
             return Ok(genre);
         }
         Err(e) => {
-            let err_msg = format!("Error retrieving genre with id: {:?}", genre_id);
+            let err_msg = format!("Error retrieving genre with id: {:?} Cause: {:?}", genre_id, e);
             return Err(err_msg.to_string());
         }
     }
@@ -205,11 +205,11 @@ pub fn view_genre_audio_files(
     };
 
     match Genre::retrieve_audio_files(&conn, genre_id) {
-        Ok(mut audio_files) => {
+        Ok(audio_files) => {
             return Ok(audio_files);
         }
         Err(e) => {
-            let err_msg = format!("Error retrieving genre audio files: {:?}", genre_id);
+            let err_msg = format!("Error retrieving genre audio files: {:?} Cause: {:?}", genre_id, e);
             return Err(err_msg.to_string());
         }
     }
@@ -236,7 +236,7 @@ pub fn add_audio_file_genre(
             return Ok("Success".to_string());
         }
         Err(e) => {
-            let err_msg = format!("Error retrieving genre with id: {:?}", genre_id);
+            let err_msg = format!("Error retrieving genre with id: {:?} Cause: {:?}", genre_id, e);
             return Err(err_msg.to_string());
         }
     }
@@ -258,12 +258,12 @@ pub fn remove_audio_file_genre(
     };
 
     match Genre::view(&conn, genre_id) {
-        Ok(mut genre) => {
+        Ok(genre) => {
             genre.remove_audio_file(&conn, audio_file_id).unwrap();
             return Ok("Success".to_string());
         }
         Err(e) => {
-            let err_msg = format!("Error retrieving genre with id: {:?}", genre_id);
+            let err_msg = format!("Error retrieving genre with id: {:?} Cause: {:?}", genre_id, e);
             return Err(err_msg.to_string());
         }
     }

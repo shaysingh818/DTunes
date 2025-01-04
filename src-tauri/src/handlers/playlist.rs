@@ -88,7 +88,7 @@ pub fn edit_playlist(
                 let thumbnail_delete_path =
                     format!("{}/{}", user_thumbnail_path, playlist.playlist_thumbnail);
                 match fs::remove_file(thumbnail_delete_path.clone()) {
-                    Ok(result) => {
+                    Ok(_result) => {
                         println!(
                             "Successfully removed playlist thumbnail {:?}",
                             thumbnail_delete_path.clone()
@@ -110,7 +110,8 @@ pub fn edit_playlist(
             }
         }
         Err(e) => {
-            return "failure".to_string();
+            let msg = format!("Error editing playlist: {:?}", e);
+            return msg.to_string();
         }
     }
 }
@@ -145,12 +146,12 @@ pub fn delete_playlist(user_db_path: &str, playlist_id: &str, user_thumbnail_pat
     };
 
     match Playlist::view(&conn, playlist_id) {
-        Ok(mut playlist) => {
+        Ok(playlist) => {
             let usr_thumbnail_path =
                 format!("{}/{}", user_thumbnail_path, playlist.playlist_thumbnail);
 
             match fs::remove_file(usr_thumbnail_path.clone()) {
-                Ok(result) => {
+                Ok(_result) => {
                     println!(
                         "Successfully removed playlist thumbnail {:?}",
                         usr_thumbnail_path.clone()
@@ -160,12 +161,11 @@ pub fn delete_playlist(user_db_path: &str, playlist_id: &str, user_thumbnail_pat
                     println!("Error removing playlist thumbnail {:?}", e);
                 }
             }
-            Playlist::delete(&conn, playlist_id);
-
+            let _ = Playlist::delete(&conn, playlist_id);
             return format!("Success");
         }
         Err(e) => {
-            return format!("Error retrieving playlist with id: {:?}", playlist_id);
+            return format!("Error retrieving playlist with id: {:?} Cause: {:?}", playlist_id, e);
         }
     }
 }
@@ -182,11 +182,11 @@ pub fn view_playlist(user_db_path: &str, playlist_id: &str) -> Result<Playlist, 
     };
 
     match Playlist::view(&conn, playlist_id) {
-        Ok(mut playlist) => {
+        Ok(playlist) => {
             return Ok(playlist);
         }
         Err(e) => {
-            let err_msg = format!("Error retrieving playlist with id: {:?}", playlist_id);
+            let err_msg = format!("Error retrieving playlist with id: {:?} Cause: {:?}", playlist_id, e);
             return Err(err_msg.to_string());
         }
     }
@@ -207,11 +207,11 @@ pub fn view_playlist_audio_files(
     };
 
     match Playlist::retrieve_audio_files(&conn, playlist_id) {
-        Ok(mut audio_files) => {
+        Ok(audio_files) => {
             return Ok(audio_files);
         }
         Err(e) => {
-            let err_msg = format!("Error retrieving playlist audio files: {:?}", playlist_id);
+            let err_msg = format!("Error retrieving playlist audio files: {:?} Cause: {:?}", playlist_id, e);
             return Err(err_msg.to_string());
         }
     }
@@ -238,7 +238,7 @@ pub fn add_audio_file_playlist(
             return Ok("Success".to_string());
         }
         Err(e) => {
-            let err_msg = format!("Error retrieving playlist with id: {:?}", playlist_id);
+            let err_msg = format!("Error retrieving playlist with id: {:?} Cause: {:?}", playlist_id, e);
             return Err(err_msg.to_string());
         }
     }
@@ -260,12 +260,12 @@ pub fn remove_audio_file_playlist(
     };
 
     match Playlist::view(&conn, playlist_id) {
-        Ok(mut playlist) => {
+        Ok(playlist) => {
             playlist.remove_audio_file(&conn, audio_file_id).unwrap();
             return Ok("Success".to_string());
         }
         Err(e) => {
-            let err_msg = format!("Error retrieving playlist with id: {:?}", playlist_id);
+            let err_msg = format!("Error retrieving playlist with id: {:?} Cause: {:?}", playlist_id, e);
             return Err(err_msg.to_string());
         }
     }

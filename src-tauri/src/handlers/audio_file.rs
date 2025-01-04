@@ -80,7 +80,6 @@ pub fn edit_audio_file(
     user_audio_file_path: &str,
     user_db_path: &str,
 ) -> String {
-    let usr_file_path = format!("{}/{}", user_audio_file_path, audio_file_name);
 
     let conn = match Connection::open(user_db_path) {
         Ok(connection) => connection,
@@ -118,7 +117,7 @@ pub fn edit_audio_file(
                 let thumbnail_delete_path =
                     format!("{}/{}", user_thumbnail_path, audio_file.thumbnail);
                 match fs::remove_file(thumbnail_delete_path.clone()) {
-                    Ok(result) => {
+                    Ok(_result) => {
                         println!(
                             "Successfully removed audio file thumbnail {:?}",
                             thumbnail_delete_path.clone()
@@ -150,7 +149,7 @@ pub fn edit_audio_file(
                 /* remove previous audio file */
                 let file_delete_path = format!("{}/{}", user_audio_file_path, audio_file.file_path);
                 match fs::remove_file(file_delete_path.clone()) {
-                    Ok(result) => {
+                    Ok(_result) => {
                         println!(
                             "Successfully removed audio file storage location {:?}",
                             file_delete_path.clone()
@@ -174,7 +173,8 @@ pub fn edit_audio_file(
             }
         }
         Err(e) => {
-            return "failure".to_string();
+            let msg = format!("Error updating audio file: {:?}", e);
+            return msg.to_string();
         }
     }
 }
@@ -219,7 +219,7 @@ pub fn delete_audio_file(
             let usr_file_path = format!("{}/{}", user_audio_file_path, audio_file.file_path);
 
             match fs::remove_file(usr_thumbnail_path.clone()) {
-                Ok(result) => {
+                Ok(_result) => {
                     println!(
                         "Successfully removed audio file thumbnail {:?}",
                         usr_thumbnail_path.clone()
@@ -231,7 +231,7 @@ pub fn delete_audio_file(
             }
 
             match fs::remove_file(usr_file_path.clone()) {
-                Ok(result) => {
+                Ok(_result) => {
                     println!(
                         "Successfully removed audio file storage location {:?} ",
                         usr_file_path.clone()
@@ -242,12 +242,11 @@ pub fn delete_audio_file(
                 }
             }
 
-            audio_file.delete(&conn, audio_file_id);
-
+            let _ = audio_file.delete(&conn, audio_file_id);
             return format!("Success");
         }
         Err(e) => {
-            return format!("Error retrieving audio file with id: {:?}", audio_file_id);
+            return format!("Error retrieving audio file with id: {:?} Cause: {:?}", audio_file_id, e);
         }
     }
 }
@@ -264,11 +263,11 @@ pub fn view_audio_file(user_db_path: &str, audio_file_id: &str) -> Result<AudioF
     };
 
     match AudioFile::view(&conn, audio_file_id) {
-        Ok(mut audio_file) => {
+        Ok(audio_file) => {
             return Ok(audio_file);
         }
         Err(e) => {
-            let err_msg = format!("Error retrieving audio file with id: {:?}", audio_file_id);
+            let err_msg = format!("Error retrieving audio file with id: {:?} Cause: {:?}", audio_file_id, e);
             return Err(err_msg.to_string());
         }
     }
@@ -302,11 +301,11 @@ pub fn play_audio_file(user_db_path: &str, audio_file_id: &str) -> String {
 
     match AudioFile::view(&conn, audio_file_id) {
         Ok(mut audio_file) => {
-            audio_file.play(&conn);
+            let _ = audio_file.play(&conn);
             return "Added play".to_string();
         }
         Err(e) => {
-            let err_msg = format!("Error retrieving audio file with id: {:?}", audio_file_id);
+            let err_msg = format!("Error retrieving audio file with id: {:?} Cause: {:?}", audio_file_id, e);
             return err_msg.to_string();
         }
     }

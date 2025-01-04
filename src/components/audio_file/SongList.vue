@@ -15,7 +15,7 @@
         <div class="flex-auto w-32">
           <div class="list-view-trailing-container">
             <div class="grid grid-flow-col auto-cols-max space-x-4">
-              <div><p1 :id="`${audioFileId.toString()}-duration`" >{{ duration }}</p1></div>
+              <div><p :id="`${audioFileId.toString()}-duration`" >{{ duration }}</p></div>
               <div @click="editFile()" class="hover:bg-stone-400">
                 <i :class="['fas', 'fa-edit', 'text-red-800']"></i>
               </div>
@@ -89,6 +89,7 @@ export default {
         
         const audioFile =  await audioStore.viewAudioFile(this.audioFileId.toString());
         if(audioStore.queuedAudioFiles.length == 0) {
+          console.log("NO songs on queue... adding"); 
           audioStore.queueAudioFiles(audioFile.audio_file_id.toString());
         } 
 

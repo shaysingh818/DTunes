@@ -87,7 +87,7 @@ pub fn edit_artist(
                 let thumbnail_delete_path =
                     format!("{}/{}", user_thumbnail_path, artist.artist_thumbnail);
                 match fs::remove_file(thumbnail_delete_path.clone()) {
-                    Ok(result) => {
+                    Ok(_result) => {
                         println!(
                             "Successfully removed playlist thumbnail {:?}",
                             thumbnail_delete_path.clone()
@@ -109,7 +109,8 @@ pub fn edit_artist(
             }
         }
         Err(e) => {
-            return "failure".to_string();
+            let msg = format!("Error: {:?}", e); 
+            return msg.to_string();
         }
     }
 }
@@ -144,11 +145,11 @@ pub fn delete_artist(user_db_path: &str, artist_id: &str, user_thumbnail_path: &
     };
 
     match Artist::view(&conn, artist_id) {
-        Ok(mut artist) => {
+        Ok(artist) => {
             let usr_thumbnail_path = format!("{}/{}", user_thumbnail_path, artist.artist_thumbnail);
 
             match fs::remove_file(usr_thumbnail_path.clone()) {
-                Ok(result) => {
+                Ok(_result) => {
                     println!(
                         "Successfully removed artist thumbnail {:?}",
                         usr_thumbnail_path.clone()
@@ -158,12 +159,11 @@ pub fn delete_artist(user_db_path: &str, artist_id: &str, user_thumbnail_path: &
                     println!("Error removing artist thumbnail {:?}", e);
                 }
             }
-            Artist::delete(&conn, artist_id);
-
+            let _ = Artist::delete(&conn, artist_id);
             return format!("Success");
         }
         Err(e) => {
-            return format!("Error retrieving artist with id: {:?}", artist_id);
+            return format!("Error retrieving artist with id: {:?} Cause: {:?}", artist_id, e);
         }
     }
 }
@@ -180,11 +180,11 @@ pub fn view_artist(user_db_path: &str, artist_id: &str) -> Result<Artist, String
     };
 
     match Artist::view(&conn, artist_id) {
-        Ok(mut artist) => {
+        Ok(artist) => {
             return Ok(artist);
         }
         Err(e) => {
-            let err_msg = format!("Error retrieving artist with id: {:?}", artist_id);
+            let err_msg = format!("Error retrieving artist with id: {:?} Cause: {:?}", artist_id, e);
             return Err(err_msg.to_string());
         }
     }
@@ -205,11 +205,11 @@ pub fn view_artist_audio_files(
     };
 
     match Artist::retrieve_audio_files(&conn, artist_id) {
-        Ok(mut audio_files) => {
+        Ok(audio_files) => {
             return Ok(audio_files);
         }
         Err(e) => {
-            let err_msg = format!("Error retrieving artist audio files: {:?}", artist_id);
+            let err_msg = format!("Error retrieving artist audio files: {:?} Cause: {:?}", artist_id, e);
             return Err(err_msg.to_string());
         }
     }
@@ -236,7 +236,7 @@ pub fn add_audio_file_artist(
             return Ok("Success".to_string());
         }
         Err(e) => {
-            let err_msg = format!("Error retrieving artist with id: {:?}", artist_id);
+            let err_msg = format!("Error retrieving artist with id: {:?} Cause: {:?}", artist_id, e);
             return Err(err_msg.to_string());
         }
     }
@@ -258,12 +258,12 @@ pub fn remove_audio_file_artist(
     };
 
     match Artist::view(&conn, artist_id) {
-        Ok(mut artist) => {
+        Ok(artist) => {
             artist.remove_audio_file(&conn, audio_file_id).unwrap();
             return Ok("Success".to_string());
         }
         Err(e) => {
-            let err_msg = format!("Error retrieving artist with id: {:?}", artist_id);
+            let err_msg = format!("Error retrieving artist with id: {:?} Cause: {:?}", artist_id, e);
             return Err(err_msg.to_string());
         }
     }

@@ -1,10 +1,6 @@
 use crate::dtunes_api::audio_file::*;
 use crate::dtunes_api::pomodoro::*;
 use rusqlite::{Connection, Result};
-use std::ffi::OsStr;
-use std::fs;
-use std::path::Path;
-use uuid::Uuid;
 
 #[tauri::command]
 pub fn create_pomodoro(
@@ -73,7 +69,8 @@ pub fn edit_pomodoro(
             }
         }
         Err(e) => {
-            return "failure".to_string();
+            let msg = format!("Error editing pomodoro item: {:?}",  e); 
+            return msg.to_string();
         }
     }
 }
@@ -108,12 +105,12 @@ pub fn delete_pomodoro_session(user_db_path: &str, session_id: &str) -> String {
     };
 
     match Pomodoro::view(&conn, session_id) {
-        Ok(mut pomodoro) => {
-            Pomodoro::delete(&conn, session_id);
+        Ok(_pomodoro) => {
+            let _ = Pomodoro::delete(&conn, session_id);
             return format!("Success");
         }
         Err(e) => {
-            return format!("Error retrieving playlist with id: {:?}", session_id);
+            return format!("Error retrieving playlist with id: {:?} Cause: {:?}", session_id, e);
         }
     }
 }
@@ -130,11 +127,11 @@ pub fn view_pomodoro_session(user_db_path: &str, session_id: &str) -> Result<Pom
     };
 
     match Pomodoro::view(&conn, session_id) {
-        Ok(mut session) => {
+        Ok(session) => {
             return Ok(session);
         }
         Err(e) => {
-            let err_msg = format!("Error retrieving session with id: {:?}", session_id);
+            let err_msg = format!("Error retrieving session with id: {:?} Cause: {:?}", session_id, e);
             return Err(err_msg.to_string());
         }
     }
@@ -155,11 +152,11 @@ pub fn view_pomodoro_audio_files(
     };
 
     match Pomodoro::retrieve_audio_files(&conn, session_id) {
-        Ok(mut audio_files) => {
+        Ok(audio_files) => {
             return Ok(audio_files);
         }
         Err(e) => {
-            let err_msg = format!("Error retrieving pomodoro audio files: {:?}", session_id);
+            let err_msg = format!("Error retrieving pomodoro audio files: {:?} Cause: {:?}", session_id, e);
             return Err(err_msg.to_string());
         }
     }
@@ -186,7 +183,7 @@ pub fn add_audio_file_pomodoro(
             return Ok("Success".to_string());
         }
         Err(e) => {
-            let err_msg = format!("Error retrieving pomodoro with id: {:?}", session_id);
+            let err_msg = format!("Error retrieving pomodoro with id: {:?} Cause: {:?}", session_id, e);
             return Err(err_msg.to_string());
         }
     }
@@ -208,12 +205,12 @@ pub fn remove_audio_file_pomodoro(
     };
 
     match Pomodoro::view(&conn, session_id) {
-        Ok(mut pomodoro) => {
+        Ok(pomodoro) => {
             pomodoro.remove_audio_file(&conn, audio_file_id).unwrap();
             return Ok("Success".to_string());
         }
         Err(e) => {
-            let err_msg = format!("Error retrieving pomodoro with id: {:?}", session_id);
+            let err_msg = format!("Error retrieving pomodoro with id: {:?} Cause: {:?}", session_id, e);
             return Err(err_msg.to_string());
         }
     }
