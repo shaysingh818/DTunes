@@ -7,7 +7,18 @@ on:
 
 jobs:
 
+  migrate: 
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Add Migrations To Database
+        run: python migrate.py
+        working-directory: database 
+
   dtunes_api:
+    needs: [migrate]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -25,19 +36,8 @@ jobs:
         working-directory: src-tauri/
 
       - name: Test
-        run: cargo test -- color always --test-threads=1
+        run: cargo test -- color always
         working-directory: src-tauri/
-
-  migrate: 
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Update apt cache
-        run: python migrate.py
-        working-directory: database 
-
 
   publish-tauri:
     permissions:

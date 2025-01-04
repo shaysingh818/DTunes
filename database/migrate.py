@@ -74,6 +74,7 @@ TESTING_DB_PATH = "tests"
 APP_NAME = "dtunes-audio-app"
 
 def main():
+    commit_test_dbs("tests/", SCRIPTS_FOLDER); 
     commit(SCRIPTS_FOLDER, f'build/{APP_NAME}.sqlite3')
 
 
