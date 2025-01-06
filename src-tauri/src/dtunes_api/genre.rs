@@ -137,8 +137,6 @@ impl Genre {
                 return Err(err)
             }
         }
-
-        Ok(())
     }
 
     pub fn retrieve_audio_files(conn: &Connection, id: &str) -> Result<Vec<AudioFile>> {

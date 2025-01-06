@@ -188,12 +188,24 @@ impl AudioFile {
     }
 
     pub fn play(&mut self, conn: &Connection) -> Result<()> {
+        
         self.plays += 1;
-        conn.execute(
+        let result = conn.execute(
             "UPDATE AUDIO_FILE SET PLAYS=? WHERE AUDIO_FILE_ID=?",
             [&self.plays.to_string(), &self.audio_file_id.to_string()],
-        )?;
-        Ok(())
+        );
+
+        match result {
+            Ok(_) => {
+                println!("Successfully added play to audio file");
+                return Ok(())
+            },
+            Err(err) => {
+                println!("[audio_file::play] sqlite3 error {:?}", err);
+                return Err(err)
+            }
+        }
+        
     }
 
     pub fn search(conn: &Connection, search_term: &str) -> Result<Vec<AudioFile>> {

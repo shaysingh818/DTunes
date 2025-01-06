@@ -32,7 +32,7 @@ jobs:
         working-directory: src-tauri/
 
       - name: Test
-        run: cargo test --release
+        run: cargo test test-threads=1 --release
         working-directory: src-tauri/
 
   publish-tauri:
