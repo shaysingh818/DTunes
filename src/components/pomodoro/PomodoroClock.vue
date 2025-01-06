@@ -5,10 +5,10 @@
           <div @click="selectFocusDuration()" class="flex hover:bg-stone-700">
             <p style="color: white;">Pomodoro</p>
           </div>
-          <div @click="shortBreak()" class="flex hover:bg-stone-700">
+          <div @click="selectShortBreak()" class="flex hover:bg-stone-700">
             <p style="color: white">Short Break</p>
           </div>
-          <div @click="longBreak()" class="flex hover:bg-stone-700">
+          <div @click="selectLongBreak()" class="flex hover:bg-stone-700">
             <p style="color: white">Long Break</p>
           </div>
         </div>
@@ -73,7 +73,7 @@ export default {
     }
   },
   methods: {
-    async shortBreak() {
+    async selectShortBreak() {
       duration = this.shortBreak * 60; 
       console.log(`Setting duration ${duration}`); 
       pomodoroStore.pomodoroTimer = new PomodoroTimer(
@@ -81,7 +81,7 @@ export default {
         this.updateTimerValue
       ); 
     }, 
-    async longBreak() {
+    async selectLongBreak() {
       duration = this.longBreak * 60;
       console.log(`Setting duration ${duration}`); 
       pomodoroStore.pomodoroTimer = new PomodoroTimer(
