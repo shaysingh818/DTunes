@@ -212,8 +212,6 @@ impl Playlist {
                 return Err(err)
             }
         }
-
-        Ok(())
     }
 
     pub fn search(conn: &Connection, search_term: &str) -> Result<Vec<Playlist>> {
