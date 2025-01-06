@@ -24,7 +24,8 @@ impl Genre {
     }
 
     pub fn insert(&mut self, conn: &Connection) -> Result<()> {
-        conn.execute(
+
+        let result = conn.execute(
             "INSERT INTO GENRE 
                 (GENRE_NAME, GENRE_THUMBNAIL, DATE_CREATED, LAST_MODIFIED) 
                 VALUES (?1, ?2, ?3, ?4)",
@@ -34,8 +35,19 @@ impl Genre {
                 &self.date_created,
                 &self.last_modified,
             ],
-        )?;
-        Ok(())
+        );
+
+        match result {
+            Ok(_) => {
+                println!("Successfully inserted genre");
+                self.genre_id = conn.last_insert_rowid() as usize; 
+                return Ok(())
+            },
+            Err(err) => {
+                println!("[genre::insert] sqlite3 error {:?}", err);
+                return Err(err)
+            }
+        }
     }
 
     pub fn retrieve(conn: &Connection) -> Result<Vec<Genre>> {
@@ -62,7 +74,7 @@ impl Genre {
         /* change date modified */
         self.last_modified = chrono::offset::Local::now().to_string();
 
-        conn.execute(
+        let result = conn.execute(
             "UPDATE GENRE
                 SET GENRE_NAME=?, GENRE_THUMBNAIL=?, DATE_CREATED=?, LAST_MODIFIED=?
                 WHERE GENRE_ID=?",
@@ -73,8 +85,18 @@ impl Genre {
                 &self.last_modified,
                 id,
             ],
-        )?;
-        Ok(())
+        );
+
+        match result {
+            Ok(_) => {
+                println!("Successfully updated genre");
+                return Ok(())
+            },
+            Err(err) => {
+                println!("[genre::update] sqlite3 error {:?}", err);
+                return Err(err)
+            }
+        }
     }
 
     pub fn delete(conn: &Connection, id: &str) -> Result<()> {
@@ -96,13 +118,25 @@ impl Genre {
     }
 
     pub fn add_audio_file(&mut self, conn: &Connection, audio_file_id: usize) -> Result<()> {
-        conn.execute(
+
+        let result = conn.execute(
             "INSERT INTO GENRE_AUDIO_FILE
                 (GENRE_ID, AUDIO_FILE_ID)
             VALUES (?1, ?2)
             ",
             [&self.genre_id, &audio_file_id],
-        )?;
+        );
+
+        match result {
+            Ok(_) => {
+                println!("Successfully added audio file to genre");
+                return Ok(())
+            },
+            Err(err) => {
+                println!("[genre::add_audio_file] sqlite3 error {:?}", err);
+                return Err(err)
+            }
+        }
 
         Ok(())
     }
@@ -158,13 +192,25 @@ impl Genre {
     }
 
     pub fn remove_audio_file(&self, conn: &Connection, audio_file_id: usize) -> Result<()> {
-        conn.execute(
+
+        let result = conn.execute(
             "DELETE FROM GENRE_AUDIO_FILE
                 WHERE GENRE_ID=? AND AUDIO_FILE_ID=?
             ",
             [&self.genre_id, &audio_file_id],
-        )?;
-        Ok(())
+        );
+
+        match result {
+            Ok(_) => {
+                println!("Successfully removed audio file from genre");
+                return Ok(())
+            },
+            Err(err) => {
+                println!("[genre::remove_audio_file] sqlite3 error {:?}", err);
+                return Err(err)
+            }
+        }
+
     }
 
     pub fn search(conn: &Connection, search_term: &str) -> Result<Vec<Genre>> {

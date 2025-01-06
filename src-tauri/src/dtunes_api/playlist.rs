@@ -24,7 +24,8 @@ impl Playlist {
     }
 
     pub fn insert(&mut self, conn: &Connection) -> Result<()> {
-        conn.execute(
+
+        let result = conn.execute(
             "INSERT INTO PLAYLIST 
                 (PLAYLIST_NAME, PLAYLIST_THUMBNAIL, DATE_CREATED, LAST_MODIFIED) 
                 VALUES (?1, ?2, ?3, ?4)",
@@ -34,8 +35,19 @@ impl Playlist {
                 &self.date_created,
                 &self.last_modified,
             ],
-        )?;
-        Ok(())
+        );
+
+        match result {
+            Ok(_) => {
+                println!("Successfully inserted playlist");
+                self.playlist_id = conn.last_insert_rowid() as usize; 
+                return Ok(())
+            },
+            Err(err) => {
+                println!("[playlist::insert] sqlite3 error {:?}", err);
+                return Err(err)
+            }
+        }
     }
 
     pub fn retrieve(conn: &Connection) -> Result<Vec<Playlist>> {
@@ -62,7 +74,7 @@ impl Playlist {
         /* change date modified */
         self.last_modified = chrono::offset::Local::now().to_string();
 
-        conn.execute(
+        let result = conn.execute(
             "UPDATE PLAYLIST
                 SET PLAYLIST_NAME=?, PLAYLIST_THUMBNAIL=?, DATE_CREATED=?, LAST_MODIFIED=?
                 WHERE PLAYLIST_ID=?",
@@ -73,8 +85,19 @@ impl Playlist {
                 &self.last_modified,
                 id,
             ],
-        )?;
-        Ok(())
+        );
+
+        match result {
+            Ok(_) => {
+                println!("Successfully updated playlist");
+                return Ok(())
+            },
+            Err(err) => {
+                println!("[playlist::update] sqlite3 error {:?}", err);
+                return Err(err)
+            }
+        }
+
     }
 
     pub fn delete(conn: &Connection, id: &str) -> Result<()> {
@@ -97,15 +120,26 @@ impl Playlist {
     }
 
     pub fn add_audio_file(&mut self, conn: &Connection, audio_file_id: usize) -> Result<()> {
-        conn.execute(
+
+        let result = conn.execute(
             "INSERT INTO PLAYLIST_AUDIO_FILE
                 (PLAYLIST_ID, AUDIO_FILE_ID)
             VALUES (?1, ?2)
             ",
             [&self.playlist_id, &audio_file_id],
-        )?;
+        );
 
-        Ok(())
+        match result {
+            Ok(_) => {
+                println!("Successfully added audio file playlist");
+                return Ok(())
+            },
+            Err(err) => {
+                println!("[playlist::add_audio_file] sqlite3 error {:?}", err);
+                return Err(err)
+            }
+        }
+
     }
 
     pub fn retrieve_audio_files(conn: &Connection, id: &str) -> Result<Vec<AudioFile>> {
@@ -160,12 +194,25 @@ impl Playlist {
     }
 
     pub fn remove_audio_file(&self, conn: &Connection, audio_file_id: usize) -> Result<()> {
-        conn.execute(
+
+        let result = conn.execute(
             "DELETE FROM PLAYLIST_AUDIO_FILE
                 WHERE PLAYLIST_ID=? AND AUDIO_FILE_ID=?
             ",
             [&self.playlist_id, &audio_file_id],
-        )?;
+        );
+
+        match result {
+            Ok(_) => {
+                println!("Successfully removed audio file from playlist");
+                return Ok(())
+            },
+            Err(err) => {
+                println!("[playlist::remove_audio_file] sqlite3 error {:?}", err);
+                return Err(err)
+            }
+        }
+
         Ok(())
     }
 

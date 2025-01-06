@@ -56,7 +56,7 @@ mod audio_file_instance {
 
         /* update playlist */
         my_file.file_name = String::from("file_update_1");
-        my_file.update(&conn, "1")?;
+        my_file.update(&conn, &my_file.audio_file_id.to_string())?;
 
         /* ensure that modified times are different */
         let recent_modified_time = my_file.last_modified;
@@ -80,8 +80,7 @@ mod audio_file_instance {
             AudioFile::new("file_update", "storage_path", "thumbnail", 10, "2");
         my_file.insert(&conn)?;
 
-        let my_retrieved_file = AudioFile::view(&conn, "1")?;
-        assert_eq!(my_retrieved_file.audio_file_id, 1);
+        let my_retrieved_file = AudioFile::view(&conn, &my_file.audio_file_id.to_string())?;
         assert_eq!(my_retrieved_file.file_name, "file_update");
         assert_eq!(my_retrieved_file.file_path, "storage_path");
         assert_eq!(my_retrieved_file.thumbnail, "thumbnail");
@@ -102,7 +101,7 @@ mod audio_file_instance {
         let mut my_file: AudioFile =
             AudioFile::new("file_update", "storage_path", "thumbnail", 10, "2");
         my_file.insert(&conn)?;
-        my_file.delete(&conn, "1")?;
+        my_file.delete(&conn, &my_file.audio_file_id.to_string())?;
 
         let audio_files: Vec<AudioFile> = AudioFile::retrieve(&conn)?;
         assert_eq!(audio_files.len(), 0);

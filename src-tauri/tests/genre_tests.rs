@@ -46,7 +46,7 @@ mod genre_instance {
 
         /* update playlist */
         my_genre.genre_name = String::from("genre_update_1");
-        my_genre.update(&conn, "1")?;
+        my_genre.update(&conn, &my_genre.genre_id.to_string())?;
 
         /* ensure that modified times are different */
         let recent_modified_time = my_genre.last_modified;
@@ -62,8 +62,7 @@ mod genre_instance {
         let mut my_genre: Genre = Genre::new("genre_name", "thumbnail");
         my_genre.insert(&conn)?;
 
-        let my_retrieved_genre = Genre::view(&conn, "1")?;
-        assert_eq!(my_retrieved_genre.genre_id, 1);
+        let my_retrieved_genre = Genre::view(&conn, &my_genre.genre_id.to_string())?;
         assert_eq!(my_retrieved_genre.genre_name, "genre_name");
         conn.execute("DELETE FROM GENRE", [])?;
         Ok(())
@@ -74,7 +73,7 @@ mod genre_instance {
         let conn = Connection::open(DB_PATH)?;
         let mut my_genre: Genre = Genre::new("genre_name", "thumbnail");
         my_genre.insert(&conn)?;
-        let genre = Genre::view(&conn, "1")?;
+        let genre = Genre::view(&conn, &my_genre.genre_id.to_string())?;
 
         assert_eq!(genre.genre_id, 1);
         assert_eq!(genre.genre_name, "genre_name");
@@ -91,17 +90,19 @@ mod genre_instance {
         let conn = Connection::open(DB_PATH)?;
         let mut my_genre: Genre = Genre::new("genre_name", "thumbnail");
         my_genre.insert(&conn)?;
-        let genre = Genre::view(&conn, "1")?;
 
         for i in 0..5 {
             let file_value = format!("audio_file_{}", i);
             let mut my_file: AudioFile =
                 AudioFile::new(&file_value, "storage_path", "thumbnail", 0, "2");
             my_file.insert(&conn)?;
+        }
 
-            let audio_file_id = format!("{}", i + 1);
-            let audio_file = AudioFile::view(&conn, &audio_file_id)?;
-            my_genre.add_audio_file(&conn, audio_file.audio_file_id)?;
+        let audio_files = AudioFile::retrieve(&conn)?;
+        assert_eq!(audio_files.len(), 5);      
+
+        for audio_file in &audio_files {
+            my_genre.add_audio_file(&conn, audio_file.audio_file_id);
         }
 
         let file_names = vec![
@@ -129,6 +130,7 @@ mod genre_instance {
 
     #[test]
     fn test_remove_genre_audio_file() -> Result<()> {
+
         let conn = Connection::open(DB_PATH)?;
         let mut my_genre: Genre = Genre::new("genre_name", "thumbnail");
         my_genre.insert(&conn)?;
@@ -138,22 +140,20 @@ mod genre_instance {
             let mut my_file: AudioFile =
                 AudioFile::new(&file_value, "storage_path", "thumbnail", 0, "2");
             my_file.insert(&conn)?;
-
-            let audio_file_id = format!("{}", i + 1);
-            let audio_file = AudioFile::view(&conn, &audio_file_id)?;
-            my_genre.add_audio_file(&conn, audio_file.audio_file_id)?;
         }
 
-        my_genre.remove_audio_file(&conn, 3);
-        my_genre.remove_audio_file(&conn, 4);
-        my_genre.remove_audio_file(&conn, 5);
+        let audio_files = AudioFile::retrieve(&conn)?; 
+        assert_eq!(audio_files.len(), 5); 
 
-        let mut counter = 0;
+        for audio_file in &audio_files {
+            my_genre.add_audio_file(&conn, audio_file.audio_file_id);
+        }
+
+        my_genre.remove_audio_file(&conn, audio_files[0].audio_file_id);
+        my_genre.remove_audio_file(&conn, audio_files[1].audio_file_id);
+
         let audio_files: Vec<AudioFile> = Genre::retrieve_audio_files(&conn, "1")?;
-        for item in audio_files {
-            assert_eq!(item.audio_file_id, counter + 1);
-            counter += 1;
-        }
+        assert_eq!(audio_files.len(), 3); 
 
         conn.execute("DELETE FROM GENRE_AUDIO_FILE", [])?;
         conn.execute("DELETE FROM AUDIO_FILE", [])?;

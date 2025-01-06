@@ -36,7 +36,8 @@ impl Pomodoro {
     }
 
     pub fn insert(&mut self, conn: &Connection) -> Result<()> {
-        conn.execute(
+
+        let result = conn.execute(
             "INSERT INTO POMODORO_SESSION 
                 (SESSION_NAME, DURATION, DURATION_LIMIT, SHORT_BREAK, LONG_BREAK, DATE_CREATED, LAST_MODIFIED) 
                 VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7)",
@@ -49,8 +50,19 @@ impl Pomodoro {
                 &self.date_created,
                 &self.last_modified
             ],
-        )?;
-        Ok(())
+        );
+
+        match result {
+            Ok(_) => {
+                println!("Successfully inserted pomodoro session");
+                self.session_id = conn.last_insert_rowid() as usize; 
+                return Ok(())
+            },
+            Err(err) => {
+                println!("[pomodoro::insert] sqlite3 error {:?}", err);
+                return Err(err)
+            }
+        }
     }
 
     pub fn retrieve(conn: &Connection) -> Result<Vec<Pomodoro>> {
@@ -79,7 +91,7 @@ impl Pomodoro {
         /* change date modified */
         self.last_modified = chrono::offset::Local::now().to_string();
 
-        conn.execute(
+        let result = conn.execute(
             "UPDATE POMODORO_SESSION
                 SET SESSION_NAME=?, DURATION=?, DURATION_LIMIT=?,
                 SHORT_BREAK=?, LONG_BREAK=?, DATE_CREATED=?, LAST_MODIFIED=?
@@ -94,8 +106,18 @@ impl Pomodoro {
                 &self.last_modified,
                 id,
             ],
-        )?;
-        Ok(())
+        );
+
+        match result {
+            Ok(_) => {
+                println!("Successfully updated pomodoro session");
+                return Ok(())
+            },
+            Err(err) => {
+                println!("[pomodoro::update] sqlite3 error {:?}", err);
+                return Err(err)
+            }
+        }
     }
 
     pub fn delete(conn: &Connection, id: &str) -> Result<()> {
@@ -120,15 +142,25 @@ impl Pomodoro {
     }
 
     pub fn add_audio_file(&mut self, conn: &Connection, audio_file_id: usize) -> Result<()> {
-        conn.execute(
+
+        let result = conn.execute(
             "INSERT INTO POMODORO_AUDIO_FILE
                 (SESSION_ID, AUDIO_FILE_ID)
             VALUES (?1, ?2)
             ",
             [&self.session_id, &audio_file_id],
-        )?;
+        );
 
-        Ok(())
+        match result {
+            Ok(_) => {
+                println!("Successfully added audio file to pomodoro session");
+                return Ok(())
+            },
+            Err(err) => {
+                println!("[pomodoro::add_audio_file] sqlite3 error {:?}", err);
+                return Err(err)
+            }
+        }
     }
 
     pub fn retrieve_audio_files(conn: &Connection, id: &str) -> Result<Vec<AudioFile>> {
@@ -182,13 +214,25 @@ impl Pomodoro {
     }
 
     pub fn remove_audio_file(&self, conn: &Connection, audio_file_id: usize) -> Result<()> {
-        conn.execute(
+
+        let result = conn.execute(
             "DELETE FROM POMODORO_AUDIO_FILE
                 WHERE SESSION_ID=? AND AUDIO_FILE_ID=?
             ",
             [&self.session_id, &audio_file_id],
-        )?;
-        Ok(())
+        );
+
+        match result {
+            Ok(_) => {
+                println!("Successfully removed audio file from pomodoro session");
+                return Ok(())
+            },
+            Err(err) => {
+                println!("[pomodoro::remove_audio_file] sqlite3 error {:?}", err);
+                return Err(err)
+            }
+        }
+
     }
 
     pub fn search(conn: &Connection, search_term: &str) -> Result<Vec<Pomodoro>> {

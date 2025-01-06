@@ -42,8 +42,7 @@ impl AudioFile {
     }
 
     pub fn insert(&mut self, conn: &Connection) -> Result<()> {
-        conn.execute("BEGIN TRANSACTION", [])?;
-        conn.execute(
+        let result = conn.execute(
             "INSERT INTO AUDIO_FILE 
                 (FILE_NAME, FILE_PATH, THUMBNAIL, DURATION, PLAYS, SAMPLE_RATE, DATE_CREATED, LAST_MODIFIED) 
                 VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8)",
@@ -57,9 +56,19 @@ impl AudioFile {
                 &self.date_created,
                 &self.last_modified 
             ],
-        )?;
-        conn.execute("COMMIT", [])?;
-        Ok(())
+        );
+
+        match result {
+            Ok(_) => {
+                println!("Successfully inserted audio file");
+                self.audio_file_id = conn.last_insert_rowid() as usize; 
+                return Ok(())
+            },
+            Err(err) => {
+                println!("[audio_file::insert] sqlite3 error {:?}", err);
+                return Err(err)
+            }
+        }
     }
 
     pub fn retrieve(conn: &Connection) -> Result<Vec<AudioFile>> {
@@ -88,7 +97,7 @@ impl AudioFile {
         /* change date modified */
         self.last_modified = chrono::offset::Local::now().to_string();
 
-        conn.execute(
+        let result = conn.execute(
             "UPDATE AUDIO_FILE
                 SET FILE_NAME=?, FILE_PATH=?, THUMBNAIL=?, DURATION=?, PLAYS=?, SAMPLE_RATE=?, 
                 DATE_CREATED=?, LAST_MODIFIED=?
@@ -104,8 +113,19 @@ impl AudioFile {
                 &self.last_modified,
                 id,
             ],
-        )?;
-        Ok(())
+        );
+
+        match result {
+            Ok(_) => {
+                println!("Successfully updated audio file");
+                return Ok(())
+            },
+            Err(err) => {
+                println!("[audio_file::update] sqlite3 error {:?}", err);
+                return Err(err)
+            }
+        }
+
     }
 
     pub fn delete(&mut self, conn: &Connection, id: &str) -> Result<()> {
