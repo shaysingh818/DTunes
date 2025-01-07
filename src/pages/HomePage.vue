@@ -58,7 +58,7 @@ import { syncMetadata } from '../api/Utilities';
 
           <div class="flex flex-col gap-2">
             <div class="carousel-header">
-              <h1> Popular Songs </h1>
+              <h1> Most Played Songs </h1>
             </div>
             <div>
               <AudioFileCarousel /> 
@@ -67,7 +67,7 @@ import { syncMetadata } from '../api/Utilities';
 
           <div class="flex flex-col gap-2">
             <div class="carousel-header">
-                <h1>Popular Artists</h1>
+                <h1>Your Artists</h1>
             </div>
             <div>
               <ArtistCarousel />
