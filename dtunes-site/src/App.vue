@@ -9,7 +9,7 @@ import NavigationBar from "./components/navigation/NavigationBar.vue";
     <NavigationBar />
   </div>
 
-  <main class = "ml-32 p-2">
+  <main class="p-2">
     <RouterView />
   </main>
 </template>

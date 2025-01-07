@@ -1,35 +1,66 @@
-@import './base.css';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-#app {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  font-weight: normal;
+
+html, body {
+  height: 100%;
+  margin: 0;
+  background-color: rgb(41 37 36); /* Replace with your desired color */
 }
 
-a,
-.green {
-  text-decoration: none;
-  color: hsla(160, 100%, 37%, 1);
-  transition: 0.4s;
-  padding: 3px;
+.navigation-bar {
+  display: flex;
+  flex-direction: row;
+  gap: 1.0rem; 
+  justify-content: center;
+  align-items: center; 
+  height: 65px;
+  width: 100%; 
+  background-color: black; 
 }
 
-@media (hover: hover) {
-  a:hover {
-    background-color: hsla(160, 100%, 37%, 0.2);
-  }
+.logo-section {
+  display: flex;
+  flex-direction: row;
+  /* border: 1px solid white; */
+  justify-content: center;
+  align-items: center;
+  width: 15%;
+  height: 55px;
+  gap: 0.5rem;  
 }
 
-@media (min-width: 1024px) {
-  body {
-    display: flex;
-    place-items: center;
-  }
+.logo img {
+  height: 40px; 
+  object-fit: contain; /* Ensure the logo scales without distortion */
+}
 
-  #app {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    padding: 0 2rem;
-  }
+.nav-items {
+  display: flex;
+  flex-direction: row;
+  justify-content: left;
+  align-items: center;
+  /* border: 1px solid white; */
+  width: 50%;
+  height: 55px;
+  gap: 2.0rem;
+  padding: 10px; 
+}
+
+.download-section {
+  border: 1px solid white;
+  width: 15%;
+  height: 55px; 
+}
+
+p {
+  font-size: 17px;
+  color:  white;
+}
+
+h1 {
+  color: white;
+  font-size: 25px;
+  font-weight: bold; 
 }
