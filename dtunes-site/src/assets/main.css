@@ -9,6 +9,13 @@ html, body {
   background-color: rgb(41 37 36); /* Replace with your desired color */
 }
 
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center; 
+}
+
 .navigation-bar {
   display: flex;
   flex-direction: row;
@@ -49,9 +56,20 @@ html, body {
 }
 
 .download-section {
-  border: 1px solid white;
+  display: flex; 
+  justify-content: center;
+  align-items: center;
   width: 15%;
   height: 55px; 
+}
+
+.download-button {
+  border-radius: 5%;
+  width: 175px; 
+  height:40px;
+  background-color: rgb(153 27 27);
+  color: white;
+  font-weight: bold;
 }
 
 p {
@@ -63,4 +81,86 @@ h1 {
   color: white;
   font-size: 25px;
   font-weight: bold; 
+}
+
+.hero-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1.0rem; 
+  justify-content: center;
+  align-items: center;
+  height: 500px;
+  width: 100%;
+  background-color: black; 
+}
+
+.hero-text-section h1 {
+  padding: 20px; 
+  /* border: 1px solid white;  */
+  font-size: 50px;
+  width: 1000px; 
+}
+
+
+.download-button-hero {
+  border-radius: 5%;
+  width: 300px; 
+  height:70px;
+  background-color: rgb(153 27 27);
+  color: white;
+  font-weight: bold;
+  font-size: 30px;
+}
+
+.supported-platforms-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2.0rem; 
+  justify-content: center;
+  align-items: center;
+  height: 300px;
+  width: 100%; 
+}
+
+.supported-platforms-header h1 {
+  font-size: 50px;
+}
+
+.supported-platforms-icons {
+  display: flex;
+  flex-direction: row;
+  gap: 2.5rem;
+  justify-content: center;
+  align-items: center;
+}
+
+.windows img {
+  height: 100px;
+  width: 100px;
+}
+
+
+.macos img {
+  height: 100px;
+  width: 100px;
+}
+
+
+.linux img {
+  height: 100px;
+  width: 100px;
+}
+
+
+.about-hero-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+  width: 100%;
+  background-color: black; 
+}
+
+.about-hero-section h1 {
+  font-size: 50px;
 }

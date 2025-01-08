@@ -7,6 +7,7 @@
   <div class="navigation-bar">
 
     <div class="logo-section">
+
       <div class="logo">
         <img src="../../assets/dtunes-logo.png" alt="Your Logo" title="Your Logo" />
       </div>
@@ -17,7 +18,7 @@
 
     <div class="nav-items">
 
-      <div>
+      <div @click="goToHome">
         <p>Home</p>
       </div>
 
@@ -29,19 +30,37 @@
         <p>Support</p>
       </div>
 
-      <div>
-        <p>About</p>
+      <div @click="goToAbout">
+          <p>About</p>
       </div>
 
     </div>
 
     <div class="download-section">
-
+         <button class="download-button" type="button">Download</button> 
     </div>
 
   </div>
 
 </template>
+
+<script>
+export default {
+  methods: {
+    goToAbout() {
+      // Use programmatic navigation to go to the 'about' route
+      this.$router.push('/about');
+    },
+    goToHome() {
+      // Use programmatic navigation to go to the 'about' route
+      this.$router.push('/');
+    },
+  },
+};
+
+</script>
+
+
 
 <style scoped>
 p {
