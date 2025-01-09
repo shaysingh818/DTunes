@@ -22,11 +22,11 @@
         <p>Home</p>
       </div>
 
-      <div>
+      <div @click="goToFeatures">
         <p>Features</p>
       </div>
 
-      <div>
+      <div @click="goToSupport">
         <p>Support</p>
       </div>
 
@@ -47,13 +47,17 @@
 <script>
 export default {
   methods: {
+    goToHome() {
+      this.$router.push('/');
+    },
+    goToSupport() {
+      this.$router.push('/support');
+    },
     goToAbout() {
-      // Use programmatic navigation to go to the 'about' route
       this.$router.push('/about');
     },
-    goToHome() {
-      // Use programmatic navigation to go to the 'about' route
-      this.$router.push('/');
+    goToFeatures() {
+      this.$router.push('/features');
     },
   },
 };

@@ -13,7 +13,7 @@ html, body {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: center; 
+  align-items: center;
 }
 
 .navigation-bar {
@@ -48,7 +48,6 @@ html, body {
   flex-direction: row;
   justify-content: left;
   align-items: center;
-  /* border: 1px solid white; */
   width: 50%;
   height: 55px;
   gap: 2.0rem;
@@ -163,4 +162,25 @@ h1 {
 
 .about-hero-section h1 {
   font-size: 50px;
+}
+
+.header-text-section {
+  display: flex; 
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 800px;
+  padding: 20px; 
+}
+
+.header-section {
+  display: flex; 
+  justify-content: center;
+  align-items: center;
+}
+
+.text-section {
+  display: flex; 
+  justify-content: center;
+  align-items: center;
 }
