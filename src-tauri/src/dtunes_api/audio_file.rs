@@ -125,12 +125,20 @@ impl AudioFile {
                 return Err(err)
             }
         }
-
     }
 
     pub fn delete(&mut self, conn: &Connection, id: &str) -> Result<()> {
-        conn.execute("DELETE FROM AUDIO_FILE WHERE AUDIO_FILE_ID=?", [id])?;
-        Ok(())
+        let result = conn.execute("DELETE FROM AUDIO_FILE WHERE AUDIO_FILE_ID=?", [id]);
+        match result {
+            Ok(_) => {
+                println!("Succesfully deleted audio file"); 
+                return Ok(());
+            },
+            Err(err) => {
+                println!("Error Deleting audio file"); 
+                return Err(err);
+            }
+        }
     }
 
     pub fn view(conn: &Connection, id: &str) -> Result<AudioFile> {

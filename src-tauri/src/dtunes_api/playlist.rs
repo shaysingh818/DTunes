@@ -101,9 +101,29 @@ impl Playlist {
     }
 
     pub fn delete(conn: &Connection, id: &str) -> Result<()> {
-        conn.execute("DELETE FROM PLAYLIST WHERE PLAYLIST_ID=?", [id])?;
-        conn.execute("DELETE FROM PLAYLIST_AUDIO_FILE WHERE PLAYLIST_ID=?", [id])?;
-        Ok(())
+
+        let cascade = conn.execute("DELETE FROM PLAYLIST_AUDIO_FILE WHERE PLAYLIST_ID=?", [id]);
+        match cascade {
+            Ok(_) => {
+                println!("Succesfully removed any audio files associated with playlist");
+            },
+            Err(err) => {
+                println!("[playlist::delete] sqlite3 error deleting playlist audio files: {:?}", err);
+                return Err(err)
+            }
+        }
+
+        let delete_playlist = conn.execute("DELETE FROM PLAYLIST WHERE PLAYLIST_ID=?", [id]);
+        match delete_playlist {
+            Ok(_) => {
+                println!("Succesfully deleted playlist");
+                return Ok(())
+            },
+            Err(err) => {
+                println!("[playlist::delete] sqlite3 error deleting playlist: {:?}", err);
+                return Err(err)
+            }
+        }
     }
 
     pub fn view(conn: &Connection, id: &str) -> Result<Playlist> {

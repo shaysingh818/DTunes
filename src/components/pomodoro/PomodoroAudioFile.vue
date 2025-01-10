@@ -97,10 +97,10 @@ export default {
       console.log(`AUDIO FILE ID ${this.audioFileId}`); 
       const removeResult = await pomodoroStore.removeAudioFilePomodoro(this.sessionId.toString(), this.audioFileId);
       if(removeResult == "Success") {
-        alert("Removed Song From Genre");
+        alert("Removed song from pomodoro session");
         this.$forceUpdate(); 
       } else {
-        alert("Could not remove song from genre", removeResult); 
+        alert("Could not remove song from session", removeResult); 
       }
     },
 
@@ -109,9 +109,9 @@ export default {
       console.log(`AUDIO FILE ID ${this.audioFileId}`); 
       const addResult = await pomodoroStore.addAudioFilePomodoro(this.sessionId.toString(), this.audioFileId);
       if(addResult == "Success") {
-        alert("Added Song To Genre")
+        alert("Added song to pomodoro session")
       } else {
-        alert("Could not add song to genre", addResult); 
+        alert("Could not add song to session", addResult); 
       }
     }
 

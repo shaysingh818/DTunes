@@ -26,6 +26,10 @@
         <p>Features</p>
       </div>
 
+      <div @click="goToUserGuide">
+        <p>User Guide</p>
+      </div>
+
       <div @click="goToSupport">
         <p>Support</p>
       </div>
@@ -58,6 +62,9 @@ export default {
     },
     goToFeatures() {
       this.$router.push('/features');
+    },
+    goToUserGuide() {
+      this.$router.push('/user_guide');
     },
   },
 };

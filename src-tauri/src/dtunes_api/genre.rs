@@ -100,8 +100,30 @@ impl Genre {
     }
 
     pub fn delete(conn: &Connection, id: &str) -> Result<()> {
-        conn.execute("DELETE FROM GENRE WHERE GENRE_ID=?", [id])?;
-        Ok(())
+
+        let cascade = conn.execute("DELETE FROM GENRE_AUDIO_FILE WHERE GENRE_ID=?", [id]);
+        match cascade {
+            Ok(_) => {
+                println!("Succesfully removed any audio files associated with genre");
+            },
+            Err(err) => {
+                println!("[genre::delete] sqlite3 error deleting genre audio files: {:?}", err);
+                return Err(err)
+            }
+        }
+
+        let delete_genre = conn.execute("DELETE FROM GENRE WHERE GENRE_ID=?", [id]);
+        match delete_genre {
+            Ok(_) => {
+                println!("Succesfully deleted genre");
+                return Ok(())
+            },
+            Err(err) => {
+                println!("[genre::delete] sqlite3 error deleting genre: {:?}", err);
+                return Err(err)
+            }
+        }
+
     }
 
     pub fn view(conn: &Connection, id: &str) -> Result<Genre> {
