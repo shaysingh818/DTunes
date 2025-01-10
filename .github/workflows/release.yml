@@ -3,7 +3,7 @@ name: 'publish'
 on:
   push:
     branches:
-      - release
+      - main
 
 jobs:
 
@@ -95,3 +95,19 @@ jobs:
           releaseDraft: true
           prerelease: false
           args: ${{ matrix.args }}
+
+  publish-site: 
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+          cache: 'npm' # Set this to npm, yarn or pnpm.
+
+      - name: Deploy Site
+        run: npm run deploy
+        working-directory: dtunes_site/
