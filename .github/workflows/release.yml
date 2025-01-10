@@ -122,4 +122,5 @@ jobs:
           npx gh-pages -d deploy -u "github-actions-bot <support+actions@github.com>"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        working-directory: dtunes-site/
 
