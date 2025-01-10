@@ -52,7 +52,7 @@
                         <button @click="openWindow = false" class="close-button" type="button">Close</button> 
                     </div>
                     <div>
-                        <button @click="submitForm" class="upload-button" type="button">Upload</button> 
+                        <button @click="submitForm()" class="upload-button" type="button">Upload</button> 
                     </div>
                 </div>
               </div>

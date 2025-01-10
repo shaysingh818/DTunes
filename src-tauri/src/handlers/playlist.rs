@@ -1,11 +1,10 @@
-use std::fs;
-use std::path::Path; 
-use std::ffi::OsStr;
-use uuid::Uuid; 
-use rusqlite::{Connection, Result};
+use crate::dtunes_api::audio_file::*;
 use crate::dtunes_api::playlist::*;
-use crate::dtunes_api::audio_file::*; 
-
+use rusqlite::{Connection, Result};
+use std::ffi::OsStr;
+use std::fs;
+use std::path::Path;
+use uuid::Uuid;
 
 #[tauri::command]
 pub fn create_playlist(
@@ -15,7 +14,6 @@ pub fn create_playlist(
     user_thumbnail_path: &str,
     user_db_path: &str,
 ) -> String {
-
     let thumbnail_uuid = Uuid::new_v4();
     let thumbnail_ext = Path::new(thumbnail_file_name)
         .extension()
@@ -45,17 +43,15 @@ pub fn create_playlist(
     }
 }
 
-
 #[tauri::command]
 pub fn edit_playlist(
-    playlist_id: &str, 
+    playlist_id: &str,
     playlist_name: &str,
     thumbnail_file_name: &str,
     user_local_thumbnail_path: &str,
     user_thumbnail_path: &str,
     user_db_path: &str,
 ) -> String {
-
     let conn = match Connection::open(user_db_path) {
         Ok(connection) => connection,
         Err(e) => {
@@ -65,7 +61,6 @@ pub fn edit_playlist(
     };
 
     match Playlist::view(&conn, playlist_id) {
-
         Ok(mut playlist) => {
             /* update audio file name */
             playlist.playlist_name = playlist_name.to_string();
@@ -79,8 +74,10 @@ pub fn edit_playlist(
                     .extension()
                     .and_then(OsStr::to_str);
 
-                let thumbnail_uuid_format = format!("{}.{}", thumbnail_uuid, thumbnail_ext.unwrap());
-                let usr_thumbnail_path = format!("{}/{}", user_thumbnail_path, thumbnail_uuid_format);
+                let thumbnail_uuid_format =
+                    format!("{}.{}", thumbnail_uuid, thumbnail_ext.unwrap());
+                let usr_thumbnail_path =
+                    format!("{}/{}", user_thumbnail_path, thumbnail_uuid_format);
 
                 match fs::copy(user_local_thumbnail_path, usr_thumbnail_path) {
                     Ok(bytes) => println!("Successfully copied thumbnail with {} bytes", bytes),
@@ -88,17 +85,20 @@ pub fn edit_playlist(
                 }
 
                 /* remove previous thumbnail */
-                let thumbnail_delete_path = format!("{}/{}", user_thumbnail_path, playlist.playlist_thumbnail);
+                let thumbnail_delete_path =
+                    format!("{}/{}", user_thumbnail_path, playlist.playlist_thumbnail);
                 match fs::remove_file(thumbnail_delete_path.clone()) {
-                    Ok(result) => {
-                        println!("Successfully removed playlist thumbnail {:?}", thumbnail_delete_path.clone());
-                    },
+                    Ok(_result) => {
+                        println!(
+                            "Successfully removed playlist thumbnail {:?}",
+                            thumbnail_delete_path.clone()
+                        );
+                    }
                     Err(e) => {
                         println!("Error removing playlist thumbnail {:?}", e);
                     }
                 }
                 playlist.playlist_thumbnail = thumbnail_uuid_format.to_string();
-
             }
 
             match playlist.update(&conn, playlist_id) {
@@ -108,15 +108,13 @@ pub fn edit_playlist(
                 }
                 Err(e) => format!("Failed to update playlist metadata: {}", e),
             }
-        },
-        Err(e) => {
-            return "failure".to_string();
         }
-
+        Err(e) => {
+            let msg = format!("Error editing playlist: {:?}", e);
+            return msg.to_string();
+        }
     }
-
 }
-
 
 #[tauri::command]
 pub fn view_playlists(user_db_path: &str) -> Vec<Playlist> {
@@ -137,13 +135,8 @@ pub fn view_playlists(user_db_path: &str) -> Vec<Playlist> {
     }
 }
 
-
 #[tauri::command]
-pub fn delete_playlist(
-    user_db_path: &str, 
-    playlist_id: &str,
-    user_thumbnail_path: &str) -> String {
-
+pub fn delete_playlist(user_db_path: &str, playlist_id: &str, user_thumbnail_path: &str) -> String {
     let conn = match Connection::open(user_db_path) {
         Ok(connection) => connection,
         Err(e) => {
@@ -151,88 +144,91 @@ pub fn delete_playlist(
             return format!("Database connection error: {:?}", e);
         }
     };
-    
-    match Playlist::view(&conn, playlist_id) {
-        Ok(mut playlist) => {
 
-            let usr_thumbnail_path = format!("{}/{}", user_thumbnail_path, playlist.playlist_thumbnail);
+    match Playlist::view(&conn, playlist_id) {
+        Ok(playlist) => {
+            let usr_thumbnail_path =
+                format!("{}/{}", user_thumbnail_path, playlist.playlist_thumbnail);
 
             match fs::remove_file(usr_thumbnail_path.clone()) {
-                Ok(result) => {
-                    println!("Successfully removed playlist thumbnail {:?}", usr_thumbnail_path.clone());
-                },
+                Ok(_result) => {
+                    println!(
+                        "Successfully removed playlist thumbnail {:?}",
+                        usr_thumbnail_path.clone()
+                    );
+                }
                 Err(e) => {
                     println!("Error removing playlist thumbnail {:?}", e);
                 }
             }
-            Playlist::delete(&conn, playlist_id);
-
-            return format!("Success"); 
-        },
+            let _ = Playlist::delete(&conn, playlist_id);
+            return format!("Success");
+        }
         Err(e) => {
-            return format!("Error retrieving playlist with id: {:?}", playlist_id);
+            return format!("Error retrieving playlist with id: {:?} Cause: {:?}", playlist_id, e);
         }
     }
 }
-
 
 #[tauri::command]
 pub fn view_playlist(user_db_path: &str, playlist_id: &str) -> Result<Playlist, String> {
-
     let conn = match Connection::open(user_db_path) {
         Ok(connection) => connection,
         Err(e) => {
             println!("{:?}", e);
             let err_msg = format!("Database connection error: {:?}", e);
-            return Err(err_msg.to_string()); 
+            return Err(err_msg.to_string());
         }
     };
-    
+
     match Playlist::view(&conn, playlist_id) {
-        Ok(mut playlist) => {
+        Ok(playlist) => {
             return Ok(playlist);
-        },
+        }
         Err(e) => {
-            let err_msg = format!("Error retrieving playlist with id: {:?}", playlist_id);
+            let err_msg = format!("Error retrieving playlist with id: {:?} Cause: {:?}", playlist_id, e);
             return Err(err_msg.to_string());
         }
     }
 }
 
-
 #[tauri::command]
-pub fn view_playlist_audio_files(user_db_path: &str, playlist_id: &str) -> Result<Vec<AudioFile>, String> {
-
+pub fn view_playlist_audio_files(
+    user_db_path: &str,
+    playlist_id: &str,
+) -> Result<Vec<AudioFile>, String> {
     let conn = match Connection::open(user_db_path) {
         Ok(connection) => connection,
         Err(e) => {
             println!("{:?}", e);
             let err_msg = format!("Database connection error: {:?}", e);
-            return Err(err_msg.to_string()); 
+            return Err(err_msg.to_string());
         }
     };
-    
+
     match Playlist::retrieve_audio_files(&conn, playlist_id) {
-        Ok(mut audio_files) => {
+        Ok(audio_files) => {
             return Ok(audio_files);
-        },
+        }
         Err(e) => {
-            let err_msg = format!("Error retrieving playlist audio files: {:?}", playlist_id);
+            let err_msg = format!("Error retrieving playlist audio files: {:?} Cause: {:?}", playlist_id, e);
             return Err(err_msg.to_string());
         }
     }
 }
 
-
 #[tauri::command]
-pub fn add_audio_file_playlist(user_db_path: &str, playlist_id: &str, audio_file_id: usize) -> Result<String, String> {
-
+pub fn add_audio_file_playlist(
+    user_db_path: &str,
+    playlist_id: &str,
+    audio_file_id: usize,
+) -> Result<String, String> {
     let conn = match Connection::open(user_db_path) {
         Ok(connection) => connection,
         Err(e) => {
             println!("{:?}", e);
             let err_msg = format!("Database connection error: {:?}", e);
-            return Err(err_msg.to_string()); 
+            return Err(err_msg.to_string());
         }
     };
 
@@ -240,39 +236,40 @@ pub fn add_audio_file_playlist(user_db_path: &str, playlist_id: &str, audio_file
         Ok(mut playlist) => {
             playlist.add_audio_file(&conn, audio_file_id).unwrap();
             return Ok("Success".to_string());
-        },
+        }
         Err(e) => {
-            let err_msg = format!("Error retrieving playlist with id: {:?}", playlist_id);
+            let err_msg = format!("Error retrieving playlist with id: {:?} Cause: {:?}", playlist_id, e);
             return Err(err_msg.to_string());
         }
-    }    
+    }
 }
 
-
 #[tauri::command]
-pub fn remove_audio_file_playlist(user_db_path: &str, playlist_id: &str, audio_file_id: usize) -> Result<String, String> {
-
+pub fn remove_audio_file_playlist(
+    user_db_path: &str,
+    playlist_id: &str,
+    audio_file_id: usize,
+) -> Result<String, String> {
     let conn = match Connection::open(user_db_path) {
         Ok(connection) => connection,
         Err(e) => {
             println!("{:?}", e);
             let err_msg = format!("Database connection error: {:?}", e);
-            return Err(err_msg.to_string()); 
+            return Err(err_msg.to_string());
         }
     };
 
     match Playlist::view(&conn, playlist_id) {
-        Ok(mut playlist) => {
+        Ok(playlist) => {
             playlist.remove_audio_file(&conn, audio_file_id).unwrap();
             return Ok("Success".to_string());
-        },
+        }
         Err(e) => {
-            let err_msg = format!("Error retrieving playlist with id: {:?}", playlist_id);
+            let err_msg = format!("Error retrieving playlist with id: {:?} Cause: {:?}", playlist_id, e);
             return Err(err_msg.to_string());
         }
-    }    
+    }
 }
-
 
 #[tauri::command]
 pub fn search_playlists(user_db_path: &str, search_term: &str) -> Vec<Playlist> {
@@ -293,13 +290,12 @@ pub fn search_playlists(user_db_path: &str, search_term: &str) -> Vec<Playlist> 
     }
 }
 
-
 #[tauri::command]
 pub fn search_playlist_audio_files(
-    user_db_path: &str, 
-    playlist_id: &str, 
-    search_term: &str) -> Vec<AudioFile> {
-
+    user_db_path: &str,
+    playlist_id: &str,
+    search_term: &str,
+) -> Vec<AudioFile> {
     let conn = match Connection::open(user_db_path) {
         Ok(connection) => connection,
         Err(e) => {

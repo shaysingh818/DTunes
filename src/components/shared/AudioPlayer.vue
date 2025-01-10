@@ -145,7 +145,7 @@ export default {
 
         const imageUrl = URL.createObjectURL(new Blob([fileBuffer]));
         let imageElem = document.getElementById(`${this.audioFileId.toString()}-player`);
-        if(imageElem) {
+        if(imageElem && imageElem instanceof HTMLImageElement) {
           imageElem.src = imageUrl;
         } else {
           console.log(`${this.audioFileId} not found`)
@@ -169,7 +169,7 @@ export default {
     const imageUrl = URL.createObjectURL(new Blob([fileBuffer]));
     console.log("IMAGE URL: ", imageUrl)
     let imageElem = document.getElementById(`${this.audioFileId.toString()}-player`);
-    if(imageElem) {
+    if(imageElem && imageElem instanceof HTMLImageElement) {
       imageElem.src = imageUrl;
     } else {
       console.log(`${this.audioFileId} not found`)
@@ -184,37 +184,7 @@ export default {
 
 
 
-const updatePlayer = () => {
-  const durationElement = document.getElementById("duration-tracker");
-  const currentTime = audioStore.currentTime; 
-  if(durationElement && currentTime > 0 && audioStore.playing)  {
-    const value = (currentTime/audioStore.duration) * 100;
-    console.log("CURRENT DURATION: ", value);  
-    durationElement.style.width = `${value}%`;
-  }
 
-  if(audioStore.resume == false && audioStore.playing == false) {
-    audioStore.queueIndex += 1; 
-    const audioFile = audioStore.queuedAudioFiles[audioStore.queueIndex];
-    console.log("NEXT AUDIO FILE"); 
-    console.log(audioFile);
-    audioStore.pauseAudio(); 
-    audioStore.playAudio(audioFile); 
-  }
-
-  if(audioStore.queueIndex == audioStore.queuedAudioFiles.length) {
-    console.log("All tracks played, stopping interval")
-    audioStore.queuedAudioFiles = [];
-    audioStore.playing = false; 
-    //clearInterval(intervalId);
-  }
-
-
-};
-
-if(audioStore.audioPlayerInterval == null) {
-  audioStore.audioPlayerInterval = setInterval(updatePlayer, 1000);
-}
 
 
 

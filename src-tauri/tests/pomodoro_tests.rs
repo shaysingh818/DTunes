@@ -1,4 +1,4 @@
-use dtunes_audio_app_lib::dtunes_api; 
+use dtunes_audio_app_lib::dtunes_api;
 
 #[cfg(test)]
 mod pomodoro_instance {
@@ -44,12 +44,13 @@ mod pomodoro_instance {
 
     #[test]
     fn test_view_pomdoro_by_id() -> Result<()> {
+
         let conn = Connection::open(DB_PATH)?;
         let mut my_session: Pomodoro = Pomodoro::new("test_session", 0, 0, 0, 0);
         my_session.insert(&conn)?;
-        let session = Pomodoro::view(&conn, "1")?;
 
-        assert_eq!(session.session_id, 1);
+        let session = Pomodoro::view(&conn, &my_session.session_id.to_string())?;
+
         assert_eq!(session.session_name, "test_session");
 
         conn.execute("DELETE FROM POMODORO_SESSION", [])?;
@@ -62,19 +63,20 @@ mod pomodoro_instance {
         let conn = Connection::open(DB_PATH)?;
         let mut my_session: Pomodoro = Pomodoro::new("test_session", 0, 0, 0, 0);
         my_session.insert(&conn)?;
-        let session = Pomodoro::view(&conn, "1")?;
 
-        assert_eq!(session.session_id, 1);
+        let session = Pomodoro::view(&conn, &my_session.session_id.to_string())?;
         assert_eq!(session.session_name, "test_session");
 
-        Pomodoro::delete(&conn, "1")?;
-        let result = conn.execute("SELECT * FROM PLAYLIST where PLAYLIST_ID =?", [&"1"])?;
-        assert_eq!(result, 1);
+        Pomodoro::delete(&conn, &my_session.session_id.to_string())?;
+
+        let sessions = Pomodoro::retrieve(&conn)?; 
+        assert_eq!(sessions.len(), 0); 
         Ok(())
     }
 
     #[test]
     fn test_add_pomodoro_audio_file() -> Result<()> {
+
         let conn = Connection::open(DB_PATH)?;
         let mut my_session: Pomodoro = Pomodoro::new("test_session", 0, 0, 0, 0);
         my_session.insert(&conn)?;
@@ -84,10 +86,13 @@ mod pomodoro_instance {
             let mut my_file: AudioFile =
                 AudioFile::new(&file_value, "storage_path", "thumbnail", 0, "2");
             my_file.insert(&conn)?;
+        }
 
-            let audio_file_id = format!("{}", i + 1);
-            let audio_file = AudioFile::view(&conn, &audio_file_id)?;
-            my_session.add_audio_file(&conn, audio_file.audio_file_id)?;
+        let audio_files = AudioFile::retrieve(&conn)?;
+        assert_eq!(audio_files.len(), 5);        
+
+        for audio_file in audio_files {
+            my_session.add_audio_file(&conn, audio_file.audio_file_id);
         }
 
         let file_names = vec![
@@ -99,10 +104,9 @@ mod pomodoro_instance {
         ];
 
         let mut counter = 0;
-        let audio_files = Pomodoro::retrieve_audio_files(&conn, "1")?;
+        let audio_files = Pomodoro::retrieve_audio_files(&conn, &my_session.session_id.to_string())?;
         for item in audio_files {
             assert_eq!(&item.file_name, file_names[counter]);
-            assert_eq!(item.audio_file_id, counter + 1);
             counter += 1;
         }
 
@@ -114,6 +118,7 @@ mod pomodoro_instance {
 
     #[test]
     fn test_remove_pomodoro_audio_file() -> Result<()> {
+
         let conn = Connection::open(DB_PATH)?;
         let mut my_session: Pomodoro = Pomodoro::new("test_session", 0, 0, 0, 0);
         my_session.insert(&conn)?;
@@ -123,22 +128,20 @@ mod pomodoro_instance {
             let mut my_file: AudioFile =
                 AudioFile::new(&file_value, "storage_path", "thumbnail", 0, "2");
             my_file.insert(&conn)?;
-
-            let audio_file_id = format!("{}", i + 1);
-            let audio_file = AudioFile::view(&conn, &audio_file_id)?;
-            my_session.add_audio_file(&conn, audio_file.audio_file_id)?;
         }
 
-        my_session.remove_audio_file(&conn, 3);
-        my_session.remove_audio_file(&conn, 4);
-        my_session.remove_audio_file(&conn, 5);
+        let audio_files = AudioFile::retrieve(&conn)?;
+        assert_eq!(audio_files.len(), 5);        
 
-        let mut counter = 0;
-        let audio_files: Vec<AudioFile> = Pomodoro::retrieve_audio_files(&conn, "1")?;
-        for item in audio_files {
-            assert_eq!(item.audio_file_id, counter + 1);
-            counter += 1;
+        for audio_file in &audio_files {
+            my_session.add_audio_file(&conn, audio_file.audio_file_id);
         }
+
+        my_session.remove_audio_file(&conn, audio_files[0].audio_file_id);
+        my_session.remove_audio_file(&conn, audio_files[1].audio_file_id);
+
+        let audio_files: Vec<AudioFile> = Pomodoro::retrieve_audio_files(&conn, &my_session.session_id.to_string())?;
+        assert_eq!(audio_files.len(), 3); 
 
         conn.execute("DELETE FROM POMODORO_AUDIO_FILE", [])?;
         conn.execute("DELETE FROM AUDIO_FILE", [])?;

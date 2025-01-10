@@ -19,10 +19,6 @@ jobs:
         run: sudo apt-get install libwebkit2gtk-4.1-dev
         working-directory: src-tauri/
 
-      - name: Build
-        run: cargo build --color always
-        working-directory: src-tauri/
-
       - name: Test
-        run: cargo test -- color always --test-threads=1
+        run: cargo test -- color always
         working-directory: src-tauri/

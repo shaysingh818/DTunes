@@ -26,8 +26,8 @@
                         <input type="text" id="playlist-name" name="playlist-name" placeholder="Enter Playlist Name"><br>
                     </div>
                     <div style="justify-content: center; display:flex ; align-items: center;">
-                        <form action="/action_page.php">
-                            <input @click="selectThumbnailImage" type="button" id="playlist-thumbnail-upload" name="filename">
+                        <form action="">
+                            <input @click="selectThumbnailImage()" type="button" id="playlist-thumbnail-upload" name="filename">
                             <label for="playlist-thumbnail-upload">Upload Image</label>
                         </form>
                     </div>
@@ -40,7 +40,7 @@
                         <button @click="openWindow = false" class="close-button" type="button">Close</button> 
                     </div>
                     <div>
-                        <button @click="submitForm" class="upload-button" type="button">Create</button> 
+                        <button @click="submitForm()" class="upload-button" type="button">Create</button> 
                     </div>
                 </div>
               </div>

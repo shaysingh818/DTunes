@@ -7,6 +7,7 @@ import AudioFileCarousel from '../components/audio_file/AudioFileCarousel.vue';
 import ArtistCarousel from '../components/artist/ArtistCarousel.vue';
 import GenreCarousel from '../components/genre/GenreCarousel.vue';
 import PlaylistListView from '../components/playlist/PlaylistListView.vue';
+import { syncMetadata } from '../api/Utilities';
 
 export default {
   components: { 
@@ -33,8 +34,17 @@ export default {
 }
 </script>
 
+<script setup>
+import { syncMetadata } from '../api/Utilities';
+</script>
+
 <template>
     <div class="page-container">
+
+      <button class="add-button" @click="syncMetadata()">
+        <i :class="['fas', 'fa-download', 'text-white-800']"></i>
+      </button>
+
       <div class="grid-container">
 
         <div class="flex flex-col gap-4">
@@ -48,7 +58,7 @@ export default {
 
           <div class="flex flex-col gap-2">
             <div class="carousel-header">
-              <h1> Popular Songs </h1>
+              <h1> Most Played Songs </h1>
             </div>
             <div>
               <AudioFileCarousel /> 
@@ -57,7 +67,7 @@ export default {
 
           <div class="flex flex-col gap-2">
             <div class="carousel-header">
-                <h1>Popular Artists</h1>
+                <h1>Your Artists</h1>
             </div>
             <div>
               <ArtistCarousel />

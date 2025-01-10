@@ -196,7 +196,7 @@ export const audioStore = reactive({
 
     this.audioFilePlaying = audioFile;
     this.playing = true;
-    this.duration = parseFloat(audioFile.duration);
+    this.duration = parseInt(audioFile.duration);
 
     const fileBuffer = await readFile(`dtunes-audio-app/audio_files/${audioFile.file_path}`, {
         baseDir: BaseDirectory.Data,
@@ -212,7 +212,13 @@ export const audioStore = reactive({
     );
 
     if(this.audioPlayerInterval == null) {
-      this.audioPlayerInterval = setInterval(updateRealtimePlayerInformation, 1000); 
+      console.log("Creating new interval...", this.audioPlayerInterval); 
+      this.audioPlayerInterval = setInterval(this.updateRealtimePlayerInformation, 1000); 
+    }
+
+    if(this.queueIndex == this.queuedAudioFiles.length) {
+      console.log("Killing interval..."); 
+      clearInterval(this.audioPlayerInterval); 
     }
 
     console.log("QUEUE LENGTH", this.queuedAudioFiles.length); 
@@ -291,10 +297,16 @@ export const audioStore = reactive({
     const queueIndexCondition = this.queueIndex < this.queuedAudioFiles.length;
     const playCondition = this.playing == true && this.queuedAudioFiles.length > 0;
 
-    if(this.queueIndex == this.queueAudioFiles.length) {
+    console.log('Queue index', this.queueIndex); 
+    console.log('Queue length: ', this.queuedAudioFiles.length); 
+    if(this.queueIndex == this.queuedAudioFiles.length) {
       console.log("NO MORE TRACKS TO GO TO NEXT");
       this.pauseAudio(); 
       this.playing = false;
+      this.queuedAudioFiles = [];
+      this.audioFilePlaying = {} as AudioFile;  
+      this.queueIndex = 0; 
+
     }
 
     if(queueIndexCondition && playCondition) {
@@ -339,6 +351,39 @@ export const audioStore = reactive({
     this.queueIndex = 0; 
   },
 
+  async updateRealtimePlayerInformation() {
+
+    const durationElement = document.getElementById("duration-tracker");
+    const currentTime = audioStore.currentTime; 
+    if(durationElement && currentTime > 0 && audioStore.playing)  {
+      const value = (currentTime/audioStore.duration) * 100;
+      console.log("CURRENT DURATION: ", value);  
+      durationElement.style.width = `${value}%`;
+    }
+
+    if(audioStore.resume == false && audioStore.playing == false) {
+      audioStore.queueIndex += 1; 
+      const audioFile = audioStore.queuedAudioFiles[audioStore.queueIndex];
+      console.log("NEXT AUDIO FILE"); 
+      console.log(audioFile);
+      audioStore.pauseAudio(); 
+      audioStore.playAudio(audioFile); 
+    }
+
+    if(audioStore.queueIndex == audioStore.queuedAudioFiles.length) {
+      console.log("All tracks played, stopping interval")
+      if(audioStore.audioPlayerInterval) {
+        console.log("INTERVAL TO CLEAR ", this.audioPlayerInterval)
+        clearInterval(audioStore.audioPlayerInterval); 
+      }
+      audioStore.queuedAudioFiles = [];
+      audioStore.playing = false;
+      audioStore.audioFilePlaying = {} as AudioFile;  
+      audioStore.queueIndex = 0; 
+    }
+
+  }
+
 })
 
 export async function updateAudioPlayerInformation(audioFileId: string, thumbnail: string, duration: number) {
@@ -349,7 +394,7 @@ export async function updateAudioPlayerInformation(audioFileId: string, thumbnai
 
     const imageUrl = URL.createObjectURL(new Blob([fileBuffer]));
     let imageElem = document.getElementById(`${audioFileId}-player`);
-    if(imageElem) {
+    if(imageElem && imageElem instanceof HTMLImageElement) {
       imageElem.src = imageUrl;
     } else {
       console.log(`${audioFileId} not found`)
@@ -361,34 +406,5 @@ export async function updateAudioPlayerInformation(audioFileId: string, thumbnai
     }
 }
 
-export async function updateRealtimePlayerInformation() {
-
-  const durationElement = document.getElementById("duration-tracker");
-  const currentTime = audioStore.currentTime; 
-  if(durationElement && currentTime > 0 && audioStore.playing)  {
-    const value = (currentTime/audioStore.duration) * 100;
-    console.log("CURRENT DURATION: ", value);  
-    durationElement.style.width = `${value}%`;
-  }
-
-  if(audioStore.resume == false && audioStore.playing == false) {
-    audioStore.queueIndex += 1; 
-    const audioFile = audioStore.queuedAudioFiles[audioStore.queueIndex];
-    console.log("NEXT AUDIO FILE"); 
-    console.log(audioFile);
-    audioStore.pauseAudio(); 
-    audioStore.playAudio(audioFile); 
-  }
-
-  if(audioStore.queueIndex == audioStore.queuedAudioFiles.length) {
-    console.log("All tracks played, stopping interval")
-    audioStore.queuedAudioFiles = [];
-    audioStore.playing = false; 
-    if(audioStore.audioPlayerInterval != null) {
-      clearInterval(audioStore.audioPlayerInterval); 
-    }
-  }
-
-}
 
 

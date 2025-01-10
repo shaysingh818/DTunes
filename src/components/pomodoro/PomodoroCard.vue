@@ -36,13 +36,13 @@
 
               <div class="actions-bar">
                   <div class="flex flex-row gap-4">
-                    <div @click="addAudioFile">
+                    <div @click="addAudioFile()">
                       <i :class="['fas', 'fa-add', 'text-red-800']"></i>
                     </div>
-                    <div @click="detailPage">
+                    <div @click="detailPage()">
                       <i :class="['fas', 'fa-play', 'text-red-800']"></i>
                     </div>
-                    <div @click="removeSession">
+                    <div @click="removeSession()">
                       <i :class="['fas', 'fa-trash', 'text-red-800']"></i>
                     </div>
                   </div>
