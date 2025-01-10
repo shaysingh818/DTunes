@@ -108,6 +108,10 @@ jobs:
           node-version: lts/*
           cache: 'npm' # Set this to npm, yarn or pnpm.
 
+      - name: Install GH Pages
+        run: npm install gh-pages --save-dev
+        working-directory: dtunes-site/
+
       - name: Deploy Site
         run: npm run deploy
         working-directory: dtunes-site/
