@@ -5,6 +5,10 @@ on:
     branches:
       - main
 
+permissions:
+  pages: write
+  id-token: write 
+
 jobs:
 
   migrate: 
@@ -111,11 +115,6 @@ jobs:
       - name: Install Dependencies
         run: npm install
         working-directory: dtunes-site/
-
-      - name: Set Git user name and email
-        run: |
-          git config --global user.name "shaysingh818"
-          git config --global user.email "shalinsingh818@gmail.com"
 
       - name: Deploy Site
         run: npm run deploy
