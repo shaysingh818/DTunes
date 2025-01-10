@@ -13,7 +13,3 @@ import NavigationBar from "./components/navigation/NavigationBar.vue";
     <RouterView />
   </main>
 </template>
-
-<style>
-
-</style>
