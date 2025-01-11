@@ -3,7 +3,6 @@
 ![DTunes Site](public/dtunes-website.png)
 
 [![DTunes API](https://github.com/shaysingh818/DTunes/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/shaysingh818/DTunes/actions/workflows/build.yml)
-
 [![publish](https://github.com/shaysingh818/DTunes/actions/workflows/release.yml/badge.svg)](https://github.com/shaysingh818/DTunes/actions/workflows/release.yml)
 
 
