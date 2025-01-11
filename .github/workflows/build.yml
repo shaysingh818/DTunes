@@ -28,27 +28,3 @@ jobs:
         run: cargo test -- color always
         working-directory: src-tauri/
 
-  publish-site: 
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: setup node
-        uses: actions/setup-node@v4
-        with:
-          node-version: lts/*
-          cache: 'npm' # Set this to npm, yarn or pnpm.
-
-      - name: Install Dependencies
-        run: npm install
-        working-directory: dtunes-site/
-
-      - name: Deploy with gh-pages
-        run: |
-          git remote set-url origin https://git:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git
-          npm run deploy -- -u "github-actions-bot <support+actions@github.com>"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        working-directory: dtunes-site/
-
