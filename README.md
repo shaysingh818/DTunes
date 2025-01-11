@@ -4,6 +4,7 @@
 
 [![DTunes](https://github.com/shaysingh818/DTunes/actions/workflows/build.yml/badge.svg)](https://github.com/shaysingh818/DTunes/actions/workflows/build.yml)
 [![publish](https://github.com/shaysingh818/DTunes/actions/workflows/release.yml/badge.svg)](https://github.com/shaysingh818/DTunes/actions/workflows/release.yml)
+![Issues](https://img.shields.io/github/issues/shaysingh818/DTunes.svg)
 
 
 DTunes (stands for decentralized tunes) is an audio application with a built in pomodoro timer. Similar to applications like spotify & soundcloud, DTunes lets you listen to your own audio files, categorize by playlist, artist and genre, and listen to audio in the background. This is a an early iteration of the project and the vision for this software is something that lets you add your own audio, categorize it and then allow the application to generate music that helps you focus for pomodoro sessions. 
