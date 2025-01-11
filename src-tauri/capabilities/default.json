@@ -33,6 +33,7 @@
     "fs:allow-data-meta-recursive",
     "fs:allow-data-meta",
     "fs:scope-data-recursive",
+    "os:default",
     "os:default"
   ]
 }
