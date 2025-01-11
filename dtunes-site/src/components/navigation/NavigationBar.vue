@@ -41,7 +41,9 @@
     </div>
 
     <div class="download-section">
+      <a href="https://github.com/shaysingh818/DTunes/releases/tag/dtunes-v1.1.0">
          <button class="download-button" type="button">Download</button> 
+      </a>
     </div>
 
   </div>

@@ -11,7 +11,9 @@
       </div>
 
       <div class="download-hero-section">
-        <button class="download-button-hero" type="button">Download</button> 
+        <a :href="downloadLink">
+          <button class="download-button-hero" type="button">Download</button> 
+        </a>
       </div>
 
     </div>
@@ -41,3 +43,39 @@
     </div>
   </div>
 </template>
+
+
+<script>
+let domain = "https://github.com";
+let user = "shaysingh818"; 
+let project = "DTunes/releases/download";
+let releaseName = "dtunes-v";
+let versionName = "1.1.0"; 
+let appName = "dtunes-audio-app";
+let baseUrl = `${domain}/${user}/${project}/${releaseName}`
+
+export default {
+  name: 'Home',
+  async mounted() {
+    console.log("Detecting operating system... "); 
+
+    const userAgent = navigator.userAgent;
+    if(userAgent.indexOf('Win') !== -1) {
+      this.downloadLink = `${baseUrl}${versionName}/${appName}_${versionName}_x64-setup.exe`;
+    } else if (userAgent.indexOf('Mac') !== -1) {
+      this.downloadLink = `${baseUrl}${versionName}/${appName}_${versionName}_aarch64.dmg`;
+    } else if (userAgent.indexOf('Linux') !== -1) {
+      this.downloadLink = `${baseUrl}${versionName}/${appName}_${versionName}_amd64.deb`;
+    }
+
+    console.log("Detected operating system");
+    console.log(`Download Link: ${this.downloadLink}`); 
+  },
+  data() {
+    return {
+      downloadLink: `${domain}/${user}/releases/tag/dtunes-v${versionName}`
+    };
+  }
+}
+
+</script>
