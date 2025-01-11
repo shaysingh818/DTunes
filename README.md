@@ -1,6 +1,6 @@
 # DTunes
 
-[![Build Status](https://github.com/shaysingh818/DTunes/actions/workflows/pipeline.yml/badge.svg)](https://github.com/shaysingh818/Dendritic/actions)
+[![Build Status](https://github.com/shaysingh818/DTunes/actions/workflows/pipeline.yml/badge.svg)](https://github.com/shaysingh818/DTunes/actions)
 
 
 ![DTunes Site](public/dtunes-website.png)
