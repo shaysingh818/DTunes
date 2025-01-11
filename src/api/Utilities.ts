@@ -139,6 +139,11 @@ export async function createAppDataFolders() {
 
 export async function syncMetadata() {
   if(await checkAppDataFolders() == false) {
+
+    if(await detectWindows() == true) {
+        mkdir('dtunes-audio-app', {baseDir: BaseDirectory.Data});
+    }
+
     console.log("No metadata folders found, creating now... ")
     await createAppDataFolders();
     console.log("Created metadata folders"); 
