@@ -100,7 +100,8 @@ jobs:
           prerelease: false
           args: ${{ matrix.args }}
 
-  publish-site: 
+  publish-site:
+    needs: [publish-tauri] 
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -123,3 +124,5 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         working-directory: dtunes-site/
+
+
