@@ -6,6 +6,8 @@ import vueDevTools from 'vite-plugin-vue-devtools'
 
 // https://vite.dev/config/
 export default defineConfig({
+  base: "/DTunes/",
+  publicDir: process.env.NODE_ENV === "production" ? "/DTunes/" : "/",
   plugins: [
     vue(),
     vueDevTools(),
