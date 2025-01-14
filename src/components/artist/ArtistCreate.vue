@@ -59,61 +59,64 @@ import { artistStore } from '../../api/Artist';
 import { appLocalDataDir, dataDir } from '@tauri-apps/api/path';
 import { open, save } from "@tauri-apps/plugin-dialog"
 
-
 const openWindow = ref(false);
-
-
-async function submitForm() {
-
-  const artistName = document.getElementById('artist-name');
-  const artistThumbnailPath = document.getElementById('artist-thumbnail-upload');
-
-  console.log("ARTIST NAME: ", artistName.value);
-  console.log("IMAGES PATH: ", artistThumbnailPath.value);
-
-  const artistNameValidation = artistName.value.length > 0;
-  const thumbnailValidation = artistThumbnailPath.value.length > 0;
-
-  if(artistNameValidation && thumbnailValidation) {
-
-    const response = await artistStore.createArtist(
-      artistName.value,
-      artistThumbnailPath.value
-    );
-
-    if(response == "Success") {
-      console.log("INSERT SUCCESSFUL");
-      alert("Success");
-    } else {
-      console.log("SOMETHING WENT WRONG");
-    }
-  } else if(!artistNameValidation) {
-    alert("Must provide name for artist");
-  } else if(!thumbnailValidation) {
-    alert("Thumbnail image cannot be empty");
-  } 
-}
-
-async function selectThumbnailImage() {
-  const selectImagePath = await open({
-    multiple: false,
-    filters: [
-      {
-        name: 'Image Filter',
-        extensions: ['png', 'jpeg', 'jpg', 'webp']
-      }
-    ]
-  });
-  const artistThumbnailPath = document.getElementById('artist-thumbnail-upload');
-  artistThumbnailPath.value = selectImagePath; 
-}
 
 </script>
 
 <script>
 
 export default {
-    name: 'ArtistCreate'
+    name: 'ArtistCreate',
+    methods: {
+
+      async submitForm() {
+
+        const artistName = document.getElementById('artist-name');
+        const artistThumbnailPath = document.getElementById('artist-thumbnail-upload');
+
+        console.log("ARTIST NAME: ", artistName.value);
+        console.log("IMAGES PATH: ", artistThumbnailPath.value);
+
+        const artistNameValidation = artistName.value.length > 0;
+        const thumbnailValidation = artistThumbnailPath.value.length > 0;
+
+        if(artistNameValidation && thumbnailValidation) {
+
+          const response = await artistStore.createArtist(
+            artistName.value,
+            artistThumbnailPath.value
+          );
+
+          if(response == "Success") {
+            console.log("INSERT SUCCESSFUL");
+            alert("Success");
+            this.$router.push('artists/');
+            await this.$nextTick(); 
+            await artistStore.loadArtists(); 
+          } else {
+            console.log("SOMETHING WENT WRONG");
+          }
+        } else if(!artistNameValidation) {
+          alert("Must provide name for artist");
+        } else if(!thumbnailValidation) {
+          alert("Thumbnail image cannot be empty");
+        } 
+      },
+      async selectThumbnailImage() {
+        const selectImagePath = await open({
+          multiple: false,
+          filters: [
+            {
+              name: 'Image Filter',
+              extensions: ['png', 'jpeg', 'jpg', 'webp']
+            }
+          ]
+        });
+        const artistThumbnailPath = document.getElementById('artist-thumbnail-upload');
+        artistThumbnailPath.value = selectImagePath; 
+      }
+
+    }
 }
 </script>
 

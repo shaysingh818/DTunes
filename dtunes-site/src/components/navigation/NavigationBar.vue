@@ -6,7 +6,7 @@
 
   <div class="navigation-bar">
 
-    <div class="logo-section">
+    <div @click="goToHome" class="logo-section">
 
       <div class="logo">
         <img src="../../assets/dtunes-logo.png" alt="Your Logo" title="Your Logo" />
@@ -17,10 +17,6 @@
     </div>
 
     <div class="nav-items">
-
-      <div @click="goToHome">
-        <p>Home</p>
-      </div>
 
       <div @click="goToFeatures">
         <p>Features</p>

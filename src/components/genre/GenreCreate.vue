@@ -58,58 +58,64 @@ import { open, save } from "@tauri-apps/plugin-dialog"
 
 const openWindow = ref(false)
 
-
-async function submitForm() {
-
-  const genreName = document.getElementById('genre-name');
-  const genreThumbnailPath = document.getElementById('genre-thumbnail-upload');
-
-  console.log("GENRE NAME: ", genreName.value);
-  console.log("IMAGES PATH: ", genreThumbnailPath.value);
-
-  const genreNameValidation = genreName.value.length > 0;
-  const thumbnailValidation = genreThumbnailPath.value.length > 0;
-
-  if(genreNameValidation && thumbnailValidation) {
-
-    const response = await genreStore.createGenre(
-      genreName.value,
-      genreThumbnailPath.value
-    );
-
-    if(response == "Success") {
-      console.log("INSERT SUCCESSFUL");
-      alert("Success");
-    } else {
-      console.log("SOMETHING WENT WRONG");
-    }
-  } else if(!genreNameValidation) {
-    alert("Must provide name for genre");
-  } else if(!thumbnailValidation) {
-    alert("Thumbnail image cannot be empty");
-  } 
-}
-
-async function selectThumbnailImage() {
-  const selectImagePath = await open({
-    multiple: false,
-    filters: [
-      {
-        name: 'Image Filter',
-        extensions: ['png', 'jpeg', 'jpg', 'webp']
-      }
-    ]
-  });
-  const genreThumbnailPath = document.getElementById('genre-thumbnail-upload');
-  genreThumbnailPath.value = selectImagePath; 
-}
-
 </script>
 
 <script>
+import { genreStore } from '../../api/Genre';
+import { appLocalDataDir, dataDir } from '@tauri-apps/api/path';
+import { open, save } from "@tauri-apps/plugin-dialog"
 
 export default {
-    name: 'GenreCreate'
+    name: 'GenreCreate',
+    methods: {
+
+      async submitForm() {
+
+        const genreName = document.getElementById('genre-name');
+        const genreThumbnailPath = document.getElementById('genre-thumbnail-upload');
+
+        console.log("GENRE NAME: ", genreName.value);
+        console.log("IMAGES PATH: ", genreThumbnailPath.value);
+
+        const genreNameValidation = genreName.value.length > 0;
+        const thumbnailValidation = genreThumbnailPath.value.length > 0;
+
+        if(genreNameValidation && thumbnailValidation) {
+
+          const response = await genreStore.createGenre(
+            genreName.value,
+            genreThumbnailPath.value
+          );
+
+          if(response == "Success") {
+            console.log("INSERT SUCCESSFUL");
+            alert("Success");
+            this.$router.push('genres/');
+            await this.$nextTick(); 
+            await genreStore.loadGenres();
+          } else {
+            console.log("SOMETHING WENT WRONG");
+          }
+        } else if(!genreNameValidation) {
+          alert("Must provide name for genre");
+        } else if(!thumbnailValidation) {
+          alert("Thumbnail image cannot be empty");
+        } 
+      },
+      async selectThumbnailImage() {
+        const selectImagePath = await open({
+          multiple: false,
+          filters: [
+            {
+              name: 'Image Filter',
+              extensions: ['png', 'jpeg', 'jpg', 'webp']
+            }
+          ]
+        });
+        const genreThumbnailPath = document.getElementById('genre-thumbnail-upload');
+        genreThumbnailPath.value = selectImagePath; 
+      }
+    }
 }
 </script>
 

@@ -63,77 +63,83 @@ import { pomodoroStore } from '../../api/Pomodoro';
 
 const openWindow = ref(false);
 
-async function submitForm() {
-
-  const sessionName = document.getElementById('session_name');
-  const duration = document.getElementById('duration');
-  const durationLimit = document.getElementById('duration_limit');
-  const shortBreak = document.getElementById('short_break');
-  const longBreak = document.getElementById('long_break');
-
-  console.log("SESSION NAME: ", sessionName.value);
-  console.log("DURATION: ", duration.value);
-  console.log("DURATION LIMIT: ", durationLimit.value);
-  console.log("SHORT BREAK: ", shortBreak.value);
-  console.log("LONG BREAK: ", longBreak.value);
-
-  try {
-
-    const shortInt = parseInt(shortBreak.value);
-    const longInt = parseInt(longBreak.value); 
-    const durationInt = parseInt(duration.value); 
-    const durationLimitInt = parseInt(durationLimit.value);
-    
-    const durationLengthRequirement = durationInt < 60;
-    const shortBreakLengthRequirement = shortInt < 15;
-    const longBreakLengthRequirement = longInt < 30;
-
-
-    const sessionNameValidation = sessionName.value.length > 0;
-    const durationValidation = durationInt > 0 && durationLengthRequirement;
-    const durationLimitValidation = durationLimitInt > 0;
-    const shortBreakValidation = shortInt > 0 && shortBreakLengthRequirement;
-    const longBreakValidation = longInt > 0 && longBreakLengthRequirement;
-
-    if(sessionNameValidation && durationValidation && durationLimitValidation && shortBreakValidation && longBreakValidation) {
-
-      const response = await pomodoroStore.createSession(
-        sessionName.value,
-        durationInt,
-        durationLimitInt,
-        shortInt,
-        longInt
-      );
-
-      if(response == "Success") {
-        console.log("INSERT SUCCESSFUL");
-        alert("Success");
-      } else {
-        console.log("SOMETHING WENT WRONG");
-      }
-    } else if(!sessionNameValidation) {
-      alert("Must provide name for pomodoro session");
-    } else if(!durationValidation) {
-      alert("Duration must be less than 60 minutes");
-    } else if(!shortBreakLengthRequirement) {
-      alert("Short breaks must be less than 15 minutes");
-    } else if(!longBreakLengthRequirement) {
-      alert("Long breaks must be less than 30 minutes"); 
-    }
-
-  } catch (error) {
-    alert("Unable to parse integer information");    
-  }
-
-
-}
 
 </script>
 
 <script>
 
 export default {
-    name: 'PlaylistCreate'
+    name: 'PomodoroCreate',
+    methods: {
+
+      async submitForm() {
+
+        const sessionName = document.getElementById('session_name');
+        const duration = document.getElementById('duration');
+        const durationLimit = document.getElementById('duration_limit');
+        const shortBreak = document.getElementById('short_break');
+        const longBreak = document.getElementById('long_break');
+
+        console.log("SESSION NAME: ", sessionName.value);
+        console.log("DURATION: ", duration.value);
+        console.log("DURATION LIMIT: ", durationLimit.value);
+        console.log("SHORT BREAK: ", shortBreak.value);
+        console.log("LONG BREAK: ", longBreak.value);
+
+        try {
+
+          const shortInt = parseInt(shortBreak.value);
+          const longInt = parseInt(longBreak.value); 
+          const durationInt = parseInt(duration.value); 
+          const durationLimitInt = parseInt(durationLimit.value);
+          
+          const durationLengthRequirement = durationInt < 60;
+          const shortBreakLengthRequirement = shortInt < 15;
+          const longBreakLengthRequirement = longInt < 30;
+
+
+          const sessionNameValidation = sessionName.value.length > 0;
+          const durationValidation = durationInt > 0 && durationLengthRequirement;
+          const durationLimitValidation = durationLimitInt > 0;
+          const shortBreakValidation = shortInt > 0 && shortBreakLengthRequirement;
+          const longBreakValidation = longInt > 0 && longBreakLengthRequirement;
+
+          if(sessionNameValidation && durationValidation && durationLimitValidation && shortBreakValidation && longBreakValidation) {
+
+            const response = await pomodoroStore.createSession(
+              sessionName.value,
+              durationInt,
+              durationLimitInt,
+              shortInt,
+              longInt
+            );
+
+            if(response == "Success") {
+              console.log("INSERT SUCCESSFUL");
+              alert("Success");
+              this.$router.push('pomodoro/');
+              await this.$nextTick(); 
+              await pomodoroStore.loadSessions();
+            } else {
+              console.log("SOMETHING WENT WRONG");
+            }
+          } else if(!sessionNameValidation) {
+            alert("Must provide name for pomodoro session");
+          } else if(!durationValidation) {
+            alert("Duration must be less than 60 minutes");
+          } else if(!shortBreakLengthRequirement) {
+            alert("Short breaks must be less than 15 minutes");
+          } else if(!longBreakLengthRequirement) {
+            alert("Long breaks must be less than 30 minutes"); 
+          }
+
+        } catch (error) {
+          alert("Unable to parse integer information");    
+        }
+
+      }
+
+    }
 }
 </script>
 
