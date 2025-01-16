@@ -11,9 +11,7 @@
       </div>
 
       <div class="download-hero-section">
-        <a :href="downloadLink">
-          <button class="download-button-hero" type="button">Download</button> 
-        </a>
+        <button @click="downloadApplication" class="download-button-hero" type="button">Download</button> 
       </div>
 
     </div>
@@ -44,7 +42,6 @@
   </div>
 </template>
 
-
 <script>
 let domain = "https://github.com";
 let user = "shaysingh818"; 
@@ -56,20 +53,24 @@ let baseUrl = `${domain}/${user}/${project}/${releaseName}`
 
 export default {
   name: 'Home',
-  async mounted() {
-    console.log("Detecting operating system... "); 
+  methods: {
+    async downloadApplication() {
+      console.log("Detecting operating system... "); 
+      const userAgent = navigator.userAgent;
+      if(userAgent.indexOf('Win') !== -1) {
+        this.downloadLink = `${baseUrl}${versionName}/${appName}_${versionName}_x64-setup.exe`;
+        window.location.href = this.downloadLink;
+      } else if (userAgent.indexOf('Mac') !== -1) {
+        this.downloadLink = `${baseUrl}${versionName}/${appName}_${versionName}_aarch64.dmg`;
+        window.location.href = this.downloadLink;
+      } else if (userAgent.indexOf('Linux') !== -1) {
+        this.downloadLink = `${baseUrl}${versionName}/${appName}_${versionName}_amd64.deb`;
+        window.location.href = this.downloadLink;
+      } else {
+        alert("Not on supported operating system");
+      }
 
-    const userAgent = navigator.userAgent;
-    if(userAgent.indexOf('Win') !== -1) {
-      this.downloadLink = `${baseUrl}${versionName}/${appName}_${versionName}_x64-setup.exe`;
-    } else if (userAgent.indexOf('Mac') !== -1) {
-      this.downloadLink = `${baseUrl}${versionName}/${appName}_${versionName}_aarch64.dmg`;
-    } else if (userAgent.indexOf('Linux') !== -1) {
-      this.downloadLink = `${baseUrl}${versionName}/${appName}_${versionName}_amd64.deb`;
     }
-
-    console.log("Detected operating system");
-    console.log(`Download Link: ${this.downloadLink}`); 
   },
   data() {
     return {

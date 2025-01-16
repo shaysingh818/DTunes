@@ -58,59 +58,67 @@ import { open, save } from "@tauri-apps/plugin-dialog"
 import { playlistStore } from '../../api/Playlist';
 
 let openWindow = ref(false);
-
-/* grab form values  */
-async function submitForm() {
-
-  const playlistName = document.getElementById('playlist-name');
-  const playlistThumbnailPath = document.getElementById('playlist-thumbnail-upload');
-
-  console.log("PLAYLIST NAME: ", playlistName.value);
-  console.log("IMAGES PATH: ", playlistThumbnailPath.value);
-
-  const playlistNameValidation = playlistName.value.length > 0;
-  const thumbnailValidation = playlistThumbnailPath.value.length > 0;
-
-  if(playlistNameValidation && thumbnailValidation) {
-
-    const response = await playlistStore.createPlaylist(
-      playlistName.value,
-      playlistThumbnailPath.value
-    );
-
-    if(response == "Success") {
-      console.log("INSERT SUCCESSFUL");
-      alert("Success");
-    } else {
-      console.log("SOMETHING WENT WRONG");
-    }
-  } else if(!playlistNameValidation) {
-    alert("Must provide name for playlist");
-  } else if(!thumbnailValidation) {
-    alert("Thumbnail image cannot be empty");
-  } 
-}
-
-async function selectThumbnailImage() {
-  const selectImagePath = await open({
-    multiple: false,
-    filters: [
-      {
-        name: 'Image Filter',
-        extensions: ['png', 'jpeg', 'jpg', 'webp']
-      }
-    ]
-  });
-  const audioFileThumbnailPath = document.getElementById('playlist-thumbnail-upload');
-  audioFileThumbnailPath.value = selectImagePath; 
-}
 </script>
 
 
 <script>
+import { appLocalDataDir, dataDir } from '@tauri-apps/api/path';
+import { open, save } from "@tauri-apps/plugin-dialog"
+import { playlistStore } from '../../api/Playlist';
 
 export default {
-    name: 'PlaylistCreate'
+    name: 'PlaylistCreate',
+    methods: {
+
+      async submitForm() {
+
+        const playlistName = document.getElementById('playlist-name');
+        const playlistThumbnailPath = document.getElementById('playlist-thumbnail-upload');
+
+        console.log("PLAYLIST NAME: ", playlistName.value);
+        console.log("IMAGES PATH: ", playlistThumbnailPath.value);
+
+        const playlistNameValidation = playlistName.value.length > 0;
+        const thumbnailValidation = playlistThumbnailPath.value.length > 0;
+
+        if(playlistNameValidation && thumbnailValidation) {
+
+          const response = await playlistStore.createPlaylist(
+            playlistName.value,
+            playlistThumbnailPath.value
+          );
+
+          if(response == "Success") {
+            console.log("INSERT SUCCESSFUL");
+            alert("Success");
+            this.$router.push('playlists/');
+            await this.$nextTick(); 
+            await playlistStore.loadPlaylists();
+          } else {
+            console.log("SOMETHING WENT WRONG");
+          }
+        } else if(!playlistNameValidation) {
+          alert("Must provide name for playlist");
+        } else if(!thumbnailValidation) {
+          alert("Thumbnail image cannot be empty");
+        } 
+      },
+
+      async selectThumbnailImage() {
+        const selectImagePath = await open({
+          multiple: false,
+          filters: [
+            {
+              name: 'Image Filter',
+              extensions: ['png', 'jpeg', 'jpg', 'webp']
+            }
+          ]
+        });
+        const audioFileThumbnailPath = document.getElementById('playlist-thumbnail-upload');
+        audioFileThumbnailPath.value = selectImagePath; 
+      }
+
+    }
 }
 </script>
 

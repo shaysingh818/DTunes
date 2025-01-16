@@ -72,83 +72,88 @@ import { audioStore } from '../../api/AudioFile';
 let openWindow = ref(false);
 
 /* grab form values  */
-async function submitForm() {
-
-  const audioFileName = document.getElementById('audio-file-name');
-  const audioFileThumbnailPath = document.getElementById('audio-thumbnail-upload');
-  const audioFilePath = document.getElementById('audio-file-upload');
-
-  console.log("FILE NAME: ", audioFileName.value);
-  console.log("IMAGES PATH: ", audioFileThumbnailPath.value);
-  console.log("AUDIO PATH ", audioFilePath.value);
-
-  const fileNameValidation = audioFileName.value.length > 0;
-  const thumbnailValidation = audioFileThumbnailPath.value.length > 0;
-  const filePathValidation = audioFilePath.value.length > 0;
-
-  if(fileNameValidation && thumbnailValidation && filePathValidation) {
-
-    const response = await audioStore.createAudioFile(
-      audioFileName.value,
-      audioFilePath.value,
-      audioFileThumbnailPath.value
-    );
-
-    if(response == "Success") {
-      console.log("INSERT SUCCESSFUL");
-      alert("Success");
-    } else {
-      console.log("SOMETHING WENT WRONG");
-    }
-  } else if(!fileNameValidation) {
-    alert("Must provide file name alias");
-  } else if(!thumbnailValidation) {
-    alert("Thumbnail image cannot be empty"); 
-  } else if(!filePathValidation) {
-    alert("Must provide path to audio file to upload"); 
-  }
-
-
-}
-
-async function selectThumbnailImage() {
-  const selectImagePath = await open({
-    multiple: false,
-    filters: [
-      {
-        name: 'Image Filter',
-        extensions: ['png', 'jpeg', 'jpg', 'webp']
-      }
-    ]
-  });
-  const audioFileThumbnailPath = document.getElementById('audio-thumbnail-upload');
-  audioFileThumbnailPath.value = selectImagePath; 
-}
-
-
-async function selectAudioFileUpload() {
-  const selectAudioFilePath = await open({
-    multiple: false,
-    filters: [
-      {
-        name: 'Audio Format Filter',
-        extensions: ['mp3', 'wav', 'aac', 'ogg', 'wma', 'flac']
-      }
-    ]
-  });
-  const audioFilePath = document.getElementById('audio-file-upload');
-  audioFilePath.value = selectAudioFilePath; 
-}
-
-
-
 
 </script>
 
 <script>
+import { appLocalDataDir, dataDir } from '@tauri-apps/api/path';
+import { open, save } from "@tauri-apps/plugin-dialog"
+import { audioStore } from '../../api/AudioFile';
 
 export default {
-    name: 'AudioFileCreate'
+    name: 'AudioFileCreate',
+    methods: {
+
+      async submitForm() {
+
+        const audioFileName = document.getElementById('audio-file-name');
+        const audioFileThumbnailPath = document.getElementById('audio-thumbnail-upload');
+        const audioFilePath = document.getElementById('audio-file-upload');
+
+        console.log("FILE NAME: ", audioFileName.value);
+        console.log("IMAGES PATH: ", audioFileThumbnailPath.value);
+        console.log("AUDIO PATH ", audioFilePath.value);
+
+        const fileNameValidation = audioFileName.value.length > 0;
+        const thumbnailValidation = audioFileThumbnailPath.value.length > 0;
+        const filePathValidation = audioFilePath.value.length > 0;
+
+        if(fileNameValidation && thumbnailValidation && filePathValidation) {
+
+          const response = await audioStore.createAudioFile(
+            audioFileName.value,
+            audioFilePath.value,
+            audioFileThumbnailPath.value
+          );
+
+          if(response == "Success") {
+            console.log("INSERT SUCCESSFUL");
+            alert("Success");
+            this.$router.push('audio-files/');
+            await this.$nextTick(); 
+            await audioStore.loadAudioFiles();
+          } else {
+            console.log("SOMETHING WENT WRONG");
+          }
+        } else if(!fileNameValidation) {
+          alert("Must provide file name alias");
+        } else if(!thumbnailValidation) {
+          alert("Thumbnail image cannot be empty"); 
+        } else if(!filePathValidation) {
+          alert("Must provide path to audio file to upload"); 
+        }
+
+      },
+
+      async selectThumbnailImage() {
+        const selectImagePath = await open({
+          multiple: false,
+          filters: [
+            {
+              name: 'Image Filter',
+              extensions: ['png', 'jpeg', 'jpg', 'webp']
+            }
+          ]
+        });
+        const audioFileThumbnailPath = document.getElementById('audio-thumbnail-upload');
+        audioFileThumbnailPath.value = selectImagePath; 
+      },
+
+      async selectAudioFileUpload() {
+        const selectAudioFilePath = await open({
+          multiple: false,
+          filters: [
+            {
+              name: 'Audio Format Filter',
+              extensions: ['mp3', 'wav', 'aac', 'ogg', 'wma', 'flac']
+            }
+          ]
+        });
+        const audioFilePath = document.getElementById('audio-file-upload');
+        audioFilePath.value = selectAudioFilePath; 
+      }
+
+    }
 }
 
 </script>

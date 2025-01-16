@@ -6,64 +6,53 @@
         </div>
 
         <div>
-            <HeaderTextSection 
-                header="Audio File Storage"
-                text="DTunes allows you to store Audio Files on the application,
-                the current accepted file formats are .mp3 .wav and .flacc"
+            <FeatureDemoSection
+                header="Audio file categorization"
+                text="DTunes allows you to store audio files and categorize by playlist,
+                genre or artist. Once a user stores audio files on the applications, they can create
+                genres, artist or playlists and associate audio files with it."
+                :videoSrc="audioCategorizationVideo"
             />
-
-             <video width="800" controls>
-                <source src="../assets/create_song.webm" type="video/mp4">
-                    Your browser does not support the video tag.
-            </video>
         </div>
 
         <div>
-            <HeaderTextSection 
-                header="Categorize Audio Files"
-                text="For any existing audio files stores in DTunes, you can
-                create Artists, Genres or Playlists to further categorize the audio files you have."
-            />
-
-             <video width="800" controls>
-                <source src="../assets/audio_categorization.webm" type="video/mp4">
-                    Your browser does not support the video tag.
-            </video>
-        </div>
-
-        <div>
-            <HeaderTextSection 
+            <FeatureDemoSection
                 header="Pomodoro Timer"
-                text="This is listed last because we do not expect all our
-                users to fix issues with our software. However, for our very technical users,
-                contributions to the source code for DTunes are more than welcomed and appreciated!"
+                text="DTunes comes with a built in pomodoro timer. This is a feature for those that like to listen to music to enhance focus! Users can customize their
+                focus duration, short break and long break duration. When the timer is finished, it will play the default DTunes alarm sound."
+                :videoSrc="pomodoroTimerVideo"
             />
-             <video width="800" controls>
-                <source src="../assets/pomodoro_sessions.webm" type="video/mp4">
-                    Your browser does not support the video tag.
-            </video>
         </div>
 
         <div>
-            <HeaderTextSection 
-                header="Background Audio Playing"
-                text="Similar to other audio streaming services, once you click
-                an audio file, it will queue the rest in the background and play on a loop of 
-                all the files stored on the application."
+            <FeatureDemoSection
+                header="Local Metadata Storage"
+                text="DTunes does not host or stream data centrally. All your audio file related data is stored on a lightweight database. Users have
+                complete control their data and can use the application without internet access."
+                :videoSrc="metadataStorageVideo"
             />
         </div>
 
     </div>
 
-
-
 </template>
 
 <script>
 import HeaderTextSection from './shared/HeaderTextSection.vue';
+import FeatureDemoSection from './shared/FeatureDemoSection.vue';
+import audioCategorizationVideo from '../assets/audio_categorization.webm';
+import pomodoroTimerVideo from '../assets/pomodoro_sessions.webm';
+import metadataStorageVideo from '../assets/create_song.webm';
 
 export default {
-    components: {HeaderTextSection},
-    name: 'Support',
+    components: {HeaderTextSection, FeatureDemoSection},
+    name: 'Features',
+    data() {
+        return {
+            audioCategorizationVideo,
+            pomodoroTimerVideo,
+            metadataStorageVideo
+        };
+    }
 }
 </script>

@@ -2,7 +2,7 @@
 
     <div class="container">
         <div class="about-hero-section">
-            <h1>Noticing issues or bugs with DTunes?</h1>
+            <h1>Noticing issues with DTunes?</h1>
         </div>
 
         <div>
