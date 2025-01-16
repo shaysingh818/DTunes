@@ -37,8 +37,23 @@ h1 {
     font-size: 40px; 
 }
 
+
+@media (max-width: 600px) {
+  h1 {
+    font-size: 25px;
+  }
+}
+
 p {
     font-size: 20px;
+}
+
+
+@media (max-width: 600px) {
+  p {
+    font-size: 15px;
+    width: 500px;
+  }
 }
 
 </style>
