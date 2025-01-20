@@ -88,7 +88,7 @@ export class PomodoroTimer {
       }
     }
 
-    update(): void {
+    async update(): Promise<void> {
       console.log("DURATION: ", this.duration); 
       console.log("REMAINING TIME ", this.remainingTime); 
 
@@ -102,21 +102,17 @@ export class PomodoroTimer {
 
         this.updateCallback(this.stringTimerValue); 
           
-        if(this.remainingTime > 0) {
+        if(this.remainingTime > -1) {
           console.log("CURR DURATION", this.remainingTime); 
           this.remainingTime--;
         }
 
         if(this.remainingTime == 0) {
+
           console.log("TIMER FINISHED"); 
           console.log("PLAYING TIMER SOUND");
-          const alarmSound = new Audio('dtunes-alarm-sound.mp3'); 
-          alarmSound.play().then(() => {
-            console.log("Played sound")
-          }).catch((error) => {
-            console.error("Autoplay error: ", error); 
-          }); 
-          
+          await pomodoroStore.playPomodoroAlarmSound(); 
+
           this.playing = false; 
           this.resumed = false; 
           this.paused = false;  
@@ -384,6 +380,16 @@ export const pomodoroStore = reactive({
     this.shortBreakDuration = false; 
     this.longBreakDuration = false;
     this.focusDuration = true;
+  },
+
+  async playPomodoroAlarmSound() {
+    try {
+        const dataDirPath = await dataDir(); 
+        const filePath = `${dataDirPath}/dtunes-audio-app/audio_files/dtunes-alarm-sound.mp3`;
+        return await invoke("play_pomodoro_alarm_sound", { filePath });
+    } catch(error) {
+        console.error("Error playing pomodoro alarm sound: ", error); 
+    }
   },
 
 }); 

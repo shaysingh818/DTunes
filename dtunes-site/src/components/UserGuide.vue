@@ -6,6 +6,19 @@
         </div>
 
         <div>
+
+            <HeaderTextSection 
+                header="Virus Scan"
+                text="This application has not been code signed yet, to use it you'll have
+                to allow it past windows smart screen/windows defender. For MACOS it might require allowing it
+                past whatever antivirus/security software could potentially block it. 
+                Code signing for windows costs money and I'm broke. As for MACOS and Linux, more work still needs 
+                to done to certify the application."
+            />
+       
+        </div>
+
+        <div>
             <FeatureDemoSection
                 header="1.) First Time Setup"
                 text="If it's your first time setting up DTunes, you'll need to
@@ -21,8 +34,8 @@
             <FeatureDemoSection
                 header="2.) Add Audio Files"
                 text="Now that you're first time setup is complete, you can store audio files. 
-                Adding an audio file just requires and mp3, wav or flacc file and a corresponding image thumbnail. The
-                thumbnail excepts the following image formats, jpeg, webp, png, jpg."
+                Adding an audio file just requires a mp3, wav or flacc file and a corresponding image thumbnail. The
+                thumbnail accepts the following image formats, jpeg, webp, png, jpg."
                 :videoSrc="firstTimeSetup"
             />
 

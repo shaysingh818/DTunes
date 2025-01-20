@@ -25,7 +25,7 @@ use crate::handlers::genre::{
 use crate::handlers::pomodoro::{
     add_audio_file_pomodoro, create_pomodoro, delete_pomodoro_session, edit_pomodoro,
     remove_audio_file_pomodoro, search_pomodoro_audio_files, search_pomodoro_sessions,
-    view_pomodoro_audio_files, view_pomodoro_session, view_pomodoro_sessions,
+    view_pomodoro_audio_files, view_pomodoro_session, view_pomodoro_sessions, play_pomodoro_alarm_sound
 };
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
@@ -87,7 +87,8 @@ pub fn run() {
             add_audio_file_pomodoro,
             remove_audio_file_pomodoro,
             search_pomodoro_sessions,
-            search_pomodoro_audio_files
+            search_pomodoro_audio_files,
+            play_pomodoro_alarm_sound
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
