@@ -20,8 +20,10 @@ jobs:
       - name: Update apt cache
         run: sudo apt-get update
 
-      - name: Install GTK
-        run: sudo apt-get install libwebkit2gtk-4.1-dev
+      - name: Install Ubuntu Depdendencies
+        run: |
+          sudo apt-get install libwebkit2gtk-4.1-dev
+          sudo apt-get install libasound2-dev pkg-config
         working-directory: src-tauri/
 
       - name: Test
