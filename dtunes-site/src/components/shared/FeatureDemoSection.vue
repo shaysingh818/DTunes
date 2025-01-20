@@ -54,4 +54,13 @@ p {
     font-size: 20px;
 }
 
+
+@media (max-width: 600px) {
+  h1 {
+    font-size: 35px; 
+  }
+} 
+
+
+
 </style>

@@ -17,6 +17,8 @@ html, body {
   margin-bottom: 5%;
 }
 
+
+
 .navigation-bar {
   display: flex;
   flex-direction: row;
@@ -78,11 +80,12 @@ html, body {
 
 @media (max-width: 600px) {
   .nav-items {
-    height: 250px;
+    height: 200px;
     display: flex;
     justify-content: center;
     align-items: center; 
     flex-direction: column;
+    gap: 1.5rem; 
   }
 }
 
@@ -135,7 +138,7 @@ h1 {
 
 @media (max-width: 600px) {
   .hero-section  {
-    height: 300px;
+    height: 250px;
   }
 }
 
@@ -149,8 +152,9 @@ h1 {
 
 @media (max-width: 600px) {
   .hero-text-section h1 {
-    font-size: 30px; 
-    width: 500px;
+    font-size: 20px; 
+    width: 300px;
+    height: 150px;
   }
 }
 
@@ -168,7 +172,7 @@ h1 {
 @media (max-width: 600px) {
   .download-button-hero {
     width: 250px; 
-    height:60px;
+    height:50px;
   }
 }
 
@@ -196,7 +200,7 @@ h1 {
 
 @media (max-width: 600px) {
   .supported-platforms-header h1 {
-    font-size: 35px;
+    font-size: 25px;
   }
 }
 
@@ -261,7 +265,7 @@ h1 {
 
 @media (max-width: 600px) {
   .about-hero-section {
-    height: 150px;
+    height: 100px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -275,7 +279,7 @@ h1 {
 
 @media (max-width: 600px) {
   .about-hero-section h1 {
-    font-size: 35px;
+    font-size: 25px;
   }
 }
 
@@ -289,6 +293,12 @@ h1 {
 }
 
 
+@media (max-width: 600px) {
+  .header-text-section {
+    width: 400px;
+  }
+}
+
 .header-section {
   display: flex; 
   justify-content: center;
@@ -300,6 +310,12 @@ h1 {
   display: flex; 
   justify-content: center;
   align-items: center;
+}
+
+@media (max-width: 600px) {
+  .text-section {
+    width: 400px;
+  }
 }
 
 
@@ -328,6 +344,13 @@ h1 {
   width: 500px; 
   height: 550px;
 }
+
+
+@media (max-width: 600px) {
+  .feature-text {
+    width: 300px; 
+  }
+} 
 
 .feature-video-section {
   display: flex;

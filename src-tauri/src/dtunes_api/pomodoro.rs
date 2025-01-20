@@ -1,7 +1,7 @@
 use crate::dtunes_api::audio_file::AudioFile;
-use chrono;
 use rusqlite::{Connection, Result};
 use serde::{Deserialize, Serialize};
+use chrono;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Pomodoro {

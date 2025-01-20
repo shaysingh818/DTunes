@@ -1,6 +1,9 @@
 use crate::dtunes_api::audio_file::*;
 use crate::dtunes_api::pomodoro::*;
 use rusqlite::{Connection, Result};
+use std::fs::File;
+use std::io::BufReader;
+use rodio::{Decoder, OutputStream, source::Source};
 
 #[tauri::command]
 pub fn create_pomodoro(
@@ -256,4 +259,16 @@ pub fn search_pomodoro_audio_files(
             Vec::new()
         }
     }
+}
+
+
+#[tauri::command]
+pub fn play_pomodoro_alarm_sound(file_path: &str) {
+    println!("Attempting to play: {:?}", file_path); 
+    let (_stream, stream_handle) = OutputStream::try_default().unwrap();
+    let file = BufReader::new(File::open(file_path).unwrap());
+    let source = Decoder::new(file).unwrap();
+    println!("Created stream for: {:?}", file_path); 
+    let _ = stream_handle.play_raw(source.convert_samples());
+    std::thread::sleep(std::time::Duration::from_secs(10));
 }
