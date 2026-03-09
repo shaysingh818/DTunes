@@ -98,7 +98,11 @@ export default {
         const thumbnailValidation = audioFileThumbnailPath.value.length > 0;
         const filePathValidation = audioFilePath.value.length > 0;
 
-        if(fileNameValidation && thumbnailValidation && filePathValidation) {
+        if(fileNameValidation && filePathValidation) {
+
+          if(!thumbnailValidation) {
+            console.log("No thumbnail provided, using default thumbnail provided by DTunes");
+          }
 
           const response = await audioStore.createAudioFile(
             audioFileName.value,
@@ -107,18 +111,15 @@ export default {
           );
 
           if(response == "Success") {
-            console.log("INSERT SUCCESSFUL");
             alert("Success");
             this.$router.push('audio-files/');
             await this.$nextTick(); 
             await audioStore.loadAudioFiles();
           } else {
-            console.log("SOMETHING WENT WRONG");
+            alert("SOMETHING WENT WRONG");
           }
         } else if(!fileNameValidation) {
           alert("Must provide file name alias");
-        } else if(!thumbnailValidation) {
-          alert("Thumbnail image cannot be empty"); 
         } else if(!filePathValidation) {
           alert("Must provide path to audio file to upload"); 
         }
