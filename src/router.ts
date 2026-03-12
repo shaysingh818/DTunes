@@ -16,7 +16,7 @@ const routes: Array<RouteRecordRaw> =  [
   { path: '/audio-files/edit/:id', component: EditAudioFilePage},
 
   { path: '/pomodoro', component: PomodoroPage },
-  { path: '/pomodoro/edit/:id', component: PomodoroDetailPage},
+  { path: '/pomodoro/edit/:id', component: PomodoroDetailPage, props: true},
   { path: '/pomodoro/add-audio-file/:id', component: PomodoroAudioFilesPage},
 ]
 

@@ -1,6 +1,6 @@
 
 <template>
-    <div @click="queueAudio()" class="flex hover:bg-stone-900">
+    <div @click="playFile()" class="flex hover:bg-stone-900">
         <div class="flex-none w-24 pr-2">
             <div class="list-view-image-container">
                 <img :src="thumbnail" :alt="thumbnail" :id="audioFileId.toString()" class="list-view-image p-1" />
@@ -86,7 +86,8 @@ export default {
   methods: {
 
     async queueAudio() {
-        
+       
+        /*
         const audioFile =  await audioStore.viewAudioFile(this.audioFileId.toString());
         if(audioStore.queuedAudioFiles.length == 0) {
           console.log("NO songs on queue... adding"); 
@@ -98,11 +99,12 @@ export default {
           audioStore.playAudio(audioFile); 
         } else {
           audioStore.playAudio(audioFile);
-        }
+        } */
     },
 
     async playFile() {
 
+      /*
       const audioFile = new AudioFile({
           audio_file_id: this.audioFileId,
           date_created: this.datePosted,
@@ -127,6 +129,8 @@ export default {
           this.thumbnail,
           parseInt(this.duration)
         );
+
+      */
     },
     
     async deleteFile() {

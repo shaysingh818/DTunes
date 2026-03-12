@@ -62,6 +62,8 @@ export default {
   methods: {
 
     async queueAudio() {
+
+        /*
         
         const audioFile =  await audioStore.viewAudioFile(this.audioFileId.toString());
         if(audioStore.queuedAudioFiles.length == 0) {
@@ -73,7 +75,7 @@ export default {
           audioStore.playAudio(audioFile); 
         } else {
           audioStore.playAudio(audioFile);
-        }
+        } */
     },
 
     async playFile() {

@@ -1,6 +1,7 @@
 <template>
 
-  <BackBar 
+  <BackBar
+    v-if="session && session.session_id"
     :itemId="session.session_id" 
     :title="session.session_name"
     thumbnail="default_dtunes_thumbnail.webp"
@@ -12,10 +13,12 @@
 
       <div>
         <PomodoroClock
+          v-if="session && session.session_id"
           :duration="session.duration"
           :durationLimit="session.duration_limit"
           :shortBreak="session.short_break"
           :longBreak="session.long_break"
+          :sessionId="session.session_id"
         />
       </div>
 
@@ -32,6 +35,9 @@
         </div>
 
       </div>
+
+
+      <PomodoroAudioPlayer /> 
 
     </div>
 
@@ -59,6 +65,7 @@ import SearchComponent from '../../components/shared/SearchComponent.vue';
 import BackBar from '../../components/shared/BackBar.vue';
 import PomodoroClock from '../../components/pomodoro/PomodoroClock.vue';
 import PomodoroAudioFileCarousel from '../../components/pomodoro/PomodoroAudioFileCarousel.vue';
+import PomodoroAudioPlayer from '../../components/pomodoro/PomodoroAudioPlayer.vue'; 
 import EditPomodoroMetadata from './EditPomodoroMetadata.vue';
 import { pomodoroStore } from '../../api/Pomodoro';
 
@@ -74,7 +81,7 @@ export default {
   },
   props: {
     id: {
-      type: Number,
+      type: String,
       required: true,
     },
   },
@@ -102,8 +109,8 @@ export default {
   },
   async mounted() {
     const route  = useRoute();
-    const id = route.params.id; 
-    this.session = await pomodoroStore.viewSession(id);
+    const id = route.params.id;
+    this.session = await pomodoroStore.viewSession(id); 
   },
 }
 </script>

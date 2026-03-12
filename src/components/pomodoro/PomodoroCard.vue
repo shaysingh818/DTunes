@@ -69,19 +69,19 @@ export default {
       required: true,
     },
     duration: {
-      type: String,
+      type: Number,
       required: true,
     },
     durationLimit: {
-      type: String,
+      type: Number,
       required: true,
     },
     shortBreak: {
-      type: String,
+      type: Number,
       required: true,
     },
     longBreak: {
-      type: String,
+      type: Number,
       required: true,
     },
     datePosted: {

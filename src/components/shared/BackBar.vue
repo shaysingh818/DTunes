@@ -46,7 +46,7 @@ export default {
   name: 'BackBar',
   props: {
     itemId: {
-      type: String,
+      type: Number,
       required: true,
     },
     title: {

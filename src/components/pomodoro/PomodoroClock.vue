@@ -41,7 +41,7 @@ import { pomodoroStore, PomodoroTimer } from '../../api/Pomodoro';
 import { ref,  onBeforeMount, onUnmounted } from 'vue'
 import { pomodoroStore } from '../../api/Pomodoro';
 import { onBeforeRouteLeave } from 'vue-router';
-
+//import { AudioQueue } from '../../api/AudioQueue';
 
 let duration = ref(0);
 
@@ -65,11 +65,16 @@ export default {
       type: Number,
       required: true,
     },
+    sessionId: {
+      type: Number,
+      required: true,
+    },
   },
   data() {
     return {
       timerValue: "0:00",
-      timer: null
+      timer: null,
+      audioQueue: null
     }
   },
   methods: {
@@ -118,15 +123,6 @@ export default {
         pomodoroStore.pomodoroTimer.resume(); 
       }
     },
-    async mounted() { 
-      duration = this.duration * 60; 
-      console.log(`Setting duration ${duration}`); 
-      pomodoroStore.pomodoroTimer = new PomodoroTimer(
-        duration, 
-        'dtunes-alarm-sound.mp3',
-        this.updateTimerValue,
-      ); 
-    },
     startCondition() {
       if(pomodoroStore.pomodoroTimer) {
         const play = pomodoroStore.pomodoroTimer.isPlaying();
@@ -159,6 +155,18 @@ export default {
       console.log("TIMER has been stopped");  
     } 
   },
+  async mounted() {
+
+    duration = this.duration * 60; 
+    console.log(`Setting duration ${duration}`);
+
+    /*
+    this.audioQueue = new AudioQueue();
+    console.log("Queueing audio files for session");
+    const audioFiles = await pomodoroStore.viewPomoAudioFiles(this.sessionId.toString());
+    this.audioQueue.queue(audioFiles); */
+
+  }
 }
 
 

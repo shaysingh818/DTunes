@@ -279,6 +279,17 @@ export const pomodoroStore = reactive({
     }
   },
 
+  async viewPomoAudioFiles(sessionId: string): AudioFile[] {
+    try {
+        const dataDirPath = await dataDir(); 
+        const userDbPath = `${dataDirPath}/dtunes-audio-app/metadata/dtunes-audio-app.sqlite3`;
+        const audioFiles = await invoke<AudioFile[]>('view_pomodoro_audio_files', { userDbPath, sessionId});
+        return audioFiles;
+    } catch(error) {
+        console.error("Error loading audio files: ", error); 
+    }
+  },
+
   async addAudioFilePomodoro(sessionId: string, audioFileId: Number) {
     const dataDirPath = await dataDir();
     const userDbPath = `${dataDirPath}/dtunes-audio-app/metadata/dtunes-audio-app.sqlite3`;
