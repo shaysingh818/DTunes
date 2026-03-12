@@ -77,12 +77,10 @@
 
 <script>
 import { audioStore, AudioFile } from '../../api/AudioFile';
-//import { AudioQueue } from '../../api/AudioQueue'; 
 import { BaseDirectory, readFile } from '@tauri-apps/plugin-fs';
 
 export default {
   name: 'PomodoroAudioPlayer',
-  props: {},
   methods: {
     async playFile() {
       console.log("Play audio file"); 
@@ -101,7 +99,7 @@ export default {
     }
   },
   async mounted() {
-    console.log("page is mounted");
+    console.log("pomodoro audio player page is mounted");
   },
 }
 

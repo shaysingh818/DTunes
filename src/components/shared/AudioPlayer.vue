@@ -50,16 +50,16 @@
                         <div @click="audioStore.rewind()">
                             <i :class="['fas', 'fa-rotate-left', 'text-white']"></i>
                         </div>
-                        <div v-if="audioStore.playing == true" class="play-button" @click="pauseFile()">
+                        <div v-if="audioQueueStore.playing == true" class="play-button" @click="pauseFile()">
                             <i :class="['fas', 'fa-pause', 'text-white']"></i>
                         </div>
-                        <div v-if="audioStore.resume == true && audioStore.playing == false" class="play-button" @click="resumeFile()">
+                        <div v-if="audioQueueStore.resume == true && audioQueueStore.playing == false" class="play-button" @click="resumeFile()">
                             <i :class="['fas', 'fa-play', 'text-white']"></i>
                         </div>
                         <div @click="audioStore.forward()">
                             <i :class="['fas', 'fa-rotate-right', 'text-white']"></i>
                         </div>
-                        <div @click="audioStore.nextAudioFile()">
+                        <div @click="audioQueueStore.nextAudioFile()">
                             <i :class="['fas', 'fa-forward', 'text-white']"></i>
                         </div>
                     </div>
@@ -77,10 +77,12 @@
 
 <script setup>
 import { audioStore, AudioFile } from '../../api/AudioFile';
+import { audioQueueStore } from '../../api/AudioQueue'; 
 </script>
 
 <script>
 import { audioStore, AudioFile } from '../../api/AudioFile';
+import { audioQueueStore } from '../../api/AudioQueue'; 
 import { BaseDirectory, readFile } from '@tauri-apps/plugin-fs';
 
 export default {
@@ -151,13 +153,13 @@ export default {
           console.log(`${this.audioFileId} not found`)
         }
 
-        audioStore.playAudio(audioFile);
+        audioQueueStore.playAudio();
     },
     async pauseFile() {
-        audioStore.pauseAudio();
+        audioQueueStore.pauseAudio();
     },
     async resumeFile() {
-        audioStore.resumeAudio();
+        audioQueueStore.resumeAudio();
     },
   },
   async mounted() { 

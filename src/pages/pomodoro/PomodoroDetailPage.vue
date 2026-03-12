@@ -34,10 +34,9 @@
           />
         </div>
 
+
       </div>
 
-
-      <PomodoroAudioPlayer /> 
 
     </div>
 
@@ -51,7 +50,6 @@
       :longBreak="session.long_break"
     />
 
-
   </div>
 </template>
 
@@ -64,10 +62,11 @@ import { open, save } from "@tauri-apps/plugin-dialog"
 import SearchComponent from '../../components/shared/SearchComponent.vue';
 import BackBar from '../../components/shared/BackBar.vue';
 import PomodoroClock from '../../components/pomodoro/PomodoroClock.vue';
-import PomodoroAudioFileCarousel from '../../components/pomodoro/PomodoroAudioFileCarousel.vue';
 import PomodoroAudioPlayer from '../../components/pomodoro/PomodoroAudioPlayer.vue'; 
+import PomodoroAudioFileCarousel from '../../components/pomodoro/PomodoroAudioFileCarousel.vue';
 import EditPomodoroMetadata from './EditPomodoroMetadata.vue';
 import { pomodoroStore } from '../../api/Pomodoro';
+import { audioQueueStore } from '../../api/AudioQueue';
 
 let openWindow = ref(false);
 
@@ -110,7 +109,18 @@ export default {
   async mounted() {
     const route  = useRoute();
     const id = route.params.id;
-    this.session = await pomodoroStore.viewSession(id); 
+    this.session = await pomodoroStore.viewSession(id);
+
+    console.log("Queueing audio files for session");
+    const audioFiles = await pomodoroStore.viewPomoAudioFiles(id);
+    await audioQueueStore.queue(audioFiles);
+    await audioQueueStore.setCurrAudioFile(); 
+    await audioQueueStore.startQueue();
+    await audioQueueStore.initPlayer(); 
+
+  },
+  async beforeUnmount() {
+    await audioQueueStore.stopQueue(); 
   },
 }
 </script>

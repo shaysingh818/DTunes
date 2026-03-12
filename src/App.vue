@@ -2,6 +2,7 @@
 import NavigationBar from "./components/shared/NavigationBar.vue";
 import AudioPlayer from "./components/shared/AudioPlayer.vue";
 import { audioStore } from "./api/AudioFile";
+import { audioQueueStore } from './api/AudioQueue'; 
 
 </script>
 
@@ -12,16 +13,16 @@ import { audioStore } from "./api/AudioFile";
    <div class="flex">
     <NavigationBar />
     <AudioPlayer
-      v-if="audioStore.audioFilePlaying && audioStore.audioFilePlaying.audio_file_id"
-      :audioFileId="audioStore.audioFilePlaying.audio_file_id"
-      :title="audioStore.audioFilePlaying.file_name"
-      :datePosted="audioStore.audioFilePlaying.date_created"
-      :duration="audioStore.audioFilePlaying.duration"
-      :filePath="audioStore.audioFilePlaying.file_path"
-      :lastModified="audioStore.audioFilePlaying.last_modified"
-      :plays="audioStore.audioFilePlaying.plays"
-      :sampleRate="audioStore.audioFilePlaying.sample_rate"
-      :thumbnail="audioStore.audioFilePlaying.thumbnail"
+      v-if="audioQueueStore.started"
+      :audioFileId="audioQueueStore.currAudioFile.audio_file_id"
+      :title="audioQueueStore.currAudioFile.file_name"
+      :datePosted="audioQueueStore.currAudioFile.date_created"
+      :duration="audioQueueStore.currAudioFile.duration"
+      :filePath="audioQueueStore.currAudioFile.file_path"
+      :lastModified="audioQueueStore.currAudioFile.last_modified"
+      :plays="audioQueueStore.currAudioFile.plays"
+      :sampleRate="audioQueueStore.currAudioFile.sample_rate"
+      :thumbnail="audioQueueStore.currAudioFile.thumbnail"
     /> 
   </div>
 
