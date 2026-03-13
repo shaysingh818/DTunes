@@ -44,10 +44,10 @@
 
                 <div class="flex flex-col gap-2">
                     <div class="player-buttons">
-                        <div @click="audioStore.previousAudioFile()">
+                        <div @click="prevFile()">
                             <i :class="['fas', 'fa-backward', 'text-white']"></i>
                         </div>
-                        <div @click="audioStore.rewind()">
+                        <div @click="audioQueueStore.rewind()">
                             <i :class="['fas', 'fa-rotate-left', 'text-white']"></i>
                         </div>
                         <div v-if="audioQueueStore.playing == true" class="play-button" @click="pauseFile()">
@@ -56,10 +56,10 @@
                         <div v-if="audioQueueStore.resume == true && audioQueueStore.playing == false" class="play-button" @click="resumeFile()">
                             <i :class="['fas', 'fa-play', 'text-white']"></i>
                         </div>
-                        <div @click="audioStore.forward()">
+                        <div @click="audioQueueStore.forward()">
                             <i :class="['fas', 'fa-rotate-right', 'text-white']"></i>
                         </div>
-                        <div @click="audioQueueStore.nextAudioFile()">
+                        <div @click="nextFile()">
                             <i :class="['fas', 'fa-forward', 'text-white']"></i>
                         </div>
                     </div>
@@ -128,59 +128,84 @@ export default {
   methods: {
     async playFile() {
 
-        const audioFile = new AudioFile({
-            audio_file_id: this.audioFileId,
-            date_created: this.datePosted,
-            duration: this.duration,
-            file_name: this.title,
-            file_path: this.filePath,
-            last_modified: this.lastModified,
-            plays: this.plays,
-            sample_rate: this.sampleRate,
-            thumbnail: this.thumbnail
-        });
+      const duration = audioQueueStore.currAudioFile.duration; 
+      const filePath = audioQueueStore.currAudioFile.file_path;
 
+      audioQueueStore.playing = true;
+      audioQueueStore.duration = parseInt(duration);
+      
+      const fileBuffer = await readFile(`dtunes-audio-app/audio_files/${filePath}`, {
+        baseDir: BaseDirectory.Data,
+      });
 
-        const fileBuffer = await readFile(`dtunes-audio-app/images/${this.thumbnail}`, {
-            baseDir: BaseDirectory.Data,
-        });
+      const audioUrl = URL.createObjectURL(new Blob([fileBuffer]));
+      if(audioQueueStore.audioPlayerInterval == null) {
+        console.log("Creating new interval...", audioQueueStore.audioPlayerInterval);
+        audioQueueStore.audioPlayerInterval = setInterval(
+          this.updateRealtimePlayerInformation, 1000
+        )
+      }
 
-        const imageUrl = URL.createObjectURL(new Blob([fileBuffer]));
-        let imageElem = document.getElementById(`${this.audioFileId.toString()}-player`);
-        if(imageElem && imageElem instanceof HTMLImageElement) {
-          imageElem.src = imageUrl;
-        } else {
-          console.log(`${this.audioFileId} not found`)
-        }
-
-        audioQueueStore.playAudio();
+      audioQueueStore.playAudio(); 
     },
     async pauseFile() {
         audioQueueStore.pauseAudio();
     },
     async resumeFile() {
-        audioQueueStore.resumeAudio();
+        if(audioQueueStore.playing) {
+          audioQueueStore.resumeAudio();
+        } else {
+          this.playFile();
+        }
+
     },
+    async nextFile() {
+      await audioQueueStore.nextAudioFile();
+      await this.populatePlayerInformation();
+    },
+    async prevFile() {
+      await audioQueueStore.prevAudioFile();
+      await this.populatePlayerInformation();
+    },
+    async populatePlayerInformation() {
+
+        const fileBuffer = await readFile(`dtunes-audio-app/images/${audioQueueStore.currAudioFile.thumbnail}`, {
+            baseDir: BaseDirectory.Data,
+        });
+
+        const imageUrl = URL.createObjectURL(new Blob([fileBuffer]));
+        let imageElem = document.getElementById(`${audioQueueStore.currAudioFile.audio_file_id.toString()}-player`);
+        if(imageElem && imageElem instanceof HTMLImageElement) {
+          imageElem.src = imageUrl;
+        } else {
+          console.log(`${this.currAudioFile.audio_file_id} not found`)
+        }
+   
+        let durationElem = document.getElementById(`${audioQueueStore.currAudioFile.audio_file_id.toString()}-player-duration`);
+        if(durationElem) {
+          durationElem.innerHTML = await audioStore.convertSecondsToMinutes(parseInt(audioQueueStore.currAudioFile.duration)); 
+        }
+    },
+
+    async updateRealtimePlayerInformation() {
+
+      const durationElement = document.getElementById("duration-tracker");
+      const currentTime = audioQueueStore.currentTime; 
+      if(durationElement && currentTime > 0 && audioStore.playing)  {
+        const value = (currentTime/audioStore.duration) * 100;
+        console.log("CURRENT DURATION: ", value);  
+        durationElement.style.width = `${value}%`;
+      }
+
+      if(audioQueueStore.resume == false && audioQueueStore.playing == false) {
+        /* next audio file */ 
+      }
+
+    }
   },
-  async mounted() { 
-
-    const fileBuffer = await readFile(`dtunes-audio-app/images/${this.thumbnail}`, {
-        baseDir: BaseDirectory.Data,
-    });
-
-    const imageUrl = URL.createObjectURL(new Blob([fileBuffer]));
-    console.log("IMAGE URL: ", imageUrl)
-    let imageElem = document.getElementById(`${this.audioFileId.toString()}-player`);
-    if(imageElem && imageElem instanceof HTMLImageElement) {
-      imageElem.src = imageUrl;
-    } else {
-      console.log(`${this.audioFileId} not found`)
-    }
-
-    let durationElem = document.getElementById(`${this.audioFileId.toString()}-player-duration`);
-    if(durationElem) {
-      durationElem.innerHTML = await audioStore.convertSecondsToMinutes(parseInt(this.duration)); 
-    }
+  async mounted() {
+    console.log(audioQueueStore); 
+    await this.populatePlayerInformation();
   },
 }
 
