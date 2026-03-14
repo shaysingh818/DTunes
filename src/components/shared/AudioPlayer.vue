@@ -53,7 +53,10 @@
                         <div v-if="audioQueueStore.playing == true" class="play-button" @click="pauseFile()">
                             <i :class="['fas', 'fa-pause', 'text-white']"></i>
                         </div>
-                        <div v-if="audioQueueStore.resume == true && audioQueueStore.playing == false" class="play-button" @click="resumeFile()">
+                        <div v-if="audioQueueStore.active == true && audioQueueStore.playing == false && audioQueueStore.resume == false" class="play-button" @click="playFile()">
+                            <i :class="['fas', 'fa-play', 'text-white']"></i>
+                        </div>
+                        <div v-if="audioQueueStore.resume == true && audioQueueStore.paused == true" class="play-button" @click="resumeFile()">
                             <i :class="['fas', 'fa-play', 'text-white']"></i>
                         </div>
                         <div @click="audioQueueStore.forward()">
@@ -128,36 +131,23 @@ export default {
   methods: {
     async playFile() {
 
-      const duration = audioQueueStore.currAudioFile.duration; 
-      const filePath = audioQueueStore.currAudioFile.file_path;
+      console.log("starting new player"); 
+      await audioQueueStore.playAudio();
 
-      audioQueueStore.playing = true;
-      audioQueueStore.duration = parseInt(duration);
-      
-      const fileBuffer = await readFile(`dtunes-audio-app/audio_files/${filePath}`, {
-        baseDir: BaseDirectory.Data,
-      });
-
-      const audioUrl = URL.createObjectURL(new Blob([fileBuffer]));
       if(audioQueueStore.audioPlayerInterval == null) {
         console.log("Creating new interval...", audioQueueStore.audioPlayerInterval);
         audioQueueStore.audioPlayerInterval = setInterval(
           this.updateRealtimePlayerInformation, 1000
         )
       }
-
-      audioQueueStore.playAudio(); 
     },
     async pauseFile() {
         audioQueueStore.pauseAudio();
     },
     async resumeFile() {
-        if(audioQueueStore.playing) {
-          audioQueueStore.resumeAudio();
-        } else {
-          this.playFile();
-        }
-
+      console.log(audioQueueStore.playing);
+      console.log(audioQueueStore.resume); 
+      await audioQueueStore.resumeAudio(); 
     },
     async nextFile() {
       await audioQueueStore.nextAudioFile();
@@ -190,9 +180,9 @@ export default {
     async updateRealtimePlayerInformation() {
 
       const durationElement = document.getElementById("duration-tracker");
-      const currentTime = audioQueueStore.currentTime; 
-      if(durationElement && currentTime > 0 && audioStore.playing)  {
-        const value = (currentTime/audioStore.duration) * 100;
+      const currentTime = audioQueueStore.currentTime;
+      if(durationElement && audioQueueStore.playing == true)  {
+        const value = (audioQueueStore.currentTime/audioQueueStore.duration) * 100;
         console.log("CURRENT DURATION: ", value);  
         durationElement.style.width = `${value}%`;
       }

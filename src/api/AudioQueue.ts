@@ -6,31 +6,29 @@ import { AudioFile } from "./AudioFile";
 
 export const audioQueueStore = reactive({
 
-  audioFiles: [] as AudioFile[],
-  currentQueueIdx: 0,
-  previousQueueIdx: -1,
-  nextQueueIdx: 0,
-  started: false as boolean,
+  active: false as boolean,
   playing: false as boolean,
   resume: false as boolean,
   paused: false as boolean,
-  currentTime: 0 as number,
   duration: 0 as number,
-  currAudioFile: null as AudioFile | null,
   player: null as HTMLAudioElement | null,
+  audioFiles: [] as AudioFile[],
+  currentQueueIdx: 0, 
+  currentTime: 0 as number, 
+  currAudioFile: null as AudioFile | null,
   audioPlayerInterval: null as NodeJS.Timeout | null,
 
   startQueue() {
     console.log(this.audioFiles);
-    this.started = true; 
   },
 
   stopQueue() {
-    this.started = false; 
+    this.active = false; 
   },
 
   initPlayer() {
-    this.resume = true; 
+    this.active = true;
+    this.currentTime = -1;
   },
 
   queue(audioFiles: AudioFile[]) {
@@ -47,27 +45,43 @@ export const audioQueueStore = reactive({
     if(this.currentQueueIdx >= this.audioFiles.length-1) {
       console.log("Going back to beginning");
       this.currentQueueIdx = 0;
-      this.previousQueueIdx = -1;
-      this.nextQueueIdx = 1;
       this.currAudioFile = this.audioFiles[this.currentQueueIdx];
+      this.currentTime = -1; 
     } else {
       console.log("Cycling to next audio file");
       this.currentQueueIdx += 1;
-      this.previousQueueIdx += 1;
-      this.nextQueueIdx += 1;
-      this.currAudioFile = this.audioFiles[this.currentQueueIdx]; 
+      this.currAudioFile = this.audioFiles[this.currentQueueIdx];
+      this.currentTime = -1;
     }
 
   },
 
   prevAudioFile() {
-    console.log("Going to previous audio file"); 
-    this.currentQueueIdx -= 1;
-    this.previousQueueIdx -= 1;
-    this.nextQueueIdx -= 1;
+    if(this.currentQueueIdx <= 0) {
+      console.log("Going to end of queue");
+      this.currentQueueIdx = this.audioFiles.length-1;
+      this.currAudioFile = this.audioFiles[this.currentQueueIdx];
+      this.currentTime = -1;
+    } else {
+      console.log("Cycling to previous audio file");
+      this.currentQueueIdx -= 1; 
+      this.currAudioFile = this.audioFiles[this.currentQueueIdx];
+      this.currentTime = -1;
+    }
   },
 
   async playAudio() {
+
+    this.playing = true;
+    this.started = false;
+    this.duration = parseInt(this.currAudioFile.duration); 
+    const filePath = this.currAudioFile.file_path;
+
+    const fileBuffer = await readFile(`dtunes-audio-app/audio_files/${filePath}`, {
+        baseDir: BaseDirectory.Data,
+      });
+
+    const audioUrl = URL.createObjectURL(new Blob([fileBuffer]));
 
     try {
 
@@ -76,7 +90,8 @@ export const audioQueueStore = reactive({
 
       this.player.onended = () => {
         this.resume = false;  
-        this.playing = false;         
+        this.playing = false; 
+        console.log("does this get hit?"); 
       }
 
       this.player.onpause = () => {

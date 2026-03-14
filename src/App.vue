@@ -13,7 +13,7 @@ import { audioQueueStore } from './api/AudioQueue';
    <div class="flex">
     <NavigationBar />
     <AudioPlayer
-      v-if="audioQueueStore.started"
+      v-if="audioQueueStore.active == true"
       :audioFileId="audioQueueStore.currAudioFile.audio_file_id"
       :title="audioQueueStore.currAudioFile.file_name"
       :datePosted="audioQueueStore.currAudioFile.date_created"
