@@ -25,7 +25,7 @@
 
 <script>
 import { invoke } from "@tauri-apps/api/core";
-import { audioStore, AudioFile, updateAudioPlayerInformation } from "../../api/AudioFile";
+import { audioStore, AudioFile } from "../../api/AudioFile";
 import { pomodoroStore } from "../../api/Pomodoro";
 import { BaseDirectory, readFile } from '@tauri-apps/plugin-fs';
 

@@ -63,16 +63,6 @@ export class AudioFile {
 export const audioStore = reactive({
 
   audioFiles: [] as AudioFile[],
-  queuedAudioFiles: [] as AudioFile[],
-  audioFilePlaying: {} as AudioFile,
-  player: null as HTMLAudioElement | null,
-  playing: false as boolean,
-  paused: false as boolean, 
-  resume: false as boolean, 
-  currentTime: 0 as number,
-  duration: 0 as number,
-  queueIndex: 0 as number,
-  audioPlayerInterval: null as NodeJS.Timeout | null,
 
   async loadAudioFiles() {
     try {
@@ -186,26 +176,6 @@ export const audioStore = reactive({
 
 
 })
-
-export async function updateAudioPlayerInformation(audioFileId: string, thumbnail: string, duration: number) {
-
-    const fileBuffer = await readFile(`dtunes-audio-app/images/${thumbnail}`, {
-        baseDir: BaseDirectory.Data,
-    });
-
-    const imageUrl = URL.createObjectURL(new Blob([fileBuffer]));
-    let imageElem = document.getElementById(`${audioFileId}-player`);
-    if(imageElem && imageElem instanceof HTMLImageElement) {
-      imageElem.src = imageUrl;
-    } else {
-      console.log(`${audioFileId} not found`)
-    }
-
-    let durationElem = document.getElementById(`${audioFileId}-player-duration`);
-    if(durationElem) {
-      durationElem.innerHTML = await audioStore.convertSecondsToMinutes(duration); 
-    }
-}
 
 
 

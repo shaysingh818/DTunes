@@ -28,7 +28,7 @@
 
 <script>
 import { invoke } from "@tauri-apps/api/core";
-import { audioStore, AudioFile, updateAudioPlayerInformation } from "../../api/AudioFile";
+import { audioStore, AudioFile } from "../../api/AudioFile";
 import { BaseDirectory, readFile } from '@tauri-apps/plugin-fs';
 
 export default {
@@ -80,6 +80,8 @@ export default {
 
     async playFile() {
 
+        /*
+
         const audioFile = new AudioFile({
             audioFileId: this.audioFileId,
             dateCreated: this.datePosted,
@@ -103,7 +105,7 @@ export default {
           this.audioFileId.toString(), 
           this.thumbnail,
           parseInt(this.duration)
-        );
+        ); */
 
 
     },

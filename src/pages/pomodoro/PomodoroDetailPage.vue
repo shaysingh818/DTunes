@@ -120,7 +120,7 @@ export default {
 
   },
   async beforeUnmount() {
-    await audioQueueStore.stopQueue(); 
+    await audioQueueStore.reset(); 
   },
 }
 </script>

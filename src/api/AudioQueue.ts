@@ -4,8 +4,8 @@ import { dataDir} from '@tauri-apps/api/path';
 import { reactive } from 'vue';
 import { AudioFile } from "./AudioFile";
 
-export const audioQueueStore = reactive({
 
+const initialState = () => ({
   active: false as boolean,
   playing: false as boolean,
   resume: false as boolean,
@@ -17,6 +17,15 @@ export const audioQueueStore = reactive({
   currentTime: 0 as number, 
   currAudioFile: null as AudioFile | null,
   audioPlayerInterval: null as NodeJS.Timeout | null,
+})
+
+export const audioQueueStore = reactive({
+
+  ...initialState(),
+
+  reset() {
+    Object.assign(this, initialState())
+  },
 
   startQueue() {
     console.log(this.audioFiles);
@@ -46,12 +55,14 @@ export const audioQueueStore = reactive({
       console.log("Going back to beginning");
       this.currentQueueIdx = 0;
       this.currAudioFile = this.audioFiles[this.currentQueueIdx];
-      this.currentTime = -1; 
+      this.player.pause();  
+      this.playAudio(); 
     } else {
       console.log("Cycling to next audio file");
       this.currentQueueIdx += 1;
-      this.currAudioFile = this.audioFiles[this.currentQueueIdx];
-      this.currentTime = -1;
+      this.currAudioFile = this.audioFiles[this.currentQueueIdx]; 
+      this.player.pause();
+      this.playAudio(); 
     }
 
   },
@@ -61,19 +72,20 @@ export const audioQueueStore = reactive({
       console.log("Going to end of queue");
       this.currentQueueIdx = this.audioFiles.length-1;
       this.currAudioFile = this.audioFiles[this.currentQueueIdx];
-      this.currentTime = -1;
+      this.player.pause();
+      this.playAudio(); 
     } else {
       console.log("Cycling to previous audio file");
       this.currentQueueIdx -= 1; 
       this.currAudioFile = this.audioFiles[this.currentQueueIdx];
-      this.currentTime = -1;
+      this.player.pause(); 
+      this.playAudio(); 
     }
   },
 
   async playAudio() {
 
     this.playing = true;
-    this.started = false;
     this.duration = parseInt(this.currAudioFile.duration); 
     const filePath = this.currAudioFile.file_path;
 
