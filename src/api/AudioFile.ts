@@ -175,7 +175,6 @@ export const audioStore = reactive({
   },
 
 
-
   async convertSecondsToMinutes(seconds: number) {
     const hours = Math.floor(seconds / 3600); // Get full hours
     const minutes = Math.floor(seconds/60) // Get full minutes
@@ -185,51 +184,6 @@ export const audioStore = reactive({
     return `${hours}:${formattedMinutes}:${formattedSeconds}`;
   },
 
-  async queueAudioFiles(audioFileId: string) {
-
-    let audioFile = await this.viewAudioFile(audioFileId);
-    this.queuedAudioFiles.push(audioFile);
-
-    await this.loadAudioFiles();
-    this.audioFiles.forEach( (audioFile) => {
-      this.queuedAudioFiles.push(audioFile);
-    });
-
-    this.queueIndex = 0; 
-  },
-
-  async updateRealtimePlayerInformation() {
-
-    const durationElement = document.getElementById("duration-tracker");
-    const currentTime = audioStore.currentTime; 
-    if(durationElement && currentTime > 0 && audioStore.playing)  {
-      const value = (currentTime/audioStore.duration) * 100;
-      console.log("CURRENT DURATION: ", value);  
-      durationElement.style.width = `${value}%`;
-    }
-
-    if(audioStore.resume == false && audioStore.playing == false) {
-      audioStore.queueIndex += 1; 
-      const audioFile = audioStore.queuedAudioFiles[audioStore.queueIndex];
-      console.log("NEXT AUDIO FILE"); 
-      console.log(audioFile);
-      audioStore.pauseAudio(); 
-      audioStore.playAudio(audioFile); 
-    }
-
-    if(audioStore.queueIndex == audioStore.queuedAudioFiles.length) {
-      console.log("All tracks played, stopping interval")
-      if(audioStore.audioPlayerInterval) {
-        console.log("INTERVAL TO CLEAR ", this.audioPlayerInterval)
-        clearInterval(audioStore.audioPlayerInterval); 
-      }
-      audioStore.queuedAudioFiles = [];
-      audioStore.playing = false;
-      audioStore.audioFilePlaying = {} as AudioFile;  
-      audioStore.queueIndex = 0; 
-    }
-
-  }
 
 })
 
