@@ -115,12 +115,13 @@ export default {
     const audioFiles = await pomodoroStore.viewPomoAudioFiles(id);
     await audioQueueStore.queue(audioFiles);
     await audioQueueStore.setCurrAudioFile(); 
-    await audioQueueStore.startQueue();
     await audioQueueStore.initPlayer(); 
 
   },
   async beforeUnmount() {
-    await audioQueueStore.reset(); 
+    await audioQueueStore.reset();
+    pomodoroStore.pomodoroTimer.reset();
+    pomodoroStore.pomodoroTimer = null; 
   },
 }
 </script>

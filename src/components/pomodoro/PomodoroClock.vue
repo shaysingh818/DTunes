@@ -34,6 +34,7 @@
 
 <script setup>
 import { pomodoroStore, PomodoroTimer } from '../../api/Pomodoro';
+import { audioQueueStore } from '../../api/AudioQueue';
 </script>
 
 
@@ -41,7 +42,7 @@ import { pomodoroStore, PomodoroTimer } from '../../api/Pomodoro';
 import { ref,  onBeforeMount, onUnmounted } from 'vue'
 import { pomodoroStore } from '../../api/Pomodoro';
 import { onBeforeRouteLeave } from 'vue-router';
-//import { AudioQueue } from '../../api/AudioQueue';
+import { audioQueueStore } from '../../api/AudioQueue';
 
 let duration = ref(0);
 
@@ -110,6 +111,19 @@ export default {
       } else {
         console.log("Timer not defined"); 
       }
+
+      // need logic here to not conflict with audio player logic
+
+      console.log("starting new player"); 
+      await audioQueueStore.playAudio();
+
+      if(audioQueueStore.audioPlayerInterval == null) {
+        console.log("Creating new interval...", audioQueueStore.audioPlayerInterval);
+        audioQueueStore.audioPlayerInterval = setInterval(
+          this.updateRealtimePlayerInformation, 1000
+        )
+      }
+
     },
     async pauseTimer() {
       if(pomodoroStore.pomodoroTimer) {
@@ -150,21 +164,12 @@ export default {
   },
   beforeUnmount() {
     console.log("TIMER PAGE HAS BEEN UNMOUNTED");
-    if(pomodoroStore.pomodoroTimer) {
-      pomodoroStore.pomodoroTimer.stop();
-      console.log("TIMER has been stopped");  
-    } 
   },
   async mounted() {
 
     duration = this.duration * 60; 
     console.log(`Setting duration ${duration}`);
 
-    /*
-    this.audioQueue = new AudioQueue();
-    console.log("Queueing audio files for session");
-    const audioFiles = await pomodoroStore.viewPomoAudioFiles(this.sessionId.toString());
-    this.audioQueue.queue(audioFiles); */
 
   }
 }

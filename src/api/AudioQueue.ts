@@ -24,15 +24,22 @@ export const audioQueueStore = reactive({
   ...initialState(),
 
   reset() {
-    Object.assign(this, initialState())
-  },
+    
+    if(this.audioPlayerInterval) {
+      clearInterval(this.audioPlayerInterval);
+    }
 
-  startQueue() {
-    console.log(this.audioFiles);
-  },
+    if(this.player) {
+      this.player.pause(); 
+      this.player.src = ''; 
+      this.player = null;
+    }
 
-  stopQueue() {
-    this.active = false; 
+    const fresh = initialState();
+    for (const key in fresh) {
+      (this as any)[key] = fresh[key as keyof typeof fresh]; 
+    }
+
   },
 
   initPlayer() {
@@ -55,13 +62,17 @@ export const audioQueueStore = reactive({
       console.log("Going back to beginning");
       this.currentQueueIdx = 0;
       this.currAudioFile = this.audioFiles[this.currentQueueIdx];
-      this.player.pause();  
+      if(this.playing == true && this.player != null) {
+        this.player.pause();  
+      }
       this.playAudio(); 
     } else {
       console.log("Cycling to next audio file");
       this.currentQueueIdx += 1;
       this.currAudioFile = this.audioFiles[this.currentQueueIdx]; 
-      this.player.pause();
+      if(this.playing == true && this.player != null) {
+        this.player.pause();
+      }
       this.playAudio(); 
     }
 

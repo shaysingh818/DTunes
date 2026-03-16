@@ -56,7 +56,7 @@
                         <div v-if="audioQueueStore.active == true && audioQueueStore.playing == false && audioQueueStore.resume == false" class="play-button" @click="playFile()">
                             <i :class="['fas', 'fa-play', 'text-white']"></i>
                         </div>
-                        <div v-if="audioQueueStore.resume == true && audioQueueStore.paused == true" class="play-button" @click="resumeFile()">
+                        <div v-if="audioQueueStore.resume == true && audioQueueStore.paused == true && audioQueueStore.playing == false" class="play-button" @click="resumeFile()">
                             <i :class="['fas', 'fa-play', 'text-white']"></i>
                         </div>
                         <div @click="audioQueueStore.forward()">
@@ -145,8 +145,6 @@ export default {
         audioQueueStore.pauseAudio();
     },
     async resumeFile() {
-      console.log(audioQueueStore.playing);
-      console.log(audioQueueStore.resume); 
       await audioQueueStore.resumeAudio(); 
     },
     async nextFile() {
@@ -187,14 +185,9 @@ export default {
         durationElement.style.width = `${value}%`;
       }
 
-      if(audioQueueStore.resume == false && audioQueueStore.playing == false) {
-        /* next audio file */ 
-      }
-
     }
   },
   async mounted() {
-    console.log(audioQueueStore); 
     await this.populatePlayerInformation();
   },
 }

@@ -3,6 +3,7 @@ import { dataDir} from '@tauri-apps/api/path';
 import { reactive } from 'vue';
 import { audioStore, AudioFile } from "./AudioFile";
 
+
 export class PomodoroTimer {
 
     private timerId: NodeJS.Timeout | null = null;
@@ -28,6 +29,21 @@ export class PomodoroTimer {
       this.updateCallback = updateCallback;
       this.updateCallback(this.stringTimerValue);
       
+    }
+
+    reset() {
+
+      if(this.timerId) {
+        clearInterval(this.timerId); 
+        this.timerId = null;
+      }
+
+      this.remainingTime = null;
+      this.stringTimerValue = null; 
+      this.playing = false; 
+      this.paused = false; 
+      this.resumed = false;
+      this.updateCallback(this.stringTimerValue);
     }
 
     isPlaying(): boolean {

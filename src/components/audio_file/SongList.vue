@@ -33,6 +33,7 @@
 
 <script setup>
 import { audioStore } from "../../api/AudioFile";
+import { audioQueueStore } from '../../api/AudioQueue'; 
 import AudioFileCreate from "./AudioFileCreate.vue";
 </script>
 
@@ -92,7 +93,6 @@ export default {
         if(audioQueueStore.active == false) {
           await audioQueueStore.queue([audioFile]);
           await audioQueueStore.setCurrAudioFile();
-          await audioQueueStore.startQueue();
           await audioQueueStore.initPlayer();
         } else {
           await audioQueueStore.queue([audioFile]);

@@ -21,12 +21,14 @@
 
 <script setup>
 import { audioStore } from '../../api/AudioFile';
+import { audioQueueStore } from '../../api/AudioQueue'; 
 </script>
 
 <script>
 
 import SongList from './SongList.vue';
 import { audioStore } from '../../api/AudioFile';
+import { audioQueueStore } from '../../api/AudioQueue'; 
 
 export default {
   components: { SongList},
