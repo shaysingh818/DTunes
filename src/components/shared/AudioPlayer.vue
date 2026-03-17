@@ -179,13 +179,6 @@ export default {
     await this.populatePlayerInformation();
   },
 }
-
-
-
-
-
-
-
 </script>
 
 

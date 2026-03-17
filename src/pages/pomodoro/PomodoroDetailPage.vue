@@ -62,7 +62,6 @@ import { open, save } from "@tauri-apps/plugin-dialog"
 import SearchComponent from '../../components/shared/SearchComponent.vue';
 import BackBar from '../../components/shared/BackBar.vue';
 import PomodoroClock from '../../components/pomodoro/PomodoroClock.vue';
-import PomodoroAudioPlayer from '../../components/pomodoro/PomodoroAudioPlayer.vue'; 
 import PomodoroAudioFileCarousel from '../../components/pomodoro/PomodoroAudioFileCarousel.vue';
 import EditPomodoroMetadata from './EditPomodoroMetadata.vue';
 import { pomodoroStore } from '../../api/Pomodoro';
