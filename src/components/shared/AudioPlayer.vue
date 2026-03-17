@@ -50,13 +50,13 @@
                         <div @click="audioQueueStore.rewind()">
                             <i :class="['fas', 'fa-rotate-left', 'text-white']"></i>
                         </div>
-                        <div v-if="audioQueueStore.playing == true" class="play-button" @click="pauseFile()">
+                        <div v-if="audioQueueStore.isPaused()" class="play-button" @click="pauseFile()">
                             <i :class="['fas', 'fa-pause', 'text-white']"></i>
                         </div>
-                        <div v-if="audioQueueStore.active == true && audioQueueStore.playing == false && audioQueueStore.resume == false" class="play-button" @click="playFile()">
+                        <div v-if="audioQueueStore.isPlaying()" class="play-button" @click="playFile()">
                             <i :class="['fas', 'fa-play', 'text-white']"></i>
                         </div>
-                        <div v-if="audioQueueStore.resume == true && audioQueueStore.paused == true && audioQueueStore.playing == false" class="play-button" @click="resumeFile()">
+                        <div v-if="audioQueueStore.isResume()" class="play-button" @click="resumeFile()">
                             <i :class="['fas', 'fa-play', 'text-white']"></i>
                         </div>
                         <div @click="audioQueueStore.forward()">
@@ -137,7 +137,7 @@ export default {
       if(audioQueueStore.audioPlayerInterval == null) {
         console.log("Creating new interval...", audioQueueStore.audioPlayerInterval);
         audioQueueStore.audioPlayerInterval = setInterval(
-          this.updateRealtimePlayerInformation, 1000
+          audioQueueStore.updateRealtimePlayerInformation, 1000
         )
       }
     },
@@ -174,18 +174,6 @@ export default {
           durationElem.innerHTML = await audioStore.convertSecondsToMinutes(parseInt(audioQueueStore.currAudioFile.duration)); 
         }
     },
-
-    async updateRealtimePlayerInformation() {
-
-      const durationElement = document.getElementById("duration-tracker");
-      const currentTime = audioQueueStore.currentTime;
-      if(durationElement && audioQueueStore.playing == true)  {
-        const value = (audioQueueStore.currentTime/audioQueueStore.duration) * 100;
-        console.log("CURRENT DURATION: ", value);  
-        durationElement.style.width = `${value}%`;
-      }
-
-    }
   },
   async mounted() {
     await this.populatePlayerInformation();

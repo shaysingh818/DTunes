@@ -21,6 +21,8 @@ const initialState = () => ({
 
 export const audioQueueStore = reactive({
 
+  // add methods for paused, playing, resume states
+
   ...initialState(),
 
   reset() {
@@ -54,6 +56,18 @@ export const audioQueueStore = reactive({
   setCurrAudioFile() {
     this.currAudioFile = this.audioFiles[this.currentQueueIdx];
     console.log("Set current audio file");
+  },
+
+  isPlaying() {
+    return this.active == true && this.playing == false && this.resume == false;
+  },
+
+  isResume() {
+    return this.resume == true && this.paused == true && this.playing == false;
+  },
+
+  isPaused() {
+    return this.playing == true;
   },
 
   nextAudioFile() {
@@ -176,6 +190,16 @@ export const audioQueueStore = reactive({
       }
     }
   },
+
+  async updateRealtimePlayerInformation() {
+    const durationElement = document.getElementById("duration-tracker");
+    const currentTime = audioQueueStore.currentTime;
+    if(durationElement && audioQueueStore.playing == true)  {
+      const value = (audioQueueStore.currentTime/audioQueueStore.duration) * 100;
+      console.log("CURRENT DURATION: ", value);  
+      durationElement.style.width = `${value}%`;
+    }
+  }, 
 
 });
 

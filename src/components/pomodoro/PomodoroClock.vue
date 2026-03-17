@@ -112,16 +112,18 @@ export default {
         console.log("Timer not defined"); 
       }
 
-      // need logic here to not conflict with audio player logic
+      if(audioQueueStore.isPlaying()) {
+        await audioQueueStore.playAudio(); 
+        if(audioQueueStore.audioPlayerInterval == null) {
+          console.log("Creating new interval...", audioQueueStore.audioPlayerInterval);
+          audioQueueStore.audioPlayerInterval = setInterval(
+            audioQueueStore.updateRealtimePlayerInformation, 1000
+          )
+        }
+      }
 
-      console.log("starting new player"); 
-      await audioQueueStore.playAudio();
-
-      if(audioQueueStore.audioPlayerInterval == null) {
-        console.log("Creating new interval...", audioQueueStore.audioPlayerInterval);
-        audioQueueStore.audioPlayerInterval = setInterval(
-          this.updateRealtimePlayerInformation, 1000
-        )
+      if(audioQueueStore.isResume()) {
+        await audioQueueStore.resumeAudio();
       }
 
     },
@@ -130,12 +132,23 @@ export default {
         console.log("Pausing Timer"); 
         pomodoroStore.pomodoroTimer.pause(); 
       }
+
+      if(audioQueueStore.isPaused()) {
+        audioQueueStore.pauseAudio();
+      }
+
     },
     async resumeTimer() {
       if(pomodoroStore.pomodoroTimer) {
         console.log("Resuming timer"); 
         pomodoroStore.pomodoroTimer.resume(); 
       }
+
+      if(audioQueueStore.isResume()) {
+        console.log("Resuming audio player");
+        audioQueueStore.resumeAudio();
+      }
+
     },
     startCondition() {
       if(pomodoroStore.pomodoroTimer) {
@@ -166,11 +179,8 @@ export default {
     console.log("TIMER PAGE HAS BEEN UNMOUNTED");
   },
   async mounted() {
-
     duration = this.duration * 60; 
     console.log(`Setting duration ${duration}`);
-
-
   }
 }
 
