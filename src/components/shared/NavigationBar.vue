@@ -22,7 +22,7 @@ import NavigationItem from "./NavigationItem.vue";
           <NavigationItem icon="fa-clock" nav-title="pomodoro" />
         </RouterLink>
 
-        <RouterLink to="/pomodoro" class="block p-2"> 
+        <RouterLink to="/pomodoro-session-tracking" class="block p-2"> 
           <NavigationItem icon="fa-chart-bar" nav-title="metrics" />
         </RouterLink>
       </nav>
