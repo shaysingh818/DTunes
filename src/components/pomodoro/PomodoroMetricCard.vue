@@ -4,17 +4,10 @@
 
     <div class="card-container">
 
-      <div class="flex flex-col gap-2">
+      <h1> {{ metricTitle }} </h1>
 
-        <div class="title-header">
-            <h1> {{ metricTitle }} </h1>
-        </div>
+      <h2> {{ metricNumber }} </h2>
 
-        <div class="metric-header">
-            <h1> {{ metricNumber }} </h1>
-        </div>
-
-      </div>
 
     </div>
 
@@ -43,33 +36,33 @@ export default {
 <style scoped>
 
 .card-component {
-  width: 400px;
-  height: 100%; 
-  border: 1px solid white; 
+  width: 100%;
+  height: 100%;
+  padding: 10px; 
 }
 
 .card-container {
-  border-radius: 3%;
   display: flex;
-  height: 250px; 
-  width: 300px; 
-  background-color: rgb(28 25 23);
-}
-
-.title-header {
-  display: flex;
+  flex-direction: column;
   align-items: center;
+  text-align: center; 
   justify-content: center;
-  width: 60px; 
-  padding: 6px; 
-  white-space: nowrap;
-  overflow: hidden; 
-  text-overflow: ellipsis;
+  height: 100%;
+  width: 100%;
+  border-radius: 3%;
+  background-color: rgb(28 25 23);
+  padding: 20px;
 }
 
+h1 {
+  color: white;
+  font-weight: bold; 
+}
 
-.metric-header {
-
+h2 {
+  color: rgb(153 27 27);
+  font-weight: bold;
+  font-size: 30px; 
 }
 
 </style>

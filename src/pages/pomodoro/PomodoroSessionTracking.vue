@@ -1,40 +1,72 @@
 <script>
 import PomodoroMetricCard from '../../components/pomodoro/PomodoroMetricCard.vue'; 
+import { Bar } from 'vue-chartjs'; 
+import { Chart as ChartJS, BarElement, CategoryScale, LinearScale, Tooltip, Legend } from 'chart.js';
+
+ChartJS.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend)
+
+export default {
+  components: { PomodoroMetricCard, Bar },
+  data() {
+    const labels = [];
+    for (let i = 29; i >= 0; i--) {
+      const date = new Date();
+      date.setDate(date.getDate() - i);
+      labels.push(date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
+    }
+
+    return {
+      data: {
+        labels,
+        datasets: [
+          {
+            label: 'Hours Focused',
+            data: [2, 4, 3, 5, 1, 2, 3, 4, 2, 1, 5, 3, 4, 2, 3, 2, 6, 7, 9, 3, 4, 2, 5, 1, 3, 6, 4, 2, 5],
+            backgroundColor: 'rgba(153, 27, 27, 0.8)'
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false
+      }
+    }
+}
+}
+
 </script>
 
 <template>
 
   <div class="page-container">
 
-    <div class="card-grid">
+    <div class="metric-cards">
 
-      <div class="cards">
+      <PomodoroMetricCard
+        metricTitle="Total Number Hours Focused"
+        :metricNumber=24
+      />
 
-        <PomodoroMetricCard
-          metricTitle="Total Number Hours Focused"
-          metricNumber=24
-        />
+      <PomodoroMetricCard
+        metricTitle="Average Hours Focused Per Week"
+        :metricNumber=10
+      />
 
-        <PomodoroMetricCard
-          metricTitle="Average Hours Focused Per Week"
-          metricNumber=10
-        />
+      <PomodoroMetricCard
+        metricTitle="Average Hours Focused Per Month"
+        :metricNumber=37
+      />
 
-        <PomodoroMetricCard
-          metricTitle="Average Hours Focused Per Month"
-          metricNumber=37
-        />
+      <PomodoroMetricCard
+        metricTitle="Average Hours Focused Per Day"
+        :metricNumber=3
+      />
 
-        <PomodoroMetricCard
-          metricTitle="Average Hours Focused Per Day"
-          metricNumber=3
-        />
+    </div>
 
-      </div>
-
-    </div> 
-
-
+    <div class="bar-chart">
+      <Bar :data="data" :options="options" />
+    </div>
 
   </div>
 
@@ -44,30 +76,23 @@ import PomodoroMetricCard from '../../components/pomodoro/PomodoroMetricCard.vue
 
 <style scoped>
 
-.card-grid {
+.page-container {
+    flex-direction: column; 
+}
+
+
+.metric-cards {
   height: 200px;
   width: 100%; 
-  border: 1px solid white; 
+  flex-direction: row;
+  display: flex; 
 }
 
-.cards {
-  display: grid; 
-  gap: 1rem; 
-  margin: 0 auto; 
-  overflow: auto;
-  border: 1px solid white; 
+.bar-chart {
+  height: 400px;
+  width: 100%; 
 }
 
-@media (min-width: 600px) {
-  .cards { grid-template-columns: repeat(2, 1fr); }
-}
 
-@media (min-width: 800px) {
-  .cards { grid-template-columns: repeat(3, 1fr); }
-}
-
-@media (min-width: 1000px) {
-  .cards { grid-template-columns: repeat(4, 1fr); }
-}
 
 </style>
