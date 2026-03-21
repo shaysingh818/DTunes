@@ -77,7 +77,9 @@ export default {
 <style scoped>
 
 .page-container {
-    flex-direction: column; 
+    flex-direction: column;
+    min-height: 100vh;
+    margin: 0; 
 }
 
 
@@ -89,8 +91,9 @@ export default {
 }
 
 .bar-chart {
-  height: 400px;
-  width: 100%; 
+  flex: 1 1 0; 
+  width: 100%;
+  min-height: 0; 
 }
 
 
