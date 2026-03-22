@@ -272,3 +272,141 @@ pub fn play_pomodoro_alarm_sound(file_path: &str) {
     let _ = stream_handle.play_raw(source.convert_samples());
     std::thread::sleep(std::time::Duration::from_secs(10));
 }
+
+
+#[tauri::command]
+pub fn create_pomodoro_tracking_session(
+    user_db_path: &str,
+    duration: usize,
+    session_id: usize,
+) -> String {
+    let conn = match Connection::open(user_db_path) {
+        Ok(connection) => connection,
+        Err(e) => return format!("Failed to open database: {}", e),
+    };
+
+    let mut session = PomodoroSessionTracking::new(
+        duration,
+        session_id
+    );
+
+    match session.insert(&conn) {
+        Ok(()) => {
+            let _ = conn.close();
+            return "Success".to_string();
+        }
+        Err(e) => format!("Failed to insert session tracking metadata: {}", e),
+    }
+}
+
+
+#[tauri::command]
+pub fn retrieve_pomodoro_tracking_monthly_usage(user_db_path: &str) -> Vec<PomodoroMonthlyUsageResult> {
+
+    let conn = match Connection::open(user_db_path) {
+        Ok(connection) => connection,
+        Err(e) => {
+            println!("{:?}", e);
+            return Vec::new();
+        }
+    };
+
+    match PomodoroSessionTracking::retrieve_monthly_usage(&conn) {
+        Ok(sessions) => sessions,
+        Err(e) => {
+            println!("Error retrieving monthly usage: {:?}", e);
+            Vec::new()
+        }
+    }
+
+}
+
+
+#[tauri::command]
+pub fn retrieve_pomodoro_tracking_total_hours(user_db_path: &str) -> f64 {
+
+    let conn = match Connection::open(user_db_path) {
+        Ok(connection) => connection,
+        Err(e) => {
+            println!("{:?}", e);
+            return 0.0;
+        }
+    };
+
+    match PomodoroSessionTracking::retrieve_total_hours(&conn) {
+        Ok(total_hours) => total_hours,
+        Err(e) => {
+            println!("Error retrieving total hours: {:?}", e);
+            0.0
+        }
+    }
+
+}
+
+
+#[tauri::command]
+pub fn retrieve_pomodoro_tracking_monthly_hours_average(user_db_path: &str) -> f64 {
+
+    let conn = match Connection::open(user_db_path) {
+        Ok(connection) => connection,
+        Err(e) => {
+            println!("{:?}", e);
+            return 0.0;
+        }
+    };
+
+    match PomodoroSessionTracking::retrieve_monthly_hours_average(&conn) {
+        Ok(total_hours) => total_hours,
+        Err(e) => {
+            println!("Error retrieving monthly hours average: {:?}", e);
+            0.0
+        }
+    }
+
+}
+
+
+#[tauri::command]
+pub fn retrieve_pomodoro_tracking_weekly_hours_average(user_db_path: &str) -> f64 {
+
+    let conn = match Connection::open(user_db_path) {
+        Ok(connection) => connection,
+        Err(e) => {
+            println!("{:?}", e);
+            return 0.0;
+        }
+    };
+
+    match PomodoroSessionTracking::retrieve_weekly_hours_average(&conn) {
+        Ok(average_hours) => average_hours,
+        Err(e) => {
+            println!("Error retrieving average hours weekly: {:?}", e);
+            0.0
+        }
+    }
+
+}
+
+
+#[tauri::command]
+pub fn retrieve_pomodoro_tracking_daily_hours_average(user_db_path: &str) -> f64 {
+
+    let conn = match Connection::open(user_db_path) {
+        Ok(connection) => connection,
+        Err(e) => {
+            println!("{:?}", e);
+            return 0.0;
+        }
+    };
+
+    match PomodoroSessionTracking::retrieve_daily_hours_average(&conn) {
+        Ok(average_hours) => average_hours,
+        Err(e) => {
+            println!("Error retrieving average hours daily: {:?}", e);
+            0.0
+        }
+    }
+
+}
+
+

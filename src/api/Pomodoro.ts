@@ -419,4 +419,110 @@ export const pomodoroStore = reactive({
     }
   },
 
-}); 
+});
+
+
+export class PomodoroMonthlyUsageResult {
+  day: string;
+  hoursPerDay: number;
+
+  constructor({ day, hoursPerDay }: { day: number; hoursPerDay: string; }) {
+    this.day = day;
+    this.hoursPerDay = hoursPerDay;
+  }
+}
+
+
+export const pomodoroTrackingStore = reactive({
+
+  monthly_usage_sessions: [] as PomodoroMonthlyUsageResult,
+
+  async createTrackingSession(duration: number, sessionId: number): Promise<string> {
+
+    const dataDirPath = await dataDir(); 
+    const userDbPath = `${dataDirPath}/dtunes-audio-app/metadata/dtunes-audio-app.sqlite3`; 
+
+    return await invoke("create_tracking_session", { 
+        userDbPath,
+        duration,
+        sessionId
+    });
+  },
+
+  async retrieveTrackingMonthlyUsage() {
+
+    try {
+        const dataDirPath = await dataDir(); 
+        const userDbPath = `${dataDirPath}/dtunes-audio-app/metadata/dtunes-audio-app.sqlite3`;
+        const sessions = await invoke<PomodoroMonthlyUsageResult>('retrieve_pomodoro_tracking_monthly_usage', { userDbPath});
+        this.monthly_usage_sessions = sessions;
+
+    } catch(error) {
+        console.error("Error loading monthly usage sessions: ", error); 
+    }
+
+  },
+
+  async retrieveTotalHours(): number {
+    try {
+        const dataDirPath = await dataDir(); 
+        const userDbPath = `${dataDirPath}/dtunes-audio-app/metadata/dtunes-audio-app.sqlite3`;
+        const totalHours = await invoke<number>(
+          'retrieve_pomodoro_tracking_total_hours', 
+          { userDbPath}
+        );
+        return totalHours; 
+
+    } catch(error) {
+        console.error("Error loading total hours for session tracking: ", error); 
+    }
+  },
+
+
+  async retrieveMonthlyHoursAverage(): number {
+    try {
+        const dataDirPath = await dataDir(); 
+        const userDbPath = `${dataDirPath}/dtunes-audio-app/metadata/dtunes-audio-app.sqlite3`;
+        const monthlyHours = await invoke<number>(
+          'retrieve_pomodoro_tracking_monthly_hours_average', 
+          { userDbPath}
+        );
+        return monthlyHours; 
+
+    } catch(error) {
+        console.error("Error loading average monthly hours: ", error); 
+    }
+  }, 
+
+
+  async retrieveWeeklyHoursAverage(): number {
+    try {
+        const dataDirPath = await dataDir(); 
+        const userDbPath = `${dataDirPath}/dtunes-audio-app/metadata/dtunes-audio-app.sqlite3`;
+        const totalHours = await invoke<number>(
+          'retrieve_pomodoro_tracking_weekly_hours_average', 
+          { userDbPath}
+        );
+        return totalHours; 
+
+    } catch(error) {
+        console.error("Error loading average weekly hours: ", error); 
+    }
+  },
+
+  async retrieveDailyHoursAverage(): number {
+    try {
+        const dataDirPath = await dataDir(); 
+        const userDbPath = `${dataDirPath}/dtunes-audio-app/metadata/dtunes-audio-app.sqlite3`;
+        const dailyHours = await invoke<number>(
+          'retrieve_pomodoro_tracking_daily_hours_average', 
+          { userDbPath}
+        );
+        return dailyHours; 
+
+    } catch(error) {
+        console.error("Error loading average daily hours: ", error); 
+    }
+  },
+
+});  

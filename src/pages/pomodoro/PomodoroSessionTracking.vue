@@ -1,13 +1,23 @@
 <script>
+import { pomodoroTrackingStore } from '../../api/Pomodoro';
 import PomodoroMetricCard from '../../components/pomodoro/PomodoroMetricCard.vue'; 
 import { Bar } from 'vue-chartjs'; 
-import { Chart as ChartJS, BarElement, CategoryScale, LinearScale, Tooltip, Legend } from 'chart.js';
+import { 
+  Chart as ChartJS, 
+  BarElement, 
+  CategoryScale, 
+  LinearScale, 
+  Tooltip, 
+  Legend 
+} from 'chart.js';
+
 
 ChartJS.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend)
 
 export default {
   components: { PomodoroMetricCard, Bar },
   data() {
+
     const labels = [];
     for (let i = 29; i >= 0; i--) {
       const date = new Date();
@@ -16,12 +26,16 @@ export default {
     }
 
     return {
+      totalHours: 0,
+      weeklyHours: 0,
+      monthlyHours: 0,
+      dailyHours: 0,
       data: {
         labels,
         datasets: [
           {
             label: 'Hours Focused',
-            data: [2, 4, 3, 5, 1, 2, 3, 4, 2, 1, 5, 3, 4, 2, 3, 2, 6, 7, 9, 3, 4, 2, 5, 1, 3, 6, 4, 2, 5],
+            data: [],
             backgroundColor: 'rgba(153, 27, 27, 0.8)'
           }
         ]
@@ -31,7 +45,30 @@ export default {
         maintainAspectRatio: false
       }
     }
-}
+  },
+  async mounted() {
+    
+    await pomodoroTrackingStore.retrieveTrackingMonthlyUsage();
+
+    this.totalHours = await pomodoroTrackingStore.retrieveTotalHours();
+    this.monthlyHours = await pomodoroTrackingStore.retrieveMonthlyHoursAverage();
+    this.weeklyHours = await pomodoroTrackingStore.retrieveWeeklyHoursAverage();
+    this.dailyHours = await pomodoroTrackingStore.retrieveDailyHoursAverage();
+
+    const myData = pomodoroTrackingStore.monthly_usage_sessions
+      .map(item => item.hours_per_day);
+
+    this.data = {
+    ...this.data,
+    datasets: [
+      {
+        ...this.data.datasets[0],
+        data: myData
+      }
+    ]
+  };
+
+  }
 }
 
 </script>
@@ -44,22 +81,22 @@ export default {
 
       <PomodoroMetricCard
         metricTitle="Total Number Hours Focused"
-        :metricNumber=24
+        :metricNumber=totalHours
       />
 
       <PomodoroMetricCard
         metricTitle="Average Hours Focused Per Week"
-        :metricNumber=10
+        :metricNumber=weeklyHours
       />
 
       <PomodoroMetricCard
         metricTitle="Average Hours Focused Per Month"
-        :metricNumber=37
+        :metricNumber=monthlyHours
       />
 
       <PomodoroMetricCard
         metricTitle="Average Hours Focused Per Day"
-        :metricNumber=3
+        :metricNumber=dailyHours
       />
 
     </div>

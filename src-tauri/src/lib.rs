@@ -2,14 +2,33 @@ pub mod dtunes_api;
 pub mod handlers;
 
 use crate::handlers::audio_file::{
-    create_audio_file, delete_audio_file, edit_audio_file, play_audio_file, search_audio_files,
-    view_audio_file, view_audio_files,
+    create_audio_file, 
+    delete_audio_file, 
+    edit_audio_file, 
+    play_audio_file, 
+    search_audio_files,
+    view_audio_file, 
+    view_audio_files,
 };
 
 use crate::handlers::pomodoro::{
-    add_audio_file_pomodoro, create_pomodoro, delete_pomodoro_session, edit_pomodoro,
-    remove_audio_file_pomodoro, search_pomodoro_audio_files, search_pomodoro_sessions,
-    view_pomodoro_audio_files, view_pomodoro_session, view_pomodoro_sessions, play_pomodoro_alarm_sound
+    add_audio_file_pomodoro, 
+    create_pomodoro, 
+    delete_pomodoro_session, 
+    edit_pomodoro,
+    remove_audio_file_pomodoro, 
+    search_pomodoro_audio_files, 
+    search_pomodoro_sessions,
+    view_pomodoro_audio_files, 
+    view_pomodoro_session, 
+    view_pomodoro_sessions, 
+    play_pomodoro_alarm_sound,
+    create_pomodoro_tracking_session,
+    retrieve_pomodoro_tracking_monthly_usage,
+    retrieve_pomodoro_tracking_total_hours, 
+    retrieve_pomodoro_tracking_monthly_hours_average,
+    retrieve_pomodoro_tracking_weekly_hours_average,
+    retrieve_pomodoro_tracking_daily_hours_average,
 };
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
@@ -41,7 +60,15 @@ pub fn run() {
             remove_audio_file_pomodoro,
             search_pomodoro_sessions,
             search_pomodoro_audio_files,
-            play_pomodoro_alarm_sound
+            play_pomodoro_alarm_sound,
+
+            /* Pomodoro Tracking Session Endpoints */ 
+            create_pomodoro_tracking_session,
+            retrieve_pomodoro_tracking_monthly_usage,
+            retrieve_pomodoro_tracking_total_hours,
+            retrieve_pomodoro_tracking_monthly_hours_average,
+            retrieve_pomodoro_tracking_weekly_hours_average,
+            retrieve_pomodoro_tracking_daily_hours_average,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
