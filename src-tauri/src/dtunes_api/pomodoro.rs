@@ -121,8 +121,17 @@ impl Pomodoro {
     }
 
     pub fn delete(conn: &Connection, id: &str) -> Result<()> {
-        conn.execute("DELETE FROM POMODORO_SESSION WHERE SESSION_ID=?", [id])?;
-        Ok(())
+        let result = conn.execute("DELETE FROM POMODORO_SESSION WHERE SESSION_ID=?", [id]);
+        match result {
+            Ok(_) => {
+                println!("Succesfully deleted pomodoro session"); 
+                return Ok(());
+            },
+            Err(err) => {
+                println!("Error Deleting pomodoro session {:?}", err); 
+                return Err(err);
+            }
+        }
     }
 
     pub fn view(conn: &Connection, id: &str) -> Result<Pomodoro> {
@@ -264,7 +273,6 @@ impl Pomodoro {
 pub struct PomodoroSessionTracking {
     pub tracking_session_id: usize,
     pub duration: usize,
-    pub session_id: usize,
     pub date_created: String,
 }
 
@@ -276,14 +284,12 @@ pub struct PomodoroMonthlyUsageResult {
 }
 
 
-
 impl PomodoroSessionTracking {
 
-    pub fn new(duration: usize, session_id: usize) -> PomodoroSessionTracking {
+    pub fn new(duration: usize) -> PomodoroSessionTracking {
         PomodoroSessionTracking {
             tracking_session_id: 0,
             duration: duration,
-            session_id: 0, 
             date_created: chrono::offset::Local::now().to_string(),
         }
     }
@@ -293,11 +299,10 @@ impl PomodoroSessionTracking {
 
         let result = conn.execute(
             "INSERT INTO POMODORO_SESSION_TRACKING 
-                (DURATION, SESSION_ID, DATE_CREATED) 
-                VALUES (?1, ?2, ?3)",
+                (DURATION, DATE_CREATED) 
+                VALUES (?1, ?2)",
             [
                 &self.duration.to_string(),
-                &self.session_id.to_string(),
                 &self.date_created,
             ],
         );
@@ -305,7 +310,6 @@ impl PomodoroSessionTracking {
         match result {
             Ok(_) => {
                 println!("Successfully inserted pomodoro tracking session");
-                self.session_id = conn.last_insert_rowid() as usize; 
                 return Ok(())
             },
             Err(err) => {

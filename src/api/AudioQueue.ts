@@ -17,6 +17,7 @@ const initialState = () => ({
   currentTime: 0 as number, 
   currAudioFile: null as AudioFile | null,
   audioPlayerInterval: null as NodeJS.Timeout | null,
+  _currentBlobUrl: null as string | null,
 })
 
 export const audioQueueStore = reactive({
@@ -114,21 +115,31 @@ export const audioQueueStore = reactive({
     this.duration = parseInt(this.currAudioFile.duration); 
     const filePath = this.currAudioFile.file_path;
 
+    if(this.player) {
+      this.player.pause();
+      this.player.src = '';
+      this.player.load(); 
+      this.player = null;
+    }
+
     const fileBuffer = await readFile(`dtunes-audio-app/audio_files/${filePath}`, {
         baseDir: BaseDirectory.Data,
       });
 
+    if(this._currentBlobUrl) {
+      URL.revokeObjectURL(this._currentBlobUrl);
+    }
+
     const audioUrl = URL.createObjectURL(new Blob([fileBuffer]));
+    this._currentBlobUrl = audioUrl;
 
     try {
 
       this.player = new Audio(audioUrl);
-      this.player.play();
 
       this.player.onended = () => {
         this.resume = false;  
         this.playing = false; 
-        console.log("does this get hit?"); 
       }
 
       this.player.onpause = () => {
@@ -143,6 +154,14 @@ export const audioQueueStore = reactive({
           this.currentTime  = this.player.currentTime;
         }
       }
+
+      await new Promise<void>((resolve) => {
+          this.player!.oncanplaythrough = () => resolve();
+          this.player!.load();
+      }); 
+
+
+      await this.player.play();
 
     } catch (error) {
       console.error("Could not play audio file: ", error);
@@ -161,8 +180,8 @@ export const audioQueueStore = reactive({
   async resumeAudio() {
     console.log("resume audio being called"); 
     if(this.paused && this.player) {
-      this.player.play();
       this.player.currentTime = this.currentTime;
+      await this.player.play();
       this.playing = true;
       this.paused = false; 
       this.resume = false;

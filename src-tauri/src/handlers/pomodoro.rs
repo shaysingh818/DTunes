@@ -275,20 +275,14 @@ pub fn play_pomodoro_alarm_sound(file_path: &str) {
 
 
 #[tauri::command]
-pub fn create_pomodoro_tracking_session(
-    user_db_path: &str,
-    duration: usize,
-    session_id: usize,
-) -> String {
+pub fn create_pomodoro_tracking_session(user_db_path: &str, duration: usize) -> String {
+
     let conn = match Connection::open(user_db_path) {
         Ok(connection) => connection,
         Err(e) => return format!("Failed to open database: {}", e),
     };
 
-    let mut session = PomodoroSessionTracking::new(
-        duration,
-        session_id
-    );
+    let mut session = PomodoroSessionTracking::new(duration);
 
     match session.insert(&conn) {
         Ok(()) => {

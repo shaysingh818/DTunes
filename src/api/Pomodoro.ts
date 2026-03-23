@@ -437,16 +437,12 @@ export const pomodoroTrackingStore = reactive({
 
   monthly_usage_sessions: [] as PomodoroMonthlyUsageResult,
 
-  async createTrackingSession(duration: number, sessionId: number): Promise<string> {
+  async createTrackingSession(duration: number): Promise<string> {
 
     const dataDirPath = await dataDir(); 
     const userDbPath = `${dataDirPath}/dtunes-audio-app/metadata/dtunes-audio-app.sqlite3`; 
 
-    return await invoke("create_tracking_session", { 
-        userDbPath,
-        duration,
-        sessionId
-    });
+    return await invoke("create_tracking_session", { userDbPath, duration });
   },
 
   async retrieveTrackingMonthlyUsage() {

@@ -135,7 +135,7 @@ impl AudioFile {
                 return Ok(());
             },
             Err(err) => {
-                println!("Error Deleting audio file"); 
+                println!("Error Deleting audio file {:?}", err); 
                 return Err(err);
             }
         }

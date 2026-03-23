@@ -230,17 +230,21 @@ pub fn delete_audio_file(
             let usr_thumbnail_path = format!("{}/{}", user_thumbnail_path, audio_file.thumbnail);
             let usr_file_path = format!("{}/{}", user_audio_file_path, audio_file.file_path);
 
-            match fs::remove_file(usr_thumbnail_path.clone()) {
-                Ok(_result) => {
-                    println!(
-                        "Successfully removed audio file thumbnail {:?}",
-                        usr_thumbnail_path.clone()
-                    );
-                }
-                Err(e) => {
-                    println!("Error removing audio file thumbnail {:?}", e);
+            if audio_file.thumbnail != "default_dtunes_thumbnail.webp" {
+
+                match fs::remove_file(usr_thumbnail_path.clone()) {
+                    Ok(_result) => {
+                        println!(
+                            "Successfully removed audio file thumbnail {:?}",
+                            usr_thumbnail_path.clone()
+                        );
+                    }
+                    Err(e) => {
+                        println!("Error removing audio file thumbnail {:?}", e);
+                    }
                 }
             }
+
 
             match fs::remove_file(usr_file_path.clone()) {
                 Ok(_result) => {

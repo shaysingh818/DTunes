@@ -112,15 +112,19 @@ export default {
 
     console.log("Queueing audio files for session");
     const audioFiles = await pomodoroStore.viewPomoAudioFiles(id);
-    await audioQueueStore.queue(audioFiles);
-    await audioQueueStore.setCurrAudioFile(); 
-    await audioQueueStore.initPlayer(); 
+    if(audioFiles.length > 0) {
+      await audioQueueStore.queue(audioFiles);
+      await audioQueueStore.setCurrAudioFile(); 
+      await audioQueueStore.initPlayer(); 
+    }
 
   },
   async beforeUnmount() {
     await audioQueueStore.reset();
-    pomodoroStore.pomodoroTimer.reset();
-    pomodoroStore.pomodoroTimer = null; 
+    if(pomodoroStore.pomodoTimer) {
+      pomodoroStore.pomodoroTimer.reset();
+      pomodoroStore.pomodoroTimer = null; 
+    }
   },
 }
 </script>
