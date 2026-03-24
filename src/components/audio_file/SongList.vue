@@ -33,14 +33,15 @@
 
 <script setup>
 import { audioStore } from "../../api/AudioFile";
+import { audioQueueStore } from '../../api/AudioQueue'; 
 import AudioFileCreate from "./AudioFileCreate.vue";
 </script>
 
 <script>
 import { invoke } from "@tauri-apps/api/core";
-import { audioStore, AudioFile } from "../../api/AudioFile";
 import { BaseDirectory, readFile } from '@tauri-apps/plugin-fs';
-import { updateAudioPlayerInformation } from "../../api/AudioFile";
+import { audioStore, AudioFile } from "../../api/AudioFile";
+import { audioQueueStore } from '../../api/AudioQueue'; 
 
 export default {
   name: 'SongList',
@@ -86,49 +87,19 @@ export default {
   methods: {
 
     async queueAudio() {
-        
+
         const audioFile =  await audioStore.viewAudioFile(this.audioFileId.toString());
-        if(audioStore.queuedAudioFiles.length == 0) {
-          console.log("NO songs on queue... adding"); 
-          audioStore.queueAudioFiles(audioFile.audio_file_id.toString());
+
+        if(audioQueueStore.active == false) {
+          await audioQueueStore.queue([audioFile]);
+          await audioQueueStore.setCurrAudioFile();
+          await audioQueueStore.initPlayer();
+        } else {
+          await audioQueueStore.queue([audioFile]);
+          await audioQueueStore.setCurrAudioFile();
         } 
-
-        if(audioStore.playing) {
-          audioStore.pauseAudio();
-          audioStore.playAudio(audioFile); 
-        } else {
-          audioStore.playAudio(audioFile);
-        }
     },
-
-    async playFile() {
-
-      const audioFile = new AudioFile({
-          audio_file_id: this.audioFileId,
-          date_created: this.datePosted,
-          duration: this.duration,
-          file_name: this.title,
-          file_path: this.filePath,
-          last_modified: this.lastModified,
-          plays: this.plays,
-          sample_rate: this.sampleRate,
-          thumbnail: this.thumbnail
-        });
-
-        if(audioStore.playing) {
-          audioStore.pauseAudio();
-          audioStore.playAudio(audioFile); 
-        } else {
-          audioStore.playAudio(audioFile);
-        }
-
-        await updateAudioPlayerInformation(
-          this.audioFileId.toString(), 
-          this.thumbnail,
-          parseInt(this.duration)
-        );
-    },
-    
+ 
     async deleteFile() {
       const userChoice = await window.confirm(`Are you sure you want to delete: ${this.title}`);
       if(userChoice) {
@@ -146,7 +117,7 @@ export default {
 
     async editFile() {
       this.$router.push({ path: `/audio-files/edit/${this.audioFileId}`})
-    }
+    },
   },
   async mounted() {
 
@@ -155,8 +126,6 @@ export default {
     });
 
     const imageUrl = URL.createObjectURL(new Blob([fileBuffer]));
-    console.log("IMAGE URL: ", imageUrl)
-
     let imageElem = document.getElementById(this.audioFileId.toString());
     if(imageElem) {
       imageElem.src = imageUrl;
@@ -166,7 +135,6 @@ export default {
 
     let durationElem = document.getElementById(`${this.audioFileId.toString()}-duration`);
     durationElem.innerHTML = await audioStore.convertSecondsToMinutes(this.duration); 
-
   }
 }
 

@@ -3,6 +3,7 @@ import { dataDir} from '@tauri-apps/api/path';
 import { reactive } from 'vue';
 import { audioStore, AudioFile } from "./AudioFile";
 
+
 export class PomodoroTimer {
 
     private timerId: NodeJS.Timeout | null = null;
@@ -12,6 +13,7 @@ export class PomodoroTimer {
     private playing: boolean = false;
     private paused: boolean = false;
     private resumed: boolean = false;
+    private isPomodoro: boolean = false; 
     private updateCallback: (time: string) => void; 
 
     constructor(duration: number, updateCallback: (time: string) => void) {
@@ -30,6 +32,21 @@ export class PomodoroTimer {
       
     }
 
+    reset() {
+
+      if(this.timerId) {
+        clearInterval(this.timerId); 
+        this.timerId = null;
+      }
+
+      this.remainingTime = null;
+      this.stringTimerValue = null; 
+      this.playing = false; 
+      this.paused = false; 
+      this.resumed = false;
+      this.updateCallback(this.stringTimerValue);
+    }
+
     isPlaying(): boolean {
       return this.playing;
     }
@@ -42,14 +59,15 @@ export class PomodoroTimer {
       return this.resumed;
     }
 
+    setPomodoro(value: boolean) {
+      this.isPomodoro = value; 
+    }
+
     pause(): void {
       if(this.timerId !== null) {
-        console.log("PAUSING TIMER"); 
         clearInterval(this.timerId); 
         if(this.duration && this.remainingTime) {
-          console.log("GETTING REMAINING TIME"); 
           const elapsed = this.duration - this.remainingTime; 
-          console.log("ELAPSED: ", elapsed);  
           this.remainingTime = this.duration - elapsed; 
           this.timerId = null;
         }
@@ -60,7 +78,6 @@ export class PomodoroTimer {
 
     resume(): void {
       if(this.timerId == null) {
-        console.log("RESUMING TIMER");
         this.resumed = false; 
         this.paused = false; 
         this.timerId = setInterval(() => this.update(), 1000);  
@@ -69,7 +86,6 @@ export class PomodoroTimer {
 
     start(): void {
       if(this.timerId == null) {
-        console.log("STARTING TIMER");
         this.playing = true;
         this.timerId = setInterval(() => this.update(), 1000);  
       }
@@ -77,9 +93,7 @@ export class PomodoroTimer {
     }
 
     stop(): void {
-      console.log("Called stop timer"); 
       if(this.timerId != null) {
-        console.log("STOPPING TIMER"); 
         clearInterval(this.timerId); 
         this.timerId = null;
         this.playing = false; 
@@ -89,8 +103,6 @@ export class PomodoroTimer {
     }
 
     async update(): Promise<void> {
-      console.log("DURATION: ", this.duration); 
-      console.log("REMAINING TIME ", this.remainingTime); 
 
       if(this.remainingTime && this.duration) {
         let minutes = Math.floor(this.remainingTime / 60); 
@@ -103,14 +115,15 @@ export class PomodoroTimer {
         this.updateCallback(this.stringTimerValue); 
           
         if(this.remainingTime > -1) {
-          console.log("CURR DURATION", this.remainingTime); 
           this.remainingTime--;
         }
 
         if(this.remainingTime == 0) {
 
-          console.log("TIMER FINISHED"); 
-          console.log("PLAYING TIMER SOUND");
+          if(this.isPomodoro == true) {
+            await pomodoroTrackingStore.createTrackingSession(this.duration / 60); 
+          }
+
           await pomodoroStore.playPomodoroAlarmSound(); 
 
           this.playing = false; 
@@ -279,6 +292,17 @@ export const pomodoroStore = reactive({
     }
   },
 
+  async viewPomoAudioFiles(sessionId: string): AudioFile[] {
+    try {
+        const dataDirPath = await dataDir(); 
+        const userDbPath = `${dataDirPath}/dtunes-audio-app/metadata/dtunes-audio-app.sqlite3`;
+        const audioFiles = await invoke<AudioFile[]>('view_pomodoro_audio_files', { userDbPath, sessionId});
+        return audioFiles;
+    } catch(error) {
+        console.error("Error loading audio files: ", error); 
+    }
+  },
+
   async addAudioFilePomodoro(sessionId: string, audioFileId: Number) {
     const dataDirPath = await dataDir();
     const userDbPath = `${dataDirPath}/dtunes-audio-app/metadata/dtunes-audio-app.sqlite3`;
@@ -392,4 +416,106 @@ export const pomodoroStore = reactive({
     }
   },
 
-}); 
+});
+
+
+export class PomodoroMonthlyUsageResult {
+  day: string;
+  hoursPerDay: number;
+
+  constructor({ day, hoursPerDay }: { day: number; hoursPerDay: string; }) {
+    this.day = day;
+    this.hoursPerDay = hoursPerDay;
+  }
+}
+
+
+export const pomodoroTrackingStore = reactive({
+
+  monthly_usage_sessions: [] as PomodoroMonthlyUsageResult,
+
+  async createTrackingSession(duration: number): Promise<string> {
+
+    const dataDirPath = await dataDir(); 
+    const userDbPath = `${dataDirPath}/dtunes-audio-app/metadata/dtunes-audio-app.sqlite3`; 
+
+    return await invoke("create_pomodoro_tracking_session", { userDbPath, duration });
+  },
+
+  async retrieveTrackingMonthlyUsage() {
+
+    try {
+        const dataDirPath = await dataDir(); 
+        const userDbPath = `${dataDirPath}/dtunes-audio-app/metadata/dtunes-audio-app.sqlite3`;
+        const sessions = await invoke<PomodoroMonthlyUsageResult>('retrieve_pomodoro_tracking_monthly_usage', { userDbPath});
+        this.monthly_usage_sessions = sessions;
+
+    } catch(error) {
+        console.error("Error loading monthly usage sessions: ", error); 
+    }
+
+  },
+
+  async retrieveTotalHours(): number {
+    try {
+        const dataDirPath = await dataDir(); 
+        const userDbPath = `${dataDirPath}/dtunes-audio-app/metadata/dtunes-audio-app.sqlite3`;
+        const totalHours = await invoke<number>(
+          'retrieve_pomodoro_tracking_total_hours', 
+          { userDbPath}
+        );
+        return totalHours; 
+
+    } catch(error) {
+        console.error("Error loading total hours for session tracking: ", error); 
+    }
+  },
+
+
+  async retrieveMonthlyHoursAverage(): number {
+    try {
+        const dataDirPath = await dataDir(); 
+        const userDbPath = `${dataDirPath}/dtunes-audio-app/metadata/dtunes-audio-app.sqlite3`;
+        const monthlyHours = await invoke<number>(
+          'retrieve_pomodoro_tracking_monthly_hours_average', 
+          { userDbPath}
+        );
+        return monthlyHours; 
+
+    } catch(error) {
+        console.error("Error loading average monthly hours: ", error); 
+    }
+  }, 
+
+
+  async retrieveWeeklyHoursAverage(): number {
+    try {
+        const dataDirPath = await dataDir(); 
+        const userDbPath = `${dataDirPath}/dtunes-audio-app/metadata/dtunes-audio-app.sqlite3`;
+        const totalHours = await invoke<number>(
+          'retrieve_pomodoro_tracking_weekly_hours_average', 
+          { userDbPath}
+        );
+        return totalHours; 
+
+    } catch(error) {
+        console.error("Error loading average weekly hours: ", error); 
+    }
+  },
+
+  async retrieveDailyHoursAverage(): number {
+    try {
+        const dataDirPath = await dataDir(); 
+        const userDbPath = `${dataDirPath}/dtunes-audio-app/metadata/dtunes-audio-app.sqlite3`;
+        const dailyHours = await invoke<number>(
+          'retrieve_pomodoro_tracking_daily_hours_average', 
+          { userDbPath}
+        );
+        return dailyHours; 
+
+    } catch(error) {
+        console.error("Error loading average daily hours: ", error); 
+    }
+  },
+
+});  

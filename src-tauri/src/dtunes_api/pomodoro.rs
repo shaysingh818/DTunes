@@ -121,8 +121,17 @@ impl Pomodoro {
     }
 
     pub fn delete(conn: &Connection, id: &str) -> Result<()> {
-        conn.execute("DELETE FROM POMODORO_SESSION WHERE SESSION_ID=?", [id])?;
-        Ok(())
+        let result = conn.execute("DELETE FROM POMODORO_SESSION WHERE SESSION_ID=?", [id]);
+        match result {
+            Ok(_) => {
+                println!("Succesfully deleted pomodoro session"); 
+                return Ok(());
+            },
+            Err(err) => {
+                println!("Error Deleting pomodoro session {:?}", err); 
+                return Err(err);
+            }
+        }
     }
 
     pub fn view(conn: &Connection, id: &str) -> Result<Pomodoro> {
@@ -257,4 +266,158 @@ impl Pomodoro {
             .collect();
         sessions
     }
+}
+
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct PomodoroSessionTracking {
+    pub tracking_session_id: usize,
+    pub duration: usize,
+    pub date_created: String,
+}
+
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct PomodoroMonthlyUsageResult {
+    pub day: String,
+    pub hours_per_day: f64,
+}
+
+
+impl PomodoroSessionTracking {
+
+    pub fn new(duration: usize) -> PomodoroSessionTracking {
+        PomodoroSessionTracking {
+            tracking_session_id: 0,
+            duration: duration,
+            date_created: chrono::offset::Local::now().to_string(),
+        }
+    }
+
+
+    pub fn insert(&mut self, conn: &Connection) -> Result<()> {
+
+        let result = conn.execute(
+            "INSERT INTO POMODORO_SESSION_TRACKING 
+                (DURATION, DATE_CREATED) 
+                VALUES (?1, ?2)",
+            [
+                &self.duration.to_string(),
+                &self.date_created,
+            ],
+        );
+
+        match result {
+            Ok(_) => {
+                println!("Successfully inserted pomodoro tracking session");
+                return Ok(())
+            },
+            Err(err) => {
+                println!("[pomodoro_tracking_session::insert] sqlite3 error {:?}", err);
+                return Err(err)
+            }
+        }
+    }
+
+
+    pub fn retrieve_monthly_usage(conn: &Connection) -> Result<Vec<PomodoroMonthlyUsageResult>> {
+        
+        let query = "
+            SELECT
+                DATE(DATE_CREATED) as DAY,
+                ROUND(CAST(SUM(DURATION) AS REAL) / 60.0, 2) AS HOURS_PER_DAY
+            FROM POMODORO_SESSION_TRACKING
+            WHERE DATE(DATE_CREATED) >= DATE('now', '-30 days')
+            GROUP BY DATE(DATE_CREATED)
+            ORDER BY DAY;
+        ";
+
+        let mut stmt = conn.prepare(query)?;
+        let results: Result<Vec<PomodoroMonthlyUsageResult>> = stmt
+            .query_map([], |row| {
+                Ok(PomodoroMonthlyUsageResult {
+                    day: row.get(0)?,
+                    hours_per_day: row.get(1)?,
+                })
+            })?
+            .collect();
+        results
+    }
+
+    pub fn retrieve_total_hours(conn: &Connection) -> Result<f64> {   
+        let query = "SELECT (SELECT SUM(DURATION) / 60 FROM POMODORO_SESSION_TRACKING) as total_minutes;";
+
+        match conn.query_row(query, [], |row| row.get::<_, Option<f64>>(0)) {
+            Ok(Some(val)) => Ok(val),
+            Ok(None) => Ok(0.0),
+            Err(e) => Err(e),
+        }
+
+    }
+
+
+    pub fn retrieve_weekly_hours_average(conn: &Connection) -> Result<f64> {
+        let query = "
+            WITH WEEKLY_HOURS AS (
+	            SELECT
+	                strftime('%Y-%W', DATE_CREATED) as WEEK,
+	                ROUND(CAST(SUM(DURATION) AS REAL) / 60.0, 2) AS HOURS_PER_WEEK
+	            FROM POMODORO_SESSION_TRACKING
+	            GROUP BY strftime('%Y-%W', DATE_CREATED)
+	            ORDER BY WEEK
+            )
+            SELECT (SELECT ROUND(AVG(HOURS_PER_WEEK), 2) FROM WEEKLY_HOURS) AS WEEKLY_HOURS_AVERAGE; 
+        ";
+
+        match conn.query_row(query, [], |row| row.get::<_, Option<f64>>(0)) {
+            Ok(Some(val)) => Ok(val),
+            Ok(None) => Ok(0.0),
+            Err(e) => Err(e),
+        }
+
+    }
+
+    pub fn retrieve_monthly_hours_average(conn: &Connection) -> Result<f64> { 
+        let query = "
+            WITH MONTHLY_HOURS AS (
+	            SELECT
+	                strftime('%Y-%m', DATE_CREATED) as MONTH,
+	                ROUND(CAST(SUM(DURATION) AS REAL) / 60.0, 2) AS HOURS_PER_MONTH
+	            FROM POMODORO_SESSION_TRACKING
+	            GROUP BY strftime('%Y-%m', DATE_CREATED)
+	            ORDER BY MONTH
+            )
+            SELECT (SELECT ROUND(AVG(HOURS_PER_MONTH), 2) FROM MONTHLY_HOURS) AS MONTHLY_HOURS_AVERAGE;
+        ";
+
+        match conn.query_row(query, [], |row| row.get::<_, Option<f64>>(0)) {
+            Ok(Some(val)) => Ok(val),
+            Ok(None) => Ok(0.0),
+            Err(e) => Err(e),
+        }
+
+    }
+
+
+    pub fn retrieve_daily_hours_average(conn: &Connection) -> Result<f64> { 
+        let query = "
+            WITH DAILY_HOURS AS (
+                SELECT
+                    DATE(DATE_CREATED) as DAY,
+                    ROUND(CAST(SUM(DURATION) AS REAL) / 60.0, 2) AS HOURS_PER_DAY
+                FROM POMODORO_SESSION_TRACKING
+                GROUP BY DATE(DATE_CREATED)
+                ORDER BY DAY
+            )
+            SELECT (SELECT ROUND(AVG(HOURS_PER_DAY), 2) FROM DAILY_HOURS) AS DAILY_HOURS_AVERAGE;
+        ";
+
+        match conn.query_row(query, [], |row| row.get::<_, Option<f64>>(0)) {
+            Ok(Some(val)) => Ok(val),
+            Ok(None) => Ok(0.0),
+            Err(e) => Err(e),
+        }
+
+    }
+
 }

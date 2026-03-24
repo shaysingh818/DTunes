@@ -38,9 +38,7 @@ export default {
         },
     },
     async mounted() {
-        console.log("Loading audio files from store"); 
         await pomodoroStore.viewPomodoroAudioFiles(this.sessionId.toString());
-        console.log("AUDIO FILE STORE LOADED: ", pomodoroStore.audioFiles);
     }
 }
 </script>

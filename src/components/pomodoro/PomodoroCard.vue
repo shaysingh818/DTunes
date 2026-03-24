@@ -69,19 +69,19 @@ export default {
       required: true,
     },
     duration: {
-      type: String,
+      type: Number,
       required: true,
     },
     durationLimit: {
-      type: String,
+      type: Number,
       required: true,
     },
     shortBreak: {
-      type: String,
+      type: Number,
       required: true,
     },
     longBreak: {
-      type: String,
+      type: Number,
       required: true,
     },
     datePosted: {
@@ -98,6 +98,7 @@ export default {
       const userChoice = await window.confirm(`Are you sure you want to delete: ${this.title}`);
       if(userChoice) {
         const deleteResult = await pomodoroStore.deleteSession(this.sessionId.toString());
+        console.log(deleteResult); 
         if(deleteResult == "Success") {
           alert("Successfully deleted: ", this.name);
           this.$router.push('pomodoro/');

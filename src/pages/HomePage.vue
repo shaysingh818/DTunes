@@ -1,24 +1,16 @@
 <script>
 import SongList from '../components/audio_file/SongList.vue';
 import SongCard from '../components/audio_file/SongCard.vue';
-import ArtistCard from '../components/artist/ArtistCard.vue';
 import SearchComponent from '../components/shared/SearchComponent.vue';
 import AudioFileCarousel from '../components/audio_file/AudioFileCarousel.vue';
-import ArtistCarousel from '../components/artist/ArtistCarousel.vue';
-import GenreCarousel from '../components/genre/GenreCarousel.vue';
-import PlaylistListView from '../components/playlist/PlaylistListView.vue';
 import { syncMetadata } from '../api/Utilities';
 
 export default {
   components: { 
     SongList, 
     SongCard, 
-    PlaylistListView,
-    ArtistCard, 
     SearchComponent, 
     AudioFileCarousel,
-    ArtistCarousel,
-    GenreCarousel
   },
   methods: {
     goToAbout() {
@@ -64,35 +56,6 @@ import { syncMetadata } from '../api/Utilities';
               <AudioFileCarousel /> 
             </div>
           </div>
-
-          <div class="flex flex-col gap-2">
-            <div class="carousel-header">
-                <h1>Your Artists</h1>
-            </div>
-            <div>
-              <ArtistCarousel />
-            </div>
-          </div>
-
-          <div class="flex flex-col gap-2">
-            <div class="carousel-header">
-                <h1>Music Genres</h1>
-            </div>
-            <div>
-              <GenreCarousel />
-            </div>
-          </div>
-
-
-          <div class="flex flex-col gap-2">
-            <div class="carousel-header">
-                <h1>Your Playlists</h1>
-            </div>
-            <div class="playlist-section">
-              <PlaylistListView />
-            </div>
-          </div>
-
 
         </div>
       </div>

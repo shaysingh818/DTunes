@@ -21,19 +21,22 @@
 
 <script setup>
 import { audioStore } from '../../api/AudioFile';
+import { audioQueueStore } from '../../api/AudioQueue'; 
 </script>
 
 <script>
 
 import SongList from './SongList.vue';
 import { audioStore } from '../../api/AudioFile';
+import { audioQueueStore } from '../../api/AudioQueue'; 
 
 export default {
   components: { SongList},
   async mounted() {
-    console.log("Loading audio files from store"); 
     await audioStore.loadAudioFiles();
-    console.log("AUDIO FILE STORE LOADED: ", audioStore.audioFiles); 
-  },    
+  },
+  async beforeUnmount() {
+    await audioQueueStore.reset(); 
+  }
 }
 </script>

@@ -44,22 +44,25 @@
 
                 <div class="flex flex-col gap-2">
                     <div class="player-buttons">
-                        <div @click="audioStore.previousAudioFile()">
+                        <div @click="prevFile()">
                             <i :class="['fas', 'fa-backward', 'text-white']"></i>
                         </div>
-                        <div @click="audioStore.rewind()">
+                        <div @click="audioQueueStore.rewind()">
                             <i :class="['fas', 'fa-rotate-left', 'text-white']"></i>
                         </div>
-                        <div v-if="audioStore.playing == true" class="play-button" @click="pauseFile()">
+                        <div v-if="audioQueueStore.isPaused()" class="play-button" @click="pauseFile()">
                             <i :class="['fas', 'fa-pause', 'text-white']"></i>
                         </div>
-                        <div v-if="audioStore.resume == true && audioStore.playing == false" class="play-button" @click="resumeFile()">
+                        <div v-if="audioQueueStore.isPlaying()" class="play-button" @click="playFile()">
                             <i :class="['fas', 'fa-play', 'text-white']"></i>
                         </div>
-                        <div @click="audioStore.forward()">
+                        <div v-if="audioQueueStore.isResume()" class="play-button" @click="resumeFile()">
+                            <i :class="['fas', 'fa-play', 'text-white']"></i>
+                        </div>
+                        <div @click="audioQueueStore.forward()">
                             <i :class="['fas', 'fa-rotate-right', 'text-white']"></i>
                         </div>
-                        <div @click="audioStore.nextAudioFile()">
+                        <div @click="nextFile()">
                             <i :class="['fas', 'fa-forward', 'text-white']"></i>
                         </div>
                     </div>
@@ -77,10 +80,12 @@
 
 <script setup>
 import { audioStore, AudioFile } from '../../api/AudioFile';
+import { audioQueueStore } from '../../api/AudioQueue'; 
 </script>
 
 <script>
 import { audioStore, AudioFile } from '../../api/AudioFile';
+import { audioQueueStore } from '../../api/AudioQueue'; 
 import { BaseDirectory, readFile } from '@tauri-apps/plugin-fs';
 
 export default {
@@ -126,68 +131,52 @@ export default {
   methods: {
     async playFile() {
 
-        const audioFile = new AudioFile({
-            audio_file_id: this.audioFileId,
-            date_created: this.datePosted,
-            duration: this.duration,
-            file_name: this.title,
-            file_path: this.filePath,
-            last_modified: this.lastModified,
-            plays: this.plays,
-            sample_rate: this.sampleRate,
-            thumbnail: this.thumbnail
-        });
+      await audioQueueStore.playAudio();
 
+      if(audioQueueStore.audioPlayerInterval == null) {
+        audioQueueStore.audioPlayerInterval = setInterval(
+          audioQueueStore.updateRealtimePlayerInformation, 1000
+        )
+      }
+    },
+    async pauseFile() {
+        audioQueueStore.pauseAudio();
+    },
+    async resumeFile() {
+      await audioQueueStore.resumeAudio(); 
+    },
+    async nextFile() {
+      await audioQueueStore.nextAudioFile();
+      await this.populatePlayerInformation();
+    },
+    async prevFile() {
+      await audioQueueStore.prevAudioFile();
+      await this.populatePlayerInformation();
+    },
+    async populatePlayerInformation() {
 
-        const fileBuffer = await readFile(`dtunes-audio-app/images/${this.thumbnail}`, {
+        const fileBuffer = await readFile(`dtunes-audio-app/images/${audioQueueStore.currAudioFile.thumbnail}`, {
             baseDir: BaseDirectory.Data,
         });
 
         const imageUrl = URL.createObjectURL(new Blob([fileBuffer]));
-        let imageElem = document.getElementById(`${this.audioFileId.toString()}-player`);
+        let imageElem = document.getElementById(`${audioQueueStore.currAudioFile.audio_file_id.toString()}-player`);
         if(imageElem && imageElem instanceof HTMLImageElement) {
           imageElem.src = imageUrl;
         } else {
-          console.log(`${this.audioFileId} not found`)
+          console.log(`${this.currAudioFile.audio_file_id} not found`)
         }
-
-        audioStore.playAudio(audioFile);
-    },
-    async pauseFile() {
-        audioStore.pauseAudio();
-    },
-    async resumeFile() {
-        audioStore.resumeAudio();
+   
+        let durationElem = document.getElementById(`${audioQueueStore.currAudioFile.audio_file_id.toString()}-player-duration`);
+        if(durationElem) {
+          durationElem.innerHTML = await audioStore.convertSecondsToMinutes(parseInt(audioQueueStore.currAudioFile.duration)); 
+        }
     },
   },
-  async mounted() { 
-
-    const fileBuffer = await readFile(`dtunes-audio-app/images/${this.thumbnail}`, {
-        baseDir: BaseDirectory.Data,
-    });
-
-    const imageUrl = URL.createObjectURL(new Blob([fileBuffer]));
-    console.log("IMAGE URL: ", imageUrl)
-    let imageElem = document.getElementById(`${this.audioFileId.toString()}-player`);
-    if(imageElem && imageElem instanceof HTMLImageElement) {
-      imageElem.src = imageUrl;
-    } else {
-      console.log(`${this.audioFileId} not found`)
-    }
-
-    let durationElem = document.getElementById(`${this.audioFileId.toString()}-player-duration`);
-    if(durationElem) {
-      durationElem.innerHTML = await audioStore.convertSecondsToMinutes(parseInt(this.duration)); 
-    }
+  async mounted() {
+    await this.populatePlayerInformation();
   },
 }
-
-
-
-
-
-
-
 </script>
 
 

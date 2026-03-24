@@ -34,6 +34,7 @@
 
 <script setup>
 import { pomodoroStore, PomodoroTimer } from '../../api/Pomodoro';
+import { audioQueueStore } from '../../api/AudioQueue';
 </script>
 
 
@@ -41,7 +42,7 @@ import { pomodoroStore, PomodoroTimer } from '../../api/Pomodoro';
 import { ref,  onBeforeMount, onUnmounted } from 'vue'
 import { pomodoroStore } from '../../api/Pomodoro';
 import { onBeforeRouteLeave } from 'vue-router';
-
+import { audioQueueStore } from '../../api/AudioQueue';
 
 let duration = ref(0);
 
@@ -65,37 +66,42 @@ export default {
       type: Number,
       required: true,
     },
+    sessionId: {
+      type: Number,
+      required: true,
+    },
   },
   data() {
     return {
       timerValue: "0:00",
-      timer: null
+      timer: null,
+      audioQueue: null
     }
   },
   methods: {
     async selectShortBreak() {
       duration = this.shortBreak * 60; 
-      console.log(`Setting duration ${duration}`); 
       pomodoroStore.pomodoroTimer = new PomodoroTimer(
         duration, 
         this.updateTimerValue
-      ); 
+      );
+      pomodoroStore.pomodoroTimer.setPomodoro(false); 
     }, 
     async selectLongBreak() {
       duration = this.longBreak * 60;
-      console.log(`Setting duration ${duration}`); 
       pomodoroStore.pomodoroTimer = new PomodoroTimer(
         duration, 
         this.updateTimerValue
-      ); 
+      );
+      pomodoroStore.pomodoroTimer.setPomodoro(false); 
     },
     async selectFocusDuration() { 
       duration = this.duration * 60; 
-      console.log(`Setting duration ${duration}`); 
       pomodoroStore.pomodoroTimer = new PomodoroTimer(
         duration, 
         this.updateTimerValue
-      ); 
+      );
+      pomodoroStore.pomodoroTimer.setPomodoro(true); 
     },
     async startTimer() {
 
@@ -105,27 +111,41 @@ export default {
       } else {
         console.log("Timer not defined"); 
       }
+
+      if(audioQueueStore.isPlaying()) {
+        await audioQueueStore.playAudio(); 
+        if(audioQueueStore.audioPlayerInterval == null) {
+          console.log("Creating new interval...", audioQueueStore.audioPlayerInterval);
+          audioQueueStore.audioPlayerInterval = setInterval(
+            audioQueueStore.updateRealtimePlayerInformation, 1000
+          )
+        }
+      }
+
+      if(audioQueueStore.isResume()) {
+        await audioQueueStore.resumeAudio();
+      }
+
     },
     async pauseTimer() {
       if(pomodoroStore.pomodoroTimer) {
-        console.log("Pausing Timer"); 
         pomodoroStore.pomodoroTimer.pause(); 
       }
+
+      if(audioQueueStore.isPaused()) {
+        audioQueueStore.pauseAudio();
+      }
+
     },
     async resumeTimer() {
       if(pomodoroStore.pomodoroTimer) {
-        console.log("Resuming timer"); 
         pomodoroStore.pomodoroTimer.resume(); 
       }
-    },
-    async mounted() { 
-      duration = this.duration * 60; 
-      console.log(`Setting duration ${duration}`); 
-      pomodoroStore.pomodoroTimer = new PomodoroTimer(
-        duration, 
-        'dtunes-alarm-sound.mp3',
-        this.updateTimerValue,
-      ); 
+
+      if(audioQueueStore.isResume()) {
+        audioQueueStore.resumeAudio();
+      }
+
     },
     startCondition() {
       if(pomodoroStore.pomodoroTimer) {
@@ -152,13 +172,9 @@ export default {
       this.timerValue = newTime; 
     },
   },
-  beforeUnmount() {
-    console.log("TIMER PAGE HAS BEEN UNMOUNTED");
-    if(pomodoroStore.pomodoroTimer) {
-      pomodoroStore.pomodoroTimer.stop();
-      console.log("TIMER has been stopped");  
-    } 
-  },
+  async mounted() {
+    duration = this.duration * 60; 
+  }
 }
 
 

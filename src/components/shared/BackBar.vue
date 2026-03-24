@@ -46,7 +46,7 @@ export default {
   name: 'BackBar',
   props: {
     itemId: {
-      type: String,
+      type: Number,
       required: true,
     },
     title: {
@@ -73,13 +73,11 @@ export default {
   },
   async mounted() {
 
-    console.log("THUMBNAIL", this.thumbnail); 
     const fileBuffer = await readFile(`dtunes-audio-app/images/${this.thumbnail}`, {
         baseDir: BaseDirectory.Data,
     });
-    const imageUrl = URL.createObjectURL(new Blob([fileBuffer]));
-    console.log("IMAGE URL", imageUrl); 
 
+    const imageUrl = URL.createObjectURL(new Blob([fileBuffer]));
     let imageElem = document.getElementById(`backbar-image-${this.itemId}`);
     if(imageElem) {
       imageElem.style.backgroundImage = `url(${imageUrl})`; 

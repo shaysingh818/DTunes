@@ -1,6 +1,7 @@
 <template>
 
-  <BackBar 
+  <BackBar
+    v-if="session && session.session_id"
     :itemId="session.session_id" 
     :title="session.session_name"
     thumbnail="default_dtunes_thumbnail.webp"
@@ -12,10 +13,12 @@
 
       <div>
         <PomodoroClock
+          v-if="session && session.session_id"
           :duration="session.duration"
           :durationLimit="session.duration_limit"
           :shortBreak="session.short_break"
           :longBreak="session.long_break"
+          :sessionId="session.session_id"
         />
       </div>
 
@@ -31,7 +34,9 @@
           />
         </div>
 
+
       </div>
+
 
     </div>
 
@@ -44,7 +49,6 @@
       :shortBreak="session.short_break"
       :longBreak="session.long_break"
     />
-
 
   </div>
 </template>
@@ -61,6 +65,7 @@ import PomodoroClock from '../../components/pomodoro/PomodoroClock.vue';
 import PomodoroAudioFileCarousel from '../../components/pomodoro/PomodoroAudioFileCarousel.vue';
 import EditPomodoroMetadata from './EditPomodoroMetadata.vue';
 import { pomodoroStore } from '../../api/Pomodoro';
+import { audioQueueStore } from '../../api/AudioQueue';
 
 let openWindow = ref(false);
 
@@ -74,7 +79,7 @@ export default {
   },
   props: {
     id: {
-      type: Number,
+      type: String,
       required: true,
     },
   },
@@ -102,8 +107,23 @@ export default {
   },
   async mounted() {
     const route  = useRoute();
-    const id = route.params.id; 
+    const id = route.params.id;
     this.session = await pomodoroStore.viewSession(id);
+
+    const audioFiles = await pomodoroStore.viewPomoAudioFiles(id);
+    if(audioFiles.length > 0) {
+      await audioQueueStore.queue(audioFiles);
+      await audioQueueStore.setCurrAudioFile(); 
+      await audioQueueStore.initPlayer(); 
+    }
+
+  },
+  async beforeUnmount() {
+    await audioQueueStore.reset();
+    if(pomodoroStore.pomodoroTimer) {
+      pomodoroStore.pomodoroTimer.reset();
+      pomodoroStore.pomodoroTimer = null; 
+    } 
   },
 }
 </script>

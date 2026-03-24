@@ -14,24 +14,16 @@ import NavigationItem from "./NavigationItem.vue";
           <NavigationItem icon="fa-home" nav-title="home"/>
         </RouterLink>
 
-        <RouterLink to="/playlists" class="block p-2 content-center">
-          <NavigationItem icon="fa-list" nav-title="playlists" />
-        </RouterLink>
-
-        <RouterLink to="/artists" class="block p-2">
-          <NavigationItem icon="fa-user" nav-title="artists" />
-        </RouterLink>
-
-        <RouterLink to="/genres" class="block p-2">
-          <NavigationItem icon="fa-layer-group" nav-title="genres" />
-        </RouterLink>
-
         <RouterLink to="/audio-files" class="block p-2">
           <NavigationItem icon="fa-music" nav-title="audio files" />
         </RouterLink>
 
         <RouterLink to="/pomodoro" class="block p-2"> 
           <NavigationItem icon="fa-clock" nav-title="pomodoro" />
+        </RouterLink>
+
+        <RouterLink to="/pomodoro-session-tracking" class="block p-2"> 
+          <NavigationItem icon="fa-chart-bar" nav-title="metrics" />
         </RouterLink>
       </nav>
     </aside>

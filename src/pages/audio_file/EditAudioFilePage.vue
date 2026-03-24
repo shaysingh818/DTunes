@@ -165,10 +165,6 @@ export default {
         filePath = audioFilePath.value;
       }
 
-      console.log("FILE NAME: ", fileName);
-      console.log("IMAGES PATH: ", thumbnailPath);
-      console.log("AUDIO PATH ", filePath);
-
       const response = await audioStore.editAudioFile(
         this.audioFile.audio_file_id.toString(),
         fileName,
@@ -177,10 +173,8 @@ export default {
       );
 
       if(response == "Success") {
-        console.log("Successfully Updated Audio File");
         alert("Success");
       } else {
-        console.log("SOMETHING WENT WRONG");
         alert(response);
       }
 
@@ -232,14 +226,12 @@ export default {
     const id = route.params.id; 
     const audioFile = await audioStore.viewAudioFile(id); 
     this.audioFile = audioFile; 
-    console.log(`My Object: ${this.audioFile}`);
 
     const fileBuffer = await readFile(`dtunes-audio-app/images/${audioFile.thumbnail}`, {
         baseDir: BaseDirectory.Data,
     });
-    const imageUrl = URL.createObjectURL(new Blob([fileBuffer]));
-    console.log("ELEMENT ID ", this.audioFile.audioFileId); 
 
+    const imageUrl = URL.createObjectURL(new Blob([fileBuffer]));
     let imageElem = document.getElementById(`${audioFile.audioFileId}`);
     if(imageElem) {
       imageElem.style.backgroundImage = `url(${imageUrl})`; 

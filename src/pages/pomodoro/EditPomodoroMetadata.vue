@@ -169,10 +169,8 @@ export default {
             );
 
             if(response == "Success") {
-                console.log("Successfully Updated Audio File");
                 alert("Success");
             } else {
-                console.log("SOMETHING WENT WRONG");
                 alert(response);
             }
         }

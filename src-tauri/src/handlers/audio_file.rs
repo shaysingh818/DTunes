@@ -23,21 +23,33 @@ pub fn create_audio_file(
         .extension()
         .and_then(OsStr::to_str);
 
-    let thumbnail_ext = Path::new(thumbnail_file_name)
-        .extension()
+    let mut thumbnail_image_name: String;
+
+    if thumbnail_file_name.len() > 0 {
+
+        let thumbnail_ext = Path::new(thumbnail_file_name)
+            .extension()
         .and_then(OsStr::to_str);
 
-    let thumbnail_uuid_format = format!("{}.{}", thumbnail_uuid, thumbnail_ext.unwrap());
-    let file_uuid_format = format!("{}.{}", file_uuid, file_ext.unwrap());
+        let thumbnail_uuid_format = format!("{}.{}", thumbnail_uuid, thumbnail_ext.unwrap());
+        thumbnail_image_name = format!("{}.{}", thumbnail_uuid, thumbnail_ext.unwrap()); 
 
-    let usr_thumbnail_path = format!("{}/{}", user_thumbnail_path, thumbnail_uuid_format);
-    let usr_file_path = format!("{}/{}", user_audio_file_path, file_uuid_format);
+        let usr_thumbnail_path = format!("{}/{}", user_thumbnail_path, thumbnail_image_name);
 
-    // Try to copy the thumbnail file and log any errors
-    match fs::copy(user_local_thumbnail_path, usr_thumbnail_path) {
-        Ok(bytes) => println!("Successfully copied thumbnail with {} bytes", bytes),
-        Err(e) => eprintln!("Error copying thumbnail: {}", e),
+        // Try to copy the thumbnail file and log any errors
+        match fs::copy(user_local_thumbnail_path, usr_thumbnail_path) {
+            Ok(bytes) => println!("Successfully copied thumbnail with {} bytes", bytes),
+            Err(e) => eprintln!("Error copying thumbnail: {}", e),
+        }
+
+
+    } else {
+        thumbnail_image_name = "default_dtunes_thumbnail.webp".to_string()
     }
+
+
+    let file_uuid_format = format!("{}.{}", file_uuid, file_ext.unwrap());
+    let usr_file_path = format!("{}/{}", user_audio_file_path, file_uuid_format);
 
     // Try to copy the audio file and log any errors
     match fs::copy(user_local_file_path, usr_file_path) {
@@ -53,7 +65,7 @@ pub fn create_audio_file(
     let mut audio_file: AudioFile = AudioFile::new(
         alias_file_name,
         &file_uuid_format,
-        &thumbnail_uuid_format,
+        &thumbnail_image_name,
         0,
         "2",
     );
@@ -218,17 +230,21 @@ pub fn delete_audio_file(
             let usr_thumbnail_path = format!("{}/{}", user_thumbnail_path, audio_file.thumbnail);
             let usr_file_path = format!("{}/{}", user_audio_file_path, audio_file.file_path);
 
-            match fs::remove_file(usr_thumbnail_path.clone()) {
-                Ok(_result) => {
-                    println!(
-                        "Successfully removed audio file thumbnail {:?}",
-                        usr_thumbnail_path.clone()
-                    );
-                }
-                Err(e) => {
-                    println!("Error removing audio file thumbnail {:?}", e);
+            if audio_file.thumbnail != "default_dtunes_thumbnail.webp" {
+
+                match fs::remove_file(usr_thumbnail_path.clone()) {
+                    Ok(_result) => {
+                        println!(
+                            "Successfully removed audio file thumbnail {:?}",
+                            usr_thumbnail_path.clone()
+                        );
+                    }
+                    Err(e) => {
+                        println!("Error removing audio file thumbnail {:?}", e);
+                    }
                 }
             }
+
 
             match fs::remove_file(usr_file_path.clone()) {
                 Ok(_result) => {
