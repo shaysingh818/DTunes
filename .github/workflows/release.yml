@@ -51,11 +51,13 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - platform: 'macos-latest' # for Arm based macs (M1 and above).
+          - platform: 'macos-latest' 
             args: '--target aarch64-apple-darwin'
           - platform: 'macos-latest' # for Intel based macs.
             args: '--target x86_64-apple-darwin'
-          - platform: 'ubuntu-22.04' # for Tauri v1 you could replace this with ubuntu-20.04.
+          - platform: 'ubuntu-22.04'
+            args: ''
+          - platform: 'ubuntu-24.04'
             args: ''
           - platform: 'windows-latest'
             args: ''
@@ -67,10 +69,20 @@ jobs:
       - name: install dependencies (ubuntu only)
         if: matrix.platform == 'ubuntu-22.04' # This must match the platform value defined above.
         run: |
+      
+        run: |
           sudo apt-get update
-          sudo apt-get install -y libwebkit2gtk-4.0-dev libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf libasound2-dev pkg-config
-        # webkitgtk 4.0 is for Tauri v1 - webkitgtk 4.1 is for Tauri v2.
-        # You can remove the one that doesn't apply to your app to speed up the workflow a bit.
+          # libwebkit2gtk-4.0-dev is not available on Ubuntu 24.04, so we
+          # conditionally install it only on 22.04 (Tauri v1 only).
+          if [ "${{ matrix.platform }}" = "ubuntu-22.04" ]; then
+            sudo apt-get install -y libwebkit2gtk-4.0-dev
+          fi
+          sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf libasound2-dev pkg-config
+          # Ubuntu 24.04 ships libayatana-appindicator3 instead of libappindicator3.
+          # Install the shim so the package name resolves on both distros.
+          if [ "${{ matrix.platform }}" = "ubuntu-24.04" ]; then
+            sudo apt-get install -y libayatana-appindicator3-dev
+          fi
 
       - name: setup node
         uses: actions/setup-node@v4
@@ -88,6 +100,11 @@ jobs:
         uses: swatinem/rust-cache@v2
         with:
           workspaces: './src-tauri -> target'
+
+      - name: Setup Python (for node-gyp)
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
 
       - name: install frontend dependencies
         # If you don't have `beforeBuildCommand` configured you may want to build your frontend here too.
