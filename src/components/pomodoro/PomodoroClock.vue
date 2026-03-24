@@ -85,7 +85,8 @@ export default {
       pomodoroStore.pomodoroTimer = new PomodoroTimer(
         duration, 
         this.updateTimerValue
-      ); 
+      );
+      pomodoroStore.pomodoroTimer.setPomodoro(false); 
     }, 
     async selectLongBreak() {
       duration = this.longBreak * 60;
@@ -93,7 +94,8 @@ export default {
       pomodoroStore.pomodoroTimer = new PomodoroTimer(
         duration, 
         this.updateTimerValue
-      ); 
+      );
+      pomodoroStore.pomodoroTimer.setPomodoro(false); 
     },
     async selectFocusDuration() { 
       duration = this.duration * 60; 
@@ -101,7 +103,8 @@ export default {
       pomodoroStore.pomodoroTimer = new PomodoroTimer(
         duration, 
         this.updateTimerValue
-      ); 
+      );
+      pomodoroStore.pomodoroTimer.setPomodoro(true); 
     },
     async startTimer() {
 

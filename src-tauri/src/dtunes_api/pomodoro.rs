@@ -346,7 +346,13 @@ impl PomodoroSessionTracking {
 
     pub fn retrieve_total_hours(conn: &Connection) -> Result<f64> {   
         let query = "SELECT (SELECT SUM(DURATION) / 60 FROM POMODORO_SESSION_TRACKING) as total_minutes;";
-        conn.query_row(query, [], |row| row.get(0))
+
+        match conn.query_row(query, [], |row| row.get::<_, Option<f64>>(0)) {
+            Ok(Some(val)) => Ok(val),
+            Ok(None) => Ok(0.0),
+            Err(e) => Err(e),
+        }
+
     }
 
 
@@ -361,8 +367,14 @@ impl PomodoroSessionTracking {
 	            ORDER BY WEEK
             )
             SELECT (SELECT ROUND(AVG(HOURS_PER_WEEK), 2) FROM WEEKLY_HOURS) AS WEEKLY_HOURS_AVERAGE; 
-        "; 
-        conn.query_row(query, [], |row| row.get(0))
+        ";
+
+        match conn.query_row(query, [], |row| row.get::<_, Option<f64>>(0)) {
+            Ok(Some(val)) => Ok(val),
+            Ok(None) => Ok(0.0),
+            Err(e) => Err(e),
+        }
+
     }
 
     pub fn retrieve_monthly_hours_average(conn: &Connection) -> Result<f64> { 
@@ -376,8 +388,14 @@ impl PomodoroSessionTracking {
 	            ORDER BY MONTH
             )
             SELECT (SELECT ROUND(AVG(HOURS_PER_MONTH), 2) FROM MONTHLY_HOURS) AS MONTHLY_HOURS_AVERAGE;
-        "; 
-        conn.query_row(query, [], |row| row.get(0))
+        ";
+
+        match conn.query_row(query, [], |row| row.get::<_, Option<f64>>(0)) {
+            Ok(Some(val)) => Ok(val),
+            Ok(None) => Ok(0.0),
+            Err(e) => Err(e),
+        }
+
     }
 
 
@@ -392,8 +410,14 @@ impl PomodoroSessionTracking {
                 ORDER BY DAY
             )
             SELECT (SELECT ROUND(AVG(HOURS_PER_DAY), 2) FROM DAILY_HOURS) AS DAILY_HOURS_AVERAGE;
-        "; 
-        conn.query_row(query, [], |row| row.get(0))
+        ";
+
+        match conn.query_row(query, [], |row| row.get::<_, Option<f64>>(0)) {
+            Ok(Some(val)) => Ok(val),
+            Ok(None) => Ok(0.0),
+            Err(e) => Err(e),
+        }
+
     }
 
 }

@@ -47,7 +47,7 @@ export const audioQueueStore = reactive({
 
   initPlayer() {
     this.active = true;
-    this.currentTime = -1;
+    this.currentTime = 0;
   },
 
   queue(audioFiles: AudioFile[]) {

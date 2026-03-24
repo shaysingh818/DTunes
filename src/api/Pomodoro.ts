@@ -13,6 +13,7 @@ export class PomodoroTimer {
     private playing: boolean = false;
     private paused: boolean = false;
     private resumed: boolean = false;
+    private isPomodoro: boolean = false; 
     private updateCallback: (time: string) => void; 
 
     constructor(duration: number, updateCallback: (time: string) => void) {
@@ -56,6 +57,10 @@ export class PomodoroTimer {
 
     isResumed(): boolean {
       return this.resumed;
+    }
+
+    setPomodoro(value: boolean) {
+      this.isPomodoro = value; 
     }
 
     pause(): void {
@@ -127,6 +132,13 @@ export class PomodoroTimer {
 
           console.log("TIMER FINISHED"); 
           console.log("PLAYING TIMER SOUND");
+
+          if(this.isPomodoro == true) {
+            console.log("END OF FOCUS SESSION LOG TIME");
+            // this.duration is in seconds but being recorded as 60 minutes, convert
+            await pomodoroTrackingStore.createTrackingSession(this.duration); 
+          }
+
           await pomodoroStore.playPomodoroAlarmSound(); 
 
           this.playing = false; 
@@ -442,7 +454,7 @@ export const pomodoroTrackingStore = reactive({
     const dataDirPath = await dataDir(); 
     const userDbPath = `${dataDirPath}/dtunes-audio-app/metadata/dtunes-audio-app.sqlite3`; 
 
-    return await invoke("create_tracking_session", { userDbPath, duration });
+    return await invoke("create_pomodoro_tracking_session", { userDbPath, duration });
   },
 
   async retrieveTrackingMonthlyUsage() {

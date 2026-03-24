@@ -121,10 +121,10 @@ export default {
   },
   async beforeUnmount() {
     await audioQueueStore.reset();
-    if(pomodoroStore.pomodoTimer) {
+    if(pomodoroStore.pomodoroTimer) {
       pomodoroStore.pomodoroTimer.reset();
       pomodoroStore.pomodoroTimer = null; 
-    }
+    } 
   },
 }
 </script>
