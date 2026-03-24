@@ -105,8 +105,6 @@ export default {
     },
 
     async addFile() {
-      console.log(`SESSION ID: ${this.genreId}`);
-      console.log(`AUDIO FILE ID ${this.audioFileId}`); 
       const addResult = await pomodoroStore.addAudioFilePomodoro(this.sessionId.toString(), this.audioFileId);
       if(addResult == "Success") {
         alert("Added song to pomodoro session")
@@ -123,8 +121,6 @@ export default {
     });
 
     const imageUrl = URL.createObjectURL(new Blob([fileBuffer]));
-    console.log("IMAGE URL: ", imageUrl)
-
     let imageElem = document.getElementById(`${this.audioFileId.toString()}-genre-audio-file`);
     if(imageElem) {
       imageElem.src = imageUrl;

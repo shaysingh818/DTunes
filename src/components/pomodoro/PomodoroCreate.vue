@@ -80,12 +80,6 @@ export default {
         const shortBreak = document.getElementById('short_break');
         const longBreak = document.getElementById('long_break');
 
-        console.log("SESSION NAME: ", sessionName.value);
-        console.log("DURATION: ", duration.value);
-        console.log("DURATION LIMIT: ", durationLimit.value);
-        console.log("SHORT BREAK: ", shortBreak.value);
-        console.log("LONG BREAK: ", longBreak.value);
-
         try {
 
           const shortInt = parseInt(shortBreak.value);
@@ -115,7 +109,6 @@ export default {
             );
 
             if(response == "Success") {
-              console.log("INSERT SUCCESSFUL");
               alert("Success");
               this.$router.push('pomodoro/');
               await this.$nextTick(); 

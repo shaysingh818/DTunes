@@ -110,7 +110,6 @@ export default {
     const id = route.params.id;
     this.session = await pomodoroStore.viewSession(id);
 
-    console.log("Queueing audio files for session");
     const audioFiles = await pomodoroStore.viewPomoAudioFiles(id);
     if(audioFiles.length > 0) {
       await audioQueueStore.queue(audioFiles);

@@ -8,10 +8,8 @@ async function joinPaths(...paths: any[]) {
   if (isNode) {
     // I have no idea why I need this but I'm going to keep just in case
     const path = require('path');
-    console.log('Are we node?'); 
     return path.join(...paths); 
   } else {
-    console.log("We're not node"); 
     if(await detectWindows()) {
       return paths.join('\\');
     }; 
@@ -49,7 +47,6 @@ export async function downloadSQLiteFile() {
       { baseDir: BaseDirectory.Data }
     );
 
-    console.log(`SQLite file downloaded and saved`);
   } catch (error) {
     console.error("Error downloading the SQLite file:", error);
   }

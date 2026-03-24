@@ -56,7 +56,6 @@ export const audioQueueStore = reactive({
 
   setCurrAudioFile() {
     this.currAudioFile = this.audioFiles[this.currentQueueIdx];
-    console.log("Set current audio file");
   },
 
   isPlaying() {
@@ -74,7 +73,6 @@ export const audioQueueStore = reactive({
   nextAudioFile() {
 
     if(this.currentQueueIdx >= this.audioFiles.length-1) {
-      console.log("Going back to beginning");
       this.currentQueueIdx = 0;
       this.currAudioFile = this.audioFiles[this.currentQueueIdx];
       if(this.playing == true && this.player != null) {
@@ -82,7 +80,6 @@ export const audioQueueStore = reactive({
       }
       this.playAudio(); 
     } else {
-      console.log("Cycling to next audio file");
       this.currentQueueIdx += 1;
       this.currAudioFile = this.audioFiles[this.currentQueueIdx]; 
       if(this.playing == true && this.player != null) {
@@ -95,13 +92,11 @@ export const audioQueueStore = reactive({
 
   prevAudioFile() {
     if(this.currentQueueIdx <= 0) {
-      console.log("Going to end of queue");
       this.currentQueueIdx = this.audioFiles.length-1;
       this.currAudioFile = this.audioFiles[this.currentQueueIdx];
       this.player.pause();
       this.playAudio(); 
     } else {
-      console.log("Cycling to previous audio file");
       this.currentQueueIdx -= 1; 
       this.currAudioFile = this.audioFiles[this.currentQueueIdx];
       this.player.pause(); 
@@ -169,7 +164,6 @@ export const audioQueueStore = reactive({
   },
 
   async pauseAudio() {
-    console.log("Paused audio"); 
     this.playing = false;
     if(this.player) {
         this.player.pause();
@@ -178,7 +172,6 @@ export const audioQueueStore = reactive({
   },
 
   async resumeAudio() {
-    console.log("resume audio being called"); 
     if(this.paused && this.player) {
       this.player.currentTime = this.currentTime;
       await this.player.play();
@@ -189,7 +182,6 @@ export const audioQueueStore = reactive({
   },
 
   async forward() {
-    console.log("Forward audio being called"); 
     if(this.player) {
       const newDuration = this.player.currentTime - 30;
       if(newDuration <= this.duration) {
@@ -200,7 +192,6 @@ export const audioQueueStore = reactive({
   },
 
   async rewind() {
-    console.log("Rewind audio being called"); 
     if(this.player) {
       const newDuration = this.player.currentTime - 30;
       if(newDuration > 0) {
@@ -215,7 +206,6 @@ export const audioQueueStore = reactive({
     const currentTime = audioQueueStore.currentTime;
     if(durationElement && audioQueueStore.playing == true)  {
       const value = (audioQueueStore.currentTime/audioQueueStore.duration) * 100;
-      console.log("CURRENT DURATION: ", value);  
       durationElement.style.width = `${value}%`;
     }
   }, 

@@ -81,7 +81,6 @@ export default {
   methods: {
     async selectShortBreak() {
       duration = this.shortBreak * 60; 
-      console.log(`Setting duration ${duration}`); 
       pomodoroStore.pomodoroTimer = new PomodoroTimer(
         duration, 
         this.updateTimerValue
@@ -90,7 +89,6 @@ export default {
     }, 
     async selectLongBreak() {
       duration = this.longBreak * 60;
-      console.log(`Setting duration ${duration}`); 
       pomodoroStore.pomodoroTimer = new PomodoroTimer(
         duration, 
         this.updateTimerValue
@@ -99,7 +97,6 @@ export default {
     },
     async selectFocusDuration() { 
       duration = this.duration * 60; 
-      console.log(`Setting duration ${duration}`); 
       pomodoroStore.pomodoroTimer = new PomodoroTimer(
         duration, 
         this.updateTimerValue
@@ -132,7 +129,6 @@ export default {
     },
     async pauseTimer() {
       if(pomodoroStore.pomodoroTimer) {
-        console.log("Pausing Timer"); 
         pomodoroStore.pomodoroTimer.pause(); 
       }
 
@@ -143,12 +139,10 @@ export default {
     },
     async resumeTimer() {
       if(pomodoroStore.pomodoroTimer) {
-        console.log("Resuming timer"); 
         pomodoroStore.pomodoroTimer.resume(); 
       }
 
       if(audioQueueStore.isResume()) {
-        console.log("Resuming audio player");
         audioQueueStore.resumeAudio();
       }
 
@@ -178,12 +172,8 @@ export default {
       this.timerValue = newTime; 
     },
   },
-  beforeUnmount() {
-    console.log("TIMER PAGE HAS BEEN UNMOUNTED");
-  },
   async mounted() {
     duration = this.duration * 60; 
-    console.log(`Setting duration ${duration}`);
   }
 }
 

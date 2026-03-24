@@ -15,7 +15,6 @@ export default {
     },
     async audioFileSearch(){
       const searchTerm = document.getElementById('search-term').value;
-      console.log("SEARCH TERM ", searchTerm); 
       await audioStore.searchAudioFiles(searchTerm)
     }
   },
@@ -34,7 +33,6 @@ export default {
     const route  = useRoute();
     const id = route.params.id; 
     const session = await pomodoroStore.viewSession(id); 
-    console.log("MY SESSION: ", session); 
     this.session = session; 
   }
 }

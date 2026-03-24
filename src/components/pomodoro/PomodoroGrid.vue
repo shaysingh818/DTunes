@@ -14,9 +14,7 @@ export default {
         },
     },
     async mounted() {
-      console.log("Loading sessions from store");
       await pomodoroStore.loadSessions();
-      console.log("SESSIONS STORE LOADED ", pomodoroStore.sessions);
     }
 }
 </script>

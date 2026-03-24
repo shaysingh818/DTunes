@@ -1,18 +1,10 @@
 <template>
-
   <div class="card-component">
-
     <div class="card-container">
-
       <h1> {{ metricTitle }} </h1>
-
       <h2> {{ metricNumber }} </h2>
-
-
     </div>
-
   </div>
-
 </template>
 
 <script>

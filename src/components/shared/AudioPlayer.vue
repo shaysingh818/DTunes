@@ -131,11 +131,9 @@ export default {
   methods: {
     async playFile() {
 
-      console.log("starting new player"); 
       await audioQueueStore.playAudio();
 
       if(audioQueueStore.audioPlayerInterval == null) {
-        console.log("Creating new interval...", audioQueueStore.audioPlayerInterval);
         audioQueueStore.audioPlayerInterval = setInterval(
           audioQueueStore.updateRealtimePlayerInformation, 1000
         )

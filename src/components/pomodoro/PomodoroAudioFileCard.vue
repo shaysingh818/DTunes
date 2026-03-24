@@ -114,8 +114,6 @@ export default {
     },
 
     async removeFile() {
-      console.log(`SESSION ID: ${this.sessionId}`);
-      console.log(`AUDIO FILE ID ${this.audioFileId}`); 
       const removeResult = await pomodoroStore.removeAudioFilePomodoro(this.sessionId.toString(), this.audioFileId);
       if(removeResult == "Success") {
         alert("Removed Song From Pomodoro Session");

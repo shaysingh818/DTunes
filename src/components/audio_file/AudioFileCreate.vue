@@ -90,10 +90,6 @@ export default {
         const audioFileThumbnailPath = document.getElementById('audio-thumbnail-upload');
         const audioFilePath = document.getElementById('audio-file-upload');
 
-        console.log("FILE NAME: ", audioFileName.value);
-        console.log("IMAGES PATH: ", audioFileThumbnailPath.value);
-        console.log("AUDIO PATH ", audioFilePath.value);
-
         const fileNameValidation = audioFileName.value.length > 0;
         const thumbnailValidation = audioFileThumbnailPath.value.length > 0;
         const filePathValidation = audioFilePath.value.length > 0;

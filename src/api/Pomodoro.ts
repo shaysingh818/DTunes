@@ -65,12 +65,9 @@ export class PomodoroTimer {
 
     pause(): void {
       if(this.timerId !== null) {
-        console.log("PAUSING TIMER"); 
         clearInterval(this.timerId); 
         if(this.duration && this.remainingTime) {
-          console.log("GETTING REMAINING TIME"); 
           const elapsed = this.duration - this.remainingTime; 
-          console.log("ELAPSED: ", elapsed);  
           this.remainingTime = this.duration - elapsed; 
           this.timerId = null;
         }
@@ -81,7 +78,6 @@ export class PomodoroTimer {
 
     resume(): void {
       if(this.timerId == null) {
-        console.log("RESUMING TIMER");
         this.resumed = false; 
         this.paused = false; 
         this.timerId = setInterval(() => this.update(), 1000);  
@@ -90,7 +86,6 @@ export class PomodoroTimer {
 
     start(): void {
       if(this.timerId == null) {
-        console.log("STARTING TIMER");
         this.playing = true;
         this.timerId = setInterval(() => this.update(), 1000);  
       }
@@ -98,9 +93,7 @@ export class PomodoroTimer {
     }
 
     stop(): void {
-      console.log("Called stop timer"); 
       if(this.timerId != null) {
-        console.log("STOPPING TIMER"); 
         clearInterval(this.timerId); 
         this.timerId = null;
         this.playing = false; 
@@ -110,8 +103,6 @@ export class PomodoroTimer {
     }
 
     async update(): Promise<void> {
-      console.log("DURATION: ", this.duration); 
-      console.log("REMAINING TIME ", this.remainingTime); 
 
       if(this.remainingTime && this.duration) {
         let minutes = Math.floor(this.remainingTime / 60); 
@@ -124,19 +115,13 @@ export class PomodoroTimer {
         this.updateCallback(this.stringTimerValue); 
           
         if(this.remainingTime > -1) {
-          console.log("CURR DURATION", this.remainingTime); 
           this.remainingTime--;
         }
 
         if(this.remainingTime == 0) {
 
-          console.log("TIMER FINISHED"); 
-          console.log("PLAYING TIMER SOUND");
-
           if(this.isPomodoro == true) {
-            console.log("END OF FOCUS SESSION LOG TIME");
-            // this.duration is in seconds but being recorded as 60 minutes, convert
-            await pomodoroTrackingStore.createTrackingSession(this.duration); 
+            await pomodoroTrackingStore.createTrackingSession(this.duration / 60); 
           }
 
           await pomodoroStore.playPomodoroAlarmSound(); 
