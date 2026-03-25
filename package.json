@@ -18,8 +18,6 @@
     "@tauri-apps/plugin-os": "^2.2.0",
     "@tauri-apps/plugin-shell": "^2",
     "chart.js": "^4.5.1",
-    "sqlite": "^5.1.1",
-    "sqlite3": "^5.1.7",
     "vue": "^3.3.4",
     "vue-chartjs": "^5.3.3",
     "vue-router": "^4.4.5"
