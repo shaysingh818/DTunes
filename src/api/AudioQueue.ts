@@ -1,6 +1,4 @@
 import { BaseDirectory, readFile } from '@tauri-apps/plugin-fs';
-import { invoke } from "@tauri-apps/api/core";
-import { dataDir} from '@tauri-apps/api/path';
 import { reactive } from 'vue';
 import { AudioFile } from "./AudioFile";
 
@@ -94,73 +92,85 @@ export const audioQueueStore = reactive({
     if(this.currentQueueIdx <= 0) {
       this.currentQueueIdx = this.audioFiles.length-1;
       this.currAudioFile = this.audioFiles[this.currentQueueIdx];
-      this.player.pause();
+      if(this.player) {
+        this.player.pause();
+      }
       this.playAudio(); 
     } else {
       this.currentQueueIdx -= 1; 
       this.currAudioFile = this.audioFiles[this.currentQueueIdx];
-      this.player.pause(); 
+      if(this.player) {
+        this.player.pause(); 
+      }
       this.playAudio(); 
     }
   },
 
   async playAudio() {
 
-    this.playing = true;
-    this.duration = parseInt(this.currAudioFile.duration); 
-    const filePath = this.currAudioFile.file_path;
+    if(this.currAudioFile) {
 
-    if(this.player) {
-      this.player.pause();
-      this.player.src = '';
-      this.player.load(); 
-      this.player = null;
+
+      this.playing = true;
+      this.duration = parseInt(this.currAudioFile.duration); 
+      const filePath = this.currAudioFile.file_path;
+
+      if(this.player) {
+        this.player.pause();
+        this.player.src = '';
+        this.player.load(); 
+        this.player = null;
+      }
+
+      const fileBuffer = await readFile(`dtunes-audio-app/audio_files/${filePath}`, {
+          baseDir: BaseDirectory.Data,
+        });
+
+      if(this._currentBlobUrl) {
+        URL.revokeObjectURL(this._currentBlobUrl);
+      }
+
+      const audioUrl = URL.createObjectURL(new Blob([fileBuffer]));
+      this._currentBlobUrl = audioUrl;
+
+      try {
+
+        this.player = new Audio(audioUrl);
+
+        this.player.onended = () => {
+          this.resume = false;  
+          this.playing = false; 
+        }
+
+        this.player.onpause = () => {
+          if(this.player) {
+            this.currentTime = this.player.currentTime;
+          }
+          this.paused = true;
+        }
+
+        this.player.ontimeupdate = () => {
+          if(this.player) {
+            this.currentTime  = this.player.currentTime;
+          }
+        }
+
+        await new Promise<void>((resolve) => {
+            this.player!.oncanplaythrough = () => resolve();
+            this.player!.load();
+        }); 
+
+
+        await this.player.play();
+
+      } catch (error) {
+        console.error("Could not play audio file: ", error);
+      }    
+
+    } else {
+      console.error("No current audio file to play"); 
     }
 
-    const fileBuffer = await readFile(`dtunes-audio-app/audio_files/${filePath}`, {
-        baseDir: BaseDirectory.Data,
-      });
-
-    if(this._currentBlobUrl) {
-      URL.revokeObjectURL(this._currentBlobUrl);
-    }
-
-    const audioUrl = URL.createObjectURL(new Blob([fileBuffer]));
-    this._currentBlobUrl = audioUrl;
-
-    try {
-
-      this.player = new Audio(audioUrl);
-
-      this.player.onended = () => {
-        this.resume = false;  
-        this.playing = false; 
-      }
-
-      this.player.onpause = () => {
-        if(this.player) {
-          this.currentTime = this.player.currentTime;
-        }
-        this.paused = true;
-      }
-
-      this.player.ontimeupdate = () => {
-        if(this.player) {
-          this.currentTime  = this.player.currentTime;
-        }
-      }
-
-      await new Promise<void>((resolve) => {
-          this.player!.oncanplaythrough = () => resolve();
-          this.player!.load();
-      }); 
-
-
-      await this.player.play();
-
-    } catch (error) {
-      console.error("Could not play audio file: ", error);
-    }    
   },
 
   async pauseAudio() {
@@ -203,9 +213,8 @@ export const audioQueueStore = reactive({
 
   async updateRealtimePlayerInformation() {
     const durationElement = document.getElementById("duration-tracker");
-    const currentTime = audioQueueStore.currentTime;
     if(durationElement && audioQueueStore.playing == true)  {
-      const value = (audioQueueStore.currentTime/audioQueueStore.duration) * 100;
+      const value = (this.currentTime/this.duration) * 100;
       durationElement.style.width = `${value}%`;
     }
   }, 

@@ -1,4 +1,3 @@
-import { BaseDirectory, readFile } from '@tauri-apps/plugin-fs';
 import { invoke } from "@tauri-apps/api/core";
 import { dataDir} from '@tauri-apps/api/path';
 import { reactive } from 'vue';
