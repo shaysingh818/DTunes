@@ -1,7 +1,7 @@
 import { invoke } from "@tauri-apps/api/core";
 import { dataDir} from '@tauri-apps/api/path';
 import { reactive } from 'vue';
-import { audioStore, AudioFile } from "./AudioFile";
+import { AudioFile } from "./AudioFile";
 
 
 export class PomodoroTimer {
@@ -40,7 +40,7 @@ export class PomodoroTimer {
       }
 
       this.remainingTime = null;
-      this.stringTimerValue = null; 
+      this.stringTimerValue = "0:00"; 
       this.playing = false; 
       this.paused = false; 
       this.resumed = false;
@@ -292,7 +292,7 @@ export const pomodoroStore = reactive({
     }
   },
 
-  async viewPomoAudioFiles(sessionId: string): AudioFile[] {
+  async viewPomoAudioFiles(sessionId: string): Promise<AudioFile[]> {
     try {
         const dataDirPath = await dataDir(); 
         const userDbPath = `${dataDirPath}/dtunes-audio-app/metadata/dtunes-audio-app.sqlite3`;
@@ -301,6 +301,7 @@ export const pomodoroStore = reactive({
     } catch(error) {
         console.error("Error loading audio files: ", error); 
     }
+    return [];
   },
 
   async addAudioFilePomodoro(sessionId: string, audioFileId: Number) {
@@ -349,20 +350,6 @@ export const pomodoroStore = reactive({
         console.error("Error loading audio files from search term: ", error); 
     }
   },
-
-  async queuePomodoroAudioFiles(pomodoroId: string, audioFileId: string) {
-
-    let audioFile = await audioStore.viewAudioFile(audioFileId);
-    audioStore.queuedAudioFiles.push(audioFile);
-
-    await this.viewPomodoroAudioFiles(pomodoroId);
-    this.audioFiles.forEach( (audioFile) => {
-      audioStore.queuedAudioFiles.push(audioFile);
-    });
-
-    audioStore.queueIndex = 0; 
-  },
-
 
   async selectShortBreak(shortBreak: number) {
 
@@ -423,7 +410,7 @@ export class PomodoroMonthlyUsageResult {
   day: string;
   hoursPerDay: number;
 
-  constructor({ day, hoursPerDay }: { day: number; hoursPerDay: string; }) {
+  constructor({ day, hoursPerDay }: { day: string; hoursPerDay: number; }) {
     this.day = day;
     this.hoursPerDay = hoursPerDay;
   }
@@ -432,7 +419,7 @@ export class PomodoroMonthlyUsageResult {
 
 export const pomodoroTrackingStore = reactive({
 
-  monthly_usage_sessions: [] as PomodoroMonthlyUsageResult,
+  monthly_usage_sessions: [] as PomodoroMonthlyUsageResult[],
 
   async createTrackingSession(duration: number): Promise<string> {
 
@@ -447,7 +434,7 @@ export const pomodoroTrackingStore = reactive({
     try {
         const dataDirPath = await dataDir(); 
         const userDbPath = `${dataDirPath}/dtunes-audio-app/metadata/dtunes-audio-app.sqlite3`;
-        const sessions = await invoke<PomodoroMonthlyUsageResult>('retrieve_pomodoro_tracking_monthly_usage', { userDbPath});
+        const sessions = await invoke<PomodoroMonthlyUsageResult[]>('retrieve_pomodoro_tracking_monthly_usage', { userDbPath});
         this.monthly_usage_sessions = sessions;
 
     } catch(error) {
@@ -456,7 +443,7 @@ export const pomodoroTrackingStore = reactive({
 
   },
 
-  async retrieveTotalHours(): number {
+  async retrieveTotalHours(): Promise<number> {
     try {
         const dataDirPath = await dataDir(); 
         const userDbPath = `${dataDirPath}/dtunes-audio-app/metadata/dtunes-audio-app.sqlite3`;
@@ -469,10 +456,11 @@ export const pomodoroTrackingStore = reactive({
     } catch(error) {
         console.error("Error loading total hours for session tracking: ", error); 
     }
+    return 0; 
   },
 
 
-  async retrieveMonthlyHoursAverage(): number {
+  async retrieveMonthlyHoursAverage(): Promise<number> {
     try {
         const dataDirPath = await dataDir(); 
         const userDbPath = `${dataDirPath}/dtunes-audio-app/metadata/dtunes-audio-app.sqlite3`;
@@ -485,10 +473,11 @@ export const pomodoroTrackingStore = reactive({
     } catch(error) {
         console.error("Error loading average monthly hours: ", error); 
     }
+    return 0;
   }, 
 
 
-  async retrieveWeeklyHoursAverage(): number {
+  async retrieveWeeklyHoursAverage(): Promise<number> {
     try {
         const dataDirPath = await dataDir(); 
         const userDbPath = `${dataDirPath}/dtunes-audio-app/metadata/dtunes-audio-app.sqlite3`;
@@ -501,9 +490,11 @@ export const pomodoroTrackingStore = reactive({
     } catch(error) {
         console.error("Error loading average weekly hours: ", error); 
     }
+
+    return 0;
   },
 
-  async retrieveDailyHoursAverage(): number {
+  async retrieveDailyHoursAverage(): Promise<number> {
     try {
         const dataDirPath = await dataDir(); 
         const userDbPath = `${dataDirPath}/dtunes-audio-app/metadata/dtunes-audio-app.sqlite3`;
@@ -516,6 +507,8 @@ export const pomodoroTrackingStore = reactive({
     } catch(error) {
         console.error("Error loading average daily hours: ", error); 
     }
+    return 0;
   },
+
 
 });  

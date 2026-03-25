@@ -84,7 +84,7 @@ import { audioQueueStore } from '../../api/AudioQueue';
 </script>
 
 <script>
-import { audioStore, AudioFile } from '../../api/AudioFile';
+import { audioStore } from '../../api/AudioFile';
 import { audioQueueStore } from '../../api/AudioQueue'; 
 import { BaseDirectory, readFile } from '@tauri-apps/plugin-fs';
 
@@ -155,6 +155,8 @@ export default {
     },
     async populatePlayerInformation() {
 
+      if(audioQueueStore.currAudioFile) {
+
         const fileBuffer = await readFile(`dtunes-audio-app/images/${audioQueueStore.currAudioFile.thumbnail}`, {
             baseDir: BaseDirectory.Data,
         });
@@ -164,13 +166,18 @@ export default {
         if(imageElem && imageElem instanceof HTMLImageElement) {
           imageElem.src = imageUrl;
         } else {
-          console.log(`${this.currAudioFile.audio_file_id} not found`)
+          console.log(`${audioQueueStore.currAudioFile.audio_file_id} not found`)
         }
    
         let durationElem = document.getElementById(`${audioQueueStore.currAudioFile.audio_file_id.toString()}-player-duration`);
         if(durationElem) {
           durationElem.innerHTML = await audioStore.convertSecondsToMinutes(parseInt(audioQueueStore.currAudioFile.duration)); 
         }
+
+      }
+
+        
+
     },
   },
   async mounted() {

@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import NavigationBar from "./components/shared/NavigationBar.vue";
 import AudioPlayer from "./components/shared/AudioPlayer.vue";
-import { audioStore } from "./api/AudioFile";
 import { audioQueueStore } from './api/AudioQueue'; 
 
 </script>
@@ -13,7 +12,7 @@ import { audioQueueStore } from './api/AudioQueue';
    <div class="flex">
     <NavigationBar />
     <AudioPlayer
-      v-if="audioQueueStore.active == true"
+      v-if="audioQueueStore.active == true && audioQueueStore.currAudioFile != null"
       :audioFileId="audioQueueStore.currAudioFile.audio_file_id"
       :title="audioQueueStore.currAudioFile.file_name"
       :datePosted="audioQueueStore.currAudioFile.date_created"

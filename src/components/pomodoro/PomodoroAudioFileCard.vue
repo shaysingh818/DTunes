@@ -26,6 +26,7 @@
 <script>
 import { invoke } from "@tauri-apps/api/core";
 import { audioStore, AudioFile } from "../../api/AudioFile";
+import { audioQueueStore } from "../../api/AudioQueue"; 
 import { pomodoroStore } from "../../api/Pomodoro";
 import { BaseDirectory, readFile } from '@tauri-apps/plugin-fs';
 
@@ -68,49 +69,18 @@ export default {
   methods: {
 
     async queueAudio() {
-        
+
         const audioFile =  await audioStore.viewAudioFile(this.audioFileId.toString());
-        if(audioStore.queuedAudioFiles.length == 0) {
-          pomodoroStore.queuePomodoroAudioFiles(
-            this.sessionId, 
-            audioFile.audio_file_id.toString()
-          ); 
+
+        if(audioQueueStore.active == false) {
+          await audioQueueStore.queue([audioFile]);
+          await audioQueueStore.setCurrAudioFile();
+          await audioQueueStore.initPlayer();
+        } else {
+          await audioQueueStore.queue([audioFile]);
+          await audioQueueStore.setCurrAudioFile();
         } 
-
-        if(audioStore.playing) {
-          audioStore.pauseAudio();
-          audioStore.playAudio(audioFile); 
-        } else {
-          audioStore.playAudio(audioFile);
-        }
-    },
-
-    async playFile() {
-
-      const audioFile = new AudioFile({
-          audioFileId: this.audioFileId,
-          dateCreated: this.datePosted,
-          duration: this.duration,
-          fileName: this.title,
-          filePath: this.filePath,
-          lastModified: this.lastModified,
-          plays: this.plays,
-          sampleRate: this.sampleRate,
-          thumbnail: this.thumbnail
-        });
-
-        if(audioStore.playing) {
-          audioStore.pauseAudio();
-          audioStore.playAudio(audioFile); 
-        } else {
-          audioStore.playAudio(audioFile);
-        }
-
-        await updateAudioPlayerInformation(
-          this.audioFileId.toString(), 
-          this.thumbnail,
-          parseInt(this.duration)
-        );
+        
     },
 
     async removeFile() {
