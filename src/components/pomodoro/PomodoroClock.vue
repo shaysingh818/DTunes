@@ -80,6 +80,11 @@ export default {
   },
   methods: {
     async selectShortBreak() {
+
+      if(pomodoroStore.pomodoroTimer) {
+        pomodoroStore.pomodoroTimer.reset(); 
+      }
+
       duration = this.shortBreak * 60; 
       pomodoroStore.pomodoroTimer = new PomodoroTimer(
         duration, 
@@ -88,6 +93,11 @@ export default {
       pomodoroStore.pomodoroTimer.setPomodoro(false); 
     }, 
     async selectLongBreak() {
+
+      if(pomodoroStore.pomodoroTimer) {
+        pomodoroStore.pomodoroTimer.reset(); 
+      }
+
       duration = this.longBreak * 60;
       pomodoroStore.pomodoroTimer = new PomodoroTimer(
         duration, 
@@ -95,7 +105,12 @@ export default {
       );
       pomodoroStore.pomodoroTimer.setPomodoro(false); 
     },
-    async selectFocusDuration() { 
+    async selectFocusDuration() {
+
+      if(pomodoroStore.pomodoroTimer) {
+        pomodoroStore.pomodoroTimer.reset(); 
+      }
+
       duration = this.duration * 60; 
       pomodoroStore.pomodoroTimer = new PomodoroTimer(
         duration, 
@@ -114,16 +129,6 @@ export default {
 
       if(audioQueueStore.isPlaying()) {
         await audioQueueStore.playAudio(); 
-        if(audioQueueStore.audioPlayerInterval == null) {
-          console.log("Creating new interval...", audioQueueStore.audioPlayerInterval);
-          audioQueueStore.audioPlayerInterval = setInterval(
-            audioQueueStore.updateRealtimePlayerInformation, 1000
-          )
-        }
-      }
-
-      if(audioQueueStore.isResume()) {
-        await audioQueueStore.resumeAudio();
       }
 
     },
@@ -142,8 +147,9 @@ export default {
         pomodoroStore.pomodoroTimer.resume(); 
       }
 
-      if(audioQueueStore.isResume()) {
-        audioQueueStore.resumeAudio();
+
+      if(audioQueueStore.isPlaying()) {
+        await audioQueueStore.playAudio(); 
       }
 
     },

@@ -1,7 +1,8 @@
 import { BaseDirectory, readFile } from '@tauri-apps/plugin-fs';
 import { reactive } from 'vue';
 import { AudioFile } from "./AudioFile";
-
+import { invoke } from "@tauri-apps/api/core";
+import { dataDir} from '@tauri-apps/api/path';
 
 const initialState = () => ({
   active: false as boolean,
@@ -20,8 +21,6 @@ const initialState = () => ({
 
 export const audioQueueStore = reactive({
 
-  // add methods for paused, playing, resume states
-
   ...initialState(),
 
   reset() {
@@ -30,10 +29,8 @@ export const audioQueueStore = reactive({
       clearInterval(this.audioPlayerInterval);
     }
 
-    if(this.player) {
-      this.player.pause(); 
-      this.player.src = ''; 
-      this.player = null;
+    if(this.playerActive()) {
+      this.stopAudio();
     }
 
     const fresh = initialState();
@@ -46,9 +43,20 @@ export const audioQueueStore = reactive({
   initPlayer() {
     this.active = true;
     this.currentTime = 0;
+
+    this.audioPlayerInterval = setInterval(() => {
+      this.updateRealtimePlayerInformation();
+    }, 500); 
   },
 
-  queue(audioFiles: AudioFile[]) {
+  async playerActive(): Promise<boolean> {
+    return await invoke("is_playing", {});
+  },
+
+  async queue(audioFiles: AudioFile[]) {
+    if(this.playerActive()) {
+      this.stopAudio();
+    }
     this.audioFiles = audioFiles;
   },
 
@@ -57,11 +65,9 @@ export const audioQueueStore = reactive({
   },
 
   isPlaying() {
-    return this.active == true && this.playing == false && this.resume == false;
-  },
-
-  isResume() {
-    return this.resume == true && this.paused == true && this.playing == false;
+    const playFirst = this.playing === false && this.paused === false && this.active === true;
+    const resume = this.playing === false && this.paused === true && this.active == true;
+    return playFirst || resume; 
   },
 
   isPaused() {
@@ -73,16 +79,12 @@ export const audioQueueStore = reactive({
     if(this.currentQueueIdx >= this.audioFiles.length-1) {
       this.currentQueueIdx = 0;
       this.currAudioFile = this.audioFiles[this.currentQueueIdx];
-      if(this.playing == true && this.player != null) {
-        this.player.pause();  
-      }
+      if(this.playerActive()) { this.stopAudio(); }
       this.playAudio(); 
     } else {
       this.currentQueueIdx += 1;
       this.currAudioFile = this.audioFiles[this.currentQueueIdx]; 
-      if(this.playing == true && this.player != null) {
-        this.player.pause();
-      }
+      if(this.playerActive()) { this.stopAudio(); }
       this.playAudio(); 
     }
 
@@ -92,129 +94,62 @@ export const audioQueueStore = reactive({
     if(this.currentQueueIdx <= 0) {
       this.currentQueueIdx = this.audioFiles.length-1;
       this.currAudioFile = this.audioFiles[this.currentQueueIdx];
-      if(this.player) {
-        this.player.pause();
-      }
+      if(this.playerActive()) { this.stopAudio(); }
       this.playAudio(); 
     } else {
       this.currentQueueIdx -= 1; 
       this.currAudioFile = this.audioFiles[this.currentQueueIdx];
-      if(this.player) {
-        this.player.pause(); 
-      }
+      if(this.playerActive()) { this.stopAudio(); }
       this.playAudio(); 
     }
   },
 
   async playAudio() {
-
     if(this.currAudioFile) {
 
-
+      const dataDirPath = await dataDir();
+      const fileName = this.currAudioFile.file_path;
+      const duration = this.currAudioFile.duration;
+      const filePath = `${dataDirPath}/dtunes-audio-app/audio_files/${fileName}`;
+      await invoke("play_audio", {  filePath, duration: parseFloat(duration) });
       this.playing = true;
-      this.duration = parseInt(this.currAudioFile.duration); 
-      const filePath = this.currAudioFile.file_path;
-
-      if(this.player) {
-        this.player.pause();
-        this.player.src = '';
-        this.player.load(); 
-        this.player = null;
-      }
-
-      const fileBuffer = await readFile(`dtunes-audio-app/audio_files/${filePath}`, {
-          baseDir: BaseDirectory.Data,
-        });
-
-      if(this._currentBlobUrl) {
-        URL.revokeObjectURL(this._currentBlobUrl);
-      }
-
-      const audioUrl = URL.createObjectURL(new Blob([fileBuffer]));
-      this._currentBlobUrl = audioUrl;
-
-      try {
-
-        this.player = new Audio(audioUrl);
-
-        this.player.onended = () => {
-          this.resume = false;  
-          this.playing = false; 
-        }
-
-        this.player.onpause = () => {
-          if(this.player) {
-            this.currentTime = this.player.currentTime;
-          }
-          this.paused = true;
-        }
-
-        this.player.ontimeupdate = () => {
-          if(this.player) {
-            this.currentTime  = this.player.currentTime;
-          }
-        }
-
-        await new Promise<void>((resolve) => {
-            this.player!.oncanplaythrough = () => resolve();
-            this.player!.load();
-        }); 
-
-
-        await this.player.play();
-
-      } catch (error) {
-        console.error("Could not play audio file: ", error);
-      }    
-
-    } else {
-      console.error("No current audio file to play"); 
+      this.paused = false;
+      this.duration = duration; 
     }
+  },
 
+  async currDuration(): number {
+    return await invoke("curr_duration", {});
   },
 
   async pauseAudio() {
+    await invoke("pause_audio", {});
     this.playing = false;
-    if(this.player) {
-        this.player.pause();
-        this.resume = true;
-    }    
+    this.resume = true;
+    this.paused = true; 
   },
 
-  async resumeAudio() {
-    if(this.paused && this.player) {
-      this.player.currentTime = this.currentTime;
-      await this.player.play();
-      this.playing = true;
-      this.paused = false; 
-      this.resume = false;
-    }
+  async stopAudio() {
+    await invoke("stop_audio", {});
+    this.playing = false; 
+    this.paused = false;
   },
 
   async forward() {
-    if(this.player) {
-      const newDuration = this.player.currentTime - 30;
-      if(newDuration <= this.duration) {
-        this.player.currentTime += 30;
-        this.currentTime = this.player.currentTime; 
-      }
-    }
+    await invoke("forward_duration", {});
   },
 
   async rewind() {
-    if(this.player) {
-      const newDuration = this.player.currentTime - 30;
-      if(newDuration > 0) {
-        this.player.currentTime -= 30;
-        this.currentTime = this.player.currentTime; 
-      }
-    }
+    await invoke("rewind_duration", {}); 
   },
 
   async updateRealtimePlayerInformation() {
     const durationElement = document.getElementById("duration-tracker");
+    console.log(await this.currDuration());
+    console.log(this.duration); 
     if(durationElement && audioQueueStore.playing == true)  {
-      const value = (this.currentTime/this.duration) * 100;
+      const currTime = await this.currDuration(); 
+      const value = (currTime/this.duration) * 100;
       durationElement.style.width = `${value}%`;
     }
   }, 
