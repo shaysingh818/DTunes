@@ -132,9 +132,6 @@ export default {
     async pauseFile() {
         audioQueueStore.pauseAudio();
     },
-    async resumeFile() {
-      await audioQueueStore.resumeAudio(); 
-    },
     async nextFile() {
       await audioQueueStore.nextAudioFile();
       await this.populatePlayerInformation();
@@ -165,9 +162,6 @@ export default {
         }
 
       }
-
-        
-
     },
   },
   async mounted() {

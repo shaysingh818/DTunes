@@ -37,9 +37,7 @@ use crate::handlers::pomodoro::{
     view_pomodoro_audio_files, 
     view_pomodoro_session, 
     view_pomodoro_sessions,
-
-    /*
-    play_pomodoro_alarm_sound, */ 
+    play_pomodoro_alarm_sound, 
 
     create_pomodoro_tracking_session,
     retrieve_pomodoro_tracking_monthly_usage,
@@ -92,7 +90,7 @@ pub fn run() {
             remove_audio_file_pomodoro,
             search_pomodoro_sessions,
             search_pomodoro_audio_files,
-            //play_pomodoro_alarm_sound,
+            play_pomodoro_alarm_sound,
 
             /* Pomodoro Tracking Session Endpoints */ 
             create_pomodoro_tracking_session,

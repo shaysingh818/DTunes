@@ -1,4 +1,3 @@
-import { BaseDirectory, readFile } from '@tauri-apps/plugin-fs';
 import { reactive } from 'vue';
 import { AudioFile } from "./AudioFile";
 import { invoke } from "@tauri-apps/api/core";
@@ -23,13 +22,13 @@ export const audioQueueStore = reactive({
 
   ...initialState(),
 
-  reset() {
+  async reset() {
     
     if(this.audioPlayerInterval) {
       clearInterval(this.audioPlayerInterval);
     }
 
-    if(this.playerActive()) {
+    if(await this.playerActive() === true) {
       this.stopAudio();
     }
 
@@ -54,7 +53,7 @@ export const audioQueueStore = reactive({
   },
 
   async queue(audioFiles: AudioFile[]) {
-    if(this.playerActive()) {
+    if(await this.playerActive()) {
       this.stopAudio();
     }
     this.audioFiles = audioFiles;
@@ -74,32 +73,32 @@ export const audioQueueStore = reactive({
     return this.playing == true;
   },
 
-  nextAudioFile() {
+  async nextAudioFile() {
 
     if(this.currentQueueIdx >= this.audioFiles.length-1) {
       this.currentQueueIdx = 0;
       this.currAudioFile = this.audioFiles[this.currentQueueIdx];
-      if(this.playerActive()) { this.stopAudio(); }
+      if(await this.playerActive()) { this.stopAudio(); }
       this.playAudio(); 
     } else {
       this.currentQueueIdx += 1;
       this.currAudioFile = this.audioFiles[this.currentQueueIdx]; 
-      if(this.playerActive()) { this.stopAudio(); }
+      if(await this.playerActive()) { this.stopAudio(); }
       this.playAudio(); 
     }
 
   },
 
-  prevAudioFile() {
+  async prevAudioFile() {
     if(this.currentQueueIdx <= 0) {
       this.currentQueueIdx = this.audioFiles.length-1;
       this.currAudioFile = this.audioFiles[this.currentQueueIdx];
-      if(this.playerActive()) { this.stopAudio(); }
+      if(await this.playerActive()) { this.stopAudio(); }
       this.playAudio(); 
     } else {
       this.currentQueueIdx -= 1; 
       this.currAudioFile = this.audioFiles[this.currentQueueIdx];
-      if(this.playerActive()) { this.stopAudio(); }
+      if(await this.playerActive()) { this.stopAudio(); }
       this.playAudio(); 
     }
   },
@@ -114,11 +113,11 @@ export const audioQueueStore = reactive({
       await invoke("play_audio", {  filePath, duration: parseFloat(duration) });
       this.playing = true;
       this.paused = false;
-      this.duration = duration; 
+      this.duration = parseInt(duration); 
     }
   },
 
-  async currDuration(): number {
+  async currDuration(): Promise<number> {
     return await invoke("curr_duration", {});
   },
 
@@ -145,9 +144,15 @@ export const audioQueueStore = reactive({
 
   async updateRealtimePlayerInformation() {
     const durationElement = document.getElementById("duration-tracker");
-    console.log(await this.currDuration());
-    console.log(this.duration); 
-    if(durationElement && audioQueueStore.playing == true)  {
+    const currDuration= await this.currDuration();
+    const playerActive = await this.playerActive();
+    const restart = this.playing === true && playerActive === false;
+
+    if(currDuration >= Math.floor(this.duration) && restart) {
+      this.nextAudioFile();
+    }
+
+    if(durationElement && audioQueueStore.playing === true)  {
       const currTime = await this.currDuration(); 
       const value = (currTime/this.duration) * 100;
       durationElement.style.width = `${value}%`;
