@@ -1,6 +1,21 @@
 pub mod dtunes_api;
 pub mod handlers;
 
+use std::sync::Mutex;
+use tauri::{Builder, Manager}; 
+
+use crate::handlers::player::{
+    PlayerState,
+    play_audio,
+    pause_audio,
+    stop_audio,
+    is_playing,
+    is_paused,
+    curr_duration,
+    forward_duration,
+    rewind_duration,
+};
+
 use crate::handlers::audio_file::{
     create_audio_file, 
     delete_audio_file, 
@@ -21,8 +36,9 @@ use crate::handlers::pomodoro::{
     search_pomodoro_sessions,
     view_pomodoro_audio_files, 
     view_pomodoro_session, 
-    view_pomodoro_sessions, 
-    play_pomodoro_alarm_sound,
+    view_pomodoro_sessions,
+    play_pomodoro_alarm_sound, 
+
     create_pomodoro_tracking_session,
     retrieve_pomodoro_tracking_monthly_usage,
     retrieve_pomodoro_tracking_total_hours, 
@@ -33,12 +49,26 @@ use crate::handlers::pomodoro::{
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
-    tauri::Builder::default()
+    Builder::default()
+        .setup(|app| {
+            app.manage(Mutex::new(PlayerState::new()));
+            Ok(())
+        })
         .plugin(tauri_plugin_os::init())
         .plugin(tauri_plugin_fs::init())
         .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_shell::init())
         .invoke_handler(tauri::generate_handler![
+
+            /* endpoints for audio player */ 
+            play_audio,
+            pause_audio,
+            stop_audio,
+            is_playing,
+            is_paused,
+            curr_duration,
+            forward_duration,
+            rewind_duration,
 
             /* endpoints for audio file module */
             create_audio_file,

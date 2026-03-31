@@ -89,6 +89,7 @@ export default {
     async queueAudio() {
 
         const audioFile =  await audioStore.viewAudioFile(this.audioFileId.toString());
+        console.log(audioFile); 
 
         if(audioQueueStore.active == false) {
           await audioQueueStore.queue([audioFile]);

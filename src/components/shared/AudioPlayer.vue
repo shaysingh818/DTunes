@@ -56,9 +56,6 @@
                         <div v-if="audioQueueStore.isPlaying()" class="play-button" @click="playFile()">
                             <i :class="['fas', 'fa-play', 'text-white']"></i>
                         </div>
-                        <div v-if="audioQueueStore.isResume()" class="play-button" @click="resumeFile()">
-                            <i :class="['fas', 'fa-play', 'text-white']"></i>
-                        </div>
                         <div @click="audioQueueStore.forward()">
                             <i :class="['fas', 'fa-rotate-right', 'text-white']"></i>
                         </div>
@@ -130,20 +127,10 @@ export default {
   },
   methods: {
     async playFile() {
-
       await audioQueueStore.playAudio();
-
-      if(audioQueueStore.audioPlayerInterval == null) {
-        audioQueueStore.audioPlayerInterval = setInterval(
-          audioQueueStore.updateRealtimePlayerInformation, 1000
-        )
-      }
     },
     async pauseFile() {
         audioQueueStore.pauseAudio();
-    },
-    async resumeFile() {
-      await audioQueueStore.resumeAudio(); 
     },
     async nextFile() {
       await audioQueueStore.nextAudioFile();
@@ -175,9 +162,6 @@ export default {
         }
 
       }
-
-        
-
     },
   },
   async mounted() {
