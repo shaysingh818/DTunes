@@ -70,14 +70,7 @@ jobs:
         if: startsWith(matrix.platform, 'ubuntu') # This must match the platform value defined above. 
         run: |
           sudo apt-get update
-          # libwebkit2gtk-4.0-dev is not available on Ubuntu 24.04, so we
-          # conditionally install it only on 22.04 (Tauri v1 only).
-          if [ "${{ matrix.platform }}" = "ubuntu-22.04" ]; then
-            sudo apt-get install -y libwebkit2gtk-4.0-dev
-          fi
           sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf libasound2-dev pkg-config
-          # Ubuntu 24.04 ships libayatana-appindicator3 instead of libappindicator3.
-          # Install the shim so the package name resolves on both distros.
           if [ "${{ matrix.platform }}" = "ubuntu-24.04" ]; then
             sudo apt-get install -y libayatana-appindicator3-dev
           fi
