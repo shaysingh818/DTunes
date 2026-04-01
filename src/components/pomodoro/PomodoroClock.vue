@@ -85,7 +85,7 @@ export default {
         pomodoroStore.pomodoroTimer.reset(); 
       }
 
-      duration = this.shortBreak * 60; 
+      const duration = this.shortBreak * 60; 
       pomodoroStore.pomodoroTimer = new PomodoroTimer(
         duration, 
         this.updateTimerValue
@@ -98,7 +98,7 @@ export default {
         pomodoroStore.pomodoroTimer.reset(); 
       }
 
-      duration = this.longBreak * 60;
+      const duration = this.longBreak * 60;
       pomodoroStore.pomodoroTimer = new PomodoroTimer(
         duration, 
         this.updateTimerValue
@@ -111,7 +111,7 @@ export default {
         pomodoroStore.pomodoroTimer.reset(); 
       }
 
-      duration = this.duration * 60; 
+      const duration = this.duration * 60; 
       pomodoroStore.pomodoroTimer = new PomodoroTimer(
         duration, 
         this.updateTimerValue
@@ -179,7 +179,19 @@ export default {
     },
   },
   async mounted() {
-    duration = this.duration * 60; 
+
+    const duration = this.duration * 60; 
+    if(!duration || isNaN(duration)) {
+      console.error("Invalid duration prop", this.duration);
+      return;
+    }
+
+    pomodoroStore.pomodoroTimer = new PomodoroTimer(
+      duration, 
+      this.updateTimerValue
+    );
+
+
   }
 }
 
