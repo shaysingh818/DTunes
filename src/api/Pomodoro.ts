@@ -14,22 +14,24 @@ export class PomodoroTimer {
     private paused: boolean = false;
     private resumed: boolean = false;
     private isPomodoro: boolean = false; 
-    private updateCallback: (time: string) => void; 
+    private updateCallback: (time: string) => void;
+
+    // wall clock anchoring
+    private segmentStartTime: number | null = null;
+    private segmentStartTimeRemaining: number | null = null;
 
     constructor(duration: number, updateCallback: (time: string) => void) {
-
-      let minutes = Math.floor(duration / 60); 
-      let seconds = duration % 60; 
-
       this.duration = duration;
       this.remainingTime = duration;
-      this.stringTimerValue = seconds < 10 
-        ? `${minutes}:0${seconds}` 
-        : `${minutes}:${seconds}`;
-
       this.updateCallback = updateCallback;
-      this.updateCallback(this.stringTimerValue);
-      
+      this.updateCallback(this.formatTime(duration));
+    }
+
+    private formatTime(seconds: number): string {
+      const s = Math.max(0, seconds); 
+      const m = Math.floor(s / 60);
+      const sec = s % 60;
+      return sec < 10 ? `${m}:0${sec}` : `${m}:${sec}`;
     }
 
     reset() {
@@ -40,11 +42,13 @@ export class PomodoroTimer {
       }
 
       this.remainingTime = null;
+      this.segmentStartTime = null;
+      this.segmentStartTimeRemaining = null;
       this.stringTimerValue = "0:00"; 
       this.playing = false; 
       this.paused = false; 
       this.resumed = false;
-      this.updateCallback(this.stringTimerValue);
+      this.updateCallback("0.00");
     }
 
     isPlaying(): boolean {
@@ -66,77 +70,76 @@ export class PomodoroTimer {
     pause(): void {
       if(this.timerId !== null) {
         clearInterval(this.timerId); 
-        if(this.duration && this.remainingTime) {
-          const elapsed = this.duration - this.remainingTime; 
-          this.remainingTime = this.duration - elapsed; 
-          this.timerId = null;
-        }
+        this.timerId = null;
+        this.remainingTime = this.computeRemaining();
+        this.segmentStartTime = null; 
+        this.segmentStartTimeRemaining = null;
         this.paused = true;
         this.resumed = true;
       }
     }
 
     resume(): void {
-      if(this.timerId == null) {
-        this.resumed = false; 
+      if(this.timerId === null && this.remainingTime !== null) {
         this.paused = false; 
-        this.timerId = setInterval(() => this.update(), 1000);  
+        this.resumed = false; 
+        this.segmentStartTime = Date.now();
+        this.segmentStartTimeRemaining = this.remainingTime;
+        this.timerId = setInterval(() => this.update(), 500);  
       }
     }
 
     start(): void {
-      if(this.timerId == null) {
-        this.playing = true;
-        this.timerId = setInterval(() => this.update(), 1000);  
+      if(this.timerId === null) {
+        if (this.remainingTime === null) {
+            this.remainingTime = this.duration;
+        }
+
+        this.playing = true; 
+        this.segmentStartTime = Date.now();
+        this.segmentStartTimeRemaining = this.remainingTime;
+        this.timerId = setInterval(() => this.update(), 500);  
       }
       
     }
 
     stop(): void {
-      if(this.timerId != null) {
-        clearInterval(this.timerId); 
+      if(this.timerId !== null) {
+        clearInterval(this.timerId);
         this.timerId = null;
-        this.playing = false; 
-        this.resumed = false; 
-        this.paused = false;
       }
+      this.segmentStartTime = Date.now();
+      this.segmentStartTimeRemaining = this.remainingTime;
+      this.playing = false; 
+      this.resumed = false; 
+      this.paused = false;
+    }
+
+    private computeRemaining(): number {
+      if(this.segmentStartTime === null || this.segmentStartTimeRemaining === null) {
+        return this.remainingTime ?? 0;
+      }
+      const elapsedSeconds = (Date.now() - this.segmentStartTime) / 1000;
+      return Math.max(0, this.segmentStartTimeRemaining - elapsedSeconds);
     }
 
     async update(): Promise<void> {
+      
+      if(this.remainingTime === null || this.duration === null) return;
 
-      if(this.remainingTime && this.duration) {
-        let minutes = Math.floor(this.remainingTime / 60); 
-        let seconds = this.remainingTime % 60; 
+      const trueRemaining = this.computeRemaining();
+      const displaySeconds = Math.ceil(trueRemaining);
 
-        this.stringTimerValue = seconds < 10 
-          ? `${minutes}:0${seconds}` 
-          : `${minutes}:${seconds}`;
+      this.stringTimerValue = this.formatTime(displaySeconds);
+      this.updateCallback(this.stringTimerValue);
 
-        this.updateCallback(this.stringTimerValue); 
-          
-        if(this.remainingTime > -1) {
-          this.remainingTime--;
+      if(trueRemaining <= 0) {
+        this.stop();
+        if(this.isPomodoro) {
+          await pomodoroTrackingStore.createTrackingSession(this.duration / 60); 
         }
-
-        if(this.remainingTime == 0) {
-
-          if(this.isPomodoro == true) {
-            await pomodoroTrackingStore.createTrackingSession(this.duration / 60); 
-          }
-
-          await pomodoroStore.playPomodoroAlarmSound(); 
-
-          this.playing = false; 
-          this.resumed = false; 
-          this.paused = false;  
-          if(this.timerId){
-            clearInterval(this.timerId); 
-          }
-        }
-
-    
+        await pomodoroStore.playPomodoroAlarmSound(); 
       }
-
     }
 
 }
